@@ -1126,7 +1126,7 @@ class Products extends Model
     $purchase_price  = 0;
     if(count($product)>0){
         $products_id = $result['products'][0]->products_id;
-    if($result['products'][0]->products_type!=1){
+    // if($result['products'][0]->products_type!=1){
 
       $currentStocks = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->get();
       $purchase_price = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->sum('purchase_price');
@@ -1143,7 +1143,7 @@ class Products extends Model
             $max_level = $manageLevel[0]->max_level;
         }
 
-    }
+    // }
 
     $result['purchase_price'] = $purchase_price;
     $result['stocks'] = $stocks;
@@ -1207,10 +1207,16 @@ class Products extends Model
         $result['attributes'] = 	array();
     }
 
+    $suppliers = DB::table('user_supplier')->where('status', 1)->select('id as supplier_id', 'name as supplier_name')->get();
+
+    $result['suppliers'] = $suppliers;
+
       return $result;
   }
 
   public function addnewstock($request){
+
+    // dd($request->all());
     $products_id = $request->products_id;
     $language_id     =   1;
     $product = DB::table('products')
@@ -1260,6 +1266,218 @@ class Products extends Model
             }
         }
     }
+
+    // $supplier = DB::table('suppliers')->insert([
+    //     'inventory_id'  => $inventory_ref_id,
+    //     'admin_id'      => auth()->user()->id,
+    //     'stock'         => $request->stock,
+    //     'price'         => $request->purchase_price,
+    //     'date_added'    => $date_added,
+    //     'created_at'    => $date_added,
+    // ]);
+    
+    
+
+    if($request->invoice_id) {
+        $mainSupplier = DB::table('supplier_main')->where('supplier_main_id', '=', $request->invoice_id)->first();
+
+        if($mainSupplier) {
+            $supplier = DB::table('suppliers')->insert([
+                'inventory_id'      => $inventory_ref_id,
+                'admin_id'          => auth()->user()->id,
+                'supplier_main_id'  => $mainSupplier->supplier_main_id,
+                'stock'             => $request->stock,
+                'price'             => $request->purchase_price,
+                'date_added'        => $date_added,
+                'created_at'        => $date_added,
+            ]);
+
+            $fullPrice = $mainSupplier->price + $request->purchase_price;
+
+            $updatemainSupplier = DB::table('supplier_main')
+                ->where('supplier_main_id', '=', $request->invoice_id)
+                ->update([
+                    'price'         => $fullPrice,
+                    'supplier_type' => $request->supplier_type
+                ]);
+        }
+    } else {
+        $createmainSupplier = DB::table('supplier_main')->insertGetId([
+            'admin_id'          => auth()->user()->id,
+            'user_supplier_id'  => $request->supplier_id,
+            'price'             => $request->purchase_price,
+            'date_added'        => $date_added,
+            'supplier_type'     => $request->supplier_type,
+            'created_at'        => $date_added,
+        ]);
+
+        $supplier = DB::table('suppliers')->insert([
+            'inventory_id'      => $inventory_ref_id,
+            'admin_id'          => auth()->user()->id,
+            'supplier_main_id'  => $createmainSupplier,
+            'stock'             => $request->stock,
+            'price'             => $request->purchase_price,
+            'date_added'        => $date_added,
+            'created_at'        => $date_added,
+        ]);
+    }
+
+  }
+
+  public function displaysupplier(){
+    $setting = new Setting();
+    $myVarsetting = new SiteSettingController($setting);
+    $myVaralter = new AlertController($setting);
+    $language_id      =   '1';
+    $result = array();
+    $message = array();
+    $errorMessage = array();
+    $result['currency'] = $myVarsetting->getSetting();
+    $product = DB::table('products')
+                ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+                ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+                ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+                ->LeftJoin('specials', function ($join) {
+
+                    $join->on('specials.products_id', '=', 'products.products_id')->where('status', '=', '1');
+
+                })
+                ->select('products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_id', 'specials.products_id as special_products_id', 'specials.specials_new_products_price as specials_products_price', 'specials.specials_date_added as specials_date_added', 'specials.specials_last_modified as specials_last_modified', 'specials.expires_date')
+                ->where('products_description.language_id', '=', $language_id);
+
+    $product =  $product->get();
+    $result['products'] = $product;
+    $products = $product;
+    $result['message'] = $message;
+    $result['errorMessage'] = $errorMessage;
+    $result2 = array();
+    $index = 0;
+    $stocks = 0;
+    $min_level = 0;
+    $max_level = 0;
+    $purchase_price  = 0;
+    if(count($product)>0){
+        $products_id = $result['products'][0]->products_id;
+        if($result['products'][0]->products_type!=1){
+
+        $currentStocks = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->get();
+        $purchase_price = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->sum('purchase_price');
+
+            if(count($currentStocks)>0){
+                foreach($currentStocks as $currentStock){
+                    $stocks += $currentStock->stock;
+                }
+            }
+
+            $manageLevel = DB::table('manage_min_max')->where('products_id', $result['products'][0]->products_id)->get();
+            if(count($manageLevel)>0){
+                $min_level = $manageLevel[0]->min_level;
+                $max_level = $manageLevel[0]->max_level;
+            }
+
+        }
+
+        $result['purchase_price'] = $purchase_price;
+        $result['stocks'] = $stocks;
+        $result['min_level'] = $min_level;
+        $result['max_level'] = $max_level;
+        $products_attribute = DB::table('products_attributes')->where('products_id', '=', 1)->get();
+        $products_attribute = $products_attribute->unique('options_id')->keyBy('options_id');
+        if(count($products_attribute)>0){
+            $index2 = 0;
+            foreach($products_attribute as $attribute_data){
+            $option_name = DB::table('products_options')
+                ->join('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')
+                ->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')
+                ->where('products_options_descriptions.language_id', $language_id)
+                ->where('products_options.products_options_id', $attribute_data->options_id)
+                ->get();
+                if(count($option_name)>0){
+
+                    $temp = array();
+                    $temp_option['id'] = $attribute_data->options_id;
+                    $temp_option['name'] = $option_name[0]->products_options_name;
+                    $attr[$index2]['option'] = $temp_option;
+                    // fetch all attributes add join from products_options_values table for option value name
+                    $attributes_value_query = DB::table('products_attributes')
+                    ->where('products_id', '=', $products_id)
+                    ->where('options_id', '=', $attribute_data->options_id)
+                    ->get();
+                    foreach($attributes_value_query as $products_option_value){
+                        $option_value = DB::table('products_options_values')
+                        ->join('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')
+                        ->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')
+                        ->where('products_options_values_descriptions.language_id', '=', $language_id)
+                        ->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)
+                        ->get();
+                        if(count($option_value)>0){
+                            $attributes = DB::table('products_attributes')
+                            ->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])
+                            ->get();
+                            $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
+                            $temp_i['id'] = $products_option_value->options_values_id;
+                            $temp_i['value'] = $option_value[0]->products_options_values_name;
+                            $temp_i['price'] = $products_option_value->options_values_price;
+                            $temp_i['price_prefix'] = $products_option_value->price_prefix;
+                            array_push($temp,$temp_i);
+                        }
+
+                    }
+
+                    $attr[$index2]['values'] = $temp;
+                    $result['attributes'] = 	$attr;
+                    $index2++;
+
+                }
+            }
+
+        }else{
+            $result['attributes'] = 	array();
+        }
+
+    }else{
+        $result['attributes'] = 	array();
+    }
+
+      return $result;
+  }
+
+  public function addnewsupplier($request){
+    $products_id = $request->products_id;
+    $language_id     =   1;
+    $product = DB::table('products')
+                ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+                ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+                ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+                ->LeftJoin('specials', function ($join) {
+
+                    $join->on('specials.products_id', '=', 'products.products_id')->where('status', '=', '1');
+
+                })
+                ->select('products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_id', 'specials.products_id as special_products_id', 'specials.specials_new_products_price as specials_products_price', 'specials.specials_date_added as specials_date_added', 'specials.specials_last_modified as specials_last_modified', 'specials.expires_date')
+                ->where('products_description.language_id', '=', $language_id);
+
+
+            if ($products_id != null) {
+
+                $product->where('products.products_id', '=', $products_id);
+
+            } else {
+
+                $product->orderBy('products.products_id', 'DESC');
+
+            }
+
+            $product =  $product->get();
+    $products = $product;
+    $date_added	= date('Y-m-d h:i:s');
+    $supplier = DB::table('supplier_detail')->insert([
+        'supplier_id'   => $request->supplier_id,
+        'admin_id'      => auth()->user()->id,
+        'price'         => $request->price,
+        'date_added'    => $date_added,
+        'created_at'    => $date_added,
+    ]);
 
   }
 

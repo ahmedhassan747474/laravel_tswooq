@@ -189,6 +189,8 @@ return [
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
         Vectorcoder\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
+        Basel\Paytabs\PaytabsServiceProvider::class,
+
 
     ],
 
@@ -244,7 +246,7 @@ return [
         'Madzipper' => Madnest\Madzipper\Madzipper::class,
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class,
 
-
+        'Paytabs' => Basel\Paytabs\Facades\PaytabsFacade::class,
 
     ],
 

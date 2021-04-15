@@ -104,7 +104,7 @@
                                              <input class="form-check-input filters_box" name="{{$attr_data['option']['name']}}[]" type="checkbox" value="{{$values['value']}}" 								 									<?php
                                              if(!empty($result['filter_attribute']['option_values']) and in_array($values['value_id'],$result['filter_attribute']['option_values'])) print 'checked';
                                              ?>>
-                                             {{$values['value']}}
+                                             <span style="margin:1.3rem;">{{$values['value']}}</span>
                                            </label>
                                          </div>
                                      </li>

@@ -2461,6 +2461,24 @@ $(document).on('change','.product-type', function(){
 
 });
 
+$(document).on('change','.supplier-id', function(){
+    var supplier_id = $(this).val();
+
+	$.ajax({
+		url: '{{ URL::to("admin/products/inventory/invoices")}}'+'/'+supplier_id,
+		type: "GET",
+		success: function (data) {
+			var append = "<option value=''>{{ trans('labels.Choose Invoice') }}</option>";
+			for (i = 0; i < data.length; i++) {
+				append += "<option value='"+ data[i].id +"'>"+ data[i].id +"</option>"
+			}
+			$('.get_invoices').html(append);
+		}
+	});
+
+
+});
+
 
 function cancelOrder() {
     var status_id = $("#status_id").val();

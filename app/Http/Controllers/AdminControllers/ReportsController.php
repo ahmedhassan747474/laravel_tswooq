@@ -8,6 +8,8 @@ use App\Models\Core\Setting;
 use App\Models\Core\Reports;
 use App\Models\Core\Customers;
 use App\Models\Core\Products;
+use App\Models\Core\Suppliers;
+use Illuminate\Support\Facades\Validator;
 
 //for password encryption or hash protected
 use DB;
@@ -23,7 +25,7 @@ use App\Models\Core\DeliveryBoys;
 
 class ReportsController extends Controller
 {
-    public function __construct(Reports $reports, Setting $setting, DeliveryBoys $deliveryBoys, Customers $customers, Products $products) {
+    public function __construct(Reports $reports, Setting $setting, DeliveryBoys $deliveryBoys, Customers $customers, Products $products, Suppliers $suppliers) {
         $this->reports = $reports;
         $this->myVarsetting = new SiteSettingController($setting);
         $this->myVaralter = new AlertController($setting);
@@ -31,6 +33,7 @@ class ReportsController extends Controller
         $this->DeliveryBoys = $deliveryBoys;
         $this->Customers = $customers;
         $this->Products = $products;
+        $this->Suppliers = $suppliers;
     }
 
     //statsCustomers
@@ -152,6 +155,105 @@ class ReportsController extends Controller
         $result['commonContent'] = $myVar->Setting->commonContent();
         
         return view("admin.reports.inventoryreportprint", $title)->with('result', $result);
+    }
+
+    public function suppliersmainreport(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
+
+        $result['reports'] = $this->reports->suppliersmainreport($request);
+
+        $result['suppliers'] = $this->Suppliers->getter();   
+                
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+        
+        return view("admin.reports.suppliersmainreport", $title)->with('result', $result);
+    }
+
+    public function suppliersreport(Request $request, $id)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
+
+        $result['reports'] = $this->reports->suppliersreport($request, $id);
+
+        $result['total_price'] = $this->reports->suppliersreportTotalPrice($request, $id);
+
+        $result['report_detail'] = $this->reports->suppliersreportDetail($request, $id);
+
+        $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
+
+        $result['suppliers'] = $this->Suppliers->getter();   
+                
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+        
+        return view("admin.reports.suppliersreport", $title)->with('result', $result)->with('id', $id);
+    }
+
+    public function suppliersreportprint(Request $request, $id)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
+
+        $result['reports'] = $this->reports->suppliersreport($request, $id);
+
+        $result['total_price'] = $this->reports->suppliersreportTotalPrice($request, $id);
+
+        $result['report_detail'] = $this->reports->suppliersreportDetail($request, $id);
+
+        $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
+
+        $result['products'] = $this->Products->getter();   
+                
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+        
+        return view("admin.reports.suppliersreportprint", $title)->with('result', $result);
+    }
+
+    public function insertsuppliersreport(Request $request)
+    {
+        $language_id = '1';
+
+        $this->validate($request, [
+            'price'         => 'required|min:1'
+        ]);
+
+        if($request->price > 0){
+            $insert = DB::table('supplier_detail')->insert([
+                'supplier_main_id'  => $request->supplier_main_id,
+                'admin_id'          => auth()->user()->id,
+                'price'             => $request->price,
+                'date_added'        => date('Y-m-d H:i:s'),
+                'created_at'        => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        $id = $request->supplier_main_id;
+        
+        $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
+
+        $result['reports'] = $this->reports->suppliersreport($request, $id);
+
+        $result['total_price'] = $this->reports->suppliersreportTotalPrice($request, $id);
+
+        $result['report_detail'] = $this->reports->suppliersreportDetail($request, $id);
+
+        $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
+
+        $result['suppliers'] = $this->Suppliers->getter();   
+                
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        // return view("admin.reports.suppliersreport", $title)->with('result', $result)->with('id', $id);
+
+        // return route('suppliersreport', $id);
+        return redirect()->back()->with('result', $result)->with('id', $id);
     }
 
     //minstock

@@ -400,6 +400,160 @@ class Reports extends Model
 
     }
 
+    public function suppliersmainreport($request)
+    {
+        $report = DB::table('supplier_main')
+            ->leftjoin('suppliers', 'suppliers.supplier_main_id', '=', 'supplier_main.supplier_main_id')
+            ->leftjoin('user_supplier', 'user_supplier.id', '=', 'supplier_main.user_supplier_id')
+            ->select('supplier_main.*', 'supplier_main.user_supplier_id', 'user_supplier.name as supplier_name')
+            ->groupBy('supplier_main.supplier_main_id');
+
+        if (isset($request->user_supplier_id)) {
+            $report->where('supplier_main.user_supplier_id', $request->user_supplier_id);
+
+            if (isset($request->dateRange)) {
+                $range = explode('-', $request->dateRange);
+
+                $startdate = trim($range[0]);
+                $enddate = trim($range[1]);
+
+                $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                $report->whereBetween('supplier_main.created_at', [$dateFrom, $dateTo]);
+            }
+
+        }
+
+        if ($request->page and $request->page == 'invioce') {
+            $reports = $report->get();
+        } else {
+            $reports = $report->paginate(50);
+        }
+
+        return $reports;
+    }
+
+    public function suppliersreport($request, $id)
+    {
+        $report = DB::table('suppliers')
+            ->leftjoin('inventory', 'inventory.inventory_ref_id', '=', 'suppliers.inventory_id')
+            ->leftjoin('products_description', 'products_description.products_id', '=', 'inventory.products_id')
+            ->where('language_id', 1)
+            ->select('suppliers.*', 'inventory.products_id', 'products_description.products_name')
+            ->where('suppliers.supplier_main_id', $id);
+
+        if (isset($request->user_supplier_id)) {
+            // $report->where('suppliers.user_supplier_id', $request->user_supplier_id);
+
+            if (isset($request->dateRange)) {
+                $range = explode('-', $request->dateRange);
+
+                $startdate = trim($range[0]);
+                $enddate = trim($range[1]);
+
+                $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                $report->whereBetween('suppliers.created_at', [$dateFrom, $dateTo]);
+            }
+
+        }
+
+        if ($request->page and $request->page == 'invioce') {
+            $reports = $report->get();
+        } else {
+            $reports = $report->paginate(50);
+        }
+
+        return $reports;
+    }
+
+    public function suppliersreportTotalPrice($request, $id)
+    {
+        $report = DB::table('suppliers')
+            ->leftjoin('inventory', 'inventory.inventory_ref_id', '=', 'suppliers.inventory_id')
+            ->leftjoin('products_description', 'products_description.products_id', '=', 'inventory.products_id')
+            ->where('language_id', 1)
+            ->select('suppliers.*', 'inventory.products_id', 'products_description.products_name')
+            ->where('suppliers.supplier_main_id', $id);
+
+        if (isset($request->user_supplier_id)) {
+            // $report->where('suppliers.user_supplier_id', $request->user_supplier_id);
+
+            if (isset($request->dateRange)) {
+                $range = explode('-', $request->dateRange);
+
+                $startdate = trim($range[0]);
+                $enddate = trim($range[1]);
+
+                $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                $report->whereBetween('suppliers.created_at', [$dateFrom, $dateTo]);
+            }
+
+        }
+
+        $reports = $report->sum('suppliers.price');
+
+        return $reports;
+    }
+
+    public function suppliersreportDetail($request, $id)
+    {
+        $report = DB::table('supplier_detail')
+            ->select('supplier_detail.*')
+            ->where('supplier_detail.supplier_main_id', $id);
+
+        if (isset($request->user_supplier_id)) {
+
+            if (isset($request->dateRange)) {
+                $range = explode('-', $request->dateRange);
+
+                $startdate = trim($range[0]);
+                $enddate = trim($range[1]);
+
+                $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                $report->whereBetween('supplier_detail.created_at', [$dateFrom, $dateTo]);
+            }
+
+        }
+
+        if ($request->page and $request->page == 'invioce') {
+            $reports = $report->get();
+        } else {
+            $reports = $report->paginate(50);
+        }
+
+        return $reports;
+    }
+
+    public function suppliersreportDetailTotal($request, $id)
+    {
+        $report = DB::table('supplier_detail')
+            ->select('supplier_detail.*')
+            ->where('supplier_detail.supplier_main_id', $id);
+
+        if (isset($request->user_supplier_id)) {
+
+            if (isset($request->dateRange)) {
+                $range = explode('-', $request->dateRange);
+
+                $startdate = trim($range[0]);
+                $enddate = trim($range[1]);
+
+                $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                $report->whereBetween('supplier_detail.created_at', [$dateFrom, $dateTo]);
+            }
+
+        }
+
+        $reports = $report->sum('supplier_detail.price');
+        
+
+        return $reports;
+    }
+
     public function minstock($request)
     {
         $report = DB::table('inventory')

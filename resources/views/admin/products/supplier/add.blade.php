@@ -44,13 +44,13 @@
 
                         <div class="row">
                             <div class="col-xs-12">
-                                {{-- <div class="box box-info"> --}}
+                                <div class="box box-info">
                                     <!-- form start -->
                                     <div class="box-body">
 
                                         <div class="row">
                                             <!-- Left col -->
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <!-- MAP & BOX PANE -->
 
                                                 <!-- /.box -->
@@ -135,48 +135,6 @@
                                                                         <input type="text" name="purchase_price" value="0" class="form-control number-validate">
                                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                                                             {{ trans('labels.Purchase Price Text') }}</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.SuppliersType') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <div class="custom-control custom-radio custom-control-inline">
-                                                                            <input type="radio" id="customRadioInline1" name="supplier_type" value="term" class="custom-control-input">
-                                                                            <label class="custom-control-label" for="customRadioInline1">{{ trans('labels.term') }}</label>
-                                                                        </div>
-                                                                        <div class="custom-control custom-radio custom-control-inline">
-                                                                            <input type="radio" id="customRadioInline2" name="supplier_type" value="end" class="custom-control-input">
-                                                                            <label class="custom-control-label" for="customRadioInline2">{{ trans('labels.end') }}</label>
-                                                                        </div>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Suppliers') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control field-validate supplier-id" name="supplier_id">
-                                                                            <option value="">{{ trans('labels.Choose Supplier') }}</option>
-                                                                            @foreach ($result['suppliers'] as $pro)
-                                                                            <option value="{{$pro->supplier_id}}">{{$pro->supplier_name}}</option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Invoices') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control get_invoices" name="invoice_id">
-                                                                            <option value="">{{ trans('labels.Choose Invoice') }}</option>
-                                                                            
-                                                                        </select>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
                                                                     </div>
                                                                 </div>
 
@@ -275,49 +233,6 @@
                                                 <!-- /.row -->
                                             </div>
 
-                                            {{-- <div class="col-md-6">
-                                                <!-- MAP & BOX PANE -->
-
-                                                <!-- /.box -->
-                                                <div class="row">
-                                                    <!-- /.col -->
-                                                    <div class="col-md-12">
-                                                        <!-- USERS LIST -->
-                                                        <div class="box box-danger">
-                                                            <div class="box-header with-border">
-                                                                <h3 class="box-title">{{ trans('labels.Manage Supplier') }}</h3>
-                                                            </div>
-                                                            <!-- /.box-header -->
-                                                            <div class="box-body">
-                                                                {!! Form::open(array('url' =>'admin/products/inventory/addminmax', 'name'=>'addminmax', 'id'=>'addminmax', 'method'=>'post', 'class' => 'form-horizontal form-validate-level',
-                                                                'enctype'=>'multipart/form-data')) !!}
-
-                                                                
-
-                                                                <div class="alert alert-danger alert-dismissible" id="minmax-error" role="alert" style="display: none">
-                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                    {{ trans('labels.This stock is not asscociated with any attributes. Please choose products attributes first') }}
-                                                                </div>
-                                                                <!-- /.users-list -->
-                                                            </div>
-                                                            <!-- /.box-body -->
-                                                            @if(count($result['products'])> 0)
-                                                            <div class="box-footer text-center">
-                                                                <button type="submit" class="btn btn-primary pull-right">{{ trans('labels.Submit') }}</button>
-                                                            </div>
-                                                            @endif
-
-                                                            {!! Form::close() !!}
-                                                            <!-- /.box-footer -->
-                                                        </div>
-                                                        <!--/.box -->
-                                                    </div>
-
-                                                    <!-- /.col -->
-                                                </div>
-                                                <!-- /.row -->
-                                            </div> --}}
-
                                             <div class="box-footer col-xs-12">
                                                 @if(count($result['products'])> 0 && $result['products'][0]->products_type==1)
                                                 <a href="{{ URL::to("admin/products/attach/attribute/display/".$result['products'][0]->products_id) }}" class="btn btn-default pull-left">{{ trans('labels.AddOptions') }}</a>
@@ -325,7 +240,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                {{-- </div> --}}
+                                </div>
                             </div>
                         </div>
 

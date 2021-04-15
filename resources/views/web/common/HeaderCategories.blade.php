@@ -45,7 +45,7 @@
         
         // $option .= '<a class="dropdown-item categories-list" href="/shop?category='.$parents->categories_name.'">'.$parents->categories_name.'</a>';
 
-        $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="'.$parents->categories_name.'" data-id="'.$parents->categories_id.'">'.$parents->categories_name.'</option>';
+        $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="'.$parents->slug.'" data-id="'.$parents->categories_id.'">'.$parents->categories_name.'</option>';
 
 
           // if(isset($parents->childs)){
@@ -74,7 +74,7 @@ function productBrands(){
 
         // $option .= '<a class="dropdown-item categories-list '.$selected.'" value="'.$parents->categories_name.'" slug="'.$parents->slug.'" '.$selected.'>'.$parents->categories_name.'</a>';
         // $option .= '<a class="dropdown-item categories-list" href="/shop?category='.$parents->categories_name.'">'.$parents->categories_name.'</a>';
-        $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="'.$parents->categories_name.'">'.$parents->categories_name.'</option>';
+        $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="'.$parents->slug.'">'.$parents->categories_name.'</option>';
       }
 
     echo $option;

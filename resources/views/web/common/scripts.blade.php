@@ -187,7 +187,7 @@ $(document).on('click', '.get_brands', function() {
 		success: function(data){
 			var append = "<option value='' selected>{{trans('website.Choose Any Brand')}}</option>";
 			for (i = 0; i < data.length; i++) {
-				append += "<option value='"+ data[i].categories_name +"'>"+ data[i].categories_name +"</option>"
+				append += "<option style='background-color: #EEE;color: #000;' value='"+ data[i].categories_slug +"'>"+ data[i].categories_name +"</option>"
 			}
 			$('.set_brands').html(append);
 		}

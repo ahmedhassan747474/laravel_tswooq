@@ -179,10 +179,15 @@ Route::group(['middleware' => ['installer']], function () {
             Route::get('/display', 'ProductController@addinventoryfromsidebar')->middleware('view_product');
             // Route::post('/addnewstock', 'ProductController@addinventory')->middleware('view_product');
             Route::get('/ajax_min_max/{id}/', 'ProductController@ajax_min_max')->middleware('view_product');
+            Route::get('/invoices/{id}/', 'ProductController@invoices')->middleware('view_product');
             Route::get('/ajax_attr/{id}/', 'ProductController@ajax_attr')->middleware('view_product');
             Route::post('/addnewstock', 'ProductController@addnewstock')->middleware('add_product');
             Route::post('/addminmax', 'ProductController@addminmax')->middleware('add_product');
             Route::get('/addproductimages/{id}/', 'ProductController@addproductimages')->middleware('add_product');
+        });
+        Route::group(['prefix' => 'supplier'], function () {
+            Route::get('/display', 'ProductController@displaysupplier')->middleware('view_product');
+            Route::post('/addnewsupplier', 'ProductController@addnewsupplier')->middleware('add_product');
         });
         Route::group(['prefix' => 'images'], function () {
             Route::get('/display/{id}/', 'ProductController@displayProductImages')->middleware('view_product');
@@ -265,6 +270,15 @@ Route::group(['middleware' => ['installer']], function () {
         Route::post('/editaddress', 'CustomersController@editaddress')->middleware('edit_customer');
         Route::post('/updateaddress', 'CustomersController@updateaddress')->middleware('edit_customer');
         Route::post('/deleteAddress', 'CustomersController@deleteAddress')->middleware('edit_customer');
+    });
+
+    Route::group(['prefix' => 'admin/suppliers', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/display', 'SuppliersController@display')->middleware('view_customer');
+        Route::get('/add', 'SuppliersController@add')->middleware('add_customer');
+        Route::post('/add', 'SuppliersController@insert')->middleware('add_customer');
+        Route::get('/edit/{id}', 'SuppliersController@edit')->middleware('edit_customer');
+        Route::post('/update', 'SuppliersController@update')->middleware('edit_customer');
+        Route::post('/delete', 'SuppliersController@delete')->middleware('delete_customer');
     });
 
     Route::group(['prefix' => 'admin/countries', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -424,7 +438,10 @@ Route::group(['middleware' => ['installer']], function () {
         Route::get('/maxstock', 'ReportsController@maxstock')->middleware('report');
         Route::get('/maxstockprint', 'ReportsController@maxstockprint')->middleware('report');
         
-        
+        Route::get('/suppliersmainreport', 'ReportsController@suppliersmainreport')->middleware('report');
+        Route::get('/suppliersreport/{id}', 'ReportsController@suppliersreport')->middleware('report')->name('suppliersreport');
+        Route::get('/suppliersreportprint/{id}', 'ReportsController@suppliersreportprint')->middleware('report');
+        Route::post('/insertsuppliersreport', 'ReportsController@insertsuppliersreport')->middleware('report')->name('insertsuppliersreport');
         
         
         ////////////////////////////////////////////////////////////////////////////////////

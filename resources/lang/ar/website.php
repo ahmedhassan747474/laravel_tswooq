@@ -15,18 +15,18 @@ return [
 	'Location' => 'موقعك',
 	'Please enter your location or click here to open map' => 'الرجاء الضغط هنا لفتح الخريطة',
   'Hotline' => 'الشحن مجانا',
-	
+
 	'SPECIAL DEALS' => 'الشحن مجانا',
 
 	'Call Us Now'  => 'الخط الساخن',
 
 	'bannerLabel1'=>'الشحن مجانا',
 
-	'bannerLabel1Text'=>'على طلب أكثر من 99 دولارا',
+	'bannerLabel1Text'=>'على الطلبات أكثر من 2000 ريال',
 
 	'bannerLabel2'=>'عودة الأموال',
 
-	'bannerLabel2Text'=>'30 يوم عودة المال',
+	'bannerLabel2Text'=>'وفر مع ندى الأزهار',
 
 	'bannerLabel3'=>'دعم 24/7',
 
@@ -36,7 +36,7 @@ return [
 
 	'bannerLabel4Text'=>'حماية الدفع عبر الإنترنت',
 
-	'TopSales'=>'أعلى المبيعات',
+	'TopSales'=>' الأعلى مبيعاً',
 
 	'Special'=>'خاص',
 
@@ -48,7 +48,7 @@ return [
 
 	'Welcome to our Store'=>'أهلأ بكم في متجرنا',
 
-	'Orders'=>'أوامر',
+	'Orders'=>'الطلبات',
 
 	'All Categories'=>'جميع الفئات',
 
@@ -82,7 +82,7 @@ return [
 
 	'Terms'=>'شروط',
 
-	'Privacy'=>'الإجمالية',
+	'Privacy'=>'الإجمالى',
 
 	'Discount'=>'خصم',
 
@@ -90,9 +90,9 @@ return [
 
 	'Contact Us'=>'اتصل بنا',
 
-	'Terms & Condtions'=>'البنود و الظروف',
+	'Terms & Condtions'=>'الشروط والأحكام',
 
-	'Wishlist'=>'الأماني',
+	'Wishlist'=>'الرغبات',
 
 	'Shopping Cart'=>'عربة التسوق',
 
@@ -102,7 +102,7 @@ return [
 
 	'Email'=>'البريد الإلكتروني',
 
-	'Copy Rights'=>'2017 شركة ، وشركة',
+	'Copy Rights'=>'الحقوق محفوظة',
 
 	'From our News'=>'من أخبارنا',
 
@@ -131,7 +131,7 @@ return [
 	'items'=>'العناصر',
 	'item'=>'بند',
 
-	'SubTotal'=>'المجموع الفرعي',
+	'SubTotal'=>'المجموع',
 
 	'Couponisappliedsuccessfully'=>'يتم تطبيق القسيمة بنجاح!',
 
@@ -185,7 +185,7 @@ return [
 
 	'Coupon Code'=>'رمز القسيمة',
 
-	'Checkout'=>'الخروج',
+	'Checkout'=>'إكمال الطلب',
 
 	'Update Cart'=>'تحديث السلة',
 
@@ -197,7 +197,7 @@ return [
 
 	'Order Summary'=>'ملخص الطلب',
 
-	'Subtotal'=>'المجموع الفرعي',
+	'Subtotal'=>'المجموع الكلى',
 
 	'Apply'=>'تطبيق',
 
@@ -251,33 +251,33 @@ return [
 
 	'Sign Up'=>'التسجيل',
 
-	'Lorem ipsum dolor sit amet, consectetur adipiscing elit'=>'أبجد هوز دولور الجلوس امات، إيليت.',
+	'Lorem ipsum dolor sit amet, consectetur adipiscing elit'=>'',
 
-	'Duis at nisl luctus, malesuada diam non, mattis odio'=>'لاعبي التزلج على الجليد البلوزات،  بقطر ليس هناك الكثير من الأجهزة.',
+	'Duis at nisl luctus, malesuada diam non, mattis odio'=>'',
 
-	'Fusce porta neque at enim consequat, in vulputate tellus faucibus'=>'ولكن، أقول لكم، ولا Fusce بورتا الجلوس امات، hendrerit في vulputate إيليت faucibus.',
+	'Fusce porta neque at enim consequat, in vulputate tellus faucibus'=>'',
 
-	'Pellentesque suscipit tortor id dui accumsan varius'=>'أن درجة الحرارة الترويجي طبقة دوى الكازينو.',
+	'Pellentesque suscipit tortor id dui accumsan varius'=>'',
 
-	'Sed interdum purus imperdiet tortor imperdiet, et ultricies leo gravida'=>'لكن في بعض الأحيان الفلفل الحار التمويل التمويل الكلي وultricies الأسد حاملا.',
+	'Sed interdum purus imperdiet tortor imperdiet, et ultricies leo gravida'=>'',
 
-	'Aliquam pharetra urna vel nulla egestas, non laoreet mauris mollis'=>'Aliquam URNA pharetra، أو حيث لا إنفاذ القانون، غير laoreet mauris موليس.',
+	'Aliquam pharetra urna vel nulla egestas, non laoreet mauris mollis'=>'',
 
-	'Integer sed velit sit amet quam pharetra ullamcorper'=>'صحيح velit سد الجلوس quam امات ullamcorper pharetra.',
+	'Integer sed velit sit amet quam pharetra ullamcorper'=>'',
 
-	'Proin eget nulla accumsan, finibus lacus aliquam, tincidunt turpis'=>'tincidunt Phasellus، UT accumsan augue، نهايات aliquam lacus، أبجد ميلان ليو.',
+	'Proin eget nulla accumsan, finibus lacus aliquam, tincidunt turpis'=>'',
 
-	'Nam at orci tempor, mollis mi ornare, accumsan risus'=>'لكنه السريرية طويلة، لينة، يا طبقة اعتصام الضحك.',
+	'Nam at orci tempor, mollis mi ornare, accumsan risus'=>'',
 
-	'Cras vel ante vel augue convallis posuere'=>'غدا قبل أو مجموعة بورتا.',
+	'Cras vel ante vel augue convallis posuere'=>'',
 
-	'Ut quis dolor accumsan, viverra neque nec, blandit leo'=>'بالنسبة لشخص ل، viverra neque غير المصنفة في موضع الألم المنحى، blandit تيمبوس ليو.',
+	'Ut quis dolor accumsan, viverra neque nec, blandit leo'=>'',
 
 	'Checkout'=>'الخروج',
 
 	'Shopping cart'=>'عربة التسوق',
 
-	'Billing Address'=>'عنوان الفواتي',
+	'Billing Address'=>'عنوان الفاتورة',
 
 
 
@@ -293,19 +293,19 @@ return [
 
 	'State'=>'الدولة',
 
-	'City'=>'سيتي',
+	'City'=>'المدينة',
 
 	'Zip/Postal Code'=>'الرمز البريدي / الرمز البريدي',
 
 	'Continue'=>'متابعة',
 
-	'Please enter your company name'=>'الرجاء إدخال اسم شركتك.',
+	'Please enter your company name'=>'الرجاء إدخال أسم المبنى',
 
 	'Please enter your address'=>'الرجاء إدخال عنوانك.',
 
 	'Please select your country'=>' يرجى تحديد بلدك.',
 
-	'Please select your state'=>'يرجى تحديد الولاية الخاصة بك.',
+	'Please select your state'=>'نرجو منك تحديد المدينة',
 
 	'Please enter your city'=>'الرجاء إدخال مدينتك.',
 
@@ -315,9 +315,9 @@ return [
 
 	'Add Address'=>'إضافة عنوان',
 
-	'Your address has been deteled successfully'=>'تم تفريغ عنوانك بنجاح!',
+	'Your address has been deteled successfully'=>'تم إزالة العنوان بنجاح',
 
-	'Your address has been chnaged successfully'=>'لقد تم تشفير عنوانك بنجاح!',
+	'Your address has been chnaged successfully'=>'تم تغير العنوان الخاص بك بنجاح',
 
 	'Default'=>'افتراضي',
 
@@ -407,7 +407,7 @@ return [
 
 	'Thanks You Your payment has been processed successfully'=>'شكرًا لك! تمت معالجة دفعتك بنجاح.',
 
-	'Edit Cart'=>'تحرير سلة التسوق',
+	'Edit Cart'=>'تعديل الطلب',
 
 	'Full Name'=>'الاسم الكامل',
 
@@ -440,7 +440,7 @@ return [
 
 	'Price: Low To High'=>'السعر: منخفض إلى مرتفع',
 
-	'Top Seller'=>'أفضل بائع',
+	'Top Seller'=>'الأكثر مبيعاً',
 
 	'Special Products'=>'منتجات خاصة',
 
@@ -466,7 +466,7 @@ return [
 
 	'Z - A'=>'ض - أ',
 
-	'Edit Address'=>'تحرير العنوان',
+	'Edit Address'=>'تعديل العنوان',
 
 	'Add Address'=>'إضافة عنوان',
 
@@ -476,7 +476,7 @@ return [
 
 	'Products Description'=>'وصف المنتجات',
 
-	'Order(s)'=>'أوامر',
+	'Order(s)'=>'طلبات',
 
 	'Login Or Create An Account'=>'تسجيل الدخول أو إنشاء حساب',
 
@@ -519,13 +519,13 @@ return [
 
 	'Female'=>'أنثى',
 
-	'Male'=>'مالي',
+	'Male'=>'رجل',
 
 	'Gender'=>'الجنس',
 
 	'Ecommerce'=>'التجارة الإلكترونية',
 
-	'Featured'=>'المميز',
+	'Featured'=>'المتصدر',
 
 	'Filters'=>'شروط',
 
@@ -706,15 +706,15 @@ return [
 	'Next Day Air'=>'الهواء اليوم التالي',
 	'My Account'=>'حسابي',
 	'Info Pages'=>'صفحات المعلومات',
-	'Dummy Text'=>'لها أن جنوب أجزاء. ثم وفي اعتداء الجنوبي. تم الشرقي بمعارضة عدم, فقد أن حاول الآلاف إستعمل. مكن لعدم فهرست الخاطفة و, من تعديل لفرنسا الشهير عرض, أم مدينة السيطرة وصل. كان وقبل لعدم لم, جعل معزّزة والمانيا استطاعوا هو, مع بعض ألمانيا الأراضي. تحت وأزيز وفنلندا بـ, دأبوا أعلنت الإنذار، نفس تم.',
+	'Dummy Text'=>'',
 	'Product is unliked'=>'المنتج غير مرغوب فيه.',
 	'Please login first to like this product'=>'الرجاء تسجيل الدخول أولاً لمثل هذا المنتج.',
-	'Product is liked'=>'المنتج هو يحب.',
+	'Product is liked'=>'منتجات مفضلة',
 	'Product is disliked'=>'المنتج غير محبوب.',
 	'Password has been updated successfully'=>'تم تحديث كلمة المرور بنجاح.',
 
 
-	'Record not found'=>'سجل ملاحظة الخطوط!',
+	'Record not found'=>'غير موجود',
 	'contact us title'=>'التجارة الإلكترونية اتصل بنا',
 	'Follow Us'=>'تابعنا',
 
@@ -754,7 +754,7 @@ return [
 	'Product is disliked'=>'المنتج غير محبوب',
 	'Password has been updated successfully'=>'تم تحديث كلمة المرور بنجاح',
 	'Empty Site Name'=>'إفراغ اسم الموقع',
-	'Instamojo Payment'=>'انسٹاموجو دفع',
+	'Instamojo Payment'=>'دفع انستماجو',
 	'External Link'=>'رابط خارجي',
 	'Flash Sale'=>'بيع مفاجئ',
 	'cancel order'=>'الغاء الطلب',
@@ -775,9 +775,9 @@ return [
 	'If you do note want to apply this coupon just click cross button of this alert.'=>'إذا كنت ترغب في تطبيق هذه القسيمة ، فما عليك سوى النقر فوق الزر المتقاطع لهذا التنبيه.',
 	'You Are Not Allowed With These Credentials!'=>'يرجى إدخال تفاصيل حساب صالحة.',
 	'Removed Successfully'=>'تمت الإزالة بنجاح',
-	'error'=>'خطأ',	
+	'error'=>'خطأ',
 	'success'=>'نجاح',
-	
+
 	///// new labels /////
 	'Search Products'=>'البحث عن المنتجات',
 	'Currency'=>'عملة',
@@ -801,21 +801,15 @@ return [
 	'for more details'=>'لمزيد من التفاصيل',
 	'Enter Your Email Address'=>'أدخل عنوان بريدك الالكتروني',
 	'Quick View'=>'نظرة سريعة',
-	'Categories Text For Home Page'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
+	'Categories Text For Home Page'=>'',
 	'WELCOME TO STORE'=>'مرحبًا بك في المتجر',
-	'WELCOME TO STORE DETAIL'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
-	'Top Sellings Of the Week Detail'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا .  ',
-	'Newest Products Detail'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
-	'Flash Sale Text'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
-	'Super deal of the Month'=>'صفقة الشهر الفائقة',	
+	'WELCOME TO STORE DETAIL'=>'',
+	'Top Sellings Of the Week Detail'=>'',
+	'Newest Products Detail'=>'',
+	'Flash Sale Text'=>'',
+	'Super deal of the Month'=>'',
 	'From our News'=>'الأخبار و الأحداث',
-	'From our News Text'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
+	'From our News Text'=>'',
 	'Read More'=>'اقرأ أكثر',
 	'Days'=>'أيام',
 	'Hours'=>'ساعات',
@@ -837,7 +831,7 @@ return [
 	'Price Range'=>'نطاق السعر',
 	'Reviews'=>'المراجعات',
 	'Product Added Successfully Thanks.Continue Shopping'=>'تمت إضافة المنتج بنجاح شكرا.متابعة التسوق',
-	'Add to Wishlist'=>'أضف إلى قائمة الامنيات',
+	'Add to Wishlist'=>'ضف الى المفضلة',
 	'Add to Compare'=>'أضف للمقارنة',
 	'Descriptions'=>'الأوصاف',
 	'Customer Reviews'=>'آراء المستهلكين',
@@ -846,25 +840,14 @@ return [
 	'Rating'=>'تقييم',
 	'Review'=>'مراجعة',
 	'Write a Review'=>'أكتب مراجعة',
-	'Thanks For Your Time And Considration For Providing FeedBack For This Product'=>'شكرا على وقتك والتفكير في تقديم FeedBack لهذا المنتج.',
+	'Thanks For Your Time And Considration For Providing FeedBack For This Product'=>'شكراً على وقتك',
 	'In Order To Give FeedBack You Have Must Login First. Thanks'=>'من أجل إعطاء FeedBack ، يجب عليك تسجيل الدخول أولاً. شكر.',
 	'You Have Already Given The Comment. Thanks'=>'لقد أعطيت التعليق بالفعل. شكر',
-	'Related Products Text'=>'وريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . ',
+	'Related Products Text'=>'',
 	'Best Sellers'=>'الأفضل مبيعا',
 	'APPLY'=>'تطبيق',
 	'Demo Store 3654123'=>'متجر تجريبي 3654123',
-	'Contact us text'=>'لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-
-أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . يوت انيم أد مينيم فينايم,كيواس نوستريد
-
-أكسير سيتاشن يللأمكو لابورأس نيسي يت أليكيوب أكس أيا كوممودو كونسيكيوات . ديواس
-
-أيوتي أريري دولار إن ريبريهينديرأيت فوليوبتاتي فيلايت أيسسي كايلليوم دولار أيو فيجايت
-
-نيولا باراياتيور. أيكسسيبتيور ساينت أوككايكات كيوبايداتات نون بروايدينت ,سيونت ان كيولبا
-
-كيو أوفيسيا ديسيريونتموليت انيم أيدي ايست لابوريوم.',
+	'Contact us text'=>'',
 	'CONTACT US'=>'اتصل بنا',
 	'ADDRESS'=>'عنوان',
 	'EMAIL ADDRESS'=>'عنوان البريد الالكترونى',
@@ -875,7 +858,7 @@ return [
 	'Order page'=>'صفحة الطلب',
 	'Product Added Successfully'=>'تمت إضافة المنتج بنجاح',
 	'Categroy'=>'الفئة',
-	'Available'=>'متاح',	
+	'Available'=>'متاح',
 	'Please enter your review'=>'يرجى إدخال رأيك.',
 	'Product is ready to compare!'=>'المنتج جاهز للمقارنة!',
 	'Current password is invalid'=>'كلمة المرور الحالية غير صالحة.',
@@ -917,7 +900,7 @@ return [
 	'facebook'=>'موقع التواصل الاجتماعي الفيسبوك',
 	'mailchimp_subscribe'=>'لقد اشتركت بنجاح',
 	'mailchimp_already_subscribe'=>'لقد اشتركت بالفعل',
-	'mailchimp_error'=>'وجه الفتاة! هناك خطأ ما. الرجاء معاودة المحاولة في وقت لاحق.',
+	'mailchimp_error'=>'نرجو المحاولة مرة أخرى',
 
 	'Brands of Categories'	=> 'العلامات التجارية',
 	'Choose Any Brand'		=> 'جميع العلامات التجارية',

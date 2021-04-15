@@ -530,7 +530,7 @@ class ProductsController extends Controller
     {
         $getCat = DB::table('categories')
             ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'categories.categories_id')
-            ->where('categories_name', $request->category)
+            ->where('categories_slug', $request->category)
             ->where('language_id', Session::get('language_id'))
             ->first();
 

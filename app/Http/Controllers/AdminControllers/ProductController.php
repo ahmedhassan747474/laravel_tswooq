@@ -246,11 +246,12 @@ class ProductController extends Controller
             $products_id = $this->products->insert($request);
             $result['data'] = array('products_id' => $products_id, 'language_id' => $language_id);
             $alertSetting = $this->myVaralter->newProductNotification($products_id);
-            if ($request->products_type == 1) {
-                return redirect('/admin/products/attach/attribute/display/' . $products_id);
-            } else {
-                return redirect('admin/products/images/display/' . $products_id);
-            }
+            // if ($request->products_type == 1) {
+            //     return redirect('/admin/products/attach/attribute/display/' . $products_id);
+            // } else {
+            //     return redirect('admin/products/images/display/' . $products_id);
+            // }
+            return redirect('/admin/products/attach/attribute/display/' . $products_id);
         }
     }
 
@@ -270,6 +271,19 @@ class ProductController extends Controller
         $title = array('pageTitle' => Lang::get("labels.ProductInventory"));
         $result = $this->products->ajax_min_max($id);
         return $result;
+
+    }
+
+    public function invoices($id)
+    {
+        $title = array('pageTitle' => Lang::get("labels.ProductInventory"));
+        // $result = $this->products->ajax_min_max($id);
+        // return $result;
+        $invoices = DB::table('supplier_main')
+            ->where('supplier_main.user_supplier_id', $id)
+            ->select('supplier_main_id as id')
+            ->get();
+        return response()->json($invoices);
 
     }
 
@@ -296,6 +310,22 @@ class ProductController extends Controller
 
         $this->products->addnewstock($request);
         return redirect()->back()->withErrors([Lang::get("labels.inventoryaddedsuccessfully")]);
+
+    }
+
+    public function displaysupplier(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.ProductSupplier"));
+        $result = $this->products->displaysupplier();
+        $result['commonContent'] = $this->Setting->commonContent();
+        return view("admin.products.supplier.add", $title)->with('result', $result);
+    }
+
+    public function addnewsupplier(Request $request)
+    {
+
+        $this->products->addnewsupplier($request);
+        return redirect()->back()->withErrors([Lang::get("labels.supplieraddedsuccessfully")]);
 
     }
 
