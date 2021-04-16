@@ -26,6 +26,7 @@
         "php-http/guzzle6-adapter": "^2.0",
         "php-http/message": "^1.8",
         "razorpay/razorpay": "^2.5",
+        "spacemudd/laravel-tap-payments": "^2.0",
         "spatie/db-dumper": "^2.14",
         "vectorcoder/laravel-installer": "dev-master"
     },

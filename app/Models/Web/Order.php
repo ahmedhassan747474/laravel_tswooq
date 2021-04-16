@@ -930,6 +930,20 @@ class Order extends Model
         return $payments_setting;
     }
 
+    public function payments_setting_for_tap()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 9)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 9)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
     public function getCountries($countries_id)
     {
         $countries = DB::table('countries')->where('countries_id', '=', $countries_id)->get();

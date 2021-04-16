@@ -746,6 +746,27 @@ class OrdersController extends Controller
             'payment_method' => $payments_setting['paytm_mid']->payment_method,
         );    
         
+        /**   TAP   **/
+        //////////////////////
+
+        $payments_setting = $this->order->payments_setting_for_tap();
+        if ($payments_setting['api_key']->environment == '0') {
+            $tap_enviroment = 'Test';
+        } else {
+            $tap_enviroment = 'Live';
+        }
+
+        $tap = array(
+            'environment' => $tap_enviroment,
+            'name' => $payments_setting['api_key']->name,
+            'public_key' => $payments_setting['api_key']->value,
+            'active' => $payments_setting['api_key']->status,
+            'payment_currency' => Session::get('currency_code'),
+            'payment_method' => $payments_setting['api_key']->payment_method,
+        );
+
+        /**   END TAP   **/
+        //////////////////////
 
         $result[0] = $braintree;
         $result[1] = $stripe;
@@ -754,6 +775,7 @@ class OrdersController extends Controller
         $result[5] = $hyperpay;
         $result[6] = $razorpay;
         $result[7] = $paytm;
+        $result[8] = $tap;
         return $result;
     }
 

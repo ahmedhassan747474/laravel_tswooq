@@ -527,6 +527,8 @@ jQuery(document).ready(function() {
 
                                                 <button id="stripe_button" class="btn btn-dark payment_btns" style="display: none" data-toggle="modal" data-target="#stripeModel" >@lang('website.Order Now')</button>
 
+                                                <button id="tap_button" class="btn btn-dark payment_btns" style="display: none" data-toggle="modal" data-target="#tapModel" >@lang('website.Order Now')</button>
+
                                                 <button id="cash_on_delivery_button" class="btn btn-dark payment_btns" style="display: none">@lang('website.Order Now')</button>
                                                 <button id="razor_pay_button" class="razorpay-payment-button btn btn-dark payment_btns"  style="display: none"  type="button">@lang('website.Order Now')</button>
                                                 <a href="{{ URL::to('/store_paytm')}}" id="pay_tm_button" class="btn btn-dark payment_btns"  style="display: none"  type="button">@lang('website.Order Now')</a>
@@ -617,59 +619,97 @@ jQuery(document).ready(function() {
                                           </div>
                                        </div>
 
-                                       <!-- The stripe Modal -->
-                                       <div class="modal fade" id="stripeModel">
+                                          <!-- The stripe Modal -->
+                                          <div class="modal fade" id="stripeModel">
                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+
+                                                <main>
+                                                  <div class="container-lg">
+                                                      <div class="cell example example2">
+                                                          <form>
+                                                            <div class="row">
+                                                            <div class="field">
+                                                              <div id="example2-card-number" class="input empty"></div>
+                                                              <label for="example2-card-number" data-tid="elements_examples.form.card_number_label">@lang('website.Card number')</label>
+                                                              <div class="baseline"></div>
+                                                            </div>
+                                                            </div>
+                                                            <div class="row">
+                                                            <div class="field half-width">
+                                                              <div id="example2-card-expiry" class="input empty"></div>
+                                                              <label for="example2-card-expiry" data-tid="elements_examples.form.card_expiry_label">@lang('website.Expiration')</label>
+                                                              <div class="baseline"></div>
+                                                            </div>
+                                                            <div class="field half-width">
+                                                              <div id="example2-card-cvc" class="input empty"></div>
+                                                              <label for="example2-card-cvc" data-tid="elements_examples.form.card_cvc_label">@lang('website.CVC')</label>
+                                                              <div class="baseline"></div>
+                                                            </div>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-dark" data-tid="elements_examples.form.pay_button">@lang('website.Pay') {{$web_setting[19]->value}}{{number_format((float)$total_price+0, 2, '.', '')}}</button>
+
+                                                            <div class="error" role="alert"><svg xmlns="https://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17">
+                                                              <path class="base" fill="#000" d="M8.5,17 C3.80557963,17 0,13.1944204 0,8.5 C0,3.80557963 3.80557963,0 8.5,0 C13.1944204,0 17,3.80557963 17,8.5 C17,13.1944204 13.1944204,17 8.5,17 Z"></path>
+                                                              <path class="glyph" fill="#FFF" d="M8.5,7.29791847 L6.12604076,4.92395924 C5.79409512,4.59201359 5.25590488,4.59201359 4.92395924,4.92395924 C4.59201359,5.25590488 4.59201359,5.79409512 4.92395924,6.12604076 L7.29791847,8.5 L4.92395924,10.8739592 C4.59201359,11.2059049 4.59201359,11.7440951 4.92395924,12.0760408 C5.25590488,12.4079864 5.79409512,12.4079864 6.12604076,12.0760408 L8.5,9.70208153 L10.8739592,12.0760408 C11.2059049,12.4079864 11.7440951,12.4079864 12.0760408,12.0760408 C12.4079864,11.7440951 12.4079864,11.2059049 12.0760408,10.8739592 L9.70208153,8.5 L12.0760408,6.12604076 C12.4079864,5.79409512 12.4079864,5.25590488 12.0760408,4.92395924 C11.7440951,4.59201359 11.2059049,4.59201359 10.8739592,4.92395924 L8.5,7.29791847 L8.5,7.29791847 Z"></path>
+                                                            </svg>
+                                                            <span class="message"></span></div>
+                                                          </form>
+                                                          <div class="success">
+                                                            <div class="icon">
+                                                              <svg width="84px" height="84px" viewBox="0 0 84 84" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink">
+                                                                <circle class="border" cx="42" cy="42" r="40" stroke-linecap="round" stroke-width="4" stroke="#000" fill="none"></circle>
+                                                                <path class="checkmark" stroke-linecap="round" stroke-linejoin="round" d="M23.375 42.5488281 36.8840688 56.0578969 64.891932 28.0500338" stroke-width="4" stroke="#000" fill="none"></path>
+                                                              </svg>
+                                                            </div>
+                                                            <h3 class="title" data-tid="elements_examples.success.title">@lang('website.Payment successful')</h3>
+                                                            <p class="message"><span data-tid="elements_examples.success.message">@lang('website.Thanks You Your payment has been processed successfully')</p>
+                                                          </div>
+
+                                                      </div>
+                                                  </div>
+                                                </main>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <!-- The Tap Modal -->
+                                          <div class="modal fade" id="tapModel">
+                                            <div class="modal-dialog">
                                                <div class="modal-content">
+ 
+                                                 <main>
+                                                   <div class="container-lg">
+                                                       <div class="cell example example2">
+                                                           
+                                                        <form id="form-container" method="post" action="/charge">
+                                                          <!-- Tap element will be here -->
+                                                          <div id="element-container"></div>
+                                                          <div id="error-handler" role="alert"></div>
+                                                          <div id="success" style=" display: none;;position: relative;float: left;">
+                                                                Success! Your token is <span id="token"></span>
+                                                          </div>
+                                                          <!-- Tap pay button -->
+                                                          <button id="tap-btn">Submit</button>
+                                                        </form>
 
-                                               <main>
-                                               <div class="container-lg">
-                                                   <div class="cell example example2">
-                                                       <form>
-                                                         <div class="row">
-                                                           <div class="field">
-                                                             <div id="example2-card-number" class="input empty"></div>
-                                                             <label for="example2-card-number" data-tid="elements_examples.form.card_number_label">@lang('website.Card number')</label>
-                                                             <div class="baseline"></div>
-                                                           </div>
-                                                         </div>
-                                                         <div class="row">
-                                                           <div class="field half-width">
-                                                             <div id="example2-card-expiry" class="input empty"></div>
-                                                             <label for="example2-card-expiry" data-tid="elements_examples.form.card_expiry_label">@lang('website.Expiration')</label>
-                                                             <div class="baseline"></div>
-                                                           </div>
-                                                           <div class="field half-width">
-                                                             <div id="example2-card-cvc" class="input empty"></div>
-                                                             <label for="example2-card-cvc" data-tid="elements_examples.form.card_cvc_label">@lang('website.CVC')</label>
-                                                             <div class="baseline"></div>
-                                                           </div>
-                                                         </div>
-                                                       <button type="submit" class="btn btn-dark" data-tid="elements_examples.form.pay_button">@lang('website.Pay') {{$web_setting[19]->value}}{{number_format((float)$total_price+0, 2, '.', '')}}</button>
-
-                                                         <div class="error" role="alert"><svg xmlns="https://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17">
-                                                             <path class="base" fill="#000" d="M8.5,17 C3.80557963,17 0,13.1944204 0,8.5 C0,3.80557963 3.80557963,0 8.5,0 C13.1944204,0 17,3.80557963 17,8.5 C17,13.1944204 13.1944204,17 8.5,17 Z"></path>
-                                                             <path class="glyph" fill="#FFF" d="M8.5,7.29791847 L6.12604076,4.92395924 C5.79409512,4.59201359 5.25590488,4.59201359 4.92395924,4.92395924 C4.59201359,5.25590488 4.59201359,5.79409512 4.92395924,6.12604076 L7.29791847,8.5 L4.92395924,10.8739592 C4.59201359,11.2059049 4.59201359,11.7440951 4.92395924,12.0760408 C5.25590488,12.4079864 5.79409512,12.4079864 6.12604076,12.0760408 L8.5,9.70208153 L10.8739592,12.0760408 C11.2059049,12.4079864 11.7440951,12.4079864 12.0760408,12.0760408 C12.4079864,11.7440951 12.4079864,11.2059049 12.0760408,10.8739592 L9.70208153,8.5 L12.0760408,6.12604076 C12.4079864,5.79409512 12.4079864,5.25590488 12.0760408,4.92395924 C11.7440951,4.59201359 11.2059049,4.59201359 10.8739592,4.92395924 L8.5,7.29791847 L8.5,7.29791847 Z"></path>
-                                                           </svg>
-                                                           <span class="message"></span></div>
-                                                       </form>
-                                                                   <div class="success">
-                                                                     <div class="icon">
-                                                                       <svg width="84px" height="84px" viewBox="0 0 84 84" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink">
-                                                                         <circle class="border" cx="42" cy="42" r="40" stroke-linecap="round" stroke-width="4" stroke="#000" fill="none"></circle>
-                                                                         <path class="checkmark" stroke-linecap="round" stroke-linejoin="round" d="M23.375 42.5488281 36.8840688 56.0578969 64.891932 28.0500338" stroke-width="4" stroke="#000" fill="none"></path>
-                                                                       </svg>
-                                                                     </div>
-                                                                     <h3 class="title" data-tid="elements_examples.success.title">@lang('website.Payment successful')</h3>
-                                                                     <p class="message"><span data-tid="elements_examples.success.message">@lang('website.Thanks You Your payment has been processed successfully')</p>
-                                                                   </div>
-
-                                                               </div>
-                                                           </div>
-                                                       </main>
+                                                           {{-- <div class="success">
+                                                             <div class="icon">
+                                                               <svg width="84px" height="84px" viewBox="0 0 84 84" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink">
+                                                                 <circle class="border" cx="42" cy="42" r="40" stroke-linecap="round" stroke-width="4" stroke="#000" fill="none"></circle>
+                                                                 <path class="checkmark" stroke-linecap="round" stroke-linejoin="round" d="M23.375 42.5488281 36.8840688 56.0578969 64.891932 28.0500338" stroke-width="4" stroke="#000" fill="none"></path>
+                                                               </svg>
+                                                             </div>
+                                                             <h3 class="title" data-tid="elements_examples.success.title">@lang('website.Payment successful')</h3>
+                                                             <p class="message"><span data-tid="elements_examples.success.message">@lang('website.Thanks You Your payment has been processed successfully')</p>
+                                                           </div> --}}
+ 
+                                                       </div>
                                                    </div>
+                                                 </main>
+                                               </div>
                                              </div>
-                                         </div>
+                                           </div>
 
                                    </div>
 
@@ -814,6 +854,102 @@ jQuery(document).ready(function() {
         width: 345px;
       }
   </style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
+<script src="https://secure.gosell.io/js/sdk/tap.min.js"></script>
+
+<script>
+  //pass your public key from tap's dashboard
+var tap = Tapjsli('pk_test_fILmzM42k3xrQT1UdEVWjK0X');
+
+var elements = tap.elements({});
+
+var style = {
+  base: {
+    color: '#535353',
+    lineHeight: '18px',
+    fontFamily: 'sans-serif',
+    fontSmoothing: 'antialiased',
+    fontSize: '16px',
+    '::placeholder': {
+      color: 'rgba(0, 0, 0, 0.26)',
+      fontSize:'15px'
+    }
+  },
+  invalid: {
+    color: 'red'
+  }
+};
+// input labels/placeholders
+var labels = {
+    cardNumber:"Card Number",
+    expirationDate:"MM/YY",
+    cvv:"CVV",
+    cardHolder:"Card Holder Name"
+  };
+//payment options
+var paymentOptions = {
+  currencyCode:["KWD","USD","SAR"],
+  labels : labels,
+  TextDirection:'ltr'
+}
+//create element, pass style and payment options
+var card = elements.create('card', {style: style},paymentOptions);
+//mount element
+card.mount('#element-container');
+//card change event listener
+card.addEventListener('change', function(event) {
+  if(event.loaded){
+    console.log("UI loaded :"+event.loaded);
+    console.log("current currency is :"+card.getCurrency())
+  }
+  var displayError = document.getElementById('error-handler');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Handle form submission
+var form = document.getElementById('form-container');
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  tap.createToken(card).then(function(result) {
+    console.log(result);
+    if (result.error) {
+      // Inform the user if there was an error
+      var errorElement = document.getElementById('error-handler');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server
+      var errorElement = document.getElementById('success');
+      errorElement.style.display = "block";
+      var tokenElement = document.getElementById('token');
+      tokenElement.textContent = result.id;
+    // tapTokenHandler(token)
+
+    }
+  });
+});
+
+function tapTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('form-container');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'tapToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+</script>
+
+
 <script>
 jQuery(document).on('click', '#cash_on_delivery_button, #banktransfer_button', function(e){
 	jQuery("#update_cart_form").submit();
