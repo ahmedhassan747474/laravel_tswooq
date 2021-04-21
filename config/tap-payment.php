@@ -11,7 +11,7 @@ return [
     |
     */
 
-	"mode" => env( 'TAP_PAYMENT_MODE', "live" ),
+	"mode" => env( 'TAP_PAYMENT_MODE', "test" ),
 
 	/*
     |--------------------------------------------------------------------------

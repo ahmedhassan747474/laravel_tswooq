@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Lang;
 use Session;
+use DB;
 
 //email
 
@@ -319,6 +320,59 @@ class OrdersController extends Controller
         return $clientToken;
 
     }
+    
+    public function checkout_tap_payment(Request $request)
+    {
+        // $url = "https://api.tap.company/v2/charges/%7B" . $request->tap_id . "%7D";
+        $url = "https://api.tap.company/v2/charges/" . $request->tap_id;
+        
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_POSTFIELDS => "{}",
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK"
+            ),
+        ));
+        
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        
+        curl_close($curl);
+        
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            // echo $response;
+            $resultsResponse = json_decode($response);
+            // dd($resultsResponse, $request->tap_id, $url);
+            if($resultsResponse->response->code != "000"){
+                $orderId = DB::table('orders')->where('transaction_id', '=', $resultsResponse->id)->first();
+                // dd($orderId);
+                $deleteOrder = DB::table('orders')->where('orders_id', '=', $orderId->orders_id)->delete();
+                $deleteOrderHistory = DB::table('orders_status_history')->where('orders_id', '=', $orderId->orders_id)->delete();
+                // $productId = DB::table('orders_products')->where('orders_id', '=', $orderId->orders_id)->first();
+                $deleteOrderProduct = DB::table('orders_products')->where('orders_id', '=', $orderId->orders_id)->delete();
+                $deleteOrderInventory = DB::table('inventory')->where('orders_id', '=', $orderId->orders_id)->delete();
+                $deleteOrderBasket = DB::table('customers_basket')->where('customers_id', '=', $orderId->customers_id)->delete();
+                $deleteOrderProductAttr = DB::table('orders_products_attributes')->where('orders_id', '=', $orderId->orders_id)->delete();
+                $deleteOrderInventoryDetail = DB::table('inventory_detail')->where('orders_id', '=', $orderId->orders_id)->delete();
+            }
+        }
+        
+        $curl = curl_init();
+        
+        // return redirect()->route('set_home');
+        $message = Lang::get("website.Payment has been processed successfully");
+        return redirect('/thankyou');
+    }
 
     //place_order
     public function place_order(Request $request)
@@ -327,8 +381,18 @@ class OrdersController extends Controller
         if ($payment_status == 'success') {
             $message = Lang::get("website.Payment has been processed successfully");
             return redirect('/thankyou');
+        } elseif($payment_status == 'failed') {
+            if($request->ajax()){
+                $redirect = redirect()->back()->with('error', Lang::get("website.Error while placing order"));
+                return response()->json(['redirect' => $redirect]);
+            } else {
+                return redirect()->back()->with('error', Lang::get("website.Error while placing order"));
+            }
         } else {
-            return redirect()->back()->with('error', Lang::get("website.Error while placing order"));
+            if($request->ajax()){
+                $redirect = $payment_status;
+                return response()->json(['redirect' => $redirect]);
+            }
         }
     }
 

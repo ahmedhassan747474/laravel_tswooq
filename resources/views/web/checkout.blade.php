@@ -14,7 +14,13 @@ jQuery(document).ready(function() {
 
 </script>
 @endif
-
+<!--<link href="https://www.css-spinners.com/css/spinners.css">-->
+<!--<div id="preloaderbody" class="preloader-body" style="position: fixed;width: 100%;height: 100%;z-index: 99999999;background: white;top: 0;">-->
+<!--    <div class="preloader" style="position: absolute;left: 49.5%;top: 46%;">-->
+<!--        <span class="whirly-loader">Loading&#8230</span>-->
+<!--    </div>-->
+<!--</div>-->
+    
 <div class="container-fuild">
   <nav aria-label="breadcrumb">
       <div class="container">
@@ -677,12 +683,30 @@ jQuery(document).ready(function() {
                                           <div class="modal fade" id="tapModel">
                                             <div class="modal-dialog">
                                                <div class="modal-content">
- 
-                                                 <main>
-                                                   <div class="container-lg">
-                                                       <div class="cell example example2">
+
+                                                <main>
+                                                  <div class="container-lg">
+                                                      <div class="cell example example2">
+                                                        {{-- <form id="checkout" method="post" action="{{ URL::to('/place_order')}}">
+                                                          <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                                                            <!-- Modal Header -->
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">@lang('website.Tap')</h4>
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                              <div id="payment-form">
+                                                                <div id="element-container"></div>
+                                                                <div id="error-handler" role="alert"></div>
+                                                              </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-dark">@lang('website.Pay') {{Session::get('symbol_left')}}{{number_format((float)$total_price+0, 2, '.', '')}}{{Session::get('symbol_right')}}</button>
+                                                            </div>
+                                                        </form> --}}
                                                            
-                                                        <form id="form-container" method="post" action="/charge">
+                                                        <form id="form-container" method="post" action="{{ URL::to('/place_order')}}">
+                                                          {{-- <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" /> --}}
                                                           <!-- Tap element will be here -->
                                                           <div id="element-container"></div>
                                                           <div id="error-handler" role="alert"></div>
@@ -703,10 +727,9 @@ jQuery(document).ready(function() {
                                                              <h3 class="title" data-tid="elements_examples.success.title">@lang('website.Payment successful')</h3>
                                                              <p class="message"><span data-tid="elements_examples.success.message">@lang('website.Thanks You Your payment has been processed successfully')</p>
                                                            </div> --}}
- 
-                                                       </div>
-                                                   </div>
-                                                 </main>
+                                                    </main>
+                                                  </div>
+                                                </div>
                                                </div>
                                              </div>
                                            </div>
@@ -858,95 +881,201 @@ jQuery(document).ready(function() {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
 <script src="https://secure.gosell.io/js/sdk/tap.min.js"></script>
+<script type="text/javascript" src="https://goSellJSLib.b-cdn.net/v1.6.1/js/gosell.js"></script>
 
 <script>
   //pass your public key from tap's dashboard
-var tap = Tapjsli('pk_test_fILmzM42k3xrQT1UdEVWjK0X');
+  var tap = Tapjsli('pk_test_fILmzM42k3xrQT1UdEVWjK0X');
 
-var elements = tap.elements({});
+  var elements = tap.elements({});
 
-var style = {
-  base: {
-    color: '#535353',
-    lineHeight: '18px',
-    fontFamily: 'sans-serif',
-    fontSmoothing: 'antialiased',
-    fontSize: '16px',
-    '::placeholder': {
-      color: 'rgba(0, 0, 0, 0.26)',
-      fontSize:'15px'
+  var style = {
+    base: {
+      color: '#535353',
+      lineHeight: '18px',
+      fontFamily: 'sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: 'rgba(0, 0, 0, 0.26)',
+        fontSize:'15px'
+      }
+    },
+    invalid: {
+      color: 'red'
     }
-  },
-  invalid: {
-    color: 'red'
-  }
-};
-// input labels/placeholders
-var labels = {
-    cardNumber:"Card Number",
-    expirationDate:"MM/YY",
-    cvv:"CVV",
-    cardHolder:"Card Holder Name"
   };
-//payment options
-var paymentOptions = {
-  currencyCode:["KWD","USD","SAR"],
-  labels : labels,
-  TextDirection:'ltr'
-}
-//create element, pass style and payment options
-var card = elements.create('card', {style: style},paymentOptions);
-//mount element
-card.mount('#element-container');
-//card change event listener
-card.addEventListener('change', function(event) {
-  if(event.loaded){
-    console.log("UI loaded :"+event.loaded);
-    console.log("current currency is :"+card.getCurrency())
-  }
-  var displayError = document.getElementById('error-handler');
-  if (event.error) {
-    displayError.textContent = event.error.message;
-  } else {
-    displayError.textContent = '';
-  }
-});
 
-// Handle form submission
-var form = document.getElementById('form-container');
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
+  // var order = {
+  //   amount: 4000,
+  //   currency: "SAR",
+  // }
 
-  tap.createToken(card).then(function(result) {
-    console.log(result);
-    if (result.error) {
-      // Inform the user if there was an error
-      var errorElement = document.getElementById('error-handler');
-      errorElement.textContent = result.error.message;
+  // input labels/placeholders
+  var labels = {
+      cardNumber:"Card Number",
+      expirationDate:"MM/YY",
+      cvv:"CVV",
+      cardHolder:"Card Holder Name"
+    };
+  //payment options
+  var paymentOptions = {
+    currencyCode:["KWD","USD","SAR"],
+    labels : labels,
+    TextDirection:'ltr'
+  }
+  //create element, pass style and payment options
+  var card = elements.create('card', {style: style},paymentOptions);
+  //mount element
+  card.mount('#element-container');
+  //card change event listener
+  card.addEventListener('change', function(event) {
+    if(event.loaded){
+      console.log("UI loaded :"+event.loaded);
+      console.log("current currency is :"+card.getCurrency())
+    }
+    var displayError = document.getElementById('error-handler');
+    if (event.error) {
+      displayError.textContent = event.error.message;
     } else {
-      // Send the token to your server
-      var errorElement = document.getElementById('success');
-      errorElement.style.display = "block";
-      var tokenElement = document.getElementById('token');
-      tokenElement.textContent = result.id;
-    // tapTokenHandler(token)
-
+      displayError.textContent = '';
     }
   });
-});
 
-function tapTokenHandler(token) {
-  // Insert the token ID into the form so it gets submitted to the server
+  // Handle form submission
   var form = document.getElementById('form-container');
-  var hiddenInput = document.createElement('input');
-  hiddenInput.setAttribute('type', 'hidden');
-  hiddenInput.setAttribute('name', 'tapToken');
-  hiddenInput.setAttribute('value', token.id);
-  form.appendChild(hiddenInput);
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    // console.log(card);
+    $('#loader').fadeIn(100);
+    tap.createToken(card).then(function(result) {
+      console.log(result);
+      if (result.error) {
+        // Inform the user if there was an error
+        var errorElement = document.getElementById('error-handler');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server
+        var errorElement = document.getElementById('success');
+        errorElement.style.display = "block";
+        var tokenElement = document.getElementById('token');
+        tokenElement.textContent = result.id;
+        tapTokenHandler(token, result)
 
-  // Submit the form
-  form.submit();
-}
+      }
+    });
+  });
+
+  function tapTokenHandler(token, result) {
+    // Insert the token ID into the form so it gets submitted to the server
+    var form = document.getElementById('form-container');
+    var hiddenInput = document.createElement('input');
+    hiddenInput.setAttribute('type', 'hidden');
+    hiddenInput.setAttribute('name', 'tapToken');
+    hiddenInput.setAttribute('value', token.id);
+    form.appendChild(hiddenInput);
+
+    // Submit the form
+    // form.submit();
+
+    // var data = JSON.stringify({
+    //   "amount": 5000,
+    //   "currency": "SAR",
+    //   "threeDSecure": true,
+    //   "save_card": false,
+    //   "description": "Test Description",
+    //   "statement_descriptor": "Sample",
+    //   "customer": {
+    //     "first_name": "test",
+    //     "middle_name": "test",
+    //     "last_name": "test",
+    //     "email": "test@test.com",
+    //     "phone": {
+    //       "country_code": "965",
+    //       "number": "50000000"
+    //     }
+    //   },
+    //   "source": {
+    //     "id": result.id
+    //   },
+    //   "post": {
+    //     "url": "{{ URL::to('/place_order')}}"
+    //   }
+    // });
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.withCredentials = true;
+
+    // xhr.addEventListener("readystatechange", function () {
+    //   if (this.readyState === this.DONE) {
+    //     console.log(this.responseText);
+    //   }
+    // });
+
+    // xhr.open("POST", "https://api.tap.company/v2/charges");
+    // xhr.setRequestHeader("authorization", "Bearer pk_test_fILmzM42k3xrQT1UdEVWjK0X");
+    // xhr.setRequestHeader("content-type", "application/json");
+    // xhr.setRequestHeader("X-CSRF-TOKEN", jQuery('meta[name="csrf-token"]').attr('content'));
+    
+    // xhr.send(data);
+    
+    // header('Access-Control-Allow-Origin: *');
+    // header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+    // header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
+    
+    // var settings = {
+    //     "async": true,
+    //     "crossDomain": true,
+    //     "url": "https://api.tap.company/v2/authorize",
+    //     "method": "POST",
+    //     "headers": {
+    //         "authorization": "Bearer sk_test_XKokBfNWv6FIYuTMg5sLPjhJ",
+    //         "content-type": "application/json"
+    //     },
+    //     "processData": false,
+    //     "data": data
+    // }
+    
+    // $.ajax(settings).done(function (response) {
+    //     console.log(response);
+    // });
+    
+    // var settings = {
+    //     "async": true,
+    //     "crossDomain": true,
+    //     "url": "https://api.tap.company/v2/charges",
+    //     "method": "POST",
+    //     "headers": {
+    //         "authorization": "Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
+    //         "content-type": "application/x-www-form-urlencoded; charset=UTF-8;application/json",
+    //         // "Access-Control-Allow-Origin" : "*",
+    //         // "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
+    //     },
+    //     "processData": false,
+    //     "data": data
+    // }
+    
+    // $.ajax(settings).done(function (response) {
+    //     console.log(response);
+    // });
+    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '{{route('place_order')}}',
+        data: {'token_id': result.id},
+        success: function(data){
+            // console.log(data);
+            location.href = data.redirect;
+        }
+    });
+  }
 </script>
 
 

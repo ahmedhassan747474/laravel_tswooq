@@ -12,6 +12,7 @@
         "anandsiddharth/laravel-paytm-wallet": "^1.0",
         "baselrabia/paytabs-with-laravel": "^1.1",
         "doctrine/dbal": "^2.10",
+        "essam/laravel-tap-payment": "^0.0.3",
         "fideloper/proxy": "^4.0",
         "folklore/image": "0.3.*",
         "joeyrush/better-migrate-seed": "^0.3.0",

@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lang;
 use Session;
+use Tap\TapPayment\Facade\TapPayment;
+use Essam\TapPayment\Payment;
 
 class Order extends Model
 {
@@ -313,7 +315,7 @@ class Order extends Model
             Session(['paytm' => 'sasa']);
             $payment_status = 'success';
             $order_information = session('paymentResponseData');
-        }else if ($payment_method == 'banktransfer') {
+        } else if ($payment_method == 'banktransfer') {
 
             $method = $this->payments_setting_for_directbank();
             $payment_method_name = $payment_method;
@@ -327,19 +329,205 @@ class Order extends Model
                 'iban' => $method['iban']->value,
                 'swift' => $method['swift']->value,
             );
-        }  else if ($payment_method == 'paystack') {
+        } else if ($payment_method == 'paystack') {
 
             $method = $this->payments_setting_for_paystack();
             $payment_method_name = $payment_method;
             $payment_status = 'success';
             $order_information = session('payment_json');
-        }   else if ($payment_method == 'midtrans') {
+        } else if ($payment_method == 'midtrans') {
 
             $method = $this->payments_setting_for_midtrans();
             $payment_method_name = $payment_method;
             $payment_status = 'success';
             $order_information = json_decode($request->nonce, JSON_UNESCAPED_SLASHES);
-        }      
+        } else if ($payment_method == 'tap') {
+            $payment_method_name = 'tap';
+            $payments_setting = $this->payments_setting_for_tap();
+            // dd(session()->all());
+            // dd($request->all());
+            $arrayToSend = [
+                "amount"            => $order_price,
+                "currency"          => "SAR",
+                "threeDSecure"      => true,
+                "save_card"         => false,
+                // "description"       => "Test Description",
+                // "statement_descriptor"=> "Sample",
+                "customer" => [
+                    "first_name"    => $billing_firstname,
+                    "last_name"     => $billing_lastname,
+                    "email"         => $email,
+                    "phone" => [
+                        "country_code"  => "966",
+                        "number"        => $billing_phone
+                    ]
+                ],
+                "source" => [
+                    "id" => $request->token_id
+                ],
+                "post" => [
+                    "url" => route('place_order')
+                ],
+                "redirect" => [
+                    "url" => route('checkout_tap_payment')
+                ] 
+            ];
+            
+            $json = json_encode($arrayToSend);
+                
+            $curl = curl_init();
+            
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => "https://api.tap.company/v2/charges",
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => $json,
+              CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
+                "content-type: application/json"
+              ),
+            ));
+            
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            
+            curl_close($curl);
+            
+            if ($err) {
+                // echo "cURL Error #:" . $err;
+                $payment_status = 'failed';
+            } else {
+                // echo $response;
+                $resultsResponse = json_decode($response);
+                // dd($resultsResponse->transaction->url);
+                $payment_status = 'success';
+                $transaction_id = $resultsResponse->id;
+                $order_information = $resultsResponse;
+                // dd($order_information->transaction->url);
+            }
+            
+            
+            
+            
+            //get token from app
+            // $token = $request->token;
+
+            // $customer = \Stripe\Customer::create(array(
+            //     'email' => $email,
+            //     'source' => $token,
+            // ));
+
+            // $charge = \Stripe\Charge::create(array(
+            //     'customer' => $customer->id,
+            //     'amount' => 100 * $order_price,
+            //     'currency' => 'usd',
+            // ));
+
+            // $fullnameBilling = $billing_firstname . ' ' . $billing_lastname;
+            // $amountPay = 100 * $order_price;
+            // $secret_api_Key = "pk_test_fILmzM42k3xrQT1UdEVWjK0X";
+            // $TapPay = new Payment(['secret_api_Key'=> $secret_api_Key]);//pk_test_fILmzM42k3xrQT1UdEVWjK0X
+
+            // $TapPay->card([
+            //     'number' => '5123450000000008',
+            //     'exp_month' => 05,
+            //     'exp_year' => 21,
+            //     'cvc' => 100,
+            // ]);
+
+            // dd($TapPay);
+
+            // try {
+            //     $TapPay->charge([
+            //         'amount' => $amountPay,
+            //         'currency' => 'SAR',
+            //         'threeDSecure' => 'true',
+            //         'description' => 'test description',
+            //         'statement_descriptor' => 'sample',
+            //         'customer' => [
+            //             'first_name' => $fullnameBilling,
+            //             'email' => $email,
+            //         ],
+            //         'post' => [
+            //             'url' => null
+            //         ],
+            //         'redirect' => [
+            //             'url' => null
+            //         ]
+            //     ]);
+
+            //     dd($TapPay);
+
+            //     $order_information = array(
+            //         'paid' => 'true',
+            //         'transaction_id' => $TapPay->getId(),
+            //         'type' => $TapPay->outcome->type,
+            //         'balance_transaction' => $TapPay->balance_transaction,
+            //         'status' => $TapPay->status,
+            //         'currency' => $TapPay->currency,
+            //         'amount' => $TapPay->amount,
+            //         'created' => date('d M,Y', $TapPay->created),
+            //         'dispute' => $TapPay->dispute,
+            //         'customer' => $TapPay->customer,
+            //         'address_zip' => $TapPay->source->address_zip,
+            //         'seller_message' => $TapPay->outcome->seller_message,
+            //         'network_status' => $TapPay->outcome->network_status,
+            //         'expirationMonth' => $TapPay->outcome->type,
+            //     );
+
+            //     $payment_status = "success";
+            // } catch( \Exception $exception ) {
+            //     $payment_status = "failed";
+            // }
+
+            // $payment = TapPayment::createCharge();
+            //     $payment->setCustomerName($fullnameBilling);
+            //     $payment->setCustomerPhone("20", $billing_phone);
+            //     $payment->setDescription("Some description");
+            //     $payment->setAmount($amountPay);
+            //     $payment->setCurrency("SAR");
+            //     $payment->setSource("src_all");
+            //     $payment->setRedirectUrl("https://example.com");
+            //     // $payment->setPostUrl("https://example.com"); // if you are using post request to handle payment updates
+            //     // $payment->setMetaData(['package' => json_encode($package)]); // if you want to send metadata
+            //     $invoice = $payment->pay();
+
+            //     dd($invoice);
+            
+            // try {
+                
+                
+            //     if($payment->isSuccess()) {
+            //         $order_information = array(
+            //             'paid' => 'true',
+            //             'transaction_id' => $invoice->getId(),
+            //             'type' => $invoice->outcome->type,
+            //             'balance_transaction' => $charge->balance_transaction,
+            //             'status' => $invoice->status,
+            //             'currency' => $invoice->currency,
+            //             'amount' => $invoice->amount,
+            //             'created' => date('d M,Y', $invoice->created),
+            //             'dispute' => $invoice->dispute,
+            //             'customer' => $invoice->customer,
+            //             'address_zip' => $invoice->source->address_zip,
+            //             'seller_message' => $invoice->outcome->seller_message,
+            //             'network_status' => $invoice->outcome->network_status,
+            //             'expirationMonth' => $invoice->outcome->type,
+            //         );
+
+            //         $payment_status = "success";
+            //     } else {
+            //         $payment_status = "failed";
+            //     }
+                    
+            // } catch( \Exception $exception ) {
+            //     $payment_status = "failed";
+            // }
+        }
 
         if ($payment_method == 'banktransfer') {
             session(['banktransfer' => 'yes']);
@@ -403,7 +591,8 @@ class Order extends Model
                     'billing_phone' => $billing_phone,
                     
                     'delivery_latitude' => $delivery_latitude,
-                    'delivery_longitude' => $delivery_longitude
+                    'delivery_longitude' => $delivery_longitude,
+                    'transaction_id'    => $transaction_id
                 ]);
 
             //orders status history
@@ -437,6 +626,7 @@ class Order extends Model
                     'added_date' => time(),
                     'purchase_price' => 0,
                     'stock_type' => 'out',
+                    'orders_id' => $orders_id,
                 ]);
 
                 if (Session::get('guest_checkout') == 1) {
@@ -465,6 +655,7 @@ class Order extends Model
                             'inventory_ref_id' => $inventory_ref_id,
                             'products_id' => $products->products_id,
                             'attribute_id' => $attribute->products_attributes_id,
+                            'orders_id' => $orders_id,
                         ]);
                     }
                 }
@@ -545,8 +736,14 @@ class Order extends Model
             } else {
                 DB::table('customers_basket')->where('customers_id', auth()->guard('customer')->user()->id)->update(['is_order' => '1']);
             }           
-
-            return $payment_status;
+            
+            if ($payment_method == 'tap'){
+                $resultReturn = $order_information->transaction->url;
+                return $resultReturn;
+            } else {
+                return $payment_status;
+            }
+            
         } else if ($payment_status == "failed") {
             return $payment_status;
         }
@@ -568,7 +765,7 @@ class Order extends Model
         }
         $index = 0;
         $total_price = array();
-
+        // dd($orders);
         foreach ($orders as $orders_data) {
             $orders_products = DB::table('orders_products')
                 ->select('final_price', DB::raw('SUM(final_price) as total_price'))
@@ -581,7 +778,13 @@ class Order extends Model
                 ->LeftJoin('orders_status', 'orders_status.orders_status_id', '=', 'orders_status_history.orders_status_id')
                 ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
                 ->select('orders_status_description.orders_status_name', 'orders_status.orders_status_id')
-                ->where('orders_status.role_id','=',2)->where('orders_id', '=', $orders_data->orders_id)->where('orders_status_description.language_id', session('language_id'))->orderby('orders_status_history.orders_status_history_id', 'DESC')->limit(1)->get();
+                ->where('orders_status.role_id','=',2)
+                ->where('orders_id', '=', $orders_data->orders_id)
+                // ->where('orders_status_description.language_id', session('language_id'))
+                ->orderby('orders_status_history.orders_status_history_id', 'DESC')
+                ->limit(1)->get();
+                
+            // dd($orders_status_history);
 
             $orders[$index]->orders_status_id = $orders_status_history[0]->orders_status_id;
             $orders[$index]->orders_status = $orders_status_history[0]->orders_status_name;
@@ -668,7 +871,8 @@ class Order extends Model
                     ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
                     ->select('orders_status_description.orders_status_name', 'orders_status.orders_status_id')
                     ->where('orders_id', '=', $orders_data->orders_id)
-                    ->where('orders_status.role_id','=',2)->where('orders_status_description.language_id', session('language_id'))
+                    ->where('orders_status.role_id','=',2)
+                    // ->where('orders_status_description.language_id', session('language_id'))
                     ->orderby('orders_status_history.orders_status_history_id', 'DESC')->limit(1)->get();
 
                 $orders[$index]->statusess = $orders_status_history;

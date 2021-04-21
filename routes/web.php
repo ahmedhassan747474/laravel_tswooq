@@ -31,7 +31,7 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 		// route for make payment request using post method
 		Route::post('dopayment', 'RazorpayController@dopayment')->name('dopayment');
 
-		Route::get('/','IndexController@index');
+		Route::get('/','IndexController@index')->name('set_home');
 		Route::post('/change_language', 'WebSettingController@changeLanguage');
 		Route::post('/change_currency', 'WebSettingController@changeCurrency');
 		Route::post('/addToCart', 'CartController@addToCart');
@@ -79,12 +79,13 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 		Route::post('/getquantity', 'ProductsController@getquantity');
 
 		Route::get('/guest_checkout', 'OrdersController@guest_checkout');
-		Route::get('/checkout', 'OrdersController@checkout')->middleware('Customer');
+		Route::get('/checkout', 'OrdersController@checkout')->middleware('Customer')->name('checkout');
 		Route::post('/checkout_shipping_address', 'OrdersController@checkout_shipping_address')->middleware('Customer');
 		Route::post('/checkout_billing_address', 'OrdersController@checkout_billing_address')->middleware('Customer');
 		Route::post('/checkout_payment_method', 'OrdersController@checkout_payment_method')->middleware('Customer');
 		Route::post('/paymentComponent', 'OrdersController@paymentComponent')->middleware('Customer');
-		Route::post('/place_order', 'OrdersController@place_order')->middleware('Customer');
+		Route::get('/checkout_tap_payment', 'OrdersController@checkout_tap_payment')->middleware('Customer')->name('checkout_tap_payment');
+		Route::post('/place_order', 'OrdersController@place_order')->middleware('Customer')->name('place_order');
 		Route::get('/orders', 'OrdersController@orders')->middleware('Customer');
 		Route::post('/updatestatus/', 'OrdersController@updatestatus')->middleware('Customer');
 		Route::post('/myorders', 'OrdersController@myorders')->middleware('Customer');
