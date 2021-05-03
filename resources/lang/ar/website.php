@@ -906,5 +906,7 @@ return [
 	'Choose Any Brand'		=> 'جميع العلامات التجارية',
 	'Choose Any Price'		=> 'كل الاسعار',
 	'manufacturers'			=> 'الصناعات',
-	'Choose Any Category'	=> 'جميع الفئات'
+	'Choose Any Category'	=> 'جميع الفئات',
+	'Bank Account'			=> 'الحساب البنكى',
+	'Bank Account Image'	=> 'صورة الحساب البنكى',
 ];

@@ -119,17 +119,17 @@ jQuery(document).ready(function() {
                         <span style="color:red;" class="help-block error-content" hidden>@lang('website.Please enter your email')</span>
                       </div>
                       <?php } ?>
-                      <div class="form-group">
+                      {{-- <div class="form-group">
                         <label for=""> @lang('website.Company')</label>
                         <input type="text" required class="form-control field-validate" id="company" aria-describedby="companyHelp" placeholder="Enter Your Company Name" name="company" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->company}}@endif">
                         <span style="color:red;" class="help-block error-content" hidden>@lang('website.Please enter your company name')</span>
-                      </div>
+                      </div> --}}
                       <?php if($result['commonContent']['settings']['is_enable_location'] == 1){ ?>
-                      <div class="form-group">
+                      {{-- <div class="form-group">
                         <label for=""> @lang('website.Location')</label>
                         <input type="text" required class="form-control field-validate" data-toggle="modal" data-target="#mapModal" name="location" id="location" aria-describedby="addressHelp" placeholder="@lang('website.Please enter your location or click here to open map')" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->location}}@endif">
                        
-                      </div>
+                      </div> --}}
                       <?php }?>
                       <input type="hidden" name="latitude" id="latitude" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->latitude}}@endif">
                       <input type="hidden" name="longitude" id="longitude" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->longitude}}@endif">
@@ -210,11 +210,11 @@ jQuery(document).ready(function() {
                              <span class="help-block error-content" hidden>@lang('website.Please enter your last name')</span>
                            </div>
 
-                           <div class="form-group">
+                           {{-- <div class="form-group">
                             <label for=""> @lang('website.Company')</label>
                              <input type="text" class="form-control same_address" @if(!empty(session('billing_address'))) @if(session('billing_address')->same_billing_address==1) readonly @endif @else readonly @endif  id="billing_company" name="billing_company" value="@if(!empty(session('billing_address'))){{session('billing_address')->billing_company}}@endif" id="exampleInputCompany1" aria-describedby="companyHelp" placeholder="Enter Your Company Name">
                              <span class="help-block error-content" hidden>@lang('website.Please enter your company name')</span>
-                           </div>
+                           </div> --}}
 
                            <div class="form-group">
                             <label for=""> @lang('website.Address')</label>
@@ -535,6 +535,8 @@ jQuery(document).ready(function() {
 
                                                 <button id="tap_button" class="btn btn-dark payment_btns" style="display: none" data-toggle="modal" data-target="#tapModel" >@lang('website.Order Now')</button>
 
+                                                <button id="bank_account_button" class="btn btn-dark payment_btns" style="display: none" data-toggle="modal" data-target="#bankModel" >@lang('website.Order Now')</button>
+
                                                 <button id="cash_on_delivery_button" class="btn btn-dark payment_btns" style="display: none">@lang('website.Order Now')</button>
                                                 <button id="razor_pay_button" class="razorpay-payment-button btn btn-dark payment_btns"  style="display: none"  type="button">@lang('website.Order Now')</button>
                                                 <a href="{{ URL::to('/store_paytm')}}" id="pay_tm_button" class="btn btn-dark payment_btns"  style="display: none"  type="button">@lang('website.Order Now')</a>
@@ -682,7 +684,7 @@ jQuery(document).ready(function() {
                                           <!-- The Tap Modal -->
                                           <div class="modal fade" id="tapModel">
                                             <div class="modal-dialog">
-                                               <div class="modal-content">
+                                              <div class="modal-content">
 
                                                 <main>
                                                   <div class="container-lg">
@@ -727,9 +729,46 @@ jQuery(document).ready(function() {
                                                              <h3 class="title" data-tid="elements_examples.success.title">@lang('website.Payment successful')</h3>
                                                              <p class="message"><span data-tid="elements_examples.success.message">@lang('website.Thanks You Your payment has been processed successfully')</p>
                                                            </div> --}}
+                                                          </div>
+                                                        </div>
                                                     </main>
-                                                  </div>
-                                                </div>
+                                                  
+                                              </div>
+                                            </div>
+                                          </div>
+
+
+
+                                           <!-- The Bank Modal -->
+                                          <div class="modal fade" id="bankModel">
+                                            <div class="modal-dialog">
+                                               <div class="modal-content">
+                                                  <form id="checkout" method="post" action="{{ URL::to('/place_order')}}" enctype="multipart/form-data">
+                                                    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                                                      <!-- Modal Header -->
+                                                      <div class="modal-header">
+                                                          <h4 class="modal-title">@lang('website.Bank Account')</h4>
+                                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        <div id="payment-form" style="text-align: center;">
+                                                          <img src="{{asset('web/images/miscellaneous/bank_iban.jpeg')}}" width="400px">
+                                                          <hr>
+                                                          <div class="form-group">
+                                                            <label for="exampleFormControlFile1">@lang('website.Bank Account Image')</label>
+                                                            <input type="file" class="form-control-file" name="bank_account_image" id="exampleFormControlFile1" required>
+                                                          </div>
+                                                          <hr>
+                                                          <div class="form-group">
+                                                            <label for="exampleFormControlText1">@lang('website.Bank Account')</label>
+                                                            <input type="text" name="bank_account_iban" class="form-control" id="exampleFormControlText1" required>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                          <button type="submit" class="btn btn-dark">@lang('website.Pay') {{Session::get('symbol_left')}}{{number_format((float)$total_price+0, 2, '.', '')}}{{Session::get('symbol_right')}}</button>
+                                                      </div>
+                                                  </form>
                                                </div>
                                              </div>
                                            </div>

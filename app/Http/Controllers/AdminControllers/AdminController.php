@@ -645,7 +645,7 @@ class AdminController extends Controller
 		
 		$user_types_id = $request->user_types_id;
 
-		dd($request->all());
+		// dd($request->all());
 
 		DB::table('user_types')->where('user_types_id','=', $user_types_id)->delete();
 

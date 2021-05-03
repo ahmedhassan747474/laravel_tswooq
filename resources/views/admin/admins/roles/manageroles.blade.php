@@ -88,7 +88,7 @@
                                     <ul class="dropdown-menu">
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="editadmintype/{{ $adminType->user_types_id }}">{{ trans('labels.editadmintype') }}</a></li>
                                         <li role="presentation" class="divider"></li>
-                                        <li role="presentation"><a data-toggle="tooltip" data-placement="bottom" title="{{ trans('labels.Delete') }}" id="deleteCustomerFrom" customers_id="{{ $adminType->user_types_id }}">{{ trans('labels.Delete') }}</a></li>
+                                        <li role="presentation"><a data-toggle="tooltip" data-placement="bottom" title="{{ trans('labels.Delete') }}" id="deleteCustomerFrom" users_id="{{ $adminType->user_types_id }}">{{ trans('labels.Delete') }}</a></li>
                                     </ul>
                                   </li>
                               </ul>
@@ -129,7 +129,8 @@
 		  </div>
 		  {!! Form::open(array('url' =>'admin/deleteadmintype', 'name'=>'deleteadmintype', 'id'=>'deleteadmintype', 'method'=>'post', 'class' => 'form-horizontal', 'enctype'=>'multipart/form-data')) !!}
 				  {!! Form::hidden('action',  'delete', array('class'=>'form-control')) !!}
-				  {!! Form::hidden('user_types_id',  '', array('class'=>'form-control', 'id'=>'customers_id')) !!}
+				  {{-- {!! Form::hidden('user_types_id',  '', array('class'=>'form-control', 'id'=>'user_id')) !!} --}}
+          <input type="hidden" name="user_types_id" id="users_id" value="">  
 		  <div class="modal-body">
 			  <p>{{ trans('labels.Are you sure you want to delete this admin type') }}</p>
 		  </div>

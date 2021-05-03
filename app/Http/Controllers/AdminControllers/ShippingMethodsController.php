@@ -39,7 +39,12 @@ class ShippingMethodsController extends Controller
         $flate_rate['flate_rate'] = $this->Shipping_method->flateRate();
         $flate_rate['flatrate_description'] = $this->Shipping_method->flateRateDescription();
 
+        //smsaexpress
+        $smsaexpress['smsaexpress'] = $this->Shipping_method->smsaexpress();
+        $smsaexpress['smsaexpress_description'] = $this->Shipping_method->smsaexpressDescription();
+
         $result['flate_rate'] = $flate_rate;
+        $result['smsaexpress'] = $smsaexpress;
         $result['commonContent'] = $this->Setting->commonContent();
         return view("admin.shippingmethods.index", $title)->with('result', $result);
 
@@ -144,6 +149,73 @@ class ShippingMethodsController extends Controller
     {
 
         $this->Shipping_method->updateflaterate($request);
+        $this->Shipping_method->updateShipingMethodStatus($request);
+        $table_name = $request->table_name;
+
+        //get function from other controller
+        $languages = $this->Languages->getter();
+        foreach ($languages as $languages_data) {
+            $name = 'name_' . $languages_data->languages_id;
+            $content = array();
+
+            $checkExist = $this->Shipping_method->CheckExit($table_name, $languages_data);
+            if (count($checkExist) > 0) {
+                $languages_data_id = $languages_data->languages_id;
+                $request_name = $request->$name;
+
+                $this->Shipping_method->shipingDescription($table_name, $languages_data_id, $request_name);
+            } else {
+                $languages_data_id = $languages_data->languages_id;
+                $request_name = $request->$name;
+
+                $this->Shipping_method->insertDescription($request_name, $languages_data_id, $table_name);
+            }
+        }
+        $message = Lang::get("labels.InformationUpdatedMessage");
+        return redirect()->back()->withErrors([$message]);
+
+    }
+
+    public function smsaexpress(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.FlateRate"));
+        $shipping_methods = $this->Shipping_method->shipingMethodsmsaexpress();
+        $result['smsaexpress'] = $shipping_methods;
+
+        $shipping_methods = $this->Shipping_method->shipingMethod4smsaexpress();
+        $result['shipping_methods'] = $shipping_methods;
+
+        //get function from other controller
+
+        $result['languages'] = $this->Languages->getter();
+
+        $description_data = array();
+        foreach ($result['languages'] as $languages_data) {
+
+            $description = $this->Shipping_method->description($languages_data, $shipping_methods);
+
+            if (count($description) > 0) {
+                $description_data[$languages_data->languages_id]['name'] = $description[0]->name;
+                $description_data[$languages_data->languages_id]['language_name'] = $languages_data->name;
+                $description_data[$languages_data->languages_id]['languages_id'] = $languages_data->languages_id;
+            } else {
+                $description_data[$languages_data->languages_id]['name'] = '';
+                $description_data[$languages_data->languages_id]['language_name'] = $languages_data->name;
+                $description_data[$languages_data->languages_id]['languages_id'] = $languages_data->languages_id;
+            }
+        }
+
+        $result['description'] = $description_data;
+        $result['commonContent'] = $this->Setting->commonContent();
+        // dd($result);
+        return view("admin.shippingmethods.smsaexpress", $title)->with('result', $result);
+
+    }
+
+    public function updatesmsaexpress(Request $request)
+    {
+
+        $this->Shipping_method->updatesmsaexpress($request);
         $this->Shipping_method->updateShipingMethodStatus($request);
         $table_name = $request->table_name;
 

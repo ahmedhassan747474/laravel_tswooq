@@ -70,8 +70,17 @@
             <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.link_suppliers') }}</span>
           </a>
         </li>
-      <?php }        
 
+      <?php }
+        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->customers_view == 1){
+      ?>
+        <li class="treeview {{ Request::is('admin/pos/display') ? 'active' : '' }}  {{ Request::is('admin/pos/add') ? 'active' : '' }}  {{ Request::is('admin/pos/edit/*') ? 'active' : '' }} ">
+          <a href="{{ URL::to('admin/pos/display')}}">
+            <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.POS') }}</span>
+          </a>
+        </li>
+
+      <?php }        
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->products_view == 1 or $result['commonContent']['roles']!= null and $result['commonContent']['roles']->categories_view == 1 ){
       ?>
         <li class="treeview {{ Request::is('admin/reviews/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/add') ? 'active' : '' }} {{ Request::is('admin/manufacturers/edit/*') ? 'active' : '' }} {{ Request::is('admin/units') ? 'active' : '' }} {{ Request::is('admin/addunit') ? 'active' : '' }} {{ Request::is('admin/editunit/*') ? 'active' : '' }} {{ Request::is('admin/products/display') ? 'active' : '' }} {{ Request::is('admin/products/add') ? 'active' : '' }} {{ Request::is('admin/products/edit/*') ? 'active' : '' }} {{ Request::is('admin/editattributes/*') ? 'active' : '' }} {{ Request::is('admin/products/attributes/display') ? 'active' : '' }}  {{ Request::is('admin/products/attributes/add') ? 'active' : '' }} {{ Request::is('admin/products/attributes/add/*') ? 'active' : '' }} {{ Request::is('admin/addinventory/*') ? 'active' : '' }} {{ Request::is('admin/addproductimages/*') ? 'active' : '' }} {{ Request::is('admin/categories/display') ? 'active' : '' }} {{ Request::is('admin/categories/add') ? 'active' : '' }} {{ Request::is('admin/categories/edit/*') ? 'active' : '' }} {{ Request::is('admin/categories/filter') ? 'active' : '' }} {{ Request::is('admin/brands/display') ? 'active' : '' }} {{ Request::is('admin/brands/add') ? 'active' : '' }} {{ Request::is('admin/brands/edit/*') ? 'active' : '' }} {{ Request::is('admin/brands/filter') ? 'active' : '' }} {{ Request::is('admin/products/inventory/display') ? 'active' : '' }}">

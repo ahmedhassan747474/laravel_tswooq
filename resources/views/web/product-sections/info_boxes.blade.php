@@ -34,7 +34,7 @@
                       <h3 class="fas fa-life-ring"></h3>
                       <div class="block">
                           <h4 class="title">@lang('website.bannerLabel3')</h4>
-                          <p>@lang('website.hotline')&nbsp;:&nbsp;({{$result['commonContent']['setting'][11]->value}})</p>
+                          <p>@lang('website.hotline')&nbsp;:&nbsp;<phone dir="ltr">({{$result['commonContent']['setting'][11]->value}})</phone></p>
                       </div>
                   </div>
               </div>

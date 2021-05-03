@@ -2476,5 +2476,10 @@ return [
 	'Remaining Price'			=> 'السعر المتبقي',
 	'Invoices'					=> 'الفواتير',
 	'Choose Invoice'			=> 'اختر الفاتورة',
+	'ShopName' 					=> 'اسم المحل',
+	'ShopNameText' 				=> 'الرجاء إدخال اسم المحل.',
+	'POS'						=> 'نقاط البيع',
+	'Order Completed Successfully.'	=> 'اكتمل الطلب بنجاح',
+	'Something went wrong'		=> 'هناك خطأ ما',
 
 ];

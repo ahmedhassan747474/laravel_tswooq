@@ -215,6 +215,16 @@
            		{{ $data['orders_data'][0]->order_information }}
            @endif
           </p>
+
+          @if($data['orders_data'][0]->payment_method == 'Bank Account')
+          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account') }}:</p>
+          <p class="text-muted well well-sm no-shadow" style="text-transform:capitalize">
+            {{$data['orders_data'][0]->bank_account_iban}}
+          </p>
+
+          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account Image') }}:</p>
+          <img src="{{asset('images/bank_account/')}}/{{$data['orders_data'][0]->bank_account_image}}" width="400px">
+          @endif
         </div>
         <!-- /.col -->
         <div class="col-xs-5">

@@ -660,6 +660,15 @@ class OrdersController extends Controller
                 $success['services'][0] = $data2;
                 $result[$mainIndex] = $success;
                 $mainIndex++;
+            } else if ($shipping_methods->methods_type_link == 'smsaexpress' and $shipping_methods->status == '1') {
+                $ups_shipping = $this->order->getUpssmsaexpress();
+                $data2 = array('name' => $shippings_detail[0]->name, 'rate' => $ups_shipping[0]->smsaexpress, 'currencyCode' => $ups_shipping[0]->currency, 'shipping_method' => 'smsaexpress');
+                if (count($ups_shipping) > 0) {
+                    $success = array('success' => '1', 'message' => "Rate is returned.", 'name' => $shippings_detail[0]->name, 'is_default' => $shipping_methods->isDefault);
+                    $success['services'][0] = $data2;
+                    $result[$mainIndex] = $success;
+                    $mainIndex++;
+                }
             }
         }
 
@@ -832,6 +841,28 @@ class OrdersController extends Controller
         /**   END TAP   **/
         //////////////////////
 
+        /**   Bank Account   **/
+        //////////////////////
+
+        $payments_setting = $this->order->payments_setting_for_bank_account();
+        if ($payments_setting['iban']->environment == '0') {
+            $tap_enviroment = 'Test';
+        } else {
+            $tap_enviroment = 'Live';
+        }
+
+        $bank = array(
+            'environment' => $tap_enviroment,
+            'name' => $payments_setting['iban']->name,
+            'public_key' => $payments_setting['iban']->value,
+            'active' => $payments_setting['iban']->status,
+            'payment_currency' => Session::get('currency_code'),
+            'payment_method' => $payments_setting['iban']->payment_method,
+        );
+
+        /**   END TAP   **/
+        //////////////////////
+
         $result[0] = $braintree;
         $result[1] = $stripe;
         $result[2] = $cod;
@@ -840,6 +871,7 @@ class OrdersController extends Controller
         $result[6] = $razorpay;
         $result[7] = $paytm;
         $result[8] = $tap;
+        $result[9] = $bank;
         return $result;
     }
 

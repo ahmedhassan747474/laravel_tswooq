@@ -281,6 +281,20 @@ Route::group(['middleware' => ['installer']], function () {
         Route::post('/delete', 'SuppliersController@delete')->middleware('delete_customer');
     });
 
+    Route::group(['prefix' => 'admin/pos', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/display', 'POSController@display');
+        Route::get('/products', 'PosController@search')->name('pos.search_product');
+        Route::get('/variants', 'PosController@getVarinats')->name('variants');
+        Route::post('/add-to-cart-pos', 'PosController@addToCart')->name('pos.addToCart');
+        Route::post('/update-quantity-cart-pos', 'PosController@updateQuantity')->name('pos.updateQuantity');
+        Route::post('/remove-from-cart-pos', 'PosController@removeFromCart')->name('pos.removeFromCart');
+        Route::post('/get_shipping_address', 'PosController@getShippingAddress')->name('pos.getShippingAddress');
+        Route::post('/get_shipping_address_seller', 'PosController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller');
+        Route::post('/setDiscount', 'PosController@setDiscount')->name('pos.setDiscount');
+        Route::post('/setShipping', 'PosController@setShipping')->name('pos.setShipping');
+        Route::post('/pos-order', 'PosController@order_store')->name('pos.order_place');
+    });
+
     Route::group(['prefix' => 'admin/countries', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/filter', 'CountriesController@filter')->middleware('view_tax');
         Route::get('/display', 'CountriesController@index')->middleware('view_tax');
@@ -332,6 +346,8 @@ Route::group(['middleware' => ['installer']], function () {
         Route::post('/updateupsshipping', 'ShippingMethodsController@updateupsshipping')->middleware('edit_shipping');
         Route::get('/flateRate', 'ShippingMethodsController@flateRate')->middleware('view_shipping');
         Route::post('/updateflaterate', 'ShippingMethodsController@updateflaterate')->middleware('edit_shipping');
+        Route::get('/smsaexpress', 'ShippingMethodsController@smsaexpress')->middleware('view_shipping');
+        Route::post('/updatesmsaexpress', 'ShippingMethodsController@updatesmsaexpress')->middleware('edit_shipping');
         Route::post('/defaultShippingMethod', 'ShippingMethodsController@defaultShippingMethod')->middleware('edit_shipping');
         Route::get('/detail/{table_name}', 'ShippingMethodsController@detail')->middleware('edit_shipping');
         Route::post('/update', 'ShippingMethodsController@update')->middleware('edit_shipping');

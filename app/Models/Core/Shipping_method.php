@@ -40,6 +40,21 @@ class Shipping_method extends Model
 
     }
 
+    public function smsaexpress(){
+        $smsaexpress = DB::table('smsaexpress')->first();
+        return $smsaexpress;
+    }
+
+
+    public function smsaexpressDescription(){
+        $smsaexpress_description = DB::table('shipping_description')->where([
+            ['language_id', '=', '1'],
+            ['table_name', '=', 'smsaexpress']
+        ])->get();
+        return $smsaexpress_description;
+
+    }
+
     public function updateshipingStatus($request,$status){
        $updatestatus =  DB::table('shipping_methods')->where('shipping_methods_id', '=', $request->id)->update([
             'status'		 =>	  $status
@@ -80,11 +95,20 @@ class Shipping_method extends Model
         return $shipping_methods;
     }
 
+    public function shipingMethodsmsaexpress(){
+        $shipping_methods = DB::table('smsaexpress')->where('id', '=', '1')->get();
+        return $shipping_methods;
+    }
+
     public function shipingMethod4(){
         $shipping_methods = DB::table('shipping_methods')->where('shipping_methods_id', '=', '4')->get();
         return $shipping_methods;
     }
 
+    public function shipingMethod4smsaexpress(){
+        $shipping_methods = DB::table('shipping_methods')->where('shipping_methods_id', '=', '6')->get();
+        return $shipping_methods;
+    }
 
     public function updateflaterate($request){
 
@@ -96,6 +120,17 @@ class Shipping_method extends Model
       return $flateRate;
 
     }
+
+    public function updatesmsaexpress($request){
+
+        $smsaexpress =  DB::table('smsaexpress')->where('id', '=', '1')->update([
+              'smsaexpress'  		 =>   $request->smsaexpress,
+              'currency'			 =>	  $request->currency
+          ]);
+  
+        return $smsaexpress;
+  
+      }
 
     public function updateShipingMethodStatus($request){
 

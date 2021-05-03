@@ -54,7 +54,7 @@
                                         </thead>
                                         <tbody>
                                           @foreach($result['methods'] as $method)
-                                            @if($method->payment_methods_id != 10 and $method->payment_methods_id != 11)
+                                            @if($method->payment_methods_id != 11)
                                                 <tr>
                                                     <td>
                                                       {{$method->payment_methods_id}}

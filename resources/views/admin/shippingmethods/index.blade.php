@@ -205,6 +205,33 @@
                                                     <td> <a href="{{ URL::to('admin/shippingmethods/shppingbyweight/')}}" class="badge bg-light-blue">{{ trans('labels.Manage Weight') }}</a>    </td>                              </td>
                                                 @endif
 
+                                                @if($shipping_methods->methods_type_link=='smsaexpress' and $shipping_methods->shipping_methods_id=='6')
+                                                    <td>{{ $result['smsaexpress']['smsaexpress']->currency }}{{ $result['smsaexpress']['smsaexpress']->smsaexpress }} </td>
+                                                    <td>
+                                                        @if($shipping_methods->status==0)
+                                                            <span class="label label-warning">
+                                                            	{{ trans('labels.InActive') }}
+                                                            </span>
+                                                        @else
+                                                            <a href="{{ URL::to("admin/shippingmethods/display")}}?id={{ $shipping_methods->shipping_methods_id}}&active=no" class="method-status">
+                                                                {{ trans('labels.InActive') }}
+                                                            </a>
+                                                        @endif
+                                                        &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+                                                        @if($shipping_methods->status==1)
+                                                            <span class="label label-success">
+                                                            	{{ trans('labels.Active') }}
+                                                            </span>
+                                                        @else
+                                                            <a href="{{ URL::to("admin/shippingmethods/display")}}?id={{ $shipping_methods->shipping_methods_id}}&active=yes" class="method-status">
+                                                                {{ trans('labels.Active') }}
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                    <td><a href="{{ $shipping_methods->methods_type_link }}" class="badge bg-light-blue"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    </td>
+                                                @endif
+
                                             </tr>
                                         @endforeach
                                         </tbody>

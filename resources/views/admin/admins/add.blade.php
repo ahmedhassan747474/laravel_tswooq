@@ -87,6 +87,14 @@
                                    {{ trans('labels.TelephoneText') }}</span>
                                   </div>
                                 </div>
+                                <div class="form-group">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ShopName') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('shop_name',  '', array('class'=>'form-control field-validate', 'id'=>'shop_name')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.ShopNameText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
                             <hr>
                             <h4>{{ trans('labels.AddressInfo') }}</h4>
                             <hr>

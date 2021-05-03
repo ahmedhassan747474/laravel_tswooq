@@ -551,23 +551,24 @@ jQuery(document).ready(function() {
 		    var value_price = jQuery('option:selected', this).attr('value_price');
 		    var prefix = jQuery('option:selected', this).attr('prefix');
 		    var current_price = jQuery('#products_price').val();
+			var fixed_products_price = jQuery('#fixed_products_price').val();
 		    var {{ $attribute_sign }} = jQuery("#{{ $attribute_sign }}").val(prefix);
 
 		    if(old_sign.trim()=='+'){
-		      var current_price = current_price - {{ $functionValue }};
+		      var current_price = fixed_products_price - {{ $functionValue }};
 		    }
 
 		    if(old_sign.trim()=='-'){
-		      var current_price = parseFloat(current_price) + parseFloat({{ $functionValue }});
+		      var current_price = parseFloat(fixed_products_price) + parseFloat({{ $functionValue }});
 		    }
 
 		    if(prefix.trim() == '+' ){
-		      var total_price = parseFloat(current_price) + parseFloat(value_price);
+		      var total_price = parseFloat(fixed_products_price)  + parseFloat(value_price);
 		    }
 		    if(prefix.trim() == '-' ){
-		      total_price = current_price - value_price;
+		      total_price = fixed_products_price - value_price;
 		    }
-
+			console.log('clicked');
 		    jQuery("#{{ $functionValue }}").val(value_price);
 		    jQuery('#products_price').val(total_price);
 		    var qty = jQuery('.qty').val();
@@ -586,7 +587,7 @@ jQuery(document).ready(function() {
 	    var prefix = jQuery('option:selected', this).attr('prefix');
 
 	    if(prefix.trim()=='+'){
-	      products_price = products_price - value_price;
+	      products_price = products_price + value_price;
 	    }
 
 	    if(prefix.trim()=='-'){
@@ -1872,14 +1873,31 @@ function cartPrice(){
 function getQuantity(){
 	var attributeid = [];
 	var i = 0;
+
+	console.log('clicked here');
 	
 	jQuery('.stock-cart').attr('hidden', true);
+
+	var fixed_products_price = jQuery('#fixed_products_price').val();
+	var products_price = jQuery('#products_price').val();
 
 	jQuery(".currentstock").each(function() {
 		var value_price = jQuery('option:selected', this).attr('value_price');
 		var attributes_value = jQuery('option:selected', this).attr('attributes_value');
 		jQuery('#function_' + i).val(value_price);
 		jQuery('#attributeids_' + i++).val(attributes_value);
+		// console.log(value_price, attributes_value);
+		var operation = jQuery('option:selected', this).attr('prefix');
+		var final_price = fixed_products_price;
+		
+		if(operation == '+'){
+			final_price = parseInt(fixed_products_price) + parseInt(value_price);
+		} else {
+			final_price = parseInt(fixed_products_price) - parseInt(value_price);
+		}
+		console.log(final_price);
+		jQuery('#products_price').val(fixed_products_price);
+		jQuery('.total_price').html('<?=Session::get('symbol_left')?>'+final_price.toFixed(2)+'<?=Session::get('symbol_right')?>');
 	});
 
 	var formData = jQuery('#add-Product-form').serialize();
@@ -1929,7 +1947,7 @@ function getQuantity(){
 					jQuery('.qty').attr('max',res.remainingStock);
 				}
 
-        jQuery('.variable-stock').text("@lang('website.In stock')");
+        		jQuery('.variable-stock').text("@lang('website.In stock')");
 			}else{
 				jQuery('#min_max_setting').html("");
 				jQuery('.stock-out-cart').removeAttr('hidden');
@@ -1938,7 +1956,7 @@ function getQuantity(){
 				// jQuery('.qty').attr('value',0);
 				//jQuery('.total_price').html('<?=Session::get('symbol_left')?>'+0+'<?=Session::get('symbol_right')?>');
 				document.getElementById("myCheck").click();
-        jQuery('.variable-stock').text("@lang('website.Out of Stock')");
+        		jQuery('.variable-stock').text("@lang('website.Out of Stock')");
         
 			}
 

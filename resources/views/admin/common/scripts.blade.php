@@ -1473,6 +1473,7 @@ $(document).on('click', '#updateAddress', function(e){
 	//deleteCustomerModal
 	$(document).on('click', '#deleteCustomerFrom', function(){
 		var users_id = $(this).attr('users_id');
+		console.log(users_id);
 		$('#users_id').val(users_id);
 		$("#deleteCustomerModal").modal('show');
 	});
@@ -2908,3 +2909,5 @@ function myFunction() {
 
 
 </script>
+
+@yield('script')

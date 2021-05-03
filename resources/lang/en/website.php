@@ -908,6 +908,8 @@ return [
 	'Choose Any Brand'		=> 'All Brands',
 	'Choose Any Price'		=> 'All Prices',
 	'manufacturers'			=> 'Manufacturers',
+	'Bank Account'			=> 'Bank Account',
+	'Bank Account Image'	=> 'Bank Account Image',
 	
 	
 ];

@@ -15,6 +15,10 @@ use Lang;
 use Session;
 use Tap\TapPayment\Facade\TapPayment;
 use Essam\TapPayment\Payment;
+use \Alhoqbani\SmsaWebService\Smsa;
+use \Alhoqbani\SmsaWebService\Models\Shipment;
+use \Alhoqbani\SmsaWebService\Models\Customer;
+use \Alhoqbani\SmsaWebService\Models\Shipper;
 
 class Order extends Model
 {
@@ -22,6 +26,8 @@ class Order extends Model
     //place_order
     public function place_order($request)
     {
+
+        // dd($request->all(), session()->all());
         $cart = new Cart();
         $result = array();
         $cart_items = $cart->myCart($result);
@@ -72,7 +78,7 @@ class Order extends Model
             $customers_id = auth()->guard('customer')->user()->id;
             $email = auth()->guard('customer')->user()->email;
         }
-        $delivery_company = session('shipping_address')->company;
+        // $delivery_company = session('shipping_address')->company;
         $delivery_firstname = session('shipping_address')->firstname;
 
         $delivery_lastname = session('shipping_address')->lastname;
@@ -151,6 +157,111 @@ class Order extends Model
 
         $shipping_cost = session('shipping_detail')->shipping_price;
         $shipping_method = session('shipping_detail')->shipping_method;
+
+        // ini_set("soap.wsdl_cache_enabled", 0);
+
+        if($shipping_method == "smsaexpress") {
+            // $passKey = "10001000";
+            // $smsa = new Smsa($passKey);
+            // // dd($smsa);
+            // // $result = $smsa->status('10001000');
+            // // dd($smsa->data);
+            // // Create a customer
+            // $customer = new Customer(
+            //     'Customer Name', //customer name
+            //     '0500000000', // mobile number. must be > 9 digits
+            //     '10 King Fahad Road', // street address
+            //     'Jeddah' // city
+            // );
+
+            // $shipment = new Shipment(
+            //     time(), // Refrence number
+            //     $customer, // Customer object
+            //     Shipment::TYPE_DLV // Shipment type.
+            // );
+
+            // $awb = $smsa->createShipment($shipment);
+
+            // dd($awb->data);
+
+            // $result = $smsa->cancel('AWB NUMBER')
+            // var_dump($result->jsonSerialize())
+
+            $passKey = "10001000";
+            $refno = 'refno1000';
+            $arrayToSendShip = [
+                "passkey"       => $passKey,
+                "refno"         => $refno,
+                "sentDate"      => time(),
+                "idNo"          => $customers_id,
+                "cName"         => $delivery_firstname . ' ' . $delivery_lastname,
+                "cntry"         => $delivery_country,
+                "cCity"         => $delivery_city,
+                "cZip"          => $delivery_postcode,
+                // "cPOBox"        => "string",
+                "cMobile"       => $delivery_phone,
+                // "cTel1"         => "string",
+                // "cTel2"         => "string",
+                "cAddr1"        => $delivery_street_address,
+                // "cAddr2"        => "string",
+                // "shipType"      => "string",
+                // "PCs"           => "string",
+                "cEmail"        => $email,
+                "carrValue"     => $order_price,
+                "carrCurr"      => "SAR",
+                // "codAmt"        => "string",
+                // "weight"        => "string",
+                // "itemDesc"      => "string",
+                // "custVal"       => "string",
+                // "custCurr"      => "string",
+                // "insrAmt"       => "string",
+                // "insrCurr"      => "string",
+                // "sName"         => "string",
+                // "sContact"      => "string",
+                // "sAddr1"        => "string",
+                // "sAddr2"        => "string",
+                // "sCity"         => "string",
+                // "sPhone"        => "string",
+                // "sCntry"        => "string",
+                // "prefDelvDate"  => "string",
+                "gpsPoints"     => $delivery_latitude . ',' . $delivery_longitude
+            ];
+            
+            $json = json_encode($arrayToSendShip);
+                
+            $curl = curl_init();
+            
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://track.smsaexpress.com/SecomRestWebApi/api/addship",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $json,
+                CURLOPT_HTTPHEADER => array(
+                    // "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
+                    "content-type: application/json"
+                ),
+            ));
+            
+            $responseShip = curl_exec($curl);
+            $err = curl_error($curl);
+            
+            curl_close($curl);
+            
+            if ($err) {
+                // echo "cURL Error #:" . $err;
+                dd($err);
+                $shipment_status = 'failed';
+            } else {
+                // echo $response;
+                $resultsResponseShip = json_decode($responseShip);
+                $shipment_status = 'success';
+            }
+
+        }
         //dd($shipping_method);
         $orders_status = '1';
         //$orders_date_finished                =   $request->orders_date_finished;
@@ -191,6 +302,10 @@ class Order extends Model
         }
 
         //payment methods
+
+        $transaction_id = null;
+        $bank_account_image = null;
+        $bank_account_iban = null;
 
         if ($payment_method == 'braintree') {
             $payment_method_name = 'Braintree';
@@ -527,6 +642,24 @@ class Order extends Model
             // } catch( \Exception $exception ) {
             //     $payment_status = "failed";
             // }
+        } else if ($payment_method == 'bank_account') {
+            $payment_method_name = 'Bank Account';
+            $payments_setting = $this->payments_setting_for_bank_account();
+
+            if($request->bank_account_image){
+                $file = $request->bank_account_image;
+                $ext = $file->getClientOriginalExtension();
+                $imageName = time() . uniqid() . '.' . $ext;
+                $file->move(public_path('images/bank_account'), $imageName);
+                $bank_account_image = $imageName;
+            }
+            
+            $bank_account_iban = $request->bank_account_iban;
+            $payment_status = 'success';
+        }
+
+        if ($shipment_status == "failed") {
+            return $shipment_status;
         }
 
         if ($payment_method == 'banktransfer') {
@@ -538,86 +671,87 @@ class Order extends Model
         //check if order is verified
         if ($payment_status == 'success') {            
 
-            $orders_id = DB::table('orders')->insertGetId(
-                ['customers_id' => $customers_id,
-                    'customers_name' => $delivery_firstname . ' ' . $delivery_lastname,
-                    'customers_street_address' => $delivery_street_address,
-                    'customers_suburb' => $delivery_suburb,
-                    'customers_city' => $delivery_city,
-                    'customers_postcode' => $delivery_postcode,
-                    'customers_state' => $delivery_state,
-                    'customers_country' => $delivery_country,
-                    //'customers_telephone' => $customers_telephone,
-                    'email' => $email,
-                    // 'customers_address_format_id' => $delivery_address_format_id,
+            $orders_id = DB::table('orders')->insertGetId([
+                'customers_id' => $customers_id,
+                'customers_name' => $delivery_firstname . ' ' . $delivery_lastname,
+                'customers_street_address' => $delivery_street_address,
+                'customers_suburb' => $delivery_suburb,
+                'customers_city' => $delivery_city,
+                'customers_postcode' => $delivery_postcode,
+                'customers_state' => $delivery_state,
+                'customers_country' => $delivery_country,
+                //'customers_telephone' => $customers_telephone,
+                'email' => $email,
+                // 'customers_address_format_id' => $delivery_address_format_id,
 
-                    'delivery_name' => $delivery_firstname . ' ' . $delivery_lastname,
-                    'delivery_street_address' => $delivery_street_address,
-                    'delivery_suburb' => $delivery_suburb,
-                    'delivery_city' => $delivery_city,
-                    'delivery_postcode' => $delivery_postcode,
-                    'delivery_state' => $delivery_state,
-                    'delivery_country' => $delivery_country,
-                    // 'delivery_address_format_id' => $delivery_address_format_id,
+                'delivery_name' => $delivery_firstname . ' ' . $delivery_lastname,
+                'delivery_street_address' => $delivery_street_address,
+                'delivery_suburb' => $delivery_suburb,
+                'delivery_city' => $delivery_city,
+                'delivery_postcode' => $delivery_postcode,
+                'delivery_state' => $delivery_state,
+                'delivery_country' => $delivery_country,
+                // 'delivery_address_format_id' => $delivery_address_format_id,
 
-                    'billing_name' => $billing_firstname . ' ' . $billing_lastname,
-                    'billing_street_address' => $billing_street_address,
-                    'billing_suburb' => $billing_suburb,
-                    'billing_city' => $billing_city,
-                    'billing_postcode' => $billing_postcode,
-                    'billing_state' => $billing_state,
-                    'billing_country' => $billing_country,
-                    //'billing_address_format_id' => $billing_address_format_id,
+                'billing_name' => $billing_firstname . ' ' . $billing_lastname,
+                'billing_street_address' => $billing_street_address,
+                'billing_suburb' => $billing_suburb,
+                'billing_city' => $billing_city,
+                'billing_postcode' => $billing_postcode,
+                'billing_state' => $billing_state,
+                'billing_country' => $billing_country,
+                //'billing_address_format_id' => $billing_address_format_id,
 
-                    'payment_method' => $payment_method_name,
-                    'cc_type' => $cc_type,
-                    'cc_owner' => $cc_owner,
-                    'cc_number' => $cc_number,
-                    'cc_expires' => $cc_expires,
-                    'last_modified' => $last_modified,
-                    'date_purchased' => $date_purchased,
-                    'order_price' => $order_price,
-                    'shipping_cost' => $shipping_cost,
-                    'shipping_method' => $shipping_method,
-                    // 'orders_status' => $orders_status,
-                    //'orders_date_finished'  => $orders_date_finished,
-                    'currency' => $currency,
-                    'order_information' => json_encode($order_information),
-                    'coupon_code' => $code,
-                    'coupon_amount' => $coupon_amount,
-                    'total_tax' => $total_tax,
-                    'ordered_source' => '1',
-                    'delivery_phone' => $delivery_phone,
-                    'billing_phone' => $billing_phone,
-                    
-                    'delivery_latitude' => $delivery_latitude,
-                    'delivery_longitude' => $delivery_longitude,
-                    'transaction_id'    => $transaction_id
-                ]);
+                'payment_method' => $payment_method_name,
+                'cc_type' => $cc_type,
+                'cc_owner' => $cc_owner,
+                'cc_number' => $cc_number,
+                'cc_expires' => $cc_expires,
+                'last_modified' => $last_modified,
+                'date_purchased' => $date_purchased,
+                'order_price' => $order_price,
+                'shipping_cost' => $shipping_cost,
+                'shipping_method' => $shipping_method,
+                // 'orders_status' => $orders_status,
+                //'orders_date_finished'  => $orders_date_finished,
+                'currency' => $currency,
+                'order_information' => json_encode($order_information),
+                'coupon_code' => $code,
+                'coupon_amount' => $coupon_amount,
+                'total_tax' => $total_tax,
+                'ordered_source' => '1',
+                'delivery_phone' => $delivery_phone,
+                'billing_phone' => $billing_phone,
+                
+                'delivery_latitude' => $delivery_latitude,
+                'delivery_longitude' => $delivery_longitude,
+                'transaction_id'    => $transaction_id,
+                'bank_account_image' => $bank_account_image,
+                'bank_account_iban' => $bank_account_iban
+            ]);
 
             //orders status history
-            $orders_history_id = DB::table('orders_status_history')->insertGetId(
-                ['orders_id' => $orders_id,
-                    'orders_status_id' => $orders_status,
-                    'date_added' => $date_added,
-                    'customer_notified' => '1',
-                    'comments' => $comments,
-                ]);
+            $orders_history_id = DB::table('orders_status_history')->insertGetId([
+                'orders_id' => $orders_id,
+                'orders_status_id' => $orders_status,
+                'date_added' => $date_added,
+                'customer_notified' => '1',
+                'comments' => $comments,
+            ]);
                 
             foreach ($cart_items as $products) {
                 //get products info
 
                 DB::table('products')->where('products_id', $products->products_id)->increment('products_ordered', 1);
-                $orders_products_id = DB::table('orders_products')->insertGetId(
-                    [
-                        'orders_id' => $orders_id,
-                        'products_id' => $products->products_id,
-                        'products_name' => $products->products_name,
-                        'products_price' => $products->price,
-                        'final_price' => $products->final_price * $products->customers_basket_quantity,
-                        'products_tax' => $products_tax,
-                        'products_quantity' => $products->customers_basket_quantity,
-                    ]);
+                $orders_products_id = DB::table('orders_products')->insertGetId([
+                    'orders_id' => $orders_id,
+                    'products_id' => $products->products_id,
+                    'products_name' => $products->products_name,
+                    'products_price' => $products->price,
+                    'final_price' => $products->final_price * $products->customers_basket_quantity,
+                    'products_tax' => $products_tax,
+                    'products_quantity' => $products->customers_basket_quantity,
+                ]);
                 $inventory_ref_id = DB::table('inventory')->insertGetId([
                     'products_id' => $products->products_id,
                     'reference_code' => '',
@@ -640,16 +774,15 @@ class Order extends Model
                 if (!empty($products->attributes) and count($products->attributes)>0) {
 
                     foreach ($products->attributes as $attribute) {
-                        DB::table('orders_products_attributes')->insert(
-                            [
-                                'orders_id' => $orders_id,
-                                'products_id' => $products->products_id,
-                                'orders_products_id' => $orders_products_id,
-                                'products_options' => $attribute->attribute_name,
-                                'products_options_values' => $attribute->attribute_value,
-                                'options_values_price' => $attribute->values_price,
-                                'price_prefix' => $attribute->prefix,
-                            ]);
+                        DB::table('orders_products_attributes')->insert([
+                            'orders_id' => $orders_id,
+                            'products_id' => $products->products_id,
+                            'orders_products_id' => $orders_products_id,
+                            'products_options' => $attribute->attribute_name,
+                            'products_options_values' => $attribute->attribute_value,
+                            'options_values_price' => $attribute->values_price,
+                            'price_prefix' => $attribute->prefix,
+                        ]);
 
                         DB::table('inventory_detail')->insert([
                             'inventory_ref_id' => $inventory_ref_id,
@@ -1148,6 +1281,20 @@ class Order extends Model
         return $payments_setting;
     }
 
+    public function payments_setting_for_bank_account()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 10)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 10)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
     public function getCountries($countries_id)
     {
         $countries = DB::table('countries')->where('countries_id', '=', $countries_id)->get();
@@ -1182,6 +1329,12 @@ class Order extends Model
     public function getUpsShippingRate()
     {
         $ups_shipping = DB::table('flate_rate')->where('id', '=', '1')->get();
+        return $ups_shipping;
+    }
+
+    public function getUpssmsaexpress()
+    {
+        $ups_shipping = DB::table('smsaexpress')->where('id', '=', '1')->get();
         return $ups_shipping;
     }
 

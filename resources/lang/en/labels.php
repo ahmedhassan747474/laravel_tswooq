@@ -2475,5 +2475,8 @@ return [
 	'Remaining Price'			=> 'Remaining Price',
 	'Invoices'					=> 'Invoices',
 	'Choose Invoice'			=> 'Choose Invoice',
+	'POS'						=> 'POS',
+	'Order Completed Successfully.'	=> 'Order Completed Successfully.',
+	'Something went wrong'		=> 'Something went wrong',
 
 ];

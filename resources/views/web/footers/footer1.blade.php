@@ -98,15 +98,13 @@
         </div>
       <div class="col-12 col-lg-4">
           <div class="single-footer">
-              <h5>                  
-                  @lang('website.Instagram Feed')
-              </h5>
+              <img width="200px" src="{{asset('web/images/miscellaneous/tap.png')}}">
           </div>
           <div class="row">
           <div class="col-12">
-        <div class="instagram-content" id="instagram-feed">       
+        {{-- <div class="instagram-content" id="instagram-feed">       
           
-              </div>
+              </div> --}}
           </div>
 
       
