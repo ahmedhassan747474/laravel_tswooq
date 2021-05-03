@@ -105,7 +105,7 @@ class POSController extends Controller
         if (!empty($request->limit)) {
             $limit = $request->limit;
         } else {
-            $limit = 1;
+            $limit = 10;
         }
 
         if (!empty($request->type)) {
