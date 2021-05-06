@@ -233,7 +233,7 @@ class POSController extends Controller
 
     public function products($data)
     {
-
+        $language_id = 1;
         if (empty($data['page_number']) or $data['page_number'] == 0) {
             $skip = $data['page_number'] . '0';
         } else {
@@ -562,13 +562,13 @@ class POSController extends Controller
             $categories->where('products.is_feature', '=', 1);
         }
         
-        $categories->where('products_description.language_id', '=', Session::get('language_id'))->where('products_status', '=', 1);
+        $categories->where('products_description.language_id', '=', $language_id)->where('products_status', '=', 1);
 
         //get single category products
         if (!empty($data['categories_id'])) {
             $categories->where('products_to_categories.categories_id', '=', $data['categories_id']);
             $categories->where('categories.categories_status', '=', 1);
-            $categories->where('categories_description.language_id', '=', Session::get('language_id'));
+            $categories->where('categories_description.language_id', '=', $language_id);
         }else{
             $categories->LeftJoin('products_to_categories', 'products.products_id', '=', 'products_to_categories.products_id');
             $categories->whereIn('products_to_categories.categories_id', function ($query) use ($currentDate) {
@@ -583,7 +583,14 @@ class POSController extends Controller
             $categories->where('products.products_liked', '>', 0);
         }
 
+        if(auth()->user()->role_id == 11) {
+            $categories->where('products.admin_id', '=', auth()->user()->id);
+        } elseif(auth()->user()->role_id == 12) {
+            $categories->where('products.admin_id', '=', auth()->user()->parent_admin_id);
+        }
+
         $categories->orderBy($sortby, $order)->groupBy('products.products_id');
+        $categories->where('products.is_show_admin', '=', '1');
         
         //count
         $total_record = $categories->get();
@@ -768,7 +775,7 @@ class POSController extends Controller
                     ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
                     ->select('categories.categories_id', 'categories_description.categories_name', 'categories.categories_image', 'categories.categories_icon', 'categories.parent_id', 'categories.categories_slug', 'categories.categories_status')
                     ->where('products_id', '=', $products_id)
-                    ->where('categories_description.language_id', '=', Session::get('language_id'))
+                    ->where('categories_description.language_id', '=', $language_id)
                     ->where('categories.categories_status', 1)
                     ->orderby('parent_id', 'ASC')->get();
                 
@@ -808,7 +815,7 @@ class POSController extends Controller
                     foreach ($products_attribute as $attribute_data) {
 
                         $option_name = DB::table('products_options')
-                            ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', Session::get('language_id'))->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+                            ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
 
                         if (count($option_name) > 0) {
 
@@ -823,7 +830,7 @@ class POSController extends Controller
                             $k = 0;
                             foreach ($attributes_value_query as $products_option_value) {
 
-                                $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', Session::get('language_id'))->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
+                                $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
 
                                 $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
 
@@ -1374,10 +1381,11 @@ class POSController extends Controller
 
                 foreach (Session::get('posCart') as $key => $cartItem){
                     // $product = Product::find($cartItem['id']);
+                    
                     $product = DB::table('products')
                         ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                         ->where('products.products_id', $cartItem['id'])
-                        ->where('language_id', 2)
+                        ->where('language_id', 1)
                         ->first();
                     $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
                     $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
@@ -1404,7 +1412,9 @@ class POSController extends Controller
                     else {
                         if ($cartItem['quantity'] > $current_stock) {
                             // $order->delete();
-                            return 0;
+                            // return 0;
+                            $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");
+                            return response()->json($responseData);
                         }
                         // else {
                         //     // $product->current_stock -= $cartItem['quantity'];

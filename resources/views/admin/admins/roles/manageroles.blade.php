@@ -87,8 +87,10 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li role="presentation"><a role="menuitem" tabindex="-1" href="editadmintype/{{ $adminType->user_types_id }}">{{ trans('labels.editadmintype') }}</a></li>
+                                        @if($adminType->user_types_id != 11 && $adminType->user_types_id != 12)
                                         <li role="presentation" class="divider"></li>
                                         <li role="presentation"><a data-toggle="tooltip" data-placement="bottom" title="{{ trans('labels.Delete') }}" id="deleteCustomerFrom" users_id="{{ $adminType->user_types_id }}">{{ trans('labels.Delete') }}</a></li>
+                                        @endif
                                     </ul>
                                   </li>
                               </ul>

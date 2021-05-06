@@ -572,6 +572,7 @@ class Products extends Model
         }
         
         $categories->where('products_description.language_id', '=', Session::get('language_id'))->where('products_status', '=', 1);
+        $categories->where('products.is_show_web', '=', '1');
 
         //get single category products
         if (!empty($data['categories_id'])) {
@@ -1243,6 +1244,7 @@ class Products extends Model
             $product->select('products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price');
         }
         $product->where('products_description.language_id', '=', Session::get('language_id'));
+        $product->where('products.is_show_web', '=', '1');
 
         if (isset($categories_id) and !empty($categories_id)) {
             $product->where('products_to_categories.categories_id', '=', $categories_id);

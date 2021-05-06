@@ -161,7 +161,17 @@ class Kernel extends HttpKernel
 
         'view_finance' => \App\Http\Middleware\finance\view_finance::class,
         
+        'view_supplier' => \App\Http\Middleware\supplier\view_supplier::class,
+        'edit_supplier' => \App\Http\Middleware\supplier\edit_supplier::class,
+        'delete_supplier' => \App\Http\Middleware\supplier\delete_supplier::class,
+        'add_supplier' => \App\Http\Middleware\supplier\add_supplier::class,
 
+        'view_pos' => \App\Http\Middleware\pos\view_pos::class,
+        'edit_pos' => \App\Http\Middleware\pos\edit_pos::class,
+        'delete_pos' => \App\Http\Middleware\pos\delete_pos::class,
+        'add_pos' => \App\Http\Middleware\pos\add_pos::class,
+
+        'back_language' => \App\Http\Middleware\BackLanguage::class,
 
     ];
 

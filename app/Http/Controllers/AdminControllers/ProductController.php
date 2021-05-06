@@ -137,6 +137,7 @@ class ProductController extends Controller
         $result['languages'] = $this->myVarsetting->getLanguages();
         $result['units'] = $this->myVarsetting->getUnits();
         $result['commonContent'] = $this->Setting->commonContent();
+        $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
         return view("admin.products.add", $title)->with('result', $result)->with('allimage', $allimage);
 
     }
@@ -202,6 +203,7 @@ class ProductController extends Controller
         $result['categories'] = $option;
         $title = array('pageTitle' => Lang::get("labels.EditProduct"));
         $result['commonContent'] = $this->Setting->commonContent();
+        $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
         return view("admin.products.edit", $title)->with('result', $result)->with('allimage', $allimage);
 
     }

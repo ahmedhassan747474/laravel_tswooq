@@ -67,6 +67,12 @@ class Products extends Model
         'categories_description.categories_name')
             ->where('products_description.language_id', '=', $language_id)
             ->where('categories_description.language_id', '=', $language_id);
+        
+        if(auth()->user()->role_id == 11) {
+            $data->where('admin_id', '=', auth()->user()->id);
+        } elseif(auth()->user()->role_id == 12) {
+            $data->where('admin_id', '=', auth()->user()->parent_admin_id);
+        }
 
         if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
             if (!empty(session('categories_id'))) {
@@ -207,7 +213,11 @@ class Products extends Model
         'products_min_order' => $request->products_min_order,
         'products_max_stock' => $request->products_max_stock,
         'products_video_link' => $request->products_video_link,
-        'is_current'         => 1
+        'is_current'         => 1,
+        'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
+        'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
+        'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
+        'admin_id'          => $request->admin_id
     ]);
 
     $slug_flag = false;
@@ -545,25 +555,28 @@ class Products extends Model
           }
 
           DB::table('products')->where('products_id', '=', $products_id)->update([
-              'products_image' => $uploadImage,
-              'manufacturers_id' => $request->manufacturers_id,
-              'products_quantity' => 0,
-              'products_model' => $request->products_model,
-              'products_price' => $request->products_price,
-              'price_buy' => $request->price_buy,
-              'updated_at' => $products_last_modified,
-              'products_weight' => $request->products_weight,
-              'products_status' => $request->products_status,
-              'products_tax_class_id' => $request->tax_class_id,
-              'products_weight_unit' => $request->products_weight_unit,
-              'low_limit' => 0,
-              'products_slug' => $slug,
-              'products_type' => 0,
-              'is_feature' => $request->is_feature,
-              'products_min_order' => $request->products_min_order,
-              'products_max_stock' => $request->products_max_stock,
-              'products_video_link' => $request->products_video_link,
-
+                'products_image' => $uploadImage,
+                'manufacturers_id' => $request->manufacturers_id,
+                'products_quantity' => 0,
+                'products_model' => $request->products_model,
+                'products_price' => $request->products_price,
+                'price_buy' => $request->price_buy,
+                'updated_at' => $products_last_modified,
+                'products_weight' => $request->products_weight,
+                'products_status' => $request->products_status,
+                'products_tax_class_id' => $request->tax_class_id,
+                'products_weight_unit' => $request->products_weight_unit,
+                'low_limit' => 0,
+                'products_slug' => $slug,
+                'products_type' => 0,
+                'is_feature' => $request->is_feature,
+                'products_min_order' => $request->products_min_order,
+                'products_max_stock' => $request->products_max_stock,
+                'products_video_link' => $request->products_video_link,
+                'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
+                'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
+                'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
+                'admin_id'          => $request->admin_id
           ]);
           foreach($languages as $languages_data){
               $products_name = 'products_name_'.$languages_data->languages_id;

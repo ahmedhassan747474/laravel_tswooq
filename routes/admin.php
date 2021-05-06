@@ -12,7 +12,13 @@ Route::get('/phpinfo', function () {
     phpinfo();
 });
 
-Route::group(['middleware' => ['installer']], function () {
+Route::get('/back_language/{locale}', function ($locale){
+    App::setLocale($locale);
+    session()->put('back_locale', $locale);
+    return redirect()->back();
+})->name('back_language');
+
+Route::group(['middleware' => ['installer', 'back_language']], function () {
     Route::get('/not_allowed', function () {
         return view('errors.not_found');
     });
@@ -255,7 +261,7 @@ Route::group(['middleware' => ['installer']], function () {
         Route::get('/edit/{id}/{status}', 'ProductController@editreviews')->middleware('edit_reviews');
 
     });
-//customers
+    //customers
     Route::group(['prefix' => 'admin/customers', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'CustomersController@display')->middleware('view_customer');
         Route::get('/add', 'CustomersController@add')->middleware('add_customer');
@@ -273,26 +279,26 @@ Route::group(['middleware' => ['installer']], function () {
     });
 
     Route::group(['prefix' => 'admin/suppliers', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
-        Route::get('/display', 'SuppliersController@display')->middleware('view_customer');
-        Route::get('/add', 'SuppliersController@add')->middleware('add_customer');
-        Route::post('/add', 'SuppliersController@insert')->middleware('add_customer');
-        Route::get('/edit/{id}', 'SuppliersController@edit')->middleware('edit_customer');
-        Route::post('/update', 'SuppliersController@update')->middleware('edit_customer');
-        Route::post('/delete', 'SuppliersController@delete')->middleware('delete_customer');
+        Route::get('/display', 'SuppliersController@display')->middleware('view_supplier');
+        Route::get('/add', 'SuppliersController@add')->middleware('add_supplier');
+        Route::post('/add', 'SuppliersController@insert')->middleware('add_supplier');
+        Route::get('/edit/{id}', 'SuppliersController@edit')->middleware('edit_supplier');
+        Route::post('/update', 'SuppliersController@update')->middleware('edit_supplier');
+        Route::post('/delete', 'SuppliersController@delete')->middleware('delete_supplier');
     });
 
     Route::group(['prefix' => 'admin/pos', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
-        Route::get('/display', 'POSController@display');
-        Route::get('/products', 'POSController@search')->name('pos.search_product');
-        Route::get('/variants', 'POSController@getVarinats')->name('variants');
-        Route::post('/add-to-cart-pos', 'POSController@addToCart')->name('pos.addToCart');
-        Route::post('/update-quantity-cart-pos', 'POSController@updateQuantity')->name('pos.updateQuantity');
-        Route::post('/remove-from-cart-pos', 'POSController@removeFromCart')->name('pos.removeFromCart');
-        Route::post('/get_shipping_address', 'POSController@getShippingAddress')->name('pos.getShippingAddress');
-        Route::post('/get_shipping_address_seller', 'POSController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller');
-        Route::post('/setDiscount', 'POSController@setDiscount')->name('pos.setDiscount');
-        Route::post('/setShipping', 'POSController@setShipping')->name('pos.setShipping');
-        Route::post('/pos-order', 'POSController@order_store')->name('pos.order_place');
+        Route::get('/display', 'POSController@display')->middleware('view_pos');
+        Route::get('/products', 'POSController@search')->name('pos.search_product')->middleware('view_pos');
+        Route::get('/variants', 'POSController@getVarinats')->name('variants')->middleware('view_pos');
+        Route::post('/add-to-cart-pos', 'POSController@addToCart')->name('pos.addToCart')->middleware('view_pos');
+        Route::post('/update-quantity-cart-pos', 'POSController@updateQuantity')->name('pos.updateQuantity')->middleware('view_pos');
+        Route::post('/remove-from-cart-pos', 'POSController@removeFromCart')->name('pos.removeFromCart')->middleware('view_pos');
+        Route::post('/get_shipping_address', 'POSController@getShippingAddress')->name('pos.getShippingAddress')->middleware('view_pos');
+        Route::post('/get_shipping_address_seller', 'POSController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller')->middleware('view_pos');
+        Route::post('/setDiscount', 'POSController@setDiscount')->name('pos.setDiscount')->middleware('view_pos');
+        Route::post('/setShipping', 'POSController@setShipping')->name('pos.setShipping')->middleware('view_pos');
+        Route::post('/pos-order', 'POSController@order_store')->name('pos.order_place')->middleware('view_pos');
     });
 
     Route::group(['prefix' => 'admin/countries', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -483,7 +489,7 @@ Route::group(['middleware' => ['installer']], function () {
         Route::get('/applicationapi', 'SiteSettingController@applicationApi')->middleware('view_app_setting', 'application_routes');
         Route::get('/appsettings', 'SiteSettingController@appSettings')->middleware('view_app_setting', 'application_routes');
 
-////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
         //////////////     SITE ROUTES
         ////////////////////////////////////////////////////////////////////////////////////
         
@@ -521,13 +527,13 @@ Route::group(['middleware' => ['installer']], function () {
         Route::get('/instafeed', 'SiteSettingController@instafeed')->middleware('view_web_setting', 'website_routes');
         Route::get('/newsletter', 'SiteSettingController@newsletter')->middleware('view_web_setting', 'website_routes');
 
-/////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////
         //////////////     GENERAL ROUTES
         ////////////////////////////////////////////////////////////////////////////////////
 
 
-//units
+        //units
         Route::get('/units', 'SiteSettingController@units')->middleware('view_product');
         Route::get('/addunit', 'SiteSettingController@addunit')->middleware('add_product');
         Route::post('/addnewunit', 'SiteSettingController@addnewunit')->middleware('edit_product');

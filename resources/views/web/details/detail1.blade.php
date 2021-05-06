@@ -260,6 +260,13 @@
                 ?>
                 </div>
               
+              <div class="pro-single-info"><b>@lang('labels.Shop')  :</b>
+                <?php
+                  $getName = DB::table('users')->where('id', $result['detail']['product_data'][0]->admin_id)->first();
+                  echo $getName->shop_name != null ? $getName->shop_name : 'Not Exist';
+                ?>
+              </div>
+              
               <div class="pro-single-info"><b>@lang('website.Available') :</b>
 
                 @if($result['detail']['product_data'][0]->products_type == 0)

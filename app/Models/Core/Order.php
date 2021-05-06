@@ -10,8 +10,19 @@ class Order extends Model
     public function paginator(){
 
         $language_id = '1';
-        $orders = DB::table('orders')->orderBy('created_at', 'DESC')
-            ->where('customers_id', '!=', '')->paginate(40);
+        $data = DB::table('orders')
+            ->join('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+            ->join('products', 'products.products_id', '=', 'orders_products.products_id')
+            ->orderBy('orders.created_at', 'DESC')
+            ->where('customers_id', '!=', '');
+
+        if(auth()->user()->role_id == 11) {
+            $data->where('admin_id', '=', auth()->user()->id);
+        } elseif(auth()->user()->role_id == 12) {
+            $data->where('admin_id', '=', auth()->user()->parent_admin_id);
+        }
+
+        $orders = $data->paginate(40);
 
         $index = 0;
         $total_price = array();

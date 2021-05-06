@@ -123,6 +123,18 @@
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
+
+          <li class="dropdown user user-menu">
+            @if(session()->get('back_locale') == 'en')
+            <a href="{{route('back_language', 'ar')}}">
+              <span class="hidden-xs">{{ trans('labels.Arabic')}}</span>
+            </a>
+            @else
+            <a href="{{route('back_language', 'en')}}">
+              <span class="hidden-xs">{{ trans('labels.English')}}</span>
+            </a>
+            @endif
+          </li>
           <!--<li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>-->

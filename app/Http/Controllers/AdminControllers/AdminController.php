@@ -353,6 +353,7 @@ class AdminController extends Controller
 		//get function from ManufacturerController controller
 		$myVar = new AddressController();
 		$result['countries'] = $myVar->getAllCountries();
+		$result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
 
 		$adminTypes = DB::table('user_types')->where('isActive', 1)->where('user_types_id','>','10')->get();
 		$result['adminTypes'] = $adminTypes;
@@ -391,7 +392,9 @@ class AdminController extends Controller
 						'password'		 			=>   Hash::make($request->password),
 						'status'		 	 		=>   $request->isActive,
 						'avatar'	 				=>	 $uploadImage,
-						'role_id'					=>	 $request->adminType
+						'role_id'					=>	 $request->adminType,
+						'parent_admin_id'			=>   $request->admin_id,
+						'shop_name'					=>   $request->shop_name
 						]);
 
 
@@ -767,6 +770,16 @@ class AdminController extends Controller
             $deliveryboy_update = $roles[0]->deliveryboy_update;
             $deliveryboy_delete = $roles[0]->deliveryboy_delete;
 
+			$supplier_view   	= $roles[0]->supplier_view;
+			$supplier_create 	= $roles[0]->supplier_create;
+			$supplier_update 	= $roles[0]->supplier_update;
+			$supplier_delete 	= $roles[0]->supplier_delete;
+
+			$pos_view   	= $roles[0]->pos_view;
+			// $pos_create 	= $roles[0]->pos_create;
+			// $pos_update 	= $roles[0]->pos_update;
+			// $pos_delete 	= $roles[0]->pos_delete;
+
 		}else{
 
 			$deliveryboy_view = 0;
@@ -866,6 +879,16 @@ class AdminController extends Controller
 
 			$reviews_view = 0;
 			$reviews_update = 0;
+
+			$supplier_view   	= '0';
+			$supplier_create 	= '0';
+			$supplier_update 	= '0';
+			$supplier_delete 	= '0';
+
+			$pos_view   	= '0';
+			// $pos_create 	= '0';
+			// $pos_update 	= '0';
+			// $pos_delete 	= '0';
 		}
 
 
@@ -1035,7 +1058,21 @@ class AdminController extends Controller
             '3' => array('name' => 'deliveryboy_delete', 'value' => $deliveryboy_delete),
         );
 
-		
+		$result2[24]['link_name'] = 'Suppliers';
+		$result2[24]['permissions'] = array(
+					'0'=>array('name'=>'supplier_view','value'=>$supplier_view),
+					'1'=>array('name'=>'supplier_create','value'=>$supplier_create),
+					'2'=>array('name'=>'supplier_update','value'=>$supplier_update),
+					'3'=>array('name'=>'supplier_delete','value'=>$supplier_delete)
+					);
+					
+		$result2[25]['link_name'] = 'POS';
+		$result2[25]['permissions'] = array(
+					'0'=>array('name'=>'pos_view','value'=>$pos_view),
+					// '1'=>array('name'=>'pos_create','value'=>$pos_create),
+					// '2'=>array('name'=>'pos_update','value'=>$pos_update),
+					// '3'=>array('name'=>'pos_delete','value'=>$pos_delete)
+					);
 
 		$result['data'] = $result2;
 		$result['commonContent'] = $this->Setting->commonContent();
@@ -1147,6 +1184,16 @@ class AdminController extends Controller
 						'deliveryboy_create' => $request->deliveryboy_create,
 						'deliveryboy_update' => $request->deliveryboy_update,
 						'deliveryboy_delete' => $request->deliveryboy_delete,
+
+						'supplier_view' => $request->supplier_view,
+						'supplier_create' => $request->supplier_create,
+						'supplier_update' => $request->supplier_update,
+						'supplier_delete' => $request->supplier_delete,
+
+						'pos_view' => $request->pos_view,
+						// 'pos_create' => $request->pos_create,
+						// 'pos_update' => $request->pos_update,
+						// 'pos_delete' => $request->pos_delete,
 						
 						]);
 

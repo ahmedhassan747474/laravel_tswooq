@@ -143,6 +143,55 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Show Product') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <ul class="list-unstyled mb-0">
+                                                            <li class="d-inline-block mr-2">
+                                                                <fieldset>
+                                                                    <div class="vs-checkbox-con vs-checkbox-primary">
+                                                                        <input type="checkbox" name="is_show_web">
+                                                                        <span class="vs-checkbox">
+                                                                            <span class="vs-checkbox--check">
+                                                                                <i class="vs-icon feather icon-check"></i>
+                                                                            </span>
+                                                                        </span>
+                                                                        <span class="">{{trans('labels.is_show_web')}}</span>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </li>
+                                                            <li class="d-inline-block mr-2">
+                                                                <fieldset>
+                                                                    <div class="vs-checkbox-con vs-checkbox-success">
+                                                                        <input type="checkbox" name="is_show_app">
+                                                                        <span class="vs-checkbox">
+                                                                            <span class="vs-checkbox--check">
+                                                                                <i class="vs-icon feather icon-check"></i>
+                                                                            </span>
+                                                                        </span>
+                                                                        <span class="">{{trans('labels.is_show_app')}}</span>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </li>
+                                                            <li class="d-inline-block mr-2">
+                                                                <fieldset>
+                                                                    <div class="vs-checkbox-con vs-checkbox-danger">
+                                                                        <input type="checkbox" name="is_show_admin">
+                                                                        <span class="vs-checkbox">
+                                                                            <span class="vs-checkbox--check">
+                                                                                <i class="vs-icon feather icon-check"></i>
+                                                                            </span>
+                                                                        </span>
+                                                                        <span class="">{{trans('labels.is_show_admin')}}</span>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="row">
@@ -207,6 +256,26 @@
                                         </div>
 
                                         <div class="row">
+                                            @if (auth()->user()->role_id == 1)
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
+                                                    <div class="col-sm-10 col-md-4">
+                                                        <select class="form-control field-validate" name="admin_id">
+                                                            <option value="">{{ trans('labels.SelectShop') }}</option>
+                                                            @foreach($result['shops'] as $shop)
+                                                            <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @elseif(auth()->user()->role_id == 10)
+                                            <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
+                                            @else
+                                            <input type="hidden" name="admin_id" value="{{auth()->user()->parent_admin_id}}">
+                                            @endif
+
                                             <div class="col-xs-12 col-md-6 ">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>
@@ -269,7 +338,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
 
                                         <hr>

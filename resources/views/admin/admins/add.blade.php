@@ -51,15 +51,28 @@
                             <div class="form-group">
                                   <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.AdminType') }} </label>
                                   <div class="col-sm-10 col-md-4">
-                                    <select class="form-control field-validate" name="adminType">
+                                    <select class="form-control field-validate changeAdminType" name="adminType">
                                     @foreach($result['adminTypes'] as $adminType)
                                           <option value="{{$adminType->user_types_id}}">{{$adminType->user_types_name}}</option>
                                     @endforeach
-									</select>
+									                  </select>
                                   <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                   {{ trans('labels.AdminTypeText') }}</span>
                                   </div>
                             </div>
+
+                            <div class="form-group show_hide_shop" style="display: none;">
+                              <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
+                              <div class="col-sm-10 col-md-4">
+                                <select class="form-control" name="admin_id" id="select_shop">
+                                    <option value="">{{ trans('labels.SelectShop') }}</option>
+                                    @foreach($result['shops'] as $shop)
+                                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                                   @endforeach
+                                </select>
+                              </div>
+                            </div>
+
                             <hr>
                             <h4>{{ trans('labels.Personal Info') }} </h4>
                             <hr> 
@@ -87,7 +100,7 @@
                                    {{ trans('labels.TelephoneText') }}</span>
                                   </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group show_hide_shop_name">
                                   <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ShopName') }} </label>
                                   <div class="col-sm-10 col-md-4">
                                     {!! Form::text('shop_name',  '', array('class'=>'form-control field-validate', 'id'=>'shop_name')) !!}
@@ -211,3 +224,22 @@
   <!-- /.content --> 
 </div>
 @endsection 
+
+@section('script')
+<script>
+  $('.changeAdminType').on('change', function() {
+    var type = $(this).val();
+    if(type == 12) {
+      $('.show_hide_shop').show();
+      $('#select_shop').addClass('field-validate');
+      $('.show_hide_shop_name').hide();
+      $('#shop_name').removeClass('field-validate');
+    } else {
+      $('.show_hide_shop').hide();
+      $('#select_shop').removeClass('field-validate');
+      $('.show_hide_shop_name').show();
+      $('#shop_name').addClass('field-validate');
+    }
+  })
+</script>
+@endsection

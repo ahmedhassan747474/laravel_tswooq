@@ -506,16 +506,21 @@
                 shipping:shipping, 
                 discount:discount,
                 total_price:total_price
-            }, function(data){
+            })
+            .done(function(data) {
                 if(data == 1){
                     // AIZ.plugins.notify('success', '{{ trans('labels.Order Completed Successfully.') }}');
                     swal("success!", "{{ trans('labels.Order Completed Successfully.') }}", "success");
                     location.reload();
-                }
-                else{
+                } else if(data.status == 2) {
+                    swal("", data.message, "error");
+                } else{
                     // AIZ.plugins.notify('danger', '{{ trans('labels.Something went wrong') }}');
                     swal("", "{{ trans('labels.Something went wrong') }}", "error");
                 }
+            })
+            .fail(function() {
+                swal("", "{{ trans('labels.Something went wrong') }}", "error");
             });
         }
     </script>
