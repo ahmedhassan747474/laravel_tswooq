@@ -3,10 +3,10 @@
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1>{{ trans('labels.Sales Report') }} <small>{{ trans('labels.Sales Report') }}...</small> </h1>
+    <h1>{{ trans('labels.shops') }} <small>{{ trans('labels.shops') }}...</small> </h1>
     <ol class="breadcrumb">
       <li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
-      <li class="active">{{ trans('labels.Sales Report') }}</li>
+      <li class="active">{{ trans('labels.shops') }}</li>
     </ol>
   </section>
 
@@ -22,18 +22,30 @@
           <div class="box-header">
                 <div class="col-lg-9 form-inline" id="contact-form">
                     
-                    <form method="get" action="{{url('admin/salesreport')}}">
+                    <form method="get" action="{{url('admin/shopsalesreport')}}">
                         <input type="hidden" name="type"  value="id">
                         <input type="hidden"  value="{{csrf_token()}}">
                         
                         <div class="col-xs-3">
                           <div class="form-group">
-                            <label for="exampleInputEmail1">{{ trans('labels.Choose start and end date') }}</label>
+                            {{-- <label for="exampleInputEmail1">{{ trans('labels.Choose start and end date') }}</label> --}}
                             <input class="form-control reservation dateRange" placeholder="{{ trans('labels.Choose start and end date') }}" readonly value="{{app('request')->input('dateRange')}}" name="dateRange" aria-label="Text input with multiple buttons ">
                           </div>
                         </div>
 
-                        <div class="col-xs-2" style="padding-top: 25px">                  
+                        <div class="col-xs-2">
+                          <div class="form-group">
+                            {{-- <label for="exampleInputEmail2">{{ trans('labels.Shop') }}</label> --}}
+                            <select class="form-control" name="admin_id">
+                              <option value="">{{ trans('labels.SelectShop') }}</option>
+                              @foreach($result['shops'] as $shop)
+                              <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-xs-2">                  
                           <div class="form-group">
                             <button class="btn btn-primary" id="submit" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                             @if(app('request')->input('type') and app('request')->input('type') == 'all')  <a class="btn btn-danger " href="{{url('admin/salesreport')}}"><i class="fa fa-ban" aria-hidden="true"></i> </a>@endif
@@ -43,7 +55,7 @@
 
                   </div>
                   <div class="box-tools pull-right">
-                    <form action="{{ URL::to('admin/salesreport-print')}}" target="_blank">
+                    <form action="{{ URL::to('admin/shopsalesreport-print')}}" target="_blank">
                       <input type="hidden" name="page" value="invioce">
                       <input type="hidden" name="customers_id" value="{{app('request')->input('customers_id')}}">
                       <input type="hidden" name="orders_status_id" value="{{app('request')->input('orders_status_id')}}">

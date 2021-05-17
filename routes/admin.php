@@ -406,7 +406,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/vieworder/{id}', 'OrdersController@vieworder')->middleware('view_order');
         Route::post('/updateOrder', 'OrdersController@updateOrder')->middleware('edit_order');
         Route::post('/deleteOrder', 'OrdersController@deleteOrder')->middleware('edit_order');
-        Route::get('/invoiceprint/{id}', 'OrdersController@invoiceprint')->middleware('view_order');
+        Route::get('/invoiceprint/{id}', 'OrdersController@invoiceprint')->name('invoiceprint')->middleware('view_order');
         Route::get('/orderstatus', 'SiteSettingController@orderstatus')->middleware('view_order');
         Route::get('/addorderstatus', 'SiteSettingController@addorderstatus')->middleware('edit_order');
         Route::post('/addNewOrderStatus', 'SiteSettingController@addNewOrderStatus')->middleware('edit_order');
@@ -448,6 +448,9 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
         
         Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
+        Route::get('/shopsalesreport', 'ReportsController@shopsalesreport')->middleware('report');
+        Route::get('/salesreport-print', 'ReportsController@salesreportPrint')->middleware('report');
+        Route::get('/shopsalesreport-print', 'ReportsController@shopsalesreportPrint')->middleware('report');
         // Route::get('/customer-orders-print', 'ReportsController@customerOrdersPrint')->middleware('report');
         
         Route::get('/inventoryreport', 'ReportsController@inventoryreport')->middleware('report');
@@ -460,10 +463,10 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/maxstock', 'ReportsController@maxstock')->middleware('report');
         Route::get('/maxstockprint', 'ReportsController@maxstockprint')->middleware('report');
         
-        Route::get('/suppliersmainreport', 'ReportsController@suppliersmainreport')->middleware('report');
-        Route::get('/suppliersreport/{id}', 'ReportsController@suppliersreport')->middleware('report')->name('suppliersreport');
-        Route::get('/suppliersreportprint/{id}', 'ReportsController@suppliersreportprint')->middleware('report');
-        Route::post('/insertsuppliersreport', 'ReportsController@insertsuppliersreport')->middleware('report')->name('insertsuppliersreport');
+        Route::get('/suppliersmainreport', 'ReportsController@suppliersmainreport')->middleware('view_supplier');
+        Route::get('/suppliersreport/{id}', 'ReportsController@suppliersreport')->middleware('view_supplier')->name('suppliersreport');
+        Route::get('/suppliersreportprint/{id}', 'ReportsController@suppliersreportprint')->middleware('view_supplier');
+        Route::post('/insertsuppliersreport', 'ReportsController@insertsuppliersreport')->middleware('view_supplier')->name('insertsuppliersreport');
         
         
         ////////////////////////////////////////////////////////////////////////////////////

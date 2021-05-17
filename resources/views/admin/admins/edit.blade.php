@@ -52,15 +52,37 @@
                             <div class="form-group">
                                   <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.AdminType') }} </label>
                                   <div class="col-sm-10 col-md-4">
-                                    <select class="form-control" name="adminType">
+                                    <select class="form-control changeAdminType" name="adminType">
                                     @foreach($result['adminTypes'] as $adminType)
                                           <option value="{{$adminType->user_types_id}}" @if($result['admins'][0]->role_id==$adminType->user_types_id) selected @endif>{{$adminType->user_types_name}}</option>
                                     @endforeach
-									</select>
+								  	                </select>
                                   <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                   {{ trans('labels.AdminTypeText') }}</span>
                                   </div>
                             </div>
+
+                            @if (auth()->user()->role_id == 1)
+                            @if ($result['admins'][0]->role_id == 12)
+                            <div class="form-group show_hide_shop">
+                            @else
+                            <div class="form-group show_hide_shop" style="display: none;">
+                            @endif
+                            {{-- <div class="form-group show_hide_shop"> --}}
+                              <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
+                              <div class="col-sm-10 col-md-4">
+                                <select class="form-control" name="admin_id" id="select_shop">
+                                    <option value="">{{ trans('labels.SelectShop') }}</option>
+                                    @foreach($result['shops'] as $shop)
+                                    <option value="{{ $shop->id }}" {{$result['admins'][0]->id == $shop->id ? 'selected' : ''}}>{{ $shop->name }}>{{ $shop->name }}</option>
+                                  @endforeach
+                                </select>
+                              </div>
+                            </div>
+                            @else
+                            <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
+                            @endif
+                            
                             <hr>
                             <h4>{{ trans('labels.Personal Info') }} </h4>
                             <hr>
@@ -88,6 +110,20 @@
                                    {{ trans('labels.TelephoneText') }}</span>
                                   </div>
                                 </div>
+                                @if ($result['admins'][0]->role_id == 11)
+                                <div class="form-group show_hide_shop_name">
+                                @else
+                                <div class="form-group show_hide_shop_name" style="display: none;">
+                                @endif
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ShopName') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('shop_name',  $result['admins'][0]->shop_name, array('class'=>'form-control field-validate', 'id'=>'shop_name')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.ShopNameText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
+                                
+                                
                                 <hr>
                                 <h4>{{ trans('labels.Login Info') }}</h4>
                                 <hr>
@@ -157,4 +193,22 @@
   </section>
   <!-- /.content -->
 </div>
+@endsection
+@section('script')
+<script>
+  $('.changeAdminType').on('change', function() {
+    var type = $(this).val();
+    if(type == 12) {
+      $('.show_hide_shop').show();
+      $('#select_shop').addClass('field-validate');
+      $('.show_hide_shop_name').hide();
+      $('#shop_name').removeClass('field-validate');
+    } else {
+      $('.show_hide_shop').hide();
+      $('#select_shop').removeClass('field-validate');
+      $('.show_hide_shop_name').show();
+      $('#shop_name').addClass('field-validate');
+    }
+  })
+</script>
 @endsection

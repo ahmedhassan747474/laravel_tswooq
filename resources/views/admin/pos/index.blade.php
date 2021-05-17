@@ -60,17 +60,17 @@
                                 </div>
                             </div>
                             <div class="col-lg-7">
-                                <div class="card mb-3">
+                                {{-- <div class="card mb-3">
                                     <div class="card-body">
                                         <div class="d-flex">
                                             <div class="flex-grow-1">
                                                 <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
                                                     <option value="" selected disabled>Walk In Customer</option>
-                                                    {{-- @foreach ($results['customers'] as $key => $customer)
+                                                    @foreach ($results['customers'] as $key => $customer)
                                                         @if ($customer->user)
                                                             <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
                                                         @endif
-                                                    @endforeach --}}
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#new-customer" data-toggle="modal">
@@ -78,7 +78,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="card mar-btm" id="cart-details">
                                     <div class="card-body">
                                         <div class="aiz-pos-cart-list c-scrollbar-light">
@@ -182,7 +182,7 @@
                                 <div class="pos-footer mar-btm">
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex">
-                                            <div class="dropdown mr-3 dropup">
+                                            {{-- <div class="dropdown mr-3 dropup">
                                                 <button class="btn btn-outline-dark btn-styled dropdown-toggle" type="button" data-toggle="dropdown">
                                                     Shipping
                                                 </button>
@@ -197,7 +197,7 @@
                                                         <label for="radioExample_2b">With Shipping Charge</label>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="dropdown dropup">
                                                 <button class="btn btn-outline-dark btn-styled dropdown-toggle" type="button" data-toggle="dropdown">
                                                     Discount
@@ -214,6 +214,7 @@
                                         </div>
                                         <div class="">
                                             <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">Pay With Cash</button>
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">Pay With Visa</button>
                                         </div>
                                     </div>
                                 </div>
@@ -271,11 +272,8 @@
                                 <div class=" row">
                                     <label class="col-sm-2 control-label" for="email">Country</label>
                                     <div class="col-sm-10">
-                                        <select name="country" id="country" class="form-control aiz-selectpicker" required data-placeholder="Select country">
-                                            @foreach ($results['countries'] as $key => $country)
-                                                <option value="{{ $country->name }}">{{ $country->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="hidden" name="country" value="">
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -334,6 +332,24 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-styled btn-base-3" data-dismiss="modal">Close</button>
                         <button type="button" onclick="submitOrder('cash')" class="btn btn-styled btn-base-1 btn-primary">Comfirm Order</button>
+                    </div>
+                </div>
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <div id="order-confirm-visa" class="modal fade">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-zoom">
+                <div class="modal-content" id="variants">
+                    <div class="modal-header bord-btm">
+                        <h4 class="modal-title h6">Order Confirmation</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure to confirm this order?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-styled btn-base-3" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="submitOrder('visa')" class="btn btn-styled btn-base-1 btn-primary">Comfirm Order</button>
                     </div>
                 </div>
             </div><!-- /.modal-dialog -->
@@ -480,7 +496,8 @@
             var last_name = $('input[name=last_name]').val();
             var email = $('input[name=email]').val();
             var shipping_address = $('textarea[name=address]').val();
-            var country = $('select[name=country]').val();
+            // var country = $('select[name=country]').val();
+            var country = $('input[name=country]').val();
             var city = $('input[name=city]').val();
             var postal_code = $('input[name=postal_code]').val();
             var phone = $('input[name=phone]').val();
@@ -508,10 +525,11 @@
                 total_price:total_price
             })
             .done(function(data) {
-                if(data == 1){
+                if(data.data == 1){
                     // AIZ.plugins.notify('success', '{{ trans('labels.Order Completed Successfully.') }}');
                     swal("success!", "{{ trans('labels.Order Completed Successfully.') }}", "success");
-                    location.reload();
+                    // location.reload();
+                    window.location.href = data.print_url;
                 } else if(data.status == 2) {
                     swal("", data.message, "error");
                 } else{
@@ -593,7 +611,8 @@
         border-radius: 4px;
         -ms-flex: 1 1 auto;
         flex: 1 1 auto;
-        min-height: 1px;
+        /* min-height: 1px; */
+        min-height: 6rem;
     }
 
     .aiz-pos-product-list {

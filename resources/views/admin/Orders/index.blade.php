@@ -58,7 +58,7 @@
                                             @foreach ($listingOrders['orders'] as $key=>$orderData)
                                                 <tr>
                                                     <td>{{ $orderData->orders_id }}</td>
-                                                    <td>{{ $orderData->customers_name }}</td>
+                                                    <td>{{ $orderData->customers_name != null ? $orderData->customers_name: '---------------' }}</td>
                                                     <td>
                                                         @if($orderData->ordered_source == 1)
                                                         {{ trans('labels.Website') }}

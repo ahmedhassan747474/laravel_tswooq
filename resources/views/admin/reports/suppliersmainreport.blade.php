@@ -93,6 +93,7 @@
                   <thead>
                     <tr>
                       <th>{{ trans('labels.ID') }}</th>
+                      <th>{{ trans('labels.Reference Code') }}
                       <th>{{ trans('labels.Supplier Name') }}</th>
                       <th>{{ trans('labels.Price') }}</th>
                       <th>{{ trans('labels.Date') }}</th>
@@ -104,6 +105,12 @@
                         <tr>
 
                             <td><a href="{{ URL::to('admin/suppliersreport') . '/' . $report->supplier_main_id}}">{{ $report->supplier_main_id }}</a></td>
+
+                            @if($report->reference_code)
+                            <td>{{ $report->reference_code }}</td>
+                            @else
+                            <td>---</td>                            
+                            @endif
 
                             @if($report->supplier_name)
                             <td><a href="{{ URL::to('admin/suppliersreport') . '/' . $report->supplier_main_id}}">{{ $report->supplier_name }}</a></td>

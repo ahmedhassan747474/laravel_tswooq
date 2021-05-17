@@ -76,6 +76,46 @@ class ReportsController extends Controller
         return view("admin.reports.statsCustomersinvoice", $title)->with('result', $result);
 
     }
+
+    public function salesreportPrint(Request $request)
+    {
+
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->salesreport($request);
+        $result['price'] = $this->reports->customersReportTotal($request);
+        
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        return view("admin.reports.salesreportinvoice", $title)->with('result', $result);
+
+    }
+
+    public function shopsalesreportPrint(Request $request)
+    {
+
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->shopsalesreport($request);
+        $result['price'] = $this->reports->customersReportTotal($request);
+        
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        return view("admin.reports.shopsalesreportinvoice", $title)->with('result', $result);
+
+    }
     
     public function couponReport(Request $request)
     {
@@ -121,6 +161,25 @@ class ReportsController extends Controller
         $result['commonContent'] = $myVar->Setting->commonContent();
         
         return view("admin.reports.salesreport", $title)->with('result', $result);
+    }
+
+    public function shopsalesreport(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->shopsalesreport($request);
+        $result['price'] = $this->reports->customersReportTotal($request);
+        
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+        $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
+        
+        return view("admin.reports.shopsalesreport", $title)->with('result', $result);
     }
 
     

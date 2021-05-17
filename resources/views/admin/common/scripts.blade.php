@@ -1475,6 +1475,8 @@ $(document).on('click', '#updateAddress', function(e){
 		var users_id = $(this).attr('users_id');
 		console.log(users_id);
 		$('#users_id').val(users_id);
+		var customers_id = $(this).attr('customers_id');
+		$('#customers_id').val(customers_id);
 		$("#deleteCustomerModal").modal('show');
 	});
 

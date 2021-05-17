@@ -907,6 +907,6 @@ return [
 	'Choose Any Price'		=> 'كل الاسعار',
 	'manufacturers'			=> 'الصناعات',
 	'Choose Any Category'	=> 'جميع الفئات',
-	'Bank Account'			=> 'الحساب البنكى',
-	'Bank Account Image'	=> 'صورة الحساب البنكى',
+	'Bank Account'			=> 'رقم التحويل',
+	'Bank Account Image'	=> 'صورة التحويل',
 ];

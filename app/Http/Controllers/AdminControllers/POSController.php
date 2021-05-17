@@ -284,8 +284,9 @@ class POSController extends Controller
             ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
             ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
             ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id');
+            // ->LeftJoin('inventory', 'inventory.products_id', '=', 'products.products_id');
 
-        if (!empty($data['categories_id'])) {
+            if (!empty($data['categories_id'])) {
             $categories->LeftJoin('products_to_categories', 'products.products_id', '=', 'products_to_categories.products_id')
                 ->leftJoin('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
                 ->LeftJoin('categories_description', 'categories_description.categories_id', '=', 'products_to_categories.categories_id');
@@ -322,7 +323,9 @@ class POSController extends Controller
 
         } else {
             $categories->LeftJoin('specials', function ($join) use ($currentDate) {
-                $join->on('specials.products_id', '=', 'products.products_id')->where('status', '=', '1')->where('expires_date', '>', $currentDate);
+                $join->on('specials.products_id', '=', 'products.products_id')
+                ->where('status', '=', '1')
+                ->where('expires_date', '>', $currentDate);
             })->select('products.*', 'image_categories.path as image_path', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price');
         }
 
@@ -589,9 +592,36 @@ class POSController extends Controller
             $categories->where('products.admin_id', '=', auth()->user()->parent_admin_id);
         }
 
+        $product_array = array();
+        $inventories = DB::table('inventory')->get();
+        foreach($inventories as $inventory){
+            $current_stock_in = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'in')->sum('stock');
+            $current_stock_out = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'out')->sum('stock');
+            $current_stock = $current_stock_in - $current_stock_out;
+            if($current_stock > 0) {
+                $product_array[] = $inventory->products_id;
+                // array_push($product_array, $inventory->products_id);
+            }
+        }
+
+        $getProductsIds = array_values(array_unique($product_array));
+        // $getProductsIds = $product_array;
+
+        // dd($getProductsIds);
+        // $users_idss =  [1];
+        $categories->whereIn('products.products_id', $getProductsIds);
+
+        // $categories->where(function($q) use ($getProductsIds) {
+        //     foreach($getProductsIds as $key => $value)
+        //     {
+        //         // $q->where($key, '=', $value);
+        //         $q->where('products.products_id', '=', $value);
+        //     }
+        // });
+
         $categories->orderBy($sortby, $order)->groupBy('products.products_id');
         $categories->where('products.is_show_admin', '=', '1');
-        
+
         //count
         $total_record = $categories->get();
         $products = $categories->skip($skip)->take($take)->get();
@@ -1095,6 +1125,7 @@ class POSController extends Controller
     //order place
     public function order_store(Request $request)
     {
+        // dd($request->all());
         if(Session::has('posCart') && count(Session::get('posCart')) > 0){
             // $order = new Order;
             $first_name = '';
@@ -1109,28 +1140,34 @@ class POSController extends Controller
             if ($request->user_id == null) {
 
                 $email = $request->email;
-                $check = DB::table('users')->where('role_id', 2)->where('email', $email)->first();
-                if ($check == null) {
-                    $customers_id = DB::table('users')
-                        ->insertGetId([
-                            'role_id' => 2,
-                            'email' => $request->email,
-                            'password' => Hash::make('123456789'),
-                            'first_name' => $request->first_name,
-                            'last_name' => $request->last_name,
-                            'phone' => $request->phone,
-                        ]);
-                    session(['customers_id' => $customers_id]);
+                if($email != null) {
+                    $check = DB::table('users')->where('role_id', 2)->where('email', $email)->first();
+                    if ($check == null) {
+                        $customers_id = DB::table('users')
+                            ->insertGetId([
+                                'role_id' => 2,
+                                'email' => $request->email,
+                                'password' => Hash::make('123456789'),
+                                'first_name' => $request->first_name,
+                                'last_name' => $request->last_name,
+                                'phone' => $request->phone,
+                            ]);
+                        session(['customers_id' => $customers_id]);
+                    } else {
+                        $customers_id = $check->id;
+                        $email = $check->email;
+                        session(['customers_id' => $customers_id]);
+                    }
                 } else {
-                    $customers_id = $check->id;
-                    $email = $check->email;
+                    $customers_id = auth()->user()->id;
+                    $email = auth()->user()->email;
                     session(['customers_id' => $customers_id]);
                 }
 
                 // $order->guest_id    = mt_rand(100000, 999999);
                 $first_name         = $request->first_name;
                 $last_name          = $request->last_name;
-                $email              = $request->email;
+                // $email              = $request->email;
                 $shipping_address   = $request->shipping_address;
                 $address            = $request->address;
                 $country            = $request->country;
@@ -1195,7 +1232,7 @@ class POSController extends Controller
             // $order->shipping_address = json_encode($data);
 
             $payment_method = 'cash_on_delivery';
-            $shipping_method = "smsaexpress";
+            $shipping_method = "";//smsaexpress
             $order_information = array();
 
             //price
@@ -1214,82 +1251,82 @@ class POSController extends Controller
             // $order_price = (session('products_price') + $tax_rate + $shipping_price) - $coupon_discount;
             $order_price = $request->total_price;
 
-            if($shipping_method == "smsaexpress") {    
-                $passKey = "10001000";
-                $refno = 'refno1000';
-                $arrayToSendShip = [
-                    "passkey"       => $passKey,
-                    "refno"         => $refno,
-                    "sentDate"      => time(),
-                    "idNo"          => $customers_id,
-                    "cName"         => $delivery_firstname . ' ' . $delivery_lastname,
-                    "cntry"         => $delivery_country,
-                    "cCity"         => $delivery_city,
-                    "cZip"          => $delivery_postcode,
-                    // "cPOBox"        => "string",
-                    "cMobile"       => $delivery_phone,
-                    // "cTel1"         => "string",
-                    // "cTel2"         => "string",
-                    "cAddr1"        => $delivery_street_address,
-                    // "cAddr2"        => "string",
-                    // "shipType"      => "string",
-                    // "PCs"           => "string",
-                    "cEmail"        => $email,
-                    "carrValue"     => $order_price,
-                    "carrCurr"      => "SAR",
-                    // "codAmt"        => "string",
-                    // "weight"        => "string",
-                    // "itemDesc"      => "string",
-                    // "custVal"       => "string",
-                    // "custCurr"      => "string",
-                    // "insrAmt"       => "string",
-                    // "insrCurr"      => "string",
-                    // "sName"         => "string",
-                    // "sContact"      => "string",
-                    // "sAddr1"        => "string",
-                    // "sAddr2"        => "string",
-                    // "sCity"         => "string",
-                    // "sPhone"        => "string",
-                    // "sCntry"        => "string",
-                    // "prefDelvDate"  => "string",
-                    // "gpsPoints"     => $delivery_latitude . ',' . $delivery_longitude
-                ];
+            // if($shipping_method == "smsaexpress") {    
+            //     $passKey = "10001000";
+            //     $refno = 'refno1000';
+            //     $arrayToSendShip = [
+            //         "passkey"       => $passKey,
+            //         "refno"         => $refno,
+            //         "sentDate"      => time(),
+            //         "idNo"          => $customers_id,
+            //         "cName"         => $delivery_firstname . ' ' . $delivery_lastname,
+            //         "cntry"         => $delivery_country,
+            //         "cCity"         => $delivery_city,
+            //         "cZip"          => $delivery_postcode,
+            //         // "cPOBox"        => "string",
+            //         "cMobile"       => $delivery_phone,
+            //         // "cTel1"         => "string",
+            //         // "cTel2"         => "string",
+            //         "cAddr1"        => $delivery_street_address,
+            //         // "cAddr2"        => "string",
+            //         // "shipType"      => "string",
+            //         // "PCs"           => "string",
+            //         "cEmail"        => $email,
+            //         "carrValue"     => $order_price,
+            //         "carrCurr"      => "SAR",
+            //         // "codAmt"        => "string",
+            //         // "weight"        => "string",
+            //         // "itemDesc"      => "string",
+            //         // "custVal"       => "string",
+            //         // "custCurr"      => "string",
+            //         // "insrAmt"       => "string",
+            //         // "insrCurr"      => "string",
+            //         // "sName"         => "string",
+            //         // "sContact"      => "string",
+            //         // "sAddr1"        => "string",
+            //         // "sAddr2"        => "string",
+            //         // "sCity"         => "string",
+            //         // "sPhone"        => "string",
+            //         // "sCntry"        => "string",
+            //         // "prefDelvDate"  => "string",
+            //         // "gpsPoints"     => $delivery_latitude . ',' . $delivery_longitude
+            //     ];
                 
-                $json = json_encode($arrayToSendShip);
+            //     $json = json_encode($arrayToSendShip);
                     
-                $curl = curl_init();
+            //     $curl = curl_init();
                 
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => "https://track.smsaexpress.com/SecomRestWebApi/api/addship",
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => "",
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => "POST",
-                    CURLOPT_POSTFIELDS => $json,
-                    CURLOPT_HTTPHEADER => array(
-                        // "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
-                        "content-type: application/json"
-                    ),
-                ));
+            //     curl_setopt_array($curl, array(
+            //         CURLOPT_URL => "https://track.smsaexpress.com/SecomRestWebApi/api/addship",
+            //         CURLOPT_RETURNTRANSFER => true,
+            //         CURLOPT_ENCODING => "",
+            //         CURLOPT_MAXREDIRS => 10,
+            //         CURLOPT_TIMEOUT => 30,
+            //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            //         CURLOPT_CUSTOMREQUEST => "POST",
+            //         CURLOPT_POSTFIELDS => $json,
+            //         CURLOPT_HTTPHEADER => array(
+            //             // "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
+            //             "content-type: application/json"
+            //         ),
+            //     ));
                 
-                $responseShip = curl_exec($curl);
-                $err = curl_error($curl);
+            //     $responseShip = curl_exec($curl);
+            //     $err = curl_error($curl);
                 
-                curl_close($curl);
+            //     curl_close($curl);
                 
-                if ($err) {
-                    // echo "cURL Error #:" . $err;
-                    dd($err);
-                    $shipment_status = 'failed';
-                } else {
-                    // echo $response;
-                    $resultsResponseShip = json_decode($responseShip);
-                    $shipment_status = 'success';
-                }
+            //     if ($err) {
+            //         // echo "cURL Error #:" . $err;
+            //         dd($err);
+            //         $shipment_status = 'failed';
+            //     } else {
+            //         // echo $response;
+            //         $resultsResponseShip = json_decode($responseShip);
+            //         $shipment_status = 'success';
+            //     }
     
-            }
+            // }
 
             $orders_status = '1';
             $code = '';
@@ -1301,11 +1338,22 @@ class POSController extends Controller
             $currency = $web_setting[19]->value;
             // $total_tax = number_format((float) session('tax_rate'), 2, '.', '');
             $products_tax = 1;
-            $payment_method_name = 'Cash on Delivery';
 
+            if($request->payment_type == 'cash') {
+                $payment_method_name = 'Cash';
+            } else {
+                $payment_method_name = 'Visa';
+            }
+
+            if($request->first_name && $request->first_name){
+                $customers_name = $delivery_firstname . ' ' . $delivery_lastname;
+            } else {
+                $customers_name = null;
+            }
+            
             $orders_id = DB::table('orders')->insertGetId([
                 'customers_id' => $customers_id,
-                'customers_name' => $delivery_firstname . ' ' . $delivery_lastname,
+                'customers_name' => $customers_name,
                 'customers_street_address' => $delivery_street_address,
                 'customers_suburb' => $delivery_suburb,
                 'customers_city' => $delivery_city,
@@ -1316,7 +1364,7 @@ class POSController extends Controller
                 'email' => $email,
                 // 'customers_address_format_id' => $delivery_address_format_id,
 
-                'delivery_name' => $delivery_firstname . ' ' . $delivery_lastname,
+                'delivery_name' => $customers_name,
                 'delivery_street_address' => $delivery_street_address,
                 'delivery_suburb' => $delivery_suburb,
                 'delivery_city' => $delivery_city,
@@ -1325,7 +1373,7 @@ class POSController extends Controller
                 'delivery_country' => $delivery_country,
                 // 'delivery_address_format_id' => $delivery_address_format_id,
 
-                'billing_name' => $billing_firstname . ' ' . $billing_lastname,
+                'billing_name' => $customers_name,
                 'billing_street_address' => $billing_street_address,
                 'billing_suburb' => $billing_suburb,
                 'billing_city' => $billing_city,
@@ -1479,9 +1527,16 @@ class POSController extends Controller
                     Session::forget('shipping');
                     Session::forget('pos_discount');
                     Session::forget('posCart');
-                    return 1;
+                    // return 1;
         
-                    $responseData = array('success' => '1', 'data' => array(), 'message' => "Order has been placed successfully.");
+                    $responseData = array(
+                        'success' => '1', 
+                        'data' => 1, 
+                        'message' => "Order has been placed successfully.",
+                        'order_id' => $orders_id,
+                        'print_url' => route('invoiceprint', $orders_id)
+                    );
+                    return $responseData;
                 }
             }
             else {

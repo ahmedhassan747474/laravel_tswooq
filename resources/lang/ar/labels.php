@@ -2498,4 +2498,9 @@ return [
 	'English'					=> 'انجليزى ',
 	'Arabic'					=> 'عربي',
 	'SelectShop' 				=> 'اختر المحل',
+	'Reference Code'			=> 'الرقم المرجعى',
+	'TotalWin'					=> 'الربح',
+	'Total Buy Price'			=> 'اجمالى سعر الشراء',
+	'Total Win Price'			=> 'اجمالى الربح',
+	'shops'						=> 'المحلات',
 ];

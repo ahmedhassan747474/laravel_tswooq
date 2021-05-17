@@ -65,6 +65,10 @@
           </a>
         </li>
 
+      <?php }
+        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->supplier_view == 1){
+      ?>
+
         <li class="treeview {{ Request::is('admin/suppliers/display') ? 'active' : '' }}  {{ Request::is('admin/suppliers/add') ? 'active' : '' }}  {{ Request::is('admin/suppliers/edit/*') ? 'active' : '' }} ">
           <a href="{{ URL::to('admin/suppliers/display')}}">
             <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.link_suppliers') }}</span>
@@ -72,11 +76,20 @@
         </li>
 
       <?php }
-        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->customers_view == 1){
+        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->pos_view == 1){
       ?>
         <li class="treeview {{ Request::is('admin/pos/display') ? 'active' : '' }}  {{ Request::is('admin/pos/add') ? 'active' : '' }}  {{ Request::is('admin/pos/edit/*') ? 'active' : '' }} ">
           <a href="{{ URL::to('admin/pos/display')}}">
             <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.POS') }}</span>
+          </a>
+        </li>
+
+      <?php }
+        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->pos_view == 1){
+      ?>
+        <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}">
+          <a href="{{ URL::to('admin/shopsalesreport')}}">
+            <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.shops') }}</span>
           </a>
         </li>
 
@@ -134,7 +147,7 @@
         </li>
       <?php } ?>
       <?php
-            if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->reports_view == 1){
+            if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->reports_view == 1 || $result['commonContent']['roles']->supplier_view == 1){
           ?>
         <li class="treeview {{ Request::is('admin/maxstock') ? 'active' : '' }} {{ Request::is('admin/minstock') ? 'active' : '' }} {{ Request::is('admin/inventoryreport') ? 'active' : '' }} {{ Request::is('admin/salesreport') ? 'active' : '' }} {{ Request::is('admin/couponreport') ? 'active' : '' }} {{ Request::is('admin/customers-orders-report') ? 'active' : '' }} {{ Request::is('admin/outofstock') ? 'active' : '' }} {{ Request::is('admin/statsproductspurchased') ? 'active' : '' }} {{ Request::is('admin/statsproductsliked') ? 'active' : '' }} {{ Request::is('admin/lowinstock') ? 'active' : '' }}">
           <a href="#">
@@ -142,10 +155,16 @@
   <span>{{ trans('labels.link_reports') }}</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
+            @if ($result['commonContent']['roles']->reports_view == 1)
             <!-- <li class="{{ Request::is('admin/lowinstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/lowinstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_products_low_stock') }}</a></li> -->
             <li class="{{ Request::is('admin/outofstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/outofstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_out_of_stock_products') }}</a></li>
             <li class="{{ Request::is('admin/inventoryreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/inventoryreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Inventory Report') }}</a></li>
+            @endif
+            
+            @if ($result['commonContent']['roles']->supplier_view == 1)
             <li class="{{ Request::is('admin/suppliersmainreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/suppliersmainreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Suppliers Report') }}</a></li>
+            @endif
+            @if ($result['commonContent']['roles']->reports_view == 1)
             <!-- <li class="{{ Request::is('admin/minstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/minstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Min Stock Report') }}</a></li>
             <li class="{{ Request::is('admin/maxstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/maxstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Max Stock Report') }}</a></li> -->
             <li class="{{ Request::is('admin/customers-orders-report') ? 'active' : '' }} "><a href="{{ URL::to('admin/customers-orders-report')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_customer_orders_total') }}</a></li>
@@ -154,6 +173,8 @@
 
             <li class="{{ Request::is('admin/couponreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/couponreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Coupon Report') }}</a></li>
             <li class="{{ Request::is('admin/salesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/salesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
+            @endif
+            
             
           </ul>
         </li>

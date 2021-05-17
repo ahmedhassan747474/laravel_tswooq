@@ -2495,4 +2495,10 @@ return [
 	'English'					=> 'English',
 	'Arabic'					=> 'Arabic',
 	'SelectShop' 				=> 'Select Shop',
+	'Reference Code'			=> 'Reference Code',
+	'TotalWin'					=> 'Total Win',
+	'Total Buy Price'			=> 'Total Buy Price',
+	'Total Win Price'			=> 'Total Win Price',
+	'shops'						=> 'Shops',
+	
 ];

@@ -26,9 +26,11 @@
                                     
                                     <div class="col-lg-4 form-inline" id="contact-form12"></div>
                                 </div>
+                                @if ($result['commonContent']['roles']->supplier_create == 1)
                                 <div class="box-tools pull-right">
                                     <a href="{{ url('admin/suppliers/add')}}" type="button" class="btn btn-block btn-primary">{{ trans('labels.AddNew') }}</a>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -74,10 +76,16 @@
                                                             {{ trans('labels.Action') }} <span class="caret"></span>
                                                         </a>
                                                         <ul class="dropdown-menu">
+                                                            @if ($result['commonContent']['roles']->supplier_update == 1)
                                                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url('admin/suppliers/edit') }}/{{$listingSuppliers->id}}">{{ trans('labels.EditSuppliers') }}</a></li>
+                                                            @endif
+                                                            
                                                             <li role="presentation" class="divider"></li>
+                                                            @if ($result['commonContent']['roles']->supplier_delete == 1)
                                                             <li role="presentation"><a data-toggle="tooltip" data-placement="bottom" title="{{ trans('labels.Delete') }}" id="deleteCustomerFrom"
-                                                                  users_id="{{ $listingSuppliers->id }}">{{ trans('labels.Delete') }}</a></li>
+                                                                users_id="{{ $listingSuppliers->id }}">{{ trans('labels.Delete') }}</a></li> 
+                                                            @endif
+                                                            
                                                         </ul>
                                                     </li>
                                                 </ul>

@@ -13,8 +13,8 @@ class Order extends Model
         $data = DB::table('orders')
             ->join('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
             ->join('products', 'products.products_id', '=', 'orders_products.products_id')
-            ->orderBy('orders.created_at', 'DESC')
-            ->where('customers_id', '!=', '');
+            ->orderBy('orders.created_at', 'DESC');
+            // ->where('customers_id', '!=', '');
 
         if(auth()->user()->role_id == 11) {
             $data->where('admin_id', '=', auth()->user()->id);

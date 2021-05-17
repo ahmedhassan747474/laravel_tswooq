@@ -60,19 +60,22 @@
                                   {{ trans('labels.AdminTypeText') }}</span>
                                   </div>
                             </div>
-
-                            <div class="form-group show_hide_shop" style="display: none;">
-                              <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
-                              <div class="col-sm-10 col-md-4">
-                                <select class="form-control" name="admin_id" id="select_shop">
-                                    <option value="">{{ trans('labels.SelectShop') }}</option>
-                                    @foreach($result['shops'] as $shop)
-                                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                                   @endforeach
-                                </select>
+                            @if (auth()->user()->role_id == 1)
+                              <div class="form-group show_hide_shop" style="display: none;">
+                                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
+                                <div class="col-sm-10 col-md-4">
+                                  <select class="form-control" name="admin_id" id="select_shop">
+                                      <option value="">{{ trans('labels.SelectShop') }}</option>
+                                      @foreach($result['shops'] as $shop)
+                                      <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                                    @endforeach
+                                  </select>
+                                </div>
                               </div>
-                            </div>
-
+                            @else
+                              <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
+                            @endif
+                            
                             <hr>
                             <h4>{{ trans('labels.Personal Info') }} </h4>
                             <hr> 

@@ -79,23 +79,23 @@
         <div class="col-sm-4 invoice-col">
           {{ trans('labels.CustomerInfo') }}:
           <address>
-            <strong>{{ $data['orders_data'][0]->customers_name }}</strong><br>
-            {{ $data['orders_data'][0]->customers_street_address }} <br>
+            <strong>{{ $data['orders_data'][0]->customers_name != null ? $data['orders_data'][0]->customers_name : '---------------' }}</strong><br>
+            {{ $data['orders_data'][0]->customers_street_address != null ? $data['orders_data'][0]->customers_street_address : '---------------'  }} <br>
             {{ $data['orders_data'][0]->customers_city }}, {{ $data['orders_data'][0]->customers_state }} {{ $data['orders_data'][0]->customers_postcode }}, {{ $data['orders_data'][0]->customers_country }}<br>
-            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->customers_telephone }}<br>
-            {{ trans('labels.Email') }}: {{ $data['orders_data'][0]->email }}
+            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->customers_telephone != null ? $data['orders_data'][0]->customers_telephone : '---------------' }}<br>
+            {{ trans('labels.Email') }}: {{ $data['orders_data'][0]->email != null ? $data['orders_data'][0]->email : '---------------' }}
           </address>
         </div>
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
           {{ trans('labels.ShippingInfo') }}
           <address>
-            <strong>{{ $data['orders_data'][0]->delivery_name }}</strong><br>
-            {{ $data['orders_data'][0]->delivery_street_address }} <br>
+            <strong>{{ $data['orders_data'][0]->delivery_name != null ? $data['orders_data'][0]->delivery_name : '---------------' }}</strong><br>
+            {{ $data['orders_data'][0]->delivery_street_address != null ? $data['orders_data'][0]->delivery_street_address : '---------------' }} <br>
             {{ $data['orders_data'][0]->delivery_city }}, {{ $data['orders_data'][0]->delivery_state }} {{ $data['orders_data'][0]->delivery_postcode }}, {{ $data['orders_data'][0]->delivery_country }}<br>
 
-            <strong>{{ trans('labels.Phone') }}: </strong>{{ $data['orders_data'][0]->delivery_phone }}<br>
-           <strong> {{ trans('labels.ShippingMethod') }}:</strong> {{ $data['orders_data'][0]->shipping_method }} <br>
+            <strong>{{ trans('labels.Phone') }}: </strong>{{ $data['orders_data'][0]->delivery_phone != null ? $data['orders_data'][0]->delivery_phone : '---------------' }}<br>
+           <strong> {{ trans('labels.ShippingMethod') }}:</strong> {{ $data['orders_data'][0]->shipping_method != null ? $data['orders_data'][0]->shipping_method : '---------------' }} <br>
            <strong> {{ trans('labels.ShippingCost') }}:</strong> 
            @if(!empty($data['orders_data'][0]->shipping_cost)) 
            @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif

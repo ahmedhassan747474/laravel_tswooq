@@ -171,9 +171,10 @@ class AdminController extends Controller
   					}
   				}
 
-  			}else{
-  				$outOfStock++;
   			}
+			//   else{
+  			// 	$outOfStock++;
+  			// }
   		}
 		  
   		$result['lowLimit'] = $lowLimit;
@@ -437,6 +438,7 @@ class AdminController extends Controller
 
 
 		$result['admins'] = $admins;
+		$result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
 		$result['commonContent'] = $this->Setting->commonContent();
 
 		return view("admin.admins.edit",$title)->with('result', $result);
@@ -539,7 +541,7 @@ class AdminController extends Controller
       //deleteProduct
     	public function deleteadmin(Request $request){
 
-    		$myid = $request->myid;
+    		$myid = $request->id;
 
     		DB::table('users')->where('id','=', $myid)->delete();
 

@@ -35,25 +35,25 @@ class LikeCardController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://taxes.like4app.com/online/products",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => array(
-            'deviceId' => '***************************',
-            'email' => 'jaber2800@hotmail.com',
-            'password' => 'Jab2800er',
-            'securityCode' => '***************************',
-            'langId' => '1',
-            'ids[]' => '693'
-        ),
-        CURLOPT_HTTPHEADER => array(
-            "Content-Type: application/x-www-form-urlencoded"
-        ),
+            CURLOPT_URL => "https://taxes.like4app.com/online/products",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => array(
+                'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
+                'email' => 'Jaber2800@hotmail.com',
+                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
+                'langId' => '1',
+                'ids[]' => '693'
+            ),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/x-www-form-urlencoded"
+            ),
         ));
 
         $response = curl_exec($curl);
