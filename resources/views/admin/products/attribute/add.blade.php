@@ -98,10 +98,10 @@
                                                                 @foreach($result['options'] as $option)
                                                                     <option value="{{ $option->products_options_id }}">{{ $option->options_name }}</option>
                                                                 @endforeach
-                                                            </select><span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                            	{{ trans('labels.AddOptionNameText') }}
-                                 </span>
-
+                                                            </select>
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.AddOptionNameText') }}
+                                                            </span>
                                                         </div>
                                                     </div>
 
@@ -110,7 +110,16 @@
                                                         <div class="col-sm-10 col-md-8">
                                                             <select class="form-control products_options_values_id field-validate" name="products_options_values_id">	</select>
                                                             <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                  {{ trans('labels.AddOptionValueText') }}</span>
+                                                            {{ trans('labels.AddOptionValueText') }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.BarCode') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control field-validate" name="barcode">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.AddBarCodeText') }}</span>
                                                         </div>
                                                     </div>
 
@@ -269,6 +278,16 @@
                                                             <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.NumericValueError') }}</span>
                                                         </div>
                                                     </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.BarCode') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control field-validate" name="barcode">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.AddBarCodeText') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     <div class="alert alert-danger addError" style="display: none; margin-bottom: 0;" role="alert">Already Exist<i class="icon fa fa-ban"></i><span></span> </div>
                                                 </div>
                                                 <div class="modal-footer">

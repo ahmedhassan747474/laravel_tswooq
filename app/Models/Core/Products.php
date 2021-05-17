@@ -1717,7 +1717,8 @@ class Products extends Model
               'options_values_id' => $request->products_options_values_id,
               'options_values_price' => '0',
               'price_prefix' => '+',
-              'is_default' => $request->is_default
+              'is_default' => $request->is_default,
+              'barcode' => $request->barcode
           ]);
           $products_attributes = DB::table('products_attributes')
               ->join('products_options', 'products_options.products_options_id', '=', 'products_attributes.options_id')
@@ -1859,7 +1860,8 @@ class Products extends Model
                         'options_values_id' => $request->products_options_values_id,
                         'options_values_price' => $request->options_values_price,
                         'price_prefix' => $request->price_prefix,
-                        'is_default' => $request->is_default
+                        'is_default' => $request->is_default,
+                        'barcode' => $request->barcode
                     ]);
                     $products_attributes = DB::table('products_attributes')
                         ->join('products_options', 'products_options.products_options_id', '=', 'products_attributes.options_id')

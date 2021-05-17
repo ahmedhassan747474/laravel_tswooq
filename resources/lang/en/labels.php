@@ -2500,5 +2500,7 @@ return [
 	'Total Buy Price'			=> 'Total Buy Price',
 	'Total Win Price'			=> 'Total Win Price',
 	'shops'						=> 'Shops',
+	'BarCode'					=> 'BarCode',
+	'AddBarCodeText'			=> 'Please Enter BarCode',
 	
 ];

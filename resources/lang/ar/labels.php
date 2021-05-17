@@ -2503,4 +2503,7 @@ return [
 	'Total Buy Price'			=> 'اجمالى سعر الشراء',
 	'Total Win Price'			=> 'اجمالى الربح',
 	'shops'						=> 'المحلات',
+	'BarCode'					=> 'باركود',
+	'AddBarCodeText'			=> 'يرجى اضافة الباركود',
+	
 ];
