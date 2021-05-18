@@ -1569,6 +1569,9 @@ class Products extends Model
         ->orderBy('sort_order', 'ASC')
         ->get();
     $result['products_images'] = $products_images;
+    $result['colors'] = DB::table('products_options_values')
+        ->select('products_options_values_id as id', 'products_options_values_name as name')
+        ->get();
     return $result;
   }
 
@@ -1595,6 +1598,7 @@ class Products extends Model
              'image' => $image,
              'htmlcontent' => $request->htmlcontent,
              'sort_order' => $sort_order,
+             'products_options_values_id'  => $request->products_options_values_id
          ]);
 
        return $product_id;
@@ -1637,6 +1641,7 @@ class Products extends Model
               'image' => $uploadImage,
               'htmlcontent' => $request->htmlcontent,
               'sort_order' => $request->sort_order,
+              'products_options_values_id'  => $request->products_options_values_id
           ]);
           $products_images = DB::table('products_images')
               ->LeftJoin('image_categories', function ($join) {

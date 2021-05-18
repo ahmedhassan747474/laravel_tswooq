@@ -189,4 +189,46 @@ nav#menu-container {
 .my-float{
 	margin-top:16px;
 }
+
+
 </style>
+
+@if(isset($result['colors']))
+
+@foreach ($result['colors'] as $item)
+<style> 
+  
+  .carousel-inner img {
+      width: 100%;
+      height: 100%
+  }
+  
+  #custCarousel{{$item->id}} .carousel-indicators {
+      position: static;
+      margin-top: 20px
+  }
+  
+  #custCarousel{{$item->id}} .carousel-indicators>li {
+      width: 100px
+  }
+  
+  #custCarousel{{$item->id}} .carousel-indicators li img {
+      display: block;
+      opacity: 0.5
+  }
+  
+  #custCarousel{{$item->id}} .carousel-indicators li.active img {
+      opacity: 1
+  }
+  
+  #custCarousel{{$item->id}} .carousel-indicators li:hover img {
+      opacity: 0.75
+  }
+  
+  .carousel-item img {
+      width: 80%
+  }
+</style>
+@endforeach
+
+@endif

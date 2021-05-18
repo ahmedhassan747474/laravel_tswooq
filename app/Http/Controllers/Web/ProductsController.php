@@ -488,6 +488,16 @@ class ProductsController extends Controller
                 }
             }
 
+            // dd($detail);
+
+            $colors = DB::table('products_images')
+                ->where('products_id', '=', $products[0]->products_id)
+                ->select('products_options_values_id as id')
+                ->groupBy('products_options_values_id')
+                ->get();
+
+            $result['colors'] = $colors;
+
             $data = array('page_number' => '0', 'type' => '', 'categories_id' => $postCategoryId, 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
             $simliar_products = $this->products->products($data);
             $result['simliar_products'] = $simliar_products;

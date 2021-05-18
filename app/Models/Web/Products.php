@@ -751,7 +751,7 @@ class Products extends Model
                 //multiple images
                 $products_images = DB::table('products_images')
                     ->LeftJoin('image_categories', 'products_images.image', '=', 'image_categories.image_id')
-                    ->select('image_categories.path as image_path', 'image_categories.image_type')
+                    ->select('image_categories.path as image_path', 'image_categories.image_type', 'products_options_values_id as color_type')
                     ->where('products_id', '=', $products_id)
                     ->orderBy('sort_order', 'ASC')
                     ->get();

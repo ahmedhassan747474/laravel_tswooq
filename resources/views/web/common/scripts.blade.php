@@ -1884,9 +1884,13 @@ function getQuantity(){
 	jQuery(".currentstock").each(function() {
 		var value_price = jQuery('option:selected', this).attr('value_price');
 		var attributes_value = jQuery('option:selected', this).attr('attributes_value');
+		var color_id = jQuery('option:selected', this).attr('value');
+		// console.log(color_id);
+		$('.change_color_slider').css('display', 'none');
+		$('.color_id_slider_' + color_id).css('display', '');
 		jQuery('#function_' + i).val(value_price);
 		jQuery('#attributeids_' + i++).val(attributes_value);
-		// console.log(value_price, attributes_value);
+		// console.log(value_price, attributes_value, color_id);
 		var operation = jQuery('option:selected', this).attr('prefix');
 		var final_price = fixed_products_price;
 		
@@ -2116,6 +2120,10 @@ jQuery( document ).ready(function() {
         })(jQuery);
 });
 
+
+// $(document).on('change', 'change_color_from_slider', function() {
+// 	console.log(('.change_color_slider').data('color'));
+// });
 
 
 

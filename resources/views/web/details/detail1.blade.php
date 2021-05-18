@@ -30,111 +30,97 @@
 <section class="product-page">
   <div class="container"> 
     <div class="row">
-      <div class="col-12 col-lg-6  ">
-          <div class="slider-wrapper pd2">
-              <div class="slider-for">
-                @if(!empty($result['detail']['product_data'][0]->products_video_link))
-                <a class="slider-for__item ex1 fancybox-button iframe">
-                  {!! $result['detail']['product_data'][0]->products_video_link !!}                 
-                </a>
+      <div class="col-12 col-lg-6 change_color_slider color_id_slider_{{$result['colors'][0]->id}}" data-color="{{$result['colors'][0]->id}}">
+        <div id="custCarousel{{$result['colors'][0]->id}}" class="carousel slide" data-ride="carousel" align="center">
+          <!-- slides -->
+          <div class="carousel-inner">
+              <div class="carousel-item active"> <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
+              
+              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
+
+                @if($images->image_type == 'ACTUAL' && $images->color_type == $result['colors'][0]->id)
+                  <div class="carousel-item" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
                 @endif
-
-                <a class="slider-for__item ex1 fancybox-button" href="{{asset('').$result['detail']['product_data'][0]->default_images }}" data-fancybox-group="fancybox-button">
-                  <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" alt="Zoom Image" />
-                </a>
-            
-                @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
-                  @if($images->image_type == 'LARGE')
-
-                  <a class="slider-for__item ex1 fancybox-button" href="{{asset('').$images->image_path }}" data-fancybox-group="fancybox-button" >
-                    <img src="{{asset('').$images->image_path }}" alt="Zoom Image" />
-                  </a>
-                  
-                  @elseif($images->image_type == 'ACTUAL')
-                  <a class="slider-for__item ex1 fancybox-button" href="{{asset('').$images->image_path }}" data-fancybox-group="fancybox-button">
-                    <img src="{{asset('').$images->image_path }}" alt="Zoom Image" />
-                  </a>
-                  @endif
-                @endforeach
-              </div>
-            
-              <div class="slider-nav">
-                @if(!empty($result['detail']['product_data'][0]->products_video_link))
-                <div class="slider-nav__item">
-                  <img src="{{asset('web/images/miscellaneous/video-thumbnail.jpg')}}" alt="Zoom Image"/>
-                </div>
+              
+              @endforeach
+              
+          </div> 
+          <!-- Left right --> 
+          <a class="carousel-control-prev" href="#custCarousel{{$result['colors'][0]->id}}" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <a class="carousel-control-next" href="#custCarousel{{$result['colors'][0]->id}}" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <!-- Thumbnails -->
+          <ol class="carousel-indicators list-inline">
+              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel{{$result['colors'][0]->id}}"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
+              @php
+              $index = 1;
+              @endphp
+              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
+                @if($images->image_type == 'THUMBNAIL')
+                  {{-- <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li>
+                  @php
+                  $index++;
+                  @endphp --}}
+                @elseif($images->image_type == 'MEDIUM')
+                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
+                @elseif($images->image_type == 'LARGE')
+                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
+                @elseif($images->image_type == 'ACTUAL' && $images->color_type == $result['colors'][0]->id)
+                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel{{$result['colors'][0]->id}}" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
+                  @php
+                  $index++;
+                  @endphp
                 @endif
-                <div class="slider-nav__item">
-                  <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" alt="Zoom Image"/>
-                </div>
-            
-                @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
-                  
-                  @if($images->image_type == 'THUMBNAIL')
-                    <div class="slider-nav__item">
-                      <img src="{{asset('').$images->image_path }}" alt="Zoom Image"/>
-                    </div>
-                  @elseif($images->image_type == 'MEDIUM')
-                  <!-- <div class="slider-nav__item">
-                    <img src="{{asset('').$images->image_path }}" alt="Zoom Image"/>
-                  </div> -->
-                  @elseif($images->image_type == 'LARGE')
-                  <!-- <div class="slider-nav__item">
-                    <img src="{{asset('').$images->image_path }}" alt="Zoom Image"/>
-                  </div> -->
-                  @elseif($images->image_type == 'ACTUAL')
-                  <!-- <div class="slider-nav__item">
-                    <img src="{{asset('').$images->image_path }}" alt="Zoom Image"/>
-                  </div> -->
-                  @endif
-                @endforeach
-                
-              </div>
-            </div>
+              @endforeach
+          </ol>
+        </div>
       </div>
-      <div class="col-12 col-lg-6 d-none">
-        <div class="general-product" data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom">
-          <div class="container">
-              <div class="product-m-carousel-js">
-                <div class="col-12 col-md-12 col-lg-6">
-                  <div class="product">
-                    <article>
-                      <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" class="img-fluid" alt="blogImage">
-                        <div class="over"></div>
-                    </article>
-                  </div>
-                </div>
+      @foreach ($result['colors']->skip(1) as $item)
+      <div class="col-12 col-lg-6 change_color_slider color_id_slider_{{$item->id}}" data-color="{{$item->id}}" style="display: none">
+        <div id="custCarousel{{$item->id}}" class="carousel slide" data-ride="carousel" align="center">
+          <!-- slides -->
+          <div class="carousel-inner">
+              <div class="carousel-item active"> <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
+              
+              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
 
-                @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
-                  @if($images->image_type == 'LARGE')
-
-                  <div class="col-12 col-md-12 col-lg-6">
-                    <div class="product">
-                      <article>
-                        <img src="{{asset('').$images->image_path }}" class="img-fluid" alt="blogImage">
-                          <div class="over"></div>
-                      </article>
-                    </div>
-                  </div>
-                  
-                  @elseif($images->image_type == 'ACTUAL')
-                  <div class="col-12 col-md-12 col-lg-6">
-                    <div class="product">
-                      <article>
-                        <img src="{{asset('').$images->image_path }}" class="img-fluid" alt="blogImage">
-                          <div class="over"></div>
-                      </article>
-                    </div>
-                  </div>
-                  @endif
-                @endforeach
-
-                
-                </div>  
-          </div>
-        </div>  
+                @if($images->image_type == 'ACTUAL' && $images->color_type == $item->id)
+                  <div class="carousel-item" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
+                @endif
+              
+              @endforeach
+              
+          </div> 
+          <!-- Left right --> 
+          <a class="carousel-control-prev" href="#custCarousel{{$item->id}}" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <a class="carousel-control-next" href="#custCarousel{{$item->id}}" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <!-- Thumbnails -->
+          <ol class="carousel-indicators list-inline">
+              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel{{$item->id}}"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
+              @php
+              $index = 1;
+              @endphp
+              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
+                @if($images->image_type == 'THUMBNAIL')
+                  {{-- <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li>
+                  @php
+                  $index++;
+                  @endphp --}}
+                @elseif($images->image_type == 'MEDIUM')
+                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
+                @elseif($images->image_type == 'LARGE')
+                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
+                @elseif($images->image_type == 'ACTUAL' && $images->color_type == $item->id)
+                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel{{$item->id}}" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
+                  @php
+                  $index++;
+                  @endphp
+                @endif
+              @endforeach
+          </ol>
+        </div>
       </div>
+      @endforeach
+      
       <div class="col-12 col-lg-6">
           <div class="row">
               <div class="col-12 col-md-12">
@@ -328,7 +314,7 @@
               <div class="attributes col-12 col-md-4 box">
                   <label class="">{{ $attributes_data['option']['name'] }}</label>
                   <div class="select-control">
-                  <select name="{{ $attributes_data['option']['id'] }}" onChange="getQuantity()" class="currentstock form-control attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
+                  <select name="{{ $attributes_data['option']['id'] }}" onChange="getQuantity()" class="change_color_from_slider currentstock form-control attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
                     @if(!empty($result['cart']))
                       @php
                         $value_ids = array();

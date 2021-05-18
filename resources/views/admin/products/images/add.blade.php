@@ -36,7 +36,7 @@
 
                                         <div class="modal-body">
 
-                                          <div class="form-group" id="imageIcone">
+                                            <div class="form-group" id="imageIcone">
                                               <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Image') }}</label>
                                               <div class="col-sm-10 col-md-4">
                                                   <!-- Modal -->
@@ -80,7 +80,19 @@
                                                   </div>
                                                   <br>
                                               </div>
-                                          </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.ChooseOptions') }}</label>
+                                                <div class="col-sm-10 col-md-8">
+                                                    <select class="form-control field-validate" name="products_options_values_id">
+                                                        <option value="">{{ trans('labels.ChooseOptions') }}</option>
+                                                        @foreach($result['colors'] as $color)
+                                                        <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
 
 
                                             <div class="form-group">
@@ -89,8 +101,8 @@
                                                     <div class="col-md-6 col-sm-6">
                                                     {!! Form::textarea('htmlcontent',  '', array('class'=>'form-control', 'id'=>'htmlcontent', 'colspan'=>'3' )) !!}
                                                     <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-							     {{ trans('labels.ImageDescription') }}
-							     </span>
+                                                    {{ trans('labels.ImageDescription') }}
+                                                    </span>
 
                                                     </div>
                                                 </div>
