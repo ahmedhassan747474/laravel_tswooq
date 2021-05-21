@@ -909,4 +909,6 @@ return [
 	'Choose Any Category'	=> 'جميع الفئات',
 	'Bank Account'			=> 'رقم التحويل',
 	'Bank Account Image'	=> 'صورة التحويل',
+	'Attributes'			=> 'السمات',
+	
 ];

@@ -138,6 +138,32 @@ class ProductController extends Controller
         $result['units'] = $this->myVarsetting->getUnits();
         $result['commonContent'] = $this->Setting->commonContent();
         $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
+        
+        $attributes = DB::table('products_options')
+            ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')
+            ->where('products_options_descriptions.language_id', '=', 1)
+            ->select('products_options.products_options_id', 'options_name')
+            ->get();
+        foreach($attributes as $attribute){
+            $option_value = DB::table('products_options_values')
+                ->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')
+                ->where('products_options_id', '=', $attribute->products_options_id)
+                ->where('products_options_values_descriptions.language_id', '=', 1)
+                ->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name')
+                ->get();
+            $attribute->option_value = $option_value;
+        }
+
+        $result['attributes'] = $attributes;
+
+        $products = DB::table('products')
+            ->join('products_description', 'products_description.products_id', '=', 'products.products_id')
+            ->select('products.products_id as id', 'products_description.products_name as name')
+            ->where('language_id', '=', 1)
+            ->get();
+
+        $result['products'] = $products;
+
         return view("admin.products.add", $title)->with('result', $result)->with('allimage', $allimage);
 
     }
@@ -204,6 +230,38 @@ class ProductController extends Controller
         $title = array('pageTitle' => Lang::get("labels.EditProduct"));
         $result['commonContent'] = $this->Setting->commonContent();
         $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
+        $attributes = DB::table('products_options')
+            ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')
+            ->where('products_options_descriptions.language_id', '=', 1)
+            ->select('products_options.products_options_id', 'options_name')
+            ->get();
+        foreach($attributes as $attribute){
+            $option_value = DB::table('products_options_values')
+                ->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')
+                ->where('products_options_id', '=', $attribute->products_options_id)
+                ->where('products_options_values_descriptions.language_id', '=', 1)
+                ->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name')
+                ->get();
+            $attribute->option_value = $option_value;
+            foreach($option_value as $value){
+                $option_value_select = DB::table('products_attributes')
+                    ->where('products_id', '=', $request->id)
+                    ->where('options_values_id', '=', $value->products_options_values_id)
+                    ->first();
+                $value->is_selected = $option_value_select ? 1 : 0;
+            }
+        }
+
+        $result['attributes'] = $attributes;
+
+        $products = DB::table('products')
+            ->join('products_description', 'products_description.products_id', '=', 'products.products_id')
+            ->select('products.products_id as id', 'products_description.products_name as name')
+            ->where('language_id', '=', 1)
+            ->get();
+
+        $result['products'] = $products;
+        
         return view("admin.products.edit", $title)->with('result', $result)->with('allimage', $allimage);
 
     }
@@ -234,6 +292,8 @@ class ProductController extends Controller
 				),
 			array(
 					'categories'    => 'required',
+                    // 'attributes'    => 'required|array|min:1',
+                    // 'attributes.*'  => 'required'
 				)
         );
         
@@ -243,6 +303,19 @@ class ProductController extends Controller
 		}else{
 
         // if(isset($request->categories) and count){            
+            $countAttr = 0;
+            if(count($request['attributes']) > 0) {
+                foreach($request['attributes'] as $attr){
+                    if($attr != null){
+                        $countAttr += 1;
+                    }
+                }
+            }
+
+            if($countAttr == 0) {
+                $error = "You Must Choose at least one in Attributes";
+                return redirect()->back()->withInput($request->all())->with('error', $error);
+            }
         
             $language_id = '1';
             $products_id = $this->products->insert($request);
@@ -251,9 +324,9 @@ class ProductController extends Controller
             // if ($request->products_type == 1) {
             //     return redirect('/admin/products/attach/attribute/display/' . $products_id);
             // } else {
-            //     return redirect('admin/products/images/display/' . $products_id);
+                return redirect('admin/products/images/display/' . $products_id);
             // }
-            return redirect('/admin/products/attach/attribute/display/' . $products_id);
+            // return redirect('/admin/products/attach/attribute/display/' . $products_id);
         }
     }
 
@@ -372,7 +445,10 @@ class ProductController extends Controller
         $allimage = $this->images->getimages();
         $products_images = $this->products->editProductImages($id);
         $result['commonContent'] = $this->Setting->commonContent();
-        return view("admin/products/images/edit")->with('products_images', $products_images)->with('allimage', $allimage);
+        $result['colors'] = DB::table('products_options_values')
+        ->select('products_options_values_id as id', 'products_options_values_name as name')
+        ->get();
+        return view("admin/products/images/edit")->with('products_images', $products_images)->with('allimage', $allimage)->with('result', $result);
 
     }
 

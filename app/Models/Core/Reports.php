@@ -399,7 +399,9 @@ class Reports extends Model
                 foreach($orderProducts as $orderProduct){
                     $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
                     // dd($product);
-                    $price_buy += $product->price_buy;
+                    if($product){
+                        $price_buy += $product->price_buy;
+                    }
                 }
             }
             
@@ -485,7 +487,9 @@ class Reports extends Model
                     ->get();
                 foreach($orderProducts as $orderProduct){
                     $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
-                    $price_buy += $product->price_buy;
+                    if($product){
+                        $price_buy += $product->price_buy;
+                    }
                 }
             }
             

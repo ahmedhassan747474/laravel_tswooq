@@ -85,12 +85,17 @@
         </li>
 
       <?php }
-        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->pos_view == 1){
+        if($result['commonContent']['roles']!= null){
       ?>
         <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}">
-          <a href="{{ URL::to('admin/shopsalesreport')}}">
-            <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.shops') }}</span>
+          <a href="#">
+            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+            <span>{{ trans('labels.shops') }}</span> 
+            <i class="fa fa-angle-left pull-right"></i>
           </a>
+          <ul class="treeview-menu">
+            <li class="{{ Request::is('admin/shopsalesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/shopsalesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
+          </ul>
         </li>
 
       <?php }        

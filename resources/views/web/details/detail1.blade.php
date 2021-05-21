@@ -30,15 +30,16 @@
 <section class="product-page">
   <div class="container"> 
     <div class="row">
-      <div class="col-12 col-lg-6 change_color_slider color_id_slider_{{$result['colors'][0]->id}}" data-color="{{$result['colors'][0]->id}}">
-        <div id="custCarousel{{$result['colors'][0]->id}}" class="carousel slide" data-ride="carousel" align="center">
+
+      <div class="col-12 col-lg-6 change_color_slider color_id_slider">
+        <div id="custCarousel" class="carousel slide" data-ride="carousel" align="center">
           <!-- slides -->
           <div class="carousel-inner">
               <div class="carousel-item active"> <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
               
               @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
 
-                @if($images->image_type == 'ACTUAL' && $images->color_type == $result['colors'][0]->id)
+                @if($images->image_type == 'ACTUAL')
                   <div class="carousel-item" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
                 @endif
               
@@ -46,11 +47,11 @@
               
           </div> 
           <!-- Left right --> 
-          <a class="carousel-control-prev" href="#custCarousel{{$result['colors'][0]->id}}" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
-          <a class="carousel-control-next" href="#custCarousel{{$result['colors'][0]->id}}" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <a class="carousel-control-prev" href="#custCarousel" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
+          <a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
           <!-- Thumbnails -->
           <ol class="carousel-indicators list-inline">
-              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel{{$result['colors'][0]->id}}"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
+              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
               @php
               $index = 1;
               @endphp
@@ -64,8 +65,8 @@
                 {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
                 @elseif($images->image_type == 'LARGE')
                 {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
-                @elseif($images->image_type == 'ACTUAL' && $images->color_type == $result['colors'][0]->id)
-                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel{{$result['colors'][0]->id}}" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
+                @elseif($images->image_type == 'ACTUAL')
+                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
                   @php
                   $index++;
                   @endphp
@@ -74,52 +75,7 @@
           </ol>
         </div>
       </div>
-      @foreach ($result['colors']->skip(1) as $item)
-      <div class="col-12 col-lg-6 change_color_slider color_id_slider_{{$item->id}}" data-color="{{$item->id}}" style="display: none">
-        <div id="custCarousel{{$item->id}}" class="carousel slide" data-ride="carousel" align="center">
-          <!-- slides -->
-          <div class="carousel-inner">
-              <div class="carousel-item active"> <img src="{{asset('').$result['detail']['product_data'][0]->default_images }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
-              
-              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
 
-                @if($images->image_type == 'ACTUAL' && $images->color_type == $item->id)
-                  <div class="carousel-item" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>
-                @endif
-              
-              @endforeach
-              
-          </div> 
-          <!-- Left right --> 
-          <a class="carousel-control-prev" href="#custCarousel{{$item->id}}" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
-          <a class="carousel-control-next" href="#custCarousel{{$item->id}}" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
-          <!-- Thumbnails -->
-          <ol class="carousel-indicators list-inline">
-              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel{{$item->id}}"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
-              @php
-              $index = 1;
-              @endphp
-              @foreach( $result['detail']['product_data'][0]->images as $key=>$images )
-                @if($images->image_type == 'THUMBNAIL')
-                  {{-- <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li>
-                  @php
-                  $index++;
-                  @endphp --}}
-                @elseif($images->image_type == 'MEDIUM')
-                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
-                @elseif($images->image_type == 'LARGE')
-                {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
-                @elseif($images->image_type == 'ACTUAL' && $images->color_type == $item->id)
-                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel{{$item->id}}" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
-                  @php
-                  $index++;
-                  @endphp
-                @endif
-              @endforeach
-          </ol>
-        </div>
-      </div>
-      @endforeach
       
       <div class="col-12 col-lg-6">
           <div class="row">
@@ -249,7 +205,7 @@
               <div class="pro-single-info"><b>@lang('labels.Shop')  :</b>
                 <?php
                   $getName = DB::table('users')->where('id', $result['detail']['product_data'][0]->admin_id)->first();
-                  echo $getName->shop_name != null ? $getName->shop_name : 'Not Exist';
+                  echo $getName != null ? $getName->shop_name : 'Not Exist';
                 ?>
               </div>
               
@@ -282,6 +238,21 @@
                 @endif
           </div>
 
+          <div class="row">
+            <label class="col-md-2 pro-single-info">@lang('website.Attributes')</label>
+            <div class="col-md-10 select-control">
+              <select class="form-control">
+                @foreach ($result['listOfAttributes'] as $attr)
+                <option value="{{$attr['id']}}">
+                @foreach($attr['name'] as $name)
+                  {{$name}}
+                @endforeach
+                </option>
+                @endforeach
+              </select>
+            </div> 
+          </div>   
+
           <form name="attributes" id="add-Product-form" method="post" >
             <input type="hidden" name="products_id" value="{{$result['detail']['product_data'][0]->products_id}}">
             <input type="hidden" name="fixed_products_price" id="fixed_products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['detail']['product_data'][0]->products_price+0}}@endif">
@@ -311,35 +282,9 @@
             <input id="attribute_sign_<?=$index?>" type="hidden" value="">
             <input id="attributeids_<?=$index?>" type="hidden" name="attributeid[]" value="" >
             
-              <div class="attributes col-12 col-md-4 box">
-                  <label class="">{{ $attributes_data['option']['name'] }}</label>
-                  <div class="select-control">
-                  <select name="{{ $attributes_data['option']['id'] }}" onChange="getQuantity()" class="change_color_from_slider currentstock form-control attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
-                    @if(!empty($result['cart']))
-                      @php
-                        $value_ids = array();
-                        foreach($result['cart'][0]->attributes as $values){
-                            $value_ids[] = $values->options_values_id;
-                        }
-                      @endphp
-                        @foreach($attributes_data['values'] as $values_data)
-                          @if(!empty($result['cart']))
-                          <option @if(in_array($values_data['id'],$value_ids)) selected @endif attributes_value="{{ $values_data['products_attributes_id'] }}" value="{{ $values_data['id'] }}" prefix = '{{ $values_data['price_prefix'] }}'  value_price ="{{ $values_data['price']+0 }}" >{{ $values_data['value'] }}</option>
-                          @endif
-                        @endforeach
-                      @else
-                        @foreach($attributes_data['values'] as $values_data)
-                          <option attributes_value="{{ $values_data['products_attributes_id'] }}" value="{{ $values_data['id'] }}" prefix = '{{ $values_data['price_prefix'] }}'  value_price ="{{ $values_data['price']+0 }}" >{{ $values_data['value'] }}</option>
-                        @endforeach
-                      @endif
-                    </select>
-                  </div> 
-                </div>                 
-            
             @endforeach
           </div>
-          @endif
-        
+          @endif        
       
          @if(!empty($result['detail']['product_data'][0]->flash_start_date))
           <div class="countdown pro-timer" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Countdown Timer')" id="counter_{{$result['detail']['product_data'][0]->products_id}}" >                               

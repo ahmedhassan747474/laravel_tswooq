@@ -172,7 +172,7 @@ class Products extends Model
           }
 
   public function insert($request){
-    
+    // dd($request['attributes'][0]);
     $language_id      =   '1';
     $date_added	= date('Y-m-d h:i:s');
 
@@ -217,8 +217,27 @@ class Products extends Model
         'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
         'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
         'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
-        'admin_id'          => $request->admin_id
+        'admin_id'          => $request->admin_id,
+        'product_parent_id' => $request->product_parent_id,
+        'barcode'           => $request->barcode
     ]);
+
+    //insert Attributes 
+    if(count($request['attributes']) > 0) {
+        foreach($request['attributes'] as $attr){
+            $getProductsOptionsId = DB::table('products_options_values')->where('products_options_values_id', '=', $attr)->select('products_options_id')->first();
+            if($getProductsOptionsId){
+                $product_attr = DB::table('products_attributes')
+                ->insert([
+                    'products_id'   => $products_id,
+                    'options_id'    => $getProductsOptionsId->products_options_id,
+                    'options_values_id' => $attr,
+                    'price_prefix'  => '+',
+                    'is_default'    => 1
+                ]);
+            }
+        }
+    }
 
     $slug_flag = false;
     foreach($languages as $languages_data){
@@ -576,8 +595,29 @@ class Products extends Model
                 'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
                 'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
                 'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
-                'admin_id'          => $request->admin_id
+                'admin_id'          => $request->admin_id,
+                'product_parent_id' => $request->product_parent_id,
+                'barcode'           => $request->barcode
           ]);
+
+            //insert Attributes 
+            if(count($request['attributes']) > 0) {
+                $del_product_attr = DB::table('products_attributes')->where('products_id', '=', $products_id)->delete();
+                foreach($request['attributes'] as $attr){
+                    $getProductsOptionsId = DB::table('products_options_values')->where('products_options_values_id', '=', $attr)->select('products_options_id')->first();
+                    if($getProductsOptionsId){
+                        $product_attr = DB::table('products_attributes')
+                        ->insert([
+                            'products_id'   => $products_id,
+                            'options_id'    => $getProductsOptionsId->products_options_id,
+                            'options_values_id' => $attr,
+                            'price_prefix'  => '+',
+                            'is_default'    => 1
+                        ]);
+                    }
+                }
+            }
+
           foreach($languages as $languages_data){
               $products_name = 'products_name_'.$languages_data->languages_id;
               $products_url = 'products_url_'.$languages_data->languages_id;
@@ -1598,7 +1638,7 @@ class Products extends Model
              'image' => $image,
              'htmlcontent' => $request->htmlcontent,
              'sort_order' => $sort_order,
-             'products_options_values_id'  => $request->products_options_values_id
+            //  'products_options_values_id'  => $request->products_options_values_id
          ]);
 
        return $product_id;
@@ -1641,7 +1681,7 @@ class Products extends Model
               'image' => $uploadImage,
               'htmlcontent' => $request->htmlcontent,
               'sort_order' => $request->sort_order,
-              'products_options_values_id'  => $request->products_options_values_id
+            //   'products_options_values_id'  => $request->products_options_values_id
           ]);
           $products_images = DB::table('products_images')
               ->LeftJoin('image_categories', function ($join) {

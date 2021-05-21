@@ -550,6 +550,49 @@
                                         </div>
 
                                         <hr>
+
+                                        <div class="row">
+                                            @foreach($result['attributes'] as $attribute)
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">Select {{$attribute->options_name}}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="attributes[]">
+                                                            <option value="">Select {{$attribute->options_name}}</option>
+                                                            @foreach($attribute->option_value as $item)
+                                                            <option value="{{ $item->products_options_values_id }}" {{$item->is_selected == 1 ? 'selected' : ''}}>{{ $item->options_values_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.BarCode') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <input class="form-control field-validate" name="barcode" value="{{$result['product'][0]->barcode}}">
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                        {{ trans('labels.AddBarCodeText') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SelectParallel') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="product_parent_id">
+                                                            <option value="">{{ trans('labels.SelectParallel') }}</option>
+                                                            @foreach($result['products'] as $product)
+                                                            <option value="{{ $product->id }}" {{$result['product'][0]->product_parent_id == $product->id ? 'selected' : ''}}>{{ $product->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="tabbable tabs-left">

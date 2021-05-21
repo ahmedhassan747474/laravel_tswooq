@@ -910,6 +910,6 @@ return [
 	'manufacturers'			=> 'Manufacturers',
 	'Bank Account'			=> 'Bank Account',
 	'Bank Account Image'	=> 'Bank Account Image',
-	
+	'Attributes'			=> 'Attributes',
 	
 ];

@@ -193,6 +193,40 @@ nav#menu-container {
 
 </style>
 
+<style> 
+  
+  .carousel-inner img {
+      width: 100%;
+      height: 100%
+  }
+  
+  #custCarousel .carousel-indicators {
+      position: static;
+      margin-top: 20px
+  }
+  
+  #custCarousel .carousel-indicators>li {
+      width: 100px
+  }
+  
+  #custCarousel .carousel-indicators li img {
+      display: block;
+      opacity: 0.5
+  }
+  
+  #custCarousel .carousel-indicators li.active img {
+      opacity: 1
+  }
+  
+  #custCarousel .carousel-indicators li:hover img {
+      opacity: 0.75
+  }
+  
+  .carousel-item img {
+      width: 80%
+  }
+</style>
+
 @if(isset($result['colors']))
 
 @foreach ($result['colors'] as $item)

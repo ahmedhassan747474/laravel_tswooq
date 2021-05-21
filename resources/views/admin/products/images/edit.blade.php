@@ -110,6 +110,20 @@
                                               </div>
                                             </div>
 
+                                            {{-- <div class="form-group">
+                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.ChooseOptions') }}</label>
+                                                <div class="col-sm-10 col-md-8">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <select class="form-control field-validate" name="products_options_values_id">
+                                                            <option value="">{{ trans('labels.ChooseOptions') }}</option>
+                                                            @foreach($result['colors'] as $color)
+                                                            <option value="{{ $color->id }}" {{$products_images[0]->products_options_values_id == $color->id ? 'selected' : ''}}>{{ $color->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+
 
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Description') }}</label>
