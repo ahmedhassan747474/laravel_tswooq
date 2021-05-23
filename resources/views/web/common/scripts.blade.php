@@ -488,6 +488,253 @@ jQuery(document).on('click', '.qtyminus', function(e){
 });
 
 //add-to-Cart with custom options
+jQuery(document).on('click', '.connection', function(e){
+	var unit_id = $(this).data('unit_id');
+	console.log(unit_id);
+	
+	jQuery.ajax({
+	 	url: '{{ URL::to("/getProductDetailsById")}}',
+	 	headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
+	 	type: "POST",
+		data: {'products_id' : unit_id},
+	 	success: function (response) {
+			// console.log(response);
+			var html_images = '<div id="custCarousel" class="carousel slide" data-ride="carousel" align="center"><div class="carousel-inner">';
+			html_images += '<div class="carousel-item active"> <img src="{{asset('')}}' + response.detail.product_data[0].default_images +'" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>';
+
+			var arr_image = response.detail.product_data[0].images;
+
+			for (index = 0; index < arr_image.length; ++index) {
+				if(arr_image[index].image_type == 'ACTUAL'){
+					html_images += '<div class="carousel-item" data-color="'+ arr_image[index].color_type +'"> <img src="{{asset('')}}'+ arr_image[index].image_path +'" alt="Hills" style="height: 25rem;border-radius: 22px;"> </div>';
+				}
+			}
+
+			html_images += '</div>';
+
+			html_images += '<a class="carousel-control-prev" href="#custCarousel" data-slide="prev"> <span class="carousel-control-prev-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a>';
+			html_images += '<a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a>';
+
+			html_images += '<ol class="carousel-indicators list-inline">';
+			html_images += '<li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('')}}' + response.detail.product_data[0].default_images + '" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>';
+            
+			var indexSlide = 1;
+			for (index = 0; index < arr_image.length; ++index) {
+				if(arr_image[index].image_type == 'THUMBNAIL'){
+
+				} else if(arr_image[index].image_type == 'MEDIUM') {
+					
+				} else if(arr_image[index].image_type == 'LARGE') {
+
+				} else if(arr_image[index].image_type == 'ACTUAL') {
+					html_images += '<li class="list-inline-item"> <a id="carousel-selector-'+ indexSlide +'" data-slide-to="'+ indexSlide +'" data-target="#custCarousel" data-color="' + arr_image[index].color_type + '"> <img src="{{asset('')}}' + arr_image[index].image_path + '" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>';
+					indexSlide++;
+				}
+			}
+			html_images += '</ol>';
+			html_images += '</div>';
+			// console.log(html_images);
+
+			$('.change_color_slider').html(html_images);
+
+			var products_name = response.detail.product_data[0].products_name;
+			$('.page-heading-title').html('<h2>'+ products_name +'</h2>');
+			$('.pro-title').val(products_name);
+
+			var currency_value = '{{session('currency_value')}}';
+
+			if(response.detail.product_data[0].discount_price != null){
+              	var discount_price = response.detail.product_data[0].discount_price * currency_value;
+            }
+
+            if(response.detail.product_data[0].flash_price != null){
+				var flash_price = response.detail.product_data[0].flash_price * currency_value;
+            }
+			
+			var orignal_price = response.detail.product_data[0].products_price * currency_value;
+
+            if(response.detail.product_data[0].discount_price != null){
+              	if((orignal_price + 0) > 0){
+					var discounted_price = orignal_price - discount_price;
+					var discount_percentage = discounted_price/orignal_price * 100;
+					var discounted_price = response.detail.product_data[0].discount_price;
+             	} else {
+               		var discount_percentage = 0;
+               		var discounted_price = 0;
+             	}
+            } else {
+              	var discounted_price = orignal_price;
+            }
+
+			var html_price = '';
+            if(response.detail.product_data[0].flash_price != null){
+				html_price += '<sub class="total_price">{{Session::get("symbol_left")}}' + (flash_price + 0) +'{{Session::get("symbol_right")}}</sub>';
+            	html_price += '<span>{{Session::get("symbol_left")}}' + (orignal_price+0) + '{{Session::get("symbol_right")}} </span> ';
+			} else if(response.detail.product_data[0].discount_price != null) {
+				html_price += '<price class="total_price">{{Session::get("symbol_left")}}' + (discount_price+0) + '{{Session::get("symbol_right")}}</price>';
+            	html_price += '<span>{{Session::get("symbol_left")}}' + (orignal_price+0) + '{{Session::get("symbol_right")}} </span> ';
+			} else {
+				html_price += '<price class="total_price">{{Session::get("symbol_left")}}' + (orignal_price+0) + '{{Session::get("symbol_right")}}</price>';
+			}
+			$('.price').html(html_price);
+			// console.log(html_price);
+
+			var html_rate = '';
+			var rate_value = response.detail.product_data[0].rating;
+			html_rate += '<fieldset class="disabled-ratings">';
+			html_rate += '<label class = "full fa ' + (rate_value >= 5 ? "active" : "") + '" for="star_5" title="@lang('website.awesome_5_stars')"></label>';
+			html_rate += '<label class = "full fa ' + (rate_value >= 4 ? "active" : "") + '" for="star_4" title="@lang('website.pretty_good_4_stars')"></label>';
+			html_rate += '<label class = "full fa ' + (rate_value >= 3 ? "active" : "") + '" for="star_3" title="@lang('website.pretty_good_3_stars')"></label>';
+			html_rate += '<label class = "full fa ' + (rate_value >= 2 ? "active" : "") + '" for="star_2" title="@lang('website.meh_2_stars')"></label>';
+			html_rate += '<label class = "full fa ' + (rate_value >= 1 ? "active" : "") + '" for="star1" title="@lang('website.meh_1_stars')"></label>';
+			html_rate += '</fieldset>';
+			html_rate += '<a href="#review" id="review-tabs" data-toggle="pill" role="tab" class="btn-link">' + response.detail.product_data[0].total_user_rated + ' @lang("website.Reviews") </a>';
+			
+			$('.pro-rating').html(html_rate);
+			$('.set_products_id').text(response.detail.product_data[0].products_id);
+
+			var cates = ''; 
+			var categories = response.detail.product_data[0].categories;
+			for (index = 0; index < categories.length; ++index) {
+				cates = "<a href={{url('shop?category=')}}"+categories[index].categories_name+">"+categories[index].categories_name+"</a>";
+			}
+			$('.set_category_name').html(cates);
+
+			var getNameObj = response.detail.product_data[0].shop;
+			// var getShopName = '';
+			var getShopName = getNameObj != null ? getNameObj.shop_name : 'Not Exist';
+			// console.log(getShopName);
+			$('.set_shop_name').text(getShopName);
+
+			var html_available = '';
+			if(response.detail.product_data[0].products_type == 0){
+				if(response.detail.product_data[0].defaultStock == 0){
+					html_available += '<span class="text-secondary">@lang("website.Out of Stock")</span>';
+				} else {
+					html_available += '<span class="text-secondary">@lang("website.In stock")</span>';
+				}
+			}
+
+			if(response.detail.product_data[0].products_type == 1){
+				html_available += '<span class="text-secondary variable-stock"></span>';
+			}
+
+			if(response.detail.product_data[0].products_type == 2){
+				html_available += '<span class="text-secondary">@lang("website.External")</span>';
+			}
+
+			$('.set_available').html(html_available);
+
+			if(response.detail.product_data[0].products_min_order > 0){
+				if(response.detail.product_data[0].products_type == 0){
+					html_min_orders += '<div class="pro-single-info" id="min_max_setting"><b>@lang("website.Min Order Limit:") :</b><a href="#">' + response.detail.product_data[0].products_min_order + '</a></div>';
+				} else if(response.detail.product_data[0].products_type == 1) {
+					html_min_orders += '<div class="pro-single-info" id="min_max_setting"></div>';
+				}
+			}
+
+			$('.set_min_orders').html(html_available);
+
+			var html_form = '';
+			var input_flash_price = response.detail.product_data[0].flash_price;
+			var input_discount_price = response.detail.product_data[0].discount_price;
+			var input_products_price = response.detail.product_data[0].products_price;
+			var checkout = '{{app('request')->input('checkout')}}';
+			var input_products_max_stock = response.detail.product_data[0].products_max_stock;
+
+			html_form =+ '<input type="hidden" name="products_id" value="'+ response.detail.product_data[0].products_id +'">';
+            html_form =+ '<input type="hidden" name="fixed_products_price" id="fixed_products_price" value="' + input_flash_price != null ? (input_flash_price + 0) : input_discount_price != null ? (input_discount_price + 0) : (input_products_price + 0) + '">';
+            html_form =+ '<input type="hidden" name="products_price" id="products_price" value="' + input_flash_price != null ? (input_flash_price + 0) : input_discount_price != null ? (input_discount_price + 0) : (input_products_price + 0) + '">';
+
+            html_form =+ '<input type="hidden" name="checkout" id="checkout_url" value="' + checkout ? checkout : false + '" >';
+
+            html_form =+ '<input type="hidden" id="max_order" value="'+ input_products_max_stock != null ? input_products_max_stock : 0 + '" >';
+
+			if(response.detail != null){
+				html_form =+ '<input type="hidden"  name="customers_basket_id" value="' + response.detail[0].customers_basket_id + '" >';
+			}
+
+			var attributes = response.detail.product_data[0].attributes;
+			var index2 = 0;
+
+
+			if(attributes.length > 0){
+				html_form =+ '<div class="pro-options row">';
+				// for (index = 0; index < attributes.length; ++index) {
+				// 	var functionValue = 'function_' + $key++
+				// }
+				for (const [key, value] of Object.entries(attributes)) {
+					var functionValue = 'function_' + key++
+					html_form =+ '<input type="hidden" name="option_name[]" value="' + value.option.name + '" >';
+					html_form =+ '<input type="hidden" name="option_id[]" value="' + value.option.id + '" >';
+					html_form =+ '<input type="hidden" name="' + functionValue + '" id="' + functionValue + '" value="0" >';
+					html_form =+ '<input id="attributeid_'+ index2 +'" type="hidden" value="">';
+					html_form =+ '<input id="attribute_sign_'+ index2 +'" type="hidden" value="">';
+					html_form =+ '<input id="attributeids_'+ index2 +'" type="hidden" name="attributeid[]" value="" >';
+				}
+				html_form =+ '</div>';
+			}
+
+			if(response.detail.product_data[0].flash_start_date != null){
+				html_form =+ '<div class="countdown pro-timer" data-toggle="tooltip" data-placement="bottom" title="@lang("website.Countdown Timer")" id="counter_' + response.detail.product_data[0].products_id + '" >';
+				html_form =+ '<span class="days">0<small>@lang("website.Days") </small></span>';
+				html_form =+ '<span class="hours">0<small>@lang("website.Hours")</small></span>';
+				html_form =+ '<span class="mintues">0<small>@lang("website.Minutes")</small></span>';
+				html_form =+ '<span class="seconds">0<small>@lang("website.Seconds")</small></span>';
+				html_form =+ '</div>';
+			}
+			
+			if(response.detail.product_data[0].flash_start_date != null && response.detail.product_data[0].server_time < response.detail.product_data[0].flash_start_date){
+				var counter_style = 'style="display: none"';
+			}
+
+			if(response.cart != null) {
+				var set_quantity_cart = response.cart[0].customers_basket_quantity;
+			} else {
+				if(response.detail.product_data[0].products_min_order > 0 && response.detail.product_data[0].defaultStock > response.detail.product_data[0].products_min_order){
+					var set_quantity_cart = response.detail.product_data[0].products_min_order;
+				} else {
+					var set_quantity_cart = 1;
+				}
+			}
+
+			html_form =+ '<div class="pro-counter"'+ counter_style +'>';
+              
+			html_form =+ '<div class="input-group item-quantity">';
+				html_form =+ '<input type="text" readonly name="quantity" class="form-control qty" value="' + set_quantity_cart + '" min="'+ response.detail.product_data[0].products_min_order +'" max="'+ response.detail.product_data[0].products_max_stock +'">';
+				html_form =+ '<span class="input-group-btn">';
+					html_form =+ '<button type="button" class="quantity-plus1 btn qtyplus">';
+						html_form =+ '<i class="fas fa-plus"></i>';
+					html_form =+ '</button>';
+                  
+					html_form =+ '<button type="button" class="quantity-minus1 btn qtyminus">';
+						html_form =+ '<i class="fas fa-minus"></i>';
+					html_form =+ '</button>';
+				html_form =+ '</span>';
+			html_form =+ '</div>';
+
+			if(response.detail.product_data[0].flash_start_date && response.detail.product_data[0].server_time < response.detail.product_data[0].flash_start_date) {
+
+			} else {
+				if(response.detail.product_data[0].products_type == 0) {
+					if(response.detail.product_data[0].defaultStock == 0) {
+						html_form =+ '<button class="btn btn-lg swipe-to-top  btn-danger " type="button">@lang("website.Out of Stock")</button>';
+					} else {
+						html_form =+ '<button class="btn btn-secondary btn-lg swipe-to-top add-to-Cart"  type="button" products_id="' + response.detail.product_data[0].products_id + '">@lang("website.Add to Cart")</button>';
+					}
+				} else {
+					html_form =+ '<button class="btn btn-secondary btn-lg swipe-to-top  add-to-Cart stock-cart" hidden type="button" products_id="' + response.detail.product_data[0].products_id + '">@lang("website.Add to Cart")</button>';
+					html_form =+ '<button class="btn btn-danger btn btn-lg swipe-to-top  stock-out-cart" hidden type="button">@lang("website.Out of Stock")</button>';
+				}
+			}
+        
+			html_form =+ '</div>';
+
+		}
+ 	});
+});
+
+//add-to-Cart with custom options
 jQuery(document).on('click', '.add-to-Cart', function(e){
 	var formData = jQuery("#add-Product-form").serialize();
 	

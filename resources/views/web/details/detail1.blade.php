@@ -185,33 +185,37 @@
             </div>
 
           <div class="pro-infos">
-              <div class="pro-single-info"><b>@lang('website.Product ID') :</b>{{$result['detail']['product_data'][0]->products_id}}</div>
+              <div class="pro-single-info"><b>@lang('website.Product ID') :</b><span class="set_products_id">{{$result['detail']['product_data'][0]->products_id}}</span></div>
               <div class="pro-single-info"><b>@lang('website.Categroy')  :</b>
-                <?php
-                $cates = '';  
-                ?>
-                @foreach($result['detail']['product_data'][0]->categories as $key=>$category)
-                    
+                <span class="set_category_name">
                   <?php
-                    $cates =  "<a href=".url('shop?category='.$category->categories_name).">".$category->categories_name."</a>";
-                  ?>  
-                  
-                @endforeach
-                <?php 
-                echo $cates;
-                ?>
-                </div>
+                  $cates = '';  
+                  ?>
+                  @foreach($result['detail']['product_data'][0]->categories as $key=>$category)
+                      
+                    <?php
+                      $cates =  "<a href=".url('shop?category='.$category->categories_name).">".$category->categories_name."</a>";
+                    ?>  
+                    
+                  @endforeach
+                  <?php 
+                  echo $cates;
+                  ?>
+                </span>
+              </div>
               
               <div class="pro-single-info"><b>@lang('labels.Shop')  :</b>
-                <?php
+                <span class="set_shop_name">
+                  <?php
                   $getName = DB::table('users')->where('id', $result['detail']['product_data'][0]->admin_id)->first();
                   echo $getName != null ? $getName->shop_name : 'Not Exist';
                 ?>
+                </span>
               </div>
               
               <div class="pro-single-info"><b>@lang('website.Available') :</b>
-
-                @if($result['detail']['product_data'][0]->products_type == 0)
+                <span class="set_available">
+                  @if($result['detail']['product_data'][0]->products_type == 0)
                   @if($result['detail']['product_data'][0]->defaultStock == 0)
                   <span class="text-secondary">@lang('website.Out of Stock')</span>
                   @else
@@ -226,32 +230,40 @@
                 @if($result['detail']['product_data'][0]->products_type == 2)
                 <span class="text-secondary">@lang('website.External')</span>
                 @endif
+                </span>
               </div>
-
-              @if($result['detail']['product_data'][0]->products_min_order>0)
-                    @if($result['detail']['product_data'][0]->products_type == 0)
-                  <div class="pro-single-info" id="min_max_setting"><b>@lang('website.Min Order Limit:') :</b><a href="#">{{$result['detail']['product_data'][0]->products_min_order}}</a></div>
-                    @elseif($result['detail']['product_data'][0]->products_type == 1)
-                      <div class="pro-single-info" id="min_max_setting"></div>
-                    @endif
-                 
+              
+              <span class="set_min_orders">
+                @if($result['detail']['product_data'][0]->products_min_order>0)
+                  @if($result['detail']['product_data'][0]->products_type == 0)
+                    <div class="pro-single-info" id="min_max_setting"><b>@lang('website.Min Order Limit:') :</b><a href="#">{{$result['detail']['product_data'][0]->products_min_order}}</a></div>
+                  @elseif($result['detail']['product_data'][0]->products_type == 1)
+                    <div class="pro-single-info" id="min_max_setting"></div>
+                  @endif
                 @endif
+              </span>
+              
           </div>
 
           <div class="row">
-            <label class="col-md-2 pro-single-info">@lang('website.Attributes')</label>
-            <div class="col-md-10 select-control">
-              <select class="form-control">
-                @foreach ($result['listOfAttributes'] as $attr)
-                <option value="{{$attr['id']}}">
-                @foreach($attr['name'] as $name)
-                  {{$name}}
-                @endforeach
-                </option>
-                @endforeach
-              </select>
-            </div> 
-          </div>   
+            <ul class="unit-connections no-bullet" style="margin-left: 0;list-style: none;padding-left: 1rem;">
+              @foreach ($result['options'] as $attr)
+              <li style="margin-bottom: .7142857143rem;">
+                <h3 style="font-weight: 700;font-size: 1rem;"> {{$attr->options_name}} </h3>
+                <ul class="menu connection-buttons" style="margin: 0;list-style-type: none;">
+                  @foreach ($attr->values as $value)
+                  <li style="margin-right: .0714285714rem;margin-bottom: .2857142857rem;display: inline-block;">
+                    <button class="connection text-capitalize" style="display: inline-block;padding: .2rem;
+                    font-size: 1rem;border-radius: .2857142857rem;border: 1px solid #cdcdcd;color: #333;
+                    min-width: 4.5rem;background-image: linear-gradient(180deg,#fff,#f2f2f2);font-weight: 400;" 
+                    href="#" data-unit_id="{{$value->products_id}}">{{$value->options_values_description}}</button>
+                  </li>
+                  @endforeach
+                </ul>
+              </li>
+              @endforeach
+            </ul>
+          </div>
 
           <form name="attributes" id="add-Product-form" method="post" >
             <input type="hidden" name="products_id" value="{{$result['detail']['product_data'][0]->products_id}}">
@@ -272,16 +284,21 @@
               $index = 0;
           ?>
             @foreach( $result['detail']['product_data'][0]->attributes as $key=>$attributes_data )
-            <?php
-                $functionValue = 'function_'.$key++;
-            ?>
-            <input type="hidden" name="option_name[]" value="{{ $attributes_data['option']['name'] }}" >
-            <input type="hidden" name="option_id[]" value="{{ $attributes_data['option']['id'] }}" >
-            <input type="hidden" name="{{ $functionValue }}" id="{{ $functionValue }}" value="0" >
-            <input id="attributeid_<?=$index?>" type="hidden" value="">
-            <input id="attribute_sign_<?=$index?>" type="hidden" value="">
-            <input id="attributeids_<?=$index?>" type="hidden" name="attributeid[]" value="" >
-            
+              <?php
+                  $functionValue = 'function_'.$key++;
+              ?>
+              <input type="hidden" name="option_name[]" value="{{ $attributes_data['option']['name'] }}" >
+              <input type="hidden" name="option_id[]" value="{{ $attributes_data['option']['id'] }}" >
+              <input type="hidden" name="{{ $functionValue }}" id="{{ $functionValue }}" value="0" >
+              <input id="attributeid_<?=$index?>" type="hidden" value="0">
+              <input id="attribute_sign_<?=$index?>" type="hidden" value="+">
+
+              @foreach($attributes_data['values'] as $values_data)
+                <input id="attributeids_<?=$index?>" type="hidden" name="attributeid[]" value="{{ $values_data['id'] }}" >
+              @endforeach
+              
+              <input name="{{ $attributes_data['option']['id'] }}" type="hidden" value="" class="attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
+              
             @endforeach
           </div>
           @endif        
