@@ -51,7 +51,7 @@
           <a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a> 
           <!-- Thumbnails -->
           <ol class="carousel-indicators list-inline">
-              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>
+              <li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('').$result['detail']['product_data'][0]->default_thumb }}" class="img-fluid" style="height: 4.5rem;border-radius: 22px;width: 6rem;"> </a> </li>
               @php
               $index = 1;
               @endphp
@@ -66,7 +66,7 @@
                 @elseif($images->image_type == 'LARGE')
                 {{-- <li class="list-inline-item"> <a id="carousel-selector-1" data-slide-to="1" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid"> </a> </li> --}}
                 @elseif($images->image_type == 'ACTUAL')
-                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>
+                  <li class="list-inline-item"> <a id="carousel-selector-{{$index}}" data-slide-to="{{$index}}" data-target="#custCarousel" data-color="{{$images->color_type}}"> <img src="{{asset('').$images->image_path }}" class="img-fluid" style="height: 4.5rem;border-radius: 12px;width: 6rem;"> </a> </li>
                   @php
                   $index++;
                   @endphp
@@ -265,7 +265,7 @@
             </ul>
           </div>
 
-          <form name="attributes" id="add-Product-form" method="post" >
+          <form name="attributes" id="add-Product-form" method="post" class="set_form_attr">
             <input type="hidden" name="products_id" value="{{$result['detail']['product_data'][0]->products_id}}">
             <input type="hidden" name="fixed_products_price" id="fixed_products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['detail']['product_data'][0]->products_price+0}}@endif">
             <input type="hidden" name="products_price" id="products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['detail']['product_data'][0]->products_price+0}}@endif">
@@ -295,9 +295,10 @@
 
               @foreach($attributes_data['values'] as $values_data)
                 <input id="attributeids_<?=$index?>" type="hidden" name="attributeid[]" value="{{ $values_data['id'] }}" >
+                <input name="{{ $attributes_data['option']['id'] }}" type="hidden" value="{{ $values_data['id'] }}" class="attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
               @endforeach
               
-              <input name="{{ $attributes_data['option']['id'] }}" type="hidden" value="" class="attributeid_<?=$index++?>" attributeid = "{{ $attributes_data['option']['id'] }}">
+              
               
             @endforeach
           </div>

@@ -182,7 +182,29 @@ class ReportsController extends Controller
         return view("admin.reports.shopsalesreport", $title)->with('result', $result);
     }
 
-    
+    public function shopemployereport(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->shopemployereport($request);
+        $result['price'] = $this->reports->customersReportTotal($request);
+        
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+        $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
+        
+        return view("admin.reports.shopemployereport", $title)->with('result', $result);
+    }
+
+    public function getEmployee(Request $request){
+        $data = DB::table('users')->where('role_id', '=', 12)->where('parent_admin_id', $request->admin_id)->select('id', 'first_name as name')->get();
+        return response()->json($data);
+    }
 
     //statsProductsPurchased
     public function inventoryreport(Request $request)

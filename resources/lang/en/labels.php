@@ -2502,5 +2502,7 @@ return [
 	'shops'						=> 'Shops',
 	'BarCode'					=> 'BarCode',
 	'AddBarCodeText'			=> 'Please Enter BarCode',
+	'Employee'					=> 'Employee',
+	'SelectEmploye'				=> 'Select Employee',
 	
 ];

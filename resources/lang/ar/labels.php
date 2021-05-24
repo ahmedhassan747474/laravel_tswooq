@@ -2505,5 +2505,7 @@ return [
 	'shops'						=> 'المحلات',
 	'BarCode'					=> 'باركود',
 	'AddBarCodeText'			=> 'يرجى اضافة الباركود',
-	
+	'Employee'					=> 'الموظفين',
+	'SelectEmploye'				=> 'اختر الموظف',
+
 ];

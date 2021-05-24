@@ -449,6 +449,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         
         Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
         Route::get('/shopsalesreport', 'ReportsController@shopsalesreport')->middleware('report');
+        Route::get('/shopemployereport', 'ReportsController@shopemployereport')->middleware('report');
+        Route::get('/getEmployee', 'ReportsController@getEmployee')->middleware('report');
         Route::get('/salesreport-print', 'ReportsController@salesreportPrint')->middleware('report');
         Route::get('/shopsalesreport-print', 'ReportsController@shopsalesreportPrint')->middleware('report');
         // Route::get('/customer-orders-print', 'ReportsController@customerOrdersPrint')->middleware('report');

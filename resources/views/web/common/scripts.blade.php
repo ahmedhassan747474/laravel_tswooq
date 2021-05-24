@@ -516,7 +516,7 @@ jQuery(document).on('click', '.connection', function(e){
 			html_images += '<a class="carousel-control-next" href="#custCarousel" data-slide="next"> <span class="carousel-control-next-icon" style="background-color: #000;padding: 2rem 15px;"></span> </a>';
 
 			html_images += '<ol class="carousel-indicators list-inline">';
-			html_images += '<li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('')}}' + response.detail.product_data[0].default_images + '" class="img-fluid" style="height: 2.5rem;border-radius: 22px;"> </a> </li>';
+			html_images += '<li class="list-inline-item active"> <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#custCarousel"> <img src="{{asset('')}}' + response.detail.product_data[0].default_images + '" class="img-fluid" style="height: 4.5rem;border-radius: 22px;width: 6rem;"> </a> </li>';
             
 			var indexSlide = 1;
 			for (index = 0; index < arr_image.length; ++index) {
@@ -527,7 +527,7 @@ jQuery(document).on('click', '.connection', function(e){
 				} else if(arr_image[index].image_type == 'LARGE') {
 
 				} else if(arr_image[index].image_type == 'ACTUAL') {
-					html_images += '<li class="list-inline-item"> <a id="carousel-selector-'+ indexSlide +'" data-slide-to="'+ indexSlide +'" data-target="#custCarousel" data-color="' + arr_image[index].color_type + '"> <img src="{{asset('')}}' + arr_image[index].image_path + '" class="img-fluid" style="height: 2.5rem;border-radius: 12px;"> </a> </li>';
+					html_images += '<li class="list-inline-item"> <a id="carousel-selector-'+ indexSlide +'" data-slide-to="'+ indexSlide +'" data-target="#custCarousel" data-color="' + arr_image[index].color_type + '"> <img src="{{asset('')}}' + arr_image[index].image_path + '" class="img-fluid" style="height: 4.5rem;border-radius: 12px;width: 6rem;"> </a> </li>';
 					indexSlide++;
 				}
 			}
@@ -670,7 +670,13 @@ jQuery(document).on('click', '.connection', function(e){
 					html_form =+ '<input type="hidden" name="' + functionValue + '" id="' + functionValue + '" value="0" >';
 					html_form =+ '<input id="attributeid_'+ index2 +'" type="hidden" value="">';
 					html_form =+ '<input id="attribute_sign_'+ index2 +'" type="hidden" value="">';
-					html_form =+ '<input id="attributeids_'+ index2 +'" type="hidden" name="attributeid[]" value="" >';
+					// html_form =+ '<input id="attributeids_'+ index2 +'" type="hidden" name="attributeid[]" value="" >';
+
+					var attributes_data = value.values;
+					for (index = 0; index < attributes_data.length; ++index) {
+						html_form =+ '<input id="attributeids_'+ index2 +'" type="hidden" name="attributeid[]" value="'+ attributes_data[index].id +'" >';
+						html_form =+ '<input name="'+ value.option.id +'" type="hidden" value="'+ attributes_data[index].id +'" class="attributeid_'+ index2 +'" attributeid = "'+ value.option.id +'">';
+					}
 				}
 				html_form =+ '</div>';
 			}
@@ -727,8 +733,14 @@ jQuery(document).on('click', '.connection', function(e){
 					html_form =+ '<button class="btn btn-danger btn btn-lg swipe-to-top  stock-out-cart" hidden type="button">@lang("website.Out of Stock")</button>';
 				}
 			}
+
+			if(response.detail.product_data[0].products_type == 0){
+				html_form += '<a href="' + response.detail.product_data[0].products_url + '" target="_blank" class="btn btn-secondary btn-lg swipe-to-top">@lang("website.External Link")</a>';
+			}
         
 			html_form =+ '</div>';
+
+			$('.set_form_attr').html(html_form);
 
 		}
  	});

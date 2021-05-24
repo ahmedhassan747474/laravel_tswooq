@@ -133,6 +133,7 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 
 		//Like Card
 		Route::get('/like_card', 'LikeCardController@index');
+		Route::get('/like_card_test', 'LikeCardController@index_one');
 
 	});
 

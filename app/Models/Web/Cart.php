@@ -413,7 +413,6 @@ class Cart extends Model
 
     public function addToCart($request)
     {
-        dd($request->all());
         $index = new Index();
         $products = new Products();
 

@@ -87,7 +87,7 @@
       <?php }
         if($result['commonContent']['roles']!= null){
       ?>
-        <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}">
+        <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}{{ Request::is('admin/shopemployereport') ? 'active' : '' }}">
           <a href="#">
             <i class="fa fa-file-text-o" aria-hidden="true"></i>
             <span>{{ trans('labels.shops') }}</span> 
@@ -95,6 +95,7 @@
           </a>
           <ul class="treeview-menu">
             <li class="{{ Request::is('admin/shopsalesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/shopsalesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
+            <li class="{{ Request::is('admin/shopemployereport') ? 'active' : '' }}"><a href="{{ URL::to('admin/shopemployereport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Employee') }}</a></li>
           </ul>
         </li>
 
