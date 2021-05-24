@@ -76,7 +76,13 @@
                                                                         <select class="form-control field-validate product-type" name="products_id">
                                                                             <option value="">{{ trans('labels.Choose Product') }}</option>
                                                                             @foreach ($result['products'] as $pro)
-                                                                            <option value="{{$pro->products_id}}">{{$pro->products_name}}</option>
+                                                                            <option value="{{$pro->products_id}}">{{$pro->products_name}}
+                                                                                @if (count($pro->attr) > 0)
+                                                                                    @foreach ($pro->attr as $item)
+                                                                                    {{$item}}
+                                                                                    @endforeach
+                                                                                @endif
+                                                                            </option>
                                                                             @endforeach
                                                                         </select><span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                                                             {{ trans('labels.Product Type Text') }}.</span>

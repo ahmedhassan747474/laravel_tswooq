@@ -1154,6 +1154,9 @@ class Products extends Model
     $message = array();
     $errorMessage = array();
     $result['currency'] = $myVarsetting->getSetting();
+
+    
+
     $product = DB::table('products')
                 ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                 ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
@@ -1169,6 +1172,27 @@ class Products extends Model
     $product =  $product->get();
     $result['products'] = $product;
     $products = $product;
+    foreach($products as $item_product){
+        $getAllAttributes = DB::table('products_attributes')
+            ->where('products_id', '=', $item_product->products_id)
+            ->select('options_id', 'options_values_id', 'products_id')
+            ->get();
+        $listOfAttributes = array();
+        foreach($getAllAttributes as $attribute){
+            $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+            $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+            $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            
+            $listOfAttributes[] = ' | ' . $attribute_option_name . ' : ' . $attribute_option_value;
+            // $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+            // $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+        }
+
+        // dd($listOfAttributes);
+        $item_product->attr = $listOfAttributes;
+    }
+    // dd($products);
     $result['message'] = $message;
     $result['errorMessage'] = $errorMessage;
     $result2 = array();
