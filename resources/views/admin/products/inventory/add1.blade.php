@@ -73,7 +73,7 @@
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Products') }}<span style="color:red;">*</span> </label>
                                                                     <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control field-validate product-type" name="products_id">
+                                                                        <select class="form-control field-validate product-type select2" name="products_id" style="width: 100%;">
                                                                             <option value="">{{ trans('labels.Choose Product') }}</option>
                                                                             @foreach ($result['products'] as $pro)
                                                                             <option value="{{$pro->products_id}}">{{$pro->products_name}}
@@ -81,6 +81,9 @@
                                                                                     @foreach ($pro->attr as $item)
                                                                                     {{$item}}
                                                                                     @endforeach
+                                                                                    @if ($pro->barcode != null)
+                                                                                        - ({{$pro->barcode}})
+                                                                                    @endif
                                                                                 @endif
                                                                             </option>
                                                                             @endforeach

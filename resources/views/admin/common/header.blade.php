@@ -42,7 +42,7 @@
                 <ul class="menu">
                 @foreach($unseenOrders as $unseenOrder)
                   <li><!-- start message -->
-                    <a href="{{ URL::to("admin/viewOrder")}}/{{ $unseenOrder->orders_id}}">
+                    <a href="{{ URL::to("admin/orders/vieworder")}}/{{ $unseenOrder->orders_id}}">
                       <h4>
                         {{ $unseenOrder->customers_name }}
                         <small><i class="fa fa-clock-o"></i> {{ date('d/m/Y', strtotime($unseenOrder->date_purchased)) }}</small>
