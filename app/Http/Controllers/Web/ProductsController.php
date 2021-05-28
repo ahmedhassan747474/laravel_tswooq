@@ -667,7 +667,7 @@ class ProductsController extends Controller
             }
             $postCategoryId = '';
             $data = array('page_number' => '0', 'type' => $type, 'products_id' => $request->products_id, 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
-            $detail = $this->products->products($data);
+            $detail = $this->products->productsChange($data);
             $result['detail'] = $detail;
             if (!empty($result['detail']['product_data'][0]->categories) and count($result['detail']['product_data'][0]->categories) > 0) {
                 $i = 0;
@@ -679,8 +679,10 @@ class ProductsController extends Controller
                 }
             }
 
-            $getNameObj = DB::table('users')->where('id', $result['detail']['product_data'][0]->admin_id)->first();
-            $result['detail']['product_data'][0]->shop = $getNameObj;
+            if(!empty($result['detail']['product_data'])){
+                $getNameObj = DB::table('users')->where('id', $result['detail']['product_data'][0]->admin_id)->first();
+                $result['detail']['product_data'][0]->shop = $getNameObj ? $getNameObj : null;
+            };
         }else{
             $products = '';
             $result['detail']['product_data'] = '';

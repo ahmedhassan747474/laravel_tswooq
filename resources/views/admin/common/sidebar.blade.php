@@ -85,7 +85,7 @@
         </li>
 
       <?php }
-        if($result['commonContent']['roles']!= null){
+        if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->shop_view == 1){
       ?>
         <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}{{ Request::is('admin/shopemployereport') ? 'active' : '' }}">
           <a href="#">

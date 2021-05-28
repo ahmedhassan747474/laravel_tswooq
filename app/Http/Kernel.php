@@ -171,6 +171,11 @@ class Kernel extends HttpKernel
         'delete_pos' => \App\Http\Middleware\pos\delete_pos::class,
         'add_pos' => \App\Http\Middleware\pos\add_pos::class,
 
+        'view_shop' => \App\Http\Middleware\shop\view_shop::class,
+        'edit_shop' => \App\Http\Middleware\shop\edit_shop::class,
+        'delete_shop' => \App\Http\Middleware\shop\delete_shop::class,
+        'add_shop' => \App\Http\Middleware\shop\add_shop::class,
+
         'back_language' => \App\Http\Middleware\BackLanguage::class,
 
     ];

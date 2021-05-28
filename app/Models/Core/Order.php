@@ -17,9 +17,9 @@ class Order extends Model
             // ->where('customers_id', '!=', '');
 
         if(auth()->user()->role_id == 11) {
-            $data->where('admin_id', '=', auth()->user()->id);
+            $data->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
-            $data->where('admin_id', '=', auth()->user()->parent_admin_id);
+            $data->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
         }
 
         $orders = $data->paginate(40);

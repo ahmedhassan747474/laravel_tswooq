@@ -84,6 +84,7 @@ class Products extends Model
 
             if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
                 $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
+                $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
             }
 
             $products = $data->orderBy('products.products_id', 'DESC')
@@ -1155,8 +1156,6 @@ class Products extends Model
     $errorMessage = array();
     $result['currency'] = $myVarsetting->getSetting();
 
-    
-
     $product = DB::table('products')
                 ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                 ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
@@ -1168,6 +1167,12 @@ class Products extends Model
                 })
                 ->select('products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_id', 'specials.products_id as special_products_id', 'specials.specials_new_products_price as specials_products_price', 'specials.specials_date_added as specials_date_added', 'specials.specials_last_modified as specials_last_modified', 'specials.expires_date')
                 ->where('products_description.language_id', '=', $language_id);
+
+    if(auth()->user()->role_id == 11) {
+        $product->where('products.admin_id', '=', auth()->user()->id);
+    } elseif(auth()->user()->role_id == 12) {
+        $product->where('products.admin_id', '=', auth()->user()->parent_admin_id);
+    }
 
     $product =  $product->get();
     $result['products'] = $product;

@@ -37,12 +37,18 @@ class AdminController extends Controller
 		$reportBase		  = 	$request->reportBase;
 
 		//recently order placed
-		$orders = DB::table('orders')
+		$dataOrders = DB::table('orders')
 			->LeftJoin('currencies', 'currencies.code', '=', 'orders.currency')
-			->where('customers_id','!=','')
-			->orderBy('date_purchased','DESC')
-			->get();
+			->where('customers_id','!=','');
+			
 
+		if(auth()->user()->role_id == 11) {
+			$dataOrders->where('admin_id', '=', auth()->user()->id);
+		} elseif(auth()->user()->role_id == 12) {
+			$dataOrders->where('admin_id', '=', auth()->user()->parent_admin_id);
+		}
+
+		$orders = $dataOrders->orderBy('date_purchased','DESC')->get();
 
 		$index = 0;
 		$purchased_price = 0;
@@ -123,7 +129,7 @@ class AdminController extends Controller
   		$result['cart'] = count($cart);
 		  
   		//Rencently added products
-		$recentProducts = DB::table('products')
+		$dataRecentProducts = DB::table('products')
 			->LeftJoin('image_categories', function ($join) {
 				$join->on('image_categories.image_id', '=', 'products.products_image')
 					->where(function ($query) {
@@ -134,18 +140,30 @@ class AdminController extends Controller
 			})
 			->leftJoin('products_description','products_description.products_id','=','products.products_id')
 			->select('products.*', 'products_description.*', 'image_categories.path as products_image')
-			->where('products_description.language_id','=', $language_id)
-			->orderBy('products.products_id', 'DESC')
-			->paginate(8);
+			->where('products_description.language_id','=', $language_id);
+
+		if(auth()->user()->role_id == 11) {
+			$dataRecentProducts->where('admin_id', '=', auth()->user()->id);
+		} elseif(auth()->user()->role_id == 12) {
+			$dataRecentProducts->where('admin_id', '=', auth()->user()->parent_admin_id);
+		}
+
+		$recentProducts = $dataRecentProducts->orderBy('products.products_id', 'DESC')->paginate(8);
 
   		$result['recentProducts'] = $recentProducts;
 		  
   		//products
-  		$products = DB::table('products')
+  		$dataProducts = DB::table('products')
   			->leftJoin('products_description','products_description.products_id','=','products.products_id')
-  			->where('products_description.language_id','=', $language_id)
-  			->orderBy('products.products_id', 'DESC')
-  			->get();
+  			->where('products_description.language_id','=', $language_id);
+
+		if(auth()->user()->role_id == 11) {
+			$dataProducts->where('admin_id', '=', auth()->user()->id);
+		} elseif(auth()->user()->role_id == 12) {
+			$dataProducts->where('admin_id', '=', auth()->user()->parent_admin_id);
+		}
+
+		$products = $dataProducts->orderBy('products.products_id', 'DESC')->get();
 
 			
   		//low products & out of stock
@@ -781,6 +799,7 @@ class AdminController extends Controller
 			// $pos_create 	= $roles[0]->pos_create;
 			// $pos_update 	= $roles[0]->pos_update;
 			// $pos_delete 	= $roles[0]->pos_delete;
+			$shop_view   	= $roles[0]->shop_view;
 
 		}else{
 
@@ -891,6 +910,8 @@ class AdminController extends Controller
 			// $pos_create 	= '0';
 			// $pos_update 	= '0';
 			// $pos_delete 	= '0';
+
+			$shop_view   	= '0';
 		}
 
 
@@ -1076,6 +1097,11 @@ class AdminController extends Controller
 					// '3'=>array('name'=>'pos_delete','value'=>$pos_delete)
 					);
 
+		$result2[26]['link_name'] = 'Shop';
+		$result2[26]['permissions'] = array(
+					'0'=>array('name'=>'shop_view','value'=>$shop_view),
+					);
+
 		$result['data'] = $result2;
 		$result['commonContent'] = $this->Setting->commonContent();
 		return view("admin.admins.roles.addrole",$title)->with('result', $result);
@@ -1196,6 +1222,8 @@ class AdminController extends Controller
 						// 'pos_create' => $request->pos_create,
 						// 'pos_update' => $request->pos_update,
 						// 'pos_delete' => $request->pos_delete,
+
+						'shop_view' => $request->shop_view,
 						
 						]);
 

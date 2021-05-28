@@ -492,6 +492,7 @@ class POSController extends Controller
             });
 
             $categories->orWhere('products_model', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
+            $categories->orWhere('products.barcode', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
 
             if (!empty($data['categories_id'])) {
                 $categories->where('products_to_categories.categories_id', '=', $data['categories_id']);

@@ -2504,5 +2504,7 @@ return [
 	'AddBarCodeText'			=> 'Please Enter BarCode',
 	'Employee'					=> 'Employee',
 	'SelectEmploye'				=> 'Select Employee',
+	'manage Shop'				=> 'Manage Shop',
+	'manage shop_view'			=> 'Shop View'
 	
 ];

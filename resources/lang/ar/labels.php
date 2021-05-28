@@ -2507,5 +2507,7 @@ return [
 	'AddBarCodeText'			=> 'يرجى اضافة الباركود',
 	'Employee'					=> 'الموظفين',
 	'SelectEmploye'				=> 'اختر الموظف',
+	'manage Shop'				=> 'ادارة المحلات',
+	'manage shop_view'			=> 'عرض المحلات'
 
 ];

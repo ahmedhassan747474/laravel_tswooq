@@ -75,6 +75,7 @@
         <!-- /.col -->
       </div>
       <!-- info row -->
+      <img src="{{ asset('/images/admin_logo/logo_print.jpeg') }}" height="100" width="150" class="float-right">
       <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
           {{ trans('labels.CustomerInfo') }}:
