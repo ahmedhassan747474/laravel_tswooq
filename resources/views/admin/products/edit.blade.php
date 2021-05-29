@@ -551,6 +551,15 @@
 
                                         <hr>
 
+                                        @if (session()->has('error'))
+                                        <div class="alert alert-danger alert-dismissible show" role="alert">
+                                            <strong>{{session()->get('error')}}</strong>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        @endif
+
                                         <div class="row">
                                             @foreach($result['attributes'] as $attribute)
                                             <div class="col-xs-12 col-md-6">

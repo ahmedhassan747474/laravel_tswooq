@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-7">
-                                {{-- <div class="card mb-3">
+                                <div class="card mb-3">
                                     <div class="card-body">
                                         <div class="d-flex">
                                             <div class="flex-grow-1">
@@ -78,7 +78,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
                                 <div class="card mar-btm" id="cart-details">
                                     <div class="card-body">
                                         <div class="aiz-pos-cart-list c-scrollbar-light">
@@ -501,6 +501,7 @@
             var city = $('input[name=city]').val();
             var postal_code = $('input[name=postal_code]').val();
             var phone = $('input[name=phone]').val();
+            var comment = $('textarea[name=comment]').val();
             var shipping = $('input[name=shipping]:checked').val();
             var discount = $('input[name=discount]').val();
             var address = $('input[name=address_id]:checked').val();
@@ -522,7 +523,8 @@
                 payment_type:payment_type, 
                 shipping:shipping, 
                 discount:discount,
-                total_price:total_price
+                total_price:total_price,
+                comment: comment
             })
             .done(function(data) {
                 if(data.data == 1){

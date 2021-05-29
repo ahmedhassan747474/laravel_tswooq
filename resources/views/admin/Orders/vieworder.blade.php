@@ -44,8 +44,10 @@
             <small style="display: inline-block" class="label label-primary">
             @if($data['orders_data'][0]->ordered_source == 1)
             {{ trans('labels.Website') }}
-            @else
+            @elseif($data['orders_data'][0]->ordered_source == 2)
             {{ trans('labels.Application') }}
+            @else
+            {{ trans('labels.POS') }}
             @endif
             </small>
             <small style="display: inline-block">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>

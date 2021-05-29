@@ -2508,6 +2508,8 @@ return [
 	'Employee'					=> 'الموظفين',
 	'SelectEmploye'				=> 'اختر الموظف',
 	'manage Shop'				=> 'ادارة المحلات',
-	'manage shop_view'			=> 'عرض المحلات'
+	'manage shop_view'			=> 'عرض المحلات',
+	'You Must Choose at least one in Attributes' => 'يجب ان تختار سمة واحده على الاقل',
+	'SelectParallel'			=> 'اختر المنتج الرئيسي',
 
 ];

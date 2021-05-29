@@ -746,6 +746,18 @@ jQuery(document).on('click', '.connection', function(e){
  	});
 });
 
+jQuery(document).on('click', '.button_checked_color', function(){
+	// $(this).toggleClass('text-border');
+	$(this).css("border", "3px solid #483A6F");
+	$('.button_checked_color').not(this).each(function(){
+		$(this).css("border", "1px solid #cdcdcd");
+	});
+	// var unit_id = $(this).data('unit_id');
+	// var elem = document.querySelectorAll('[data-unit_id="'+ unit_id +'"]');
+	// console.log(elem);
+	// elem.css("border", "3px solid #483A6F");
+});
+
 //add-to-Cart with custom options
 jQuery(document).on('click', '.add-to-Cart', function(e){
 	var formData = jQuery("#add-Product-form").serialize();

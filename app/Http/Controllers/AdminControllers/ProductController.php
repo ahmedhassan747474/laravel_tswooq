@@ -313,7 +313,7 @@ class ProductController extends Controller
             }
 
             if($countAttr == 0) {
-                $error = "You Must Choose at least one in Attributes";
+                $error = trans('labels.You Must Choose at least one in Attributes');
                 return redirect()->back()->withInput($request->all())->with('error', $error);
             }
         

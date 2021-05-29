@@ -17,8 +17,20 @@
       <div class="col-md-12">
         <div class="box">
           <div class="box-header">
-            <h3 class="box-title">{{ trans('labels.Productsoutofstock') }} </h3>
 
+            <h3 class="box-title">{{ trans('labels.Productsoutofstock') }} 
+            @if(auth()->user()->role_id == 11 || auth()->user()->role_id == 12)
+            @php
+            if(auth()->user()->role_id == 11){
+              $getName = \DB::table('users')->where('id', auth()->user()->id)->first();
+            } else {
+              $getName = \DB::table('users')->where('id', auth()->user()->parent_admin_id)->first();
+            }
+            @endphp
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;{{ $getName->shop_name }}...</strong>
+            @endif
+            </h3>
+            
             <div class="box-tools pull-right">
               <form action="{{ URL::to('admin/outofstockprint')}}" target="_blank">
                 <input type="hidden" name="page" value="invioce">

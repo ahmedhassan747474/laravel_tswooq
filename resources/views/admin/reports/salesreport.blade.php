@@ -3,7 +3,18 @@
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1>{{ trans('labels.Sales Report') }} <small>{{ trans('labels.Sales Report') }}...</small> </h1>
+    <h1>{{ trans('labels.Sales Report') }} <small>{{ trans('labels.Sales Report') }}...</small> 
+      @if(auth()->user()->role_id == 11 || auth()->user()->role_id == 12)
+      @php
+      if(auth()->user()->role_id == 11){
+        $getName = \DB::table('users')->where('id', auth()->user()->id)->first();
+      } else {
+        $getName = \DB::table('users')->where('id', auth()->user()->parent_admin_id)->first();
+      }
+      @endphp
+      <strong>&nbsp;&nbsp;&nbsp;&nbsp;{{ $getName->shop_name }}...</strong>
+      @endif
+    </h1>
     <ol class="breadcrumb">
       <li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
       <li class="active">{{ trans('labels.Sales Report') }}</li>

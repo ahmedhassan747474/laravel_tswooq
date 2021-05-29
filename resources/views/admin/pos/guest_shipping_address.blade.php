@@ -66,3 +66,11 @@
         </div>
     </div>
 </div>
+<div class="form-group">
+    <div class=" row">
+        <label class="col-sm-2 control-label" for="comment">Comment</label>
+        <div class="col-sm-10">
+            <textarea placeholder="Comment" id="comment" name="comment" class="form-control" required></textarea>
+        </div>
+    </div>
+</div>

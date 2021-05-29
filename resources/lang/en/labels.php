@@ -2505,6 +2505,8 @@ return [
 	'Employee'					=> 'Employee',
 	'SelectEmploye'				=> 'Select Employee',
 	'manage Shop'				=> 'Manage Shop',
-	'manage shop_view'			=> 'Shop View'
+	'manage shop_view'			=> 'Shop View',
+	'You Must Choose at least one in Attributes' => 'You Must Choose at least one in Attributes',
+	'SelectParallel'			=> 'Select Parallel',
 	
 ];

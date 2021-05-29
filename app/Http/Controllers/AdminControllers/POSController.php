@@ -1332,7 +1332,7 @@ class POSController extends Controller
             $orders_status = '1';
             $code = '';
             $coupon_amount = '';
-            $comments = '';
+            $comments = $request->comment;
             $date_added = date('Y-m-d h:i:s');
 
             $web_setting = DB::table('settings')->get();
@@ -1400,7 +1400,7 @@ class POSController extends Controller
                 'coupon_code' => $code,
                 'coupon_amount' => $coupon_amount,
                 'total_tax' => $tax_rate,
-                'ordered_source' => '1',
+                'ordered_source' => '3',
                 'delivery_phone' => $delivery_phone,
                 'billing_phone' => $billing_phone,
                 

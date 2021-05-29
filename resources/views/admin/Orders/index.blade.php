@@ -62,8 +62,10 @@
                                                     <td>
                                                         @if($orderData->ordered_source == 1)
                                                         {{ trans('labels.Website') }}
-                                                        @else
+                                                        @elseif($orderData->ordered_source == 2)
                                                         {{ trans('labels.Application') }}
+                                                        @else
+                                                        {{ trans('labels.POS') }}
                                                         @endif</td>
                                                     <td>
                                                         
