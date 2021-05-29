@@ -90,6 +90,10 @@ class Products extends Model
             $products = $data->orderBy('products.products_id', 'DESC')
             ->where('categories_status', '1')->paginate($commonsetting['pagination']);
 
+        } else if(isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+            $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
+            $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+            $products = $data->orderBy('products.products_id', 'DESC')->where('categories_status', '1')->paginate($commonsetting['pagination']);
         } else {
 
             if (!empty(session('categories_id'))) {
@@ -1206,6 +1210,7 @@ class Products extends Model
     $min_level = 0;
     $max_level = 0;
     $purchase_price  = 0;
+    $result['purchase_price'] = $purchase_price;
     if(count($product)>0){
         $products_id = $result['products'][0]->products_id;
     // if($result['products'][0]->products_type!=1){

@@ -198,7 +198,7 @@
 <script>
   $('.changeAdminType').on('change', function() {
     var type = $(this).val();
-    if(type == 12) {
+    if(type != 11) {
       $('.show_hide_shop').show();
       $('#select_shop').addClass('field-validate');
       $('.show_hide_shop_name').hide();

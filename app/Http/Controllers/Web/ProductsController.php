@@ -528,7 +528,10 @@ class ProductsController extends Controller
                     ->whereIn('products_id', $getAllProductsParallel)
                     ->where('options_id', '=', $option->products_options_id)
                     ->select('options_id', 'options_values_id', 'products_id')
+                    ->groupBy('options_values_id')
                     ->get();
+                
+                // dd($getAllAttributes);
 
                 foreach($getAllAttributes as $attribute){
                     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();

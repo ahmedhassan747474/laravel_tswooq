@@ -2503,15 +2503,15 @@ $( "#registration" ).on('click','#submit',function( event ) {
   var param =  $( "#parameter" ).val();
   var select = $( "#FilterBy" ).val();
 
-        if( (select == null) || (param == "")) {
-            $( "#contact-form12" ).text( "fill the credentials!" ).css({'color':'red'}).show().fadeOut( 10000 );
-            $( "#parameter" ).css({'border-color':'red'});
-            $( "select" ).css({'border-color':'red'});
-            event.preventDefault();
-        }else {
-          // $( "#contact-form12" ).text( "fill the credentials!" ).css({'padding-left':'10px','margin-right':'20px','padding-bottom':'2px', 'color':'red'}).show().fadeOut( 10000 );
-          //     event.preventDefault();
-        }
+        // if( (select == null) || (param == "")) {
+        //     $( "#contact-form12" ).text( "fill the credentials!" ).css({'color':'red'}).show().fadeOut( 10000 );
+        //     $( "#parameter" ).css({'border-color':'red'});
+        //     $( "select" ).css({'border-color':'red'});
+        //     event.preventDefault();
+        // }else {
+        //   // $( "#contact-form12" ).text( "fill the credentials!" ).css({'padding-left':'10px','margin-right':'20px','padding-bottom':'2px', 'color':'red'}).show().fadeOut( 10000 );
+        //   //     event.preventDefault();
+        // }
 });
 
 

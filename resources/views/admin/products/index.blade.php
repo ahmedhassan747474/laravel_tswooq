@@ -107,6 +107,12 @@
                                                         <strong>{{ trans('labels.Price') }}: </strong>   
                                                         @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $product->products_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                                                         <br>
+                                                        @if($product->admin_id != null)
+                                                        @php
+                                                            $getName = DB::table('users')->where('id', $product->admin_id)->first();
+                                                        @endphp
+                                                        <strong>{{ trans('labels.ShopName') }}: </strong> {{$getName != null ? $getName->shop_name : 'Not Exist'}} <br>
+                                                        @endif
                                                         <strong>{{ trans('labels.Weight') }}: </strong>  {{ $product->products_weight }}{{ $product->products_weight_unit }}<br>
                                                         <strong>{{ trans('labels.Viewed') }}: </strong>  {{ $product->products_viewed }}<br>
                                                         @if(!empty($product->specials_id))

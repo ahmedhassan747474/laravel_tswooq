@@ -456,7 +456,7 @@ class Products extends Model
                 $query->select('flash_sale.products_id')->from('flash_sale')->where('flash_sale.flash_status', '=', '1');
             });
 
-            $categories->orWhere('products_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
+            $categories->orWhere('products_name', 'LIKE', '%' . $searchValue . '%')->where('products.product_parent_id', '=', null)->where('products_status', '=', 1);
 
             if (!empty($data['categories_id'])) {
                 $categories->where('products_to_categories.categories_id', '=', $data['categories_id']);
@@ -599,7 +599,7 @@ class Products extends Model
         //count
         $total_record = $categories->get();
         $products = $categories->skip($skip)->take($take)->get();
-        
+
         $result = array();
         $result2 = array();
 

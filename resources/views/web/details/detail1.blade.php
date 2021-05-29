@@ -255,7 +255,7 @@
                   <li style="margin-right: .0714285714rem;margin-bottom: .2857142857rem;display: inline-block;">
                     @if ($value->products_id == $result['detail']['product_data'][0]->products_id)
                       <button class="connection text-capitalize" style="display: inline-block;padding: .2rem;
-                      font-size: 1rem;border-radius: .2857142857rem;border: 1px solid #000;color: #333;
+                      font-size: 1rem;border-radius: .2857142857rem;border: 3px solid #483A6F;color: #333;
                       min-width: 4.5rem;background-image: linear-gradient(180deg,#fff,#f2f2f2);font-weight: 400;" 
                       href="#" data-unit_id="{{$value->products_id}}">{{$value->options_values_description}}</button>
                     @else
