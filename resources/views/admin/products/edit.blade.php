@@ -314,7 +314,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @elseif(auth()->user()->role_id == 10)
+                                            @elseif(auth()->user()->role_id == 11)
                                             <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
                                             @else
                                             <input type="hidden" name="admin_id" value="{{auth()->user()->parent_admin_id}}">

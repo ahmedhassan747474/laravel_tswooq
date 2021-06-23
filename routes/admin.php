@@ -301,6 +301,20 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/pos-order', 'POSController@order_store')->name('pos.order_place')->middleware('view_pos');
     });
 
+    Route::group(['prefix' => 'admin/poscard', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/display', 'POSCardController@display')->middleware('view_pos');
+        Route::get('/products', 'POSCardController@search')->name('pos.search_product')->middleware('view_pos');
+        Route::get('/variants', 'POSCardController@getVarinats')->name('variants')->middleware('view_pos');
+        Route::post('/add-to-cart-pos', 'POSCardController@addToCart')->name('pos.addToCart')->middleware('view_pos');
+        Route::post('/update-quantity-cart-pos', 'POSCardController@updateQuantity')->name('pos.updateQuantity')->middleware('view_pos');
+        Route::post('/remove-from-cart-pos', 'POSCardController@removeFromCart')->name('pos.removeFromCart')->middleware('view_pos');
+        Route::post('/get_shipping_address', 'POSCardController@getShippingAddress')->name('pos.getShippingAddress')->middleware('view_pos');
+        Route::post('/get_shipping_address_seller', 'POSCardController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller')->middleware('view_pos');
+        Route::post('/setDiscount', 'POSCardController@setDiscount')->name('pos.setDiscount')->middleware('view_pos');
+        Route::post('/setShipping', 'POSCardController@setShipping')->name('pos.setShipping')->middleware('view_pos');
+        Route::post('/pos-order', 'POSCardController@order_store')->name('pos.order_place')->middleware('view_pos');
+    });
+
     Route::group(['prefix' => 'admin/countries', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/filter', 'CountriesController@filter')->middleware('view_tax');
         Route::get('/display', 'CountriesController@index')->middleware('view_tax');

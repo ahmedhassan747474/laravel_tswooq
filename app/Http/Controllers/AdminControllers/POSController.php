@@ -1175,6 +1175,16 @@ class POSController extends Controller
                 $city               = $request->city;
                 $postal_code        = $request->postal_code;
                 $phone              = $request->phone;
+
+                if ($request->customer_id) {
+                    $get_detail_customer = DB::table('users')->where('id', $request->customer_id)->first();
+                    if ($get_detail_customer) {
+                        $first_name         = $get_detail_customer->first_name;
+                        $last_name          = $get_detail_customer->last_name;
+                        $email              = $get_detail_customer->email;
+                        $phone              = $get_detail_customer->phone;
+                    }
+                }
             }
             else {
                 $order->user_id = $request->user_id;

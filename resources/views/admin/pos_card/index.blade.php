@@ -3,10 +3,10 @@
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1> {{ trans('labels.POS') }} </h1>
+        <h1> {{ trans('labels.POS Like Card') }} </h1>
         <ol class="breadcrumb">
             <li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
-            <li class="active">{{ trans('labels.POS') }}</li>
+            <li class="active">{{ trans('labels.POS Like Card') }}</li>
         </ol>
     </section>
 
@@ -22,7 +22,7 @@
                     <form class="" action="" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row gutters-10">
-                            <div class="col-lg-5">
+                            <div class="col-lg-6">
                                 <div class="card">
                                     <div class="card-header d-block">
                                         <div class="form-group">
@@ -32,17 +32,25 @@
                                             <div class="col-md-6">
                                                 <select name="poscategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
                                                     <option value="">All Categories</option>
-                                                    @foreach ($results['categories'] as $key => $category)
-                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                    @if($results['categories']->response == 1)
+                                                    @foreach ($results['categories']->data as $category)
+                                                        <option value="{{ $category->id }}">{{ $category->categoryName }}</option>
                                                     @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <select name="brand"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
-                                                    <option value="">All Brands</option>
-                                                    @foreach ($results['brands'] as $key => $brand)
-                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                <select name="possubcategory"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
+                                                    <option value="">All Sub Categories</option>
+                                                    @if($results['categories']->response == 1)
+                                                    @foreach ($results['categories']->data as $category)
+                                                    @if(count($category->childs))
+                                                    @foreach($category->childs as $child)
+                                                        <option value="{{ $child->id }}">{{ $child->categoryName }}</option>
                                                     @endforeach
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                         </div>
@@ -52,14 +60,11 @@
                                             <div class="row gutters-5" id="product-list">
             
                                             </div>
-                                            <div id="load-more">
-                                                <p class="text-center fs-14 fw-600 p-2 bg-soft-primary c-pointer" onclick="loadMoreProduct()">Load More</p>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-7">
+                            <div class="col-lg-6">
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <div class="d-flex">
@@ -96,34 +101,21 @@
                                                     @php
                                                         $subtotal = 0;
                                                         $tax = 0;
-                                                        $shipping = 0;
                                                     @endphp
-                                                    @if (Session::has('posCart'))
-                                                        @forelse (Session::get('posCart') as $key => $cartItem)
+                                                    @if (Session::has('posCardCart'))
+                                                        @forelse (Session::get('posCardCart') as $key => $cartItem)
                                                             @php
                                                                 $subtotal += $cartItem['price']*$cartItem['quantity'];
                                                                 $tax += $cartItem['tax']*$cartItem['quantity'];
-                                                                $shipping += $cartItem['shipping']*$cartItem['quantity'];
-                                                                if(Session::get('shipping', 0) == 0){
-                                                                    $shipping = 0;
-                                                                }
-                                                                $products = DB::table('products')
-                                                                    ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
-                                                                    ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
-                                                                    ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
-                                                                    ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id')
-                                                                    ->where('products.products_id', $cartItem['id'])
-                                                                    ->first();
-                                                                // dd($products);
                                                             @endphp
                                                             <tr>
                                                                 <td>
                                                                     <span class="media">
                                                                         <div class="media-left">
-                                                                            <img class="mr-3" height="60" src="{{asset(''). $products->path }}" >
+                                                                            <img class="mr-3" height="60" src="{{ $cartItem['image'] }}" >
                                                                         </div>
                                                                         <div class="media-body">
-                                                                            {{ $products->products_name }} ({{ $cartItem['variant'] }})
+                                                                            {{ $cartItem['name'] }})
                                                                         </div>
                                                                     </span>
                                                                 </td>
@@ -159,8 +151,6 @@
                                                 <tr>
                                                     <th class="text-center">Sub Total</th>
                                                     <th class="text-center">Total Tax</th>
-                                                    <th class="text-center">Total Shipping</th>
-                                                    <th class="text-center">Discount</th>
                                                     <th class="text-center">Total</th>
                                                 </tr>
                                             </thead>
@@ -168,11 +158,9 @@
                                                 <tr>
                                                     <td class="text-center">{{ $subtotal }}</td>
                                                     <td class="text-center">{{ $tax }}</td>
-                                                    <td class="text-center">{{ $shipping }}</td>
-                                                    <td class="text-center">{{ Session::get('pos_discount', 0) }}</td>
                                                     <td class="text-center">
-                                                        {{ $subtotal+$tax+$shipping - Session::get('pos_discount', 0) }}
-                                                        <input type="hidden" name="total_price" value="{{ $subtotal+$tax+$shipping - Session::get('pos_discount', 0) }}">
+                                                        {{ $subtotal+$tax }}
+                                                        <input type="hidden" name="total_price" value="{{ $subtotal+$tax }}">
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -181,37 +169,7 @@
                                 </div>
                                 <div class="pos-footer mar-btm">
                                     <div class="d-flex justify-content-between">
-                                        <div class="d-flex">
-                                            {{-- <div class="dropdown mr-3 dropup">
-                                                <button class="btn btn-outline-dark btn-styled dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    Shipping
-                                                </button>
-                                                <div class="dropdown-menu p-3 dropdown-menu-lg">
-                                                    <div class="radio radio-inline" style="margin-left: 10px;">
-                                                        <input type="radio" name="shipping" id="radioExample_2a" value="0" checked onchange="setShipping()">
-                                                        <label for="radioExample_2a">Without Shipping Charge</label>
-                                                    </div>
-            
-                                                    <div class="radio radio-inline">
-                                                        <input type="radio" name="shipping" id="radioExample_2b" value="1" onchange="setShipping()">
-                                                        <label for="radioExample_2b">With Shipping Charge</label>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
-                                            <div class="dropdown dropup">
-                                                <button class="btn btn-outline-dark btn-styled dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    Discount
-                                                </button>
-                                                <div class="dropdown-menu p-3 dropdown-menu-lg">
-                                                    <div class="input-group">
-                                                        <input type="number" min="0" placeholder="Amount" name="discount" class="form-control" value="{{ Session::get('pos_discount', 0) }}" required onchange="setDiscount()">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Flat</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="">
                                             <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">Pay With Cash</button>
                                             <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">Pay With Visa</button>
@@ -376,9 +334,13 @@
             $('#container').removeClass('mainnav-lg').addClass('mainnav-sm');
             $('#product-list').on('click','.product-card',function(){
                 var id = $(this).data('id');
+                var name = $(this).data('name');
+                var price = $(this).data('price');
+                var image = $(this).data('image');
+                var currency = $(this).data('currency');
                 $.get('{{ route('variants') }}', {id:id}, function(data){
                     if (data == 0) {
-                        addToCart(id, null, 1);
+                        addToCart(id, name, price, image, currency, 1);
                     }
                     else {
                         $('#variants').html(data);
@@ -393,9 +355,12 @@
 
         function filterProducts(){
             var keyword = $('input[name=keyword]').val();
-            var category = $('select[name=poscategory]').val();
-            var brand = $('select[name=brand]').val();
-            $.get('{{ route('pos.search_product') }}',{keyword:keyword, category:category, brand:brand}, function(data){
+            var poscategory = $('select[name=poscategory]').val();
+            var possubcategory = $('select[name=possubcategory]').val();
+            // console.log(keyword);
+            // console.log(poscategory);
+            // console.log(possubcategory);
+            $.get('{{ route('pos.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory}, function(data){
                 products = data;
                 $('#product-list').html(null);
                 // console.log(products.products.paginate);
@@ -403,35 +368,37 @@
             });
         }
 
-        function loadMoreProduct(){
-            // console.log(products);
-            if(products != null && products.products.paginate.next_page_url != null){
-                $.get(products.products.paginate.next_page_url,{}, function(data){
-                    products = data;
-                    // console.log(products);
-                    setProductList(data);
-                });
-            }
-        }
+        // function loadMoreProduct(){
+        //     // console.log(products);
+        //     if(products != null && products.products.paginate.next_page_url != null){
+        //         $.get(products.products.paginate.next_page_url,{}, function(data){
+        //             products = data;
+        //             // console.log(products);
+        //             setProductList(data);
+        //         });
+        //     }
+        // }
 
-        function setProductList(data){
-            for (var i = 0; i < data.products.paginate.data.length; i++) {
+        function setProductList(result){
+            // console.log(result);
+            // console.log(result.data.length);
+            for (var i = 0; i < result.data.length; i++) {
                 $('#product-list').append('<div class="col-md-4">' +
-                    '<div class="card bg-light c-pointer mb-2 product-card" data-id="'+data.products.paginate.data[i].products_id+'" >'+
-                        '<span class="absolute-top-left bg-dark text-white px-1">'+data.products.paginate.data[i].products_price +'</span>'+
-                        '<img src="{{asset('')}}'+ data.products.paginate.data[i].image_path +'" class="card-img-top img-fit h-100px mw-100 mx-auto" >'+
+                    '<div class="card bg-light c-pointer mb-2 product-card" data-id="'+result.data[i].productId+'" data-name="'+result.data[i].productName+'" data-price="'+result.data[i].sellPrice+'" data-image="'+result.data[i].productImage+'" data-currency="'+result.data[i].productCurrency+'">'+
+                        '<span class="absolute-top-left bg-dark text-white px-1">'+result.data[i].sellPrice +'</span>'+
+                        '<img src="'+ result.data[i].productImage +'" class="card-img-top img-fit h-100px mw-100 mx-auto" >'+
                         '<div class="card-body p-2">'+
-                            '<div class="text-truncate-2 small">'+ data.products.paginate.data[i].products_name +'</div>'+
+                            '<div class="text-truncate-2 small">'+ result.data[i].productName +'</div>'+
                         '</div>'+
                     '</div>'+
                 '</div>');
             }
-            if (data.products.paginate.next_page_url != null) {
-                $('#load-more').find('.text-center').html('Load More');
-            }
-            else {
-                $('#load-more').find('.text-center').html('Nothing more found');
-            }
+            // if (data.products.paginate.next_page_url != null) {
+            //     $('#load-more').find('.text-center').html('Load More');
+            // }
+            // else {
+            //     $('#load-more').find('.text-center').html('Nothing more found');
+            // }
             $('[data-toggle="tooltip"]').tooltip();
         }
 
@@ -442,8 +409,8 @@
             });
         }
 
-        function addToCart(product_id, variant, quantity){
-            $.post('{{ route('pos.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, variant:variant, quantity, quantity}, function(data){
+        function addToCart(product_id, product_name, product_price, product_image, product_currency, quantity){
+            $.post('{{ route('pos.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, product_name:product_name, product_price:product_price, product_image:product_image, product_currency: product_currency, quantity:quantity}, function(data){
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });
@@ -461,21 +428,21 @@
             });
         }
 
-        function setDiscount(){
-            var discount = $('input[name=discount]').val();
-            $.post('{{ route('pos.setDiscount') }}',{_token:'{{ csrf_token() }}', discount:discount}, function(data){
-                $('#cart-details').html(data);
-                $('#product-variation').modal('hide');
-            });
-        }
+        // function setDiscount(){
+        //     var discount = $('input[name=discount]').val();
+        //     $.post('{{ route('pos.setDiscount') }}',{_token:'{{ csrf_token() }}', discount:discount}, function(data){
+        //         $('#cart-details').html(data);
+        //         $('#product-variation').modal('hide');
+        //     });
+        // }
 
-        function setShipping(){
-            var shipping = $('input[name=shipping]:checked').val();
-            $.post('{{ route('pos.setShipping') }}',{_token:'{{ csrf_token() }}', shipping:shipping}, function(data){
-                $('#cart-details').html(data);
-                $('#product-variation').modal('hide');
-            });
-        }
+        // function setShipping(){
+        //     var shipping = $('input[name=shipping]:checked').val();
+        //     $.post('{{ route('pos.setShipping') }}',{_token:'{{ csrf_token() }}', shipping:shipping}, function(data){
+        //         $('#cart-details').html(data);
+        //         $('#product-variation').modal('hide');
+        //     });
+        // }
 
         function getShippingAddress(){
 
@@ -534,8 +501,8 @@
                 if(data.data == 1){
                     // AIZ.plugins.notify('success', '{{ trans('labels.Order Completed Successfully.') }}');
                     swal("success!", "{{ trans('labels.Order Completed Successfully.') }}", "success");
-                    // location.reload();
-                    window.location.href = data.print_url;
+                    location.reload();
+                    // window.location.href = data.print_url;
                 } else if(data.status == 2) {
                     swal("", data.message, "error");
                 } else{

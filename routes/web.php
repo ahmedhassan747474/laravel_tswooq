@@ -132,8 +132,10 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 		Route::post('/get_brands', 'ProductsController@getBrands')->name('get_brands');
 
 		//Like Card
-		Route::get('/like_card', 'LikeCardController@index');
+		Route::get('/like_card', 'LikeCardController@index')->name('like_card');
 		Route::get('/like_card_test', 'LikeCardController@index_one');
+		Route::get('/like_card_two', 'LikeCardController@index_two');
+		Route::get('/like_card_balance', 'LikeCardController@index_balance');
 
 	});
 

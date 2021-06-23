@@ -84,6 +84,12 @@
           </a>
         </li>
 
+        <li class="treeview {{ Request::is('admin/poscard/display') ? 'active' : '' }}  {{ Request::is('admin/poscard/add') ? 'active' : '' }}  {{ Request::is('admin/poscard/edit/*') ? 'active' : '' }} ">
+          <a href="{{ URL::to('admin/poscard/display')}}">
+            <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.POS Like Card') }}</span>
+          </a>
+        </li>
+
       <?php }
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->shop_view == 1){
       ?>
