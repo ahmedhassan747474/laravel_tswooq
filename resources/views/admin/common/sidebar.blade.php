@@ -149,10 +149,15 @@
           <a href="#" ><i class="fa fa-list-ul" aria-hidden="true"></i> <span> {{ trans('labels.link_orders') }}</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
-          <li class="{{ Request::is('admin/orderstatus') ? 'active' : '' }} {{ Request::is('admin/addorderstatus') ? 'active' : '' }} {{ Request::is('admin/editorderstatus/*') ? 'active' : '' }} "><a href="{{ URL::to('admin/orderstatus')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_order_status') }}</a></li>
+            <li class="{{ Request::is('admin/orderstatus') ? 'active' : '' }} {{ Request::is('admin/addorderstatus') ? 'active' : '' }} {{ Request::is('admin/editorderstatus/*') ? 'active' : '' }} "><a href="{{ URL::to('admin/orderstatus')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_order_status') }}</a></li>
             <li class="{{ Request::is('admin/orders/display') ? 'active' : '' }} {{ Request::is('admin/orders/vieworder/*') ? 'active' : '' }}">
               <a href="{{ URL::to('admin/orders/display')}}" >
                 <i class="fa fa-circle-o" aria-hidden="true"></i> <span> {{ trans('labels.link_orders') }}</span>
+              </a>
+            </li>
+            <li class="{{ Request::is('admin/orders_likecard/display') ? 'active' : '' }} {{ Request::is('admin/orders_likecard/vieworder/*') ? 'active' : '' }}">
+              <a href="{{ URL::to('admin/orders_likecard/display')}}" >
+                <i class="fa fa-circle-o" aria-hidden="true"></i> <span> {{ trans('labels.link_orders_likecard') }}</span>
               </a>
             </li>
           </ul>

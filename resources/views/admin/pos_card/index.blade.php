@@ -338,7 +338,7 @@
                 var price = $(this).data('price');
                 var image = $(this).data('image');
                 var currency = $(this).data('currency');
-                $.get('{{ route('variants') }}', {id:id}, function(data){
+                $.get('{{ route('variants_card') }}', {id:id}, function(data){
                     if (data == 0) {
                         addToCart(id, name, price, image, currency, 1);
                     }
@@ -360,7 +360,7 @@
             // console.log(keyword);
             // console.log(poscategory);
             // console.log(possubcategory);
-            $.get('{{ route('pos.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory}, function(data){
+            $.get('{{ route('pos_card.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory}, function(data){
                 products = data;
                 $('#product-list').html(null);
                 // console.log(products.products.paginate);
@@ -403,14 +403,14 @@
         }
 
         function removeFromCart(key){
-            $.post('{{ route('pos.removeFromCart') }}', {_token:'{{ csrf_token() }}', key:key}, function(data){
+            $.post('{{ route('pos_card.removeFromCart') }}', {_token:'{{ csrf_token() }}', key:key}, function(data){
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });
         }
 
         function addToCart(product_id, product_name, product_price, product_image, product_currency, quantity){
-            $.post('{{ route('pos.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, product_name:product_name, product_price:product_price, product_image:product_image, product_currency: product_currency, quantity:quantity}, function(data){
+            $.post('{{ route('pos_card.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, product_name:product_name, product_price:product_price, product_image:product_image, product_currency: product_currency, quantity:quantity}, function(data){
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });
@@ -422,7 +422,7 @@
         }
 
         function updateQuantity(key){
-            $.post('{{ route('pos.updateQuantity') }}',{_token:'{{ csrf_token() }}', key:key, quantity: $('#qty-'+key).val()}, function(data){
+            $.post('{{ route('pos_card.updateQuantity') }}',{_token:'{{ csrf_token() }}', key:key, quantity: $('#qty-'+key).val()}, function(data){
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });
@@ -438,7 +438,7 @@
 
         // function setShipping(){
         //     var shipping = $('input[name=shipping]:checked').val();
-        //     $.post('{{ route('pos.setShipping') }}',{_token:'{{ csrf_token() }}', shipping:shipping}, function(data){
+        //     $.post('{{ route('pos_card.setShipping') }}',{_token:'{{ csrf_token() }}', shipping:shipping}, function(data){
         //         $('#cart-details').html(data);
         //         $('#product-variation').modal('hide');
         //     });
@@ -446,7 +446,7 @@
 
         function getShippingAddress(){
 
-            $.post('{{ route('pos.getShippingAddress') }}',{_token:'{{ csrf_token() }}', id:$('select[name=user_id]').val()}, function(data){
+            $.post('{{ route('pos_card.getShippingAddress') }}',{_token:'{{ csrf_token() }}', id:$('select[name=user_id]').val()}, function(data){
                 $('#shipping_address').html(data);
                 $(".select3").select2();
             });
@@ -477,7 +477,7 @@
             var total_price = $('input[name=total_price]').val();
             var customer_id = $('select[name=customer]').val();
 
-            $.post('{{ route('pos.order_place') }}',
+            $.post('{{ route('pos_card.order_place') }}',
             {
                 _token:'{{ csrf_token() }}', 
                 user_id:user_id, 

@@ -190,6 +190,7 @@ return [
         Vectorcoder\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
         Basel\Paytabs\PaytabsServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
 
     ],
@@ -247,6 +248,7 @@ return [
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class,
 
         'Paytabs' => Basel\Paytabs\Facades\PaytabsFacade::class,
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 

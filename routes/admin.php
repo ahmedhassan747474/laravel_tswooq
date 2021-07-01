@@ -303,16 +303,16 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
     Route::group(['prefix' => 'admin/poscard', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'POSCardController@display')->middleware('view_pos');
-        Route::get('/products', 'POSCardController@search')->name('pos.search_product')->middleware('view_pos');
-        Route::get('/variants', 'POSCardController@getVarinats')->name('variants')->middleware('view_pos');
-        Route::post('/add-to-cart-pos', 'POSCardController@addToCart')->name('pos.addToCart')->middleware('view_pos');
-        Route::post('/update-quantity-cart-pos', 'POSCardController@updateQuantity')->name('pos.updateQuantity')->middleware('view_pos');
-        Route::post('/remove-from-cart-pos', 'POSCardController@removeFromCart')->name('pos.removeFromCart')->middleware('view_pos');
-        Route::post('/get_shipping_address', 'POSCardController@getShippingAddress')->name('pos.getShippingAddress')->middleware('view_pos');
-        Route::post('/get_shipping_address_seller', 'POSCardController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller')->middleware('view_pos');
-        Route::post('/setDiscount', 'POSCardController@setDiscount')->name('pos.setDiscount')->middleware('view_pos');
-        Route::post('/setShipping', 'POSCardController@setShipping')->name('pos.setShipping')->middleware('view_pos');
-        Route::post('/pos-order', 'POSCardController@order_store')->name('pos.order_place')->middleware('view_pos');
+        Route::get('/products', 'POSCardController@search')->name('pos_card.search_product')->middleware('view_pos');
+        Route::get('/variants', 'POSCardController@getVarinats')->name('variants_card')->middleware('view_pos');
+        Route::post('/add-to-cart-pos', 'POSCardController@addToCart')->name('pos_card.addToCart')->middleware('view_pos');
+        Route::post('/update-quantity-cart-pos', 'POSCardController@updateQuantity')->name('pos_card.updateQuantity')->middleware('view_pos');
+        Route::post('/remove-from-cart-pos', 'POSCardController@removeFromCart')->name('pos_card.removeFromCart')->middleware('view_pos');
+        Route::post('/get_shipping_address', 'POSCardController@getShippingAddress')->name('pos_card.getShippingAddress')->middleware('view_pos');
+        Route::post('/get_shipping_address_seller', 'POSCardController@getShippingAddressForSeller')->name('pos_card.getShippingAddressForSeller')->middleware('view_pos');
+        Route::post('/setDiscount', 'POSCardController@setDiscount')->name('pos_card.setDiscount')->middleware('view_pos');
+        Route::post('/setShipping', 'POSCardController@setShipping')->name('pos_card.setShipping')->middleware('view_pos');
+        Route::post('/pos-order', 'POSCardController@order_store')->name('pos_card.order_place')->middleware('view_pos');
     });
 
     Route::group(['prefix' => 'admin/countries', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -429,6 +429,14 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/deleteOrderStatus', 'SiteSettingController@deleteOrderStatus')->middleware('edit_order');
         Route::post('/assignorders', 'OrdersController@assignorders')->middleware('edit_order');
 
+    });
+
+    Route::group(['prefix' => 'admin/orders_likecard', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/display', 'OrdersLikeCardController@display')->middleware('view_order');
+        Route::get('/vieworder/{id}', 'OrdersLikeCardController@vieworder')->middleware('view_order');
+        Route::post('/updateOrder', 'OrdersLikeCardController@updateOrder')->middleware('edit_order');
+        Route::post('/deleteOrder', 'OrdersLikeCardController@deleteOrder')->middleware('edit_order');
+        Route::get('/invoiceprint/{id}', 'OrdersLikeCardController@invoiceprint')->name('invoiceprint_likecard')->middleware('view_order');
     });
 
     Route::group(['prefix' => 'admin/banners', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {

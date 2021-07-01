@@ -724,11 +724,16 @@ class Products extends Model
                     if ($default_images) {
                         $products_data->image_path = $default_images->path;
                     } else {
-                        $default_images = DB::table('image_categories')
-                            ->where('image_id', '=', $products_data->products_image)
-                            ->where('image_type', 'ACTUAL')
-                            ->first();
-                        $products_data->image_path = $default_images->path;
+                        // dd($products_data->products_image != null);
+                        if($products_data->products_image != null) {
+                                $default_images = DB::table('image_categories')
+                                ->where('image_id', '=', $products_data->products_image)
+                                ->where('image_type', 'ACTUAL')
+                                ->first();
+                            $products_data->image_path = $default_images->path;
+                        } else {
+                            $products_data->image_path = "";
+                        }
                     }
 
                 }
@@ -759,6 +764,8 @@ class Products extends Model
 
                 $products_data->images = $products_images;
 
+                $default_images = $products_data ? '' : '';
+                // dd($products_data);
                 $default_image_thumb = DB::table('products')
                     ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id')
                     ->select('image_categories.path as image_path', 'image_categories.image_type')
@@ -768,7 +775,7 @@ class Products extends Model
                 if ($default_image_thumb) {
                     $products_data->default_thumb = $default_image_thumb->image_path;
                 } else {
-                    $products_data->default_thumb = $products_data->default_images;
+                    $products_data->default_thumb = $default_images;//$products_data->default_images
                 }
 
                 //categories

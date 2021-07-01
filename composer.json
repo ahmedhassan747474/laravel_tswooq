@@ -16,6 +16,7 @@
         "essam/laravel-tap-payment": "^0.0.3",
         "fideloper/proxy": "^4.0",
         "folklore/image": "0.3.*",
+        "intervention/image": "^2.5",
         "joeyrush/better-migrate-seed": "^0.3.0",
         "kyslik/column-sortable": "^6.0",
         "laravel/framework": "^6.0",
@@ -30,6 +31,7 @@
         "razorpay/razorpay": "^2.5",
         "spacemudd/laravel-tap-payments": "^2.0",
         "spatie/db-dumper": "^2.14",
+        "tymon/jwt-auth": "^1.0",
         "vectorcoder/laravel-installer": "dev-master"
     },
     "require-dev": {
@@ -60,7 +62,8 @@
         "classmap": [
             "database/seeds",
             "database/factories"
-        ]
+        ],
+        "files": ["app/Helper/helper.php"]
     },
     "autoload-dev": {
         "psr-4": {
