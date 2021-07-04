@@ -102,19 +102,19 @@ Route::group(['namespace' => 'App'], function () {
 
 
 	//get categories
-	Route::post('/allcategories', 'MyProductController@allcategories');
+	// Route::post('/allcategories', 'MyProductController@allcategories');
 
 	//getAllProducts
-	Route::post('/getallproducts', 'MyProductController@getallproducts');
+	// Route::post('/getallproducts', 'MyProductController@getallproducts');
 
 	//like products
-	Route::post('/likeproduct', 'MyProductController@likeproduct');
+	// Route::post('/likeproduct', 'MyProductController@likeproduct');
 
 	//unlike products
-	Route::post('/unlikeproduct', 'MyProductController@unlikeproduct');
+	// Route::post('/unlikeproduct', 'MyProductController@unlikeproduct');
 
 	//get filters
-	Route::post('/getfilters', 'MyProductController@getfilters');
+	// Route::post('/getfilters', 'MyProductController@getfilters');
 
 	//get getFilterproducts
 	Route::post('/getfilterproducts', 'MyProductController@getfilterproducts');
@@ -171,13 +171,13 @@ Route::group(['namespace' => 'App'], function () {
 	Route::get('/instamojotoken', 'OrderController@instamojotoken');
 
 	//add To order
-	Route::post('/addtoorder', 'OrderController@addtoorder');
+	// Route::post('/addtoorder', 'OrderController@addtoorder');
 
 	//updatestatus
-	Route::post('/updatestatus/', 'OrderController@updatestatus');
+	// Route::post('/updatestatus/', 'OrderController@updatestatus');
 
 	//get all orders
-	Route::post('/getorders', 'OrderController@getorders');
+	// Route::post('/getorders', 'OrderController@getorders');
 
 	//get default payment method
 	Route::post('/getpaymentmethods', 'OrderController@getpaymentmethods');
@@ -281,36 +281,12 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
     Route::post('sign_with_social', 'UserController@loginWithSocial');
     Route::post('active_phone_number', 'UserController@verifyPhoneNumber');
 
-    // //Lists
-    // Route::get('list_of_countries', 'ListController@countries');
-    // Route::get('list_of_cities', 'ListController@cities');
-    // Route::get('list_of_book_list', 'ListController@bookList');
-    // Route::get('list_of_includes', 'ListController@includeList');
-    // Route::get('list_of_residentials', 'ListController@residentailType');
-    // Route::get('list_of_throughs', 'ListController@throughs');
-    // Route::get('list_of_payments', 'ListController@paymentMethod');
-    // Route::get('list_of_reasons', 'ListController@reason');
-    // Route::get('list_of_all', 'ListController@all');
-
-    // //Home 
-    // Route::get('list_of_property_type', 'PropertyController@listOfPropertyType');
-    // Route::get('home_property', 'PropertyController@homePage')->name('home_property');
-    // Route::get('list_of_property', 'PropertyController@ListOfProperty');
-    // Route::get('list_of_most_property', 'PropertyController@ListOfMostProperty');
-    // Route::get('property_detail/{id}', 'PropertyController@propertyDetail')->name('property_detail');
-    // Route::get('property_room/{id}', 'PropertyController@propertyRoom')->name('property_room');
-    // Route::Post('property_filter', 'PropertyController@propertyFilter');
-
-    // Route::get('type_of_residential', 'PropertyController@typeResidential');
-    // Route::get('home_residential', 'PropertyController@homePageResidential')->name('home_residential');
-    // Route::get('list_of_residential', 'PropertyController@ListOfResidential');
-    // Route::get('list_of_most_residential', 'PropertyController@ListOfMostResidential');
-
-    // Route::get('list_of_favourite', 'PropertyController@ListOfPropertyFavourite');
-
-    // //Rides
-    // Route::get('list_of_rides', 'RideController@ride');
-    // Route::get('ride_detail/{id}', 'RideController@rideDetail')->name('ride_detail');
+	//Product
+	Route::post('/get_categories', 'ProductController@allcategories');
+	Route::post('/get_brands', 'ProductController@allbrands');
+	Route::post('/get_brands_by_category', 'ProductController@allbrandsbycategory');
+	Route::post('/getallproducts', 'ProductController@getallproducts');
+	Route::post('/getfilters', 'ProductController@getfilters');
 
     Route::group(['middleware' => 'user'], function(){
         //Auth
@@ -318,20 +294,21 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
         Route::post('logout', 'UserController@logout');
         Route::get('get_profile', 'UserController@getProfile');
         Route::post('send_active_email', 'UserController@sendActiveEmail');
-        // //Property
-        // Route::Post('property_favourite', 'PropertyController@propertyFavourite');
-        // Route::Post('property_suggest', 'PropertyController@propertySuggest');
-        // Route::Post('property_rate', 'PropertyController@propertyRate');
-        // Route::Post('check_coupon', 'PropertyController@checkCoupon');
-        // //Property Reservation
-        // Route::Post('property_reserve', 'PropertyController@propertyReserve');
-        // Route::Post('property_reserve_history', 'PropertyController@propertyReserveHistory');
-        // Route::Post('property_reserve_cancel', 'PropertyController@propertyReserveCancel');
-        // //Ride
-        // Route::Post('ride_like', 'RideController@rideLike');
-        // Route::Post('ride_review', 'RideController@rideReview');
-        // //Chat
-        // Route::post('get_chat', 'ChatController@getChatMessages');
-        // Route::post('send_message', 'ChatController@sendMessage');
+
+		//Product
+		Route::post('/likeproduct', 'ProductController@likeproduct');
+		Route::post('/unlikeproduct', 'ProductController@unlikeproduct');
+
+		//Cart
+		Route::post('/get_cart', 'OrderController@getcart');
+		Route::post('/add_to_cart/', 'OrderController@addtocart');
+		Route::post('/edit_cart', 'OrderController@editcart');
+		Route::post('/delete_cart', 'OrderController@deletecart');
+		
+		//Order
+		Route::post('/addtoorder', 'OrderController@addtoorder');
+		Route::post('/cancelorder', 'OrderController@updatestatus');
+		Route::post('/getorders', 'OrderController@getorders');
+
     });
 });

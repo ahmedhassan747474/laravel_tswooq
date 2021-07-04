@@ -11,8 +11,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use App\User;
-use App\OtpCode;
-use App\Setting;
 use JWTAuth;
 use Hash;
 use Auth;
