@@ -2,7 +2,7 @@
   <article>
     <div class="thumb">
       <div class="badges">
-        <?php 
+        <?php
       $current_date = date("Y-m-d", strtotime("now"));
 
       $string = substr($products->products_date_added, 0, strpos($products->products_date_added, ' '));
@@ -14,8 +14,9 @@
         print __('website.New');
         print '</span>';
       }
-      ?> 
+      ?>
         <?php
+        
       if(!empty($products->discount_price)){
         $discount_price = $products->discount_price * session('currency_value');
       }
@@ -31,21 +32,21 @@
          $discounted_price = 0;
       }
       ?>
-      
+
         <span class="badge badge-danger"  data-toggle="tooltip" data-placement="bottom" title="<?php echo (int)$discount_percentage; ?>% @lang('website.off')"><?php echo (int)$discount_percentage; ?>%</span>
         <?php }?>
-        
-      
+
+
       @if($products->is_feature == 1)
-      <span class="badge badge-success">@lang('website.Featured')</span>                                            
-                
+      <span class="badge badge-success">@lang('website.Featured')</span>
+
   @endif
-        
+
 
 
       </div>
       <div class="product-hover d-none d-lg-block d-xl-block">
-        <div class="icons">    
+        <div class="icons">
 
             <a class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
               <i class="fas fa-heart"></i>
@@ -80,7 +81,7 @@
       </div>
       <div class="mobile-icons d-lg-none d-xl-none">
         <div class="icons">
-          <div class="icon-liked"> 
+          <div class="icon-liked">
 
             <a class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>">
               <i class="fas fa-heart"></i>
@@ -98,34 +99,34 @@
       </div>
       <img class="img-fluid" src="{{asset('').$products->image_path}}" alt="{{$products->products_name}}">
     </div>
-    
-    
+
+
       <div class="content" onclick="window.location.href ='{{ URL::to('/product-detail/'.$products->products_slug)}}'">
           <span class="tag">
-            <?php 
-            
+            <?php
+
             $cat_name = '';
             foreach($products->categories as $key=>$category){
                 $cat_name = $category->categories_name;
-            }              
-                  
+            }
+
             echo $cat_name;
-          ?>         
+          ?>
           </span>
           <h5 class="title text-center"><a href="{{ URL::to('/product-detail/'.$products->products_slug)}}">{{$products->products_name}}</a></h5>
           <div class="expand-detail">
             <?=stripslashes($products->products_description)?>
           </div>
-          <div class="price">                     
+          <div class="price">
             @if(!empty($products->discount_price))
               {{Session::get('symbol_left')}}&nbsp;{{$discount_price+0}}&nbsp;{{Session::get('symbol_right')}}
             <span> {{Session::get('symbol_left')}}{{$orignal_price+0}}{{Session::get('symbol_right')}}</span>
             @else
               {{Session::get('symbol_left')}}&nbsp;{{$orignal_price+0}}&nbsp;{{Session::get('symbol_right')}}
-            @endif                        
-          </div>  
+            @endif
+          </div>
         </a>
-      </div>                 
+      </div>
 
       <div class="mobile-buttons d-lg-none d-xl-none">
         @if($products->products_type==0)

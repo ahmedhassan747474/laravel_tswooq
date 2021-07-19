@@ -19,7 +19,7 @@
             $discount_price = $products->discount_price * session('currency_value');
           }
           $orignal_price = $products->products_price * session('currency_value');
-          
+
            if(!empty($products->discount_price)){
 
             if(($orignal_price+0)>0){

@@ -1,3 +1,4 @@
+
 <div class="container-fuild">
   <nav aria-label="breadcrumb">
       <div class="container">
@@ -14,7 +15,7 @@
 <section class="pro-content">
   <div class="container">
     <div class="page-heading-title">
-        <h2>@lang('website.Shopping cart')</h2>           
+        <h2>@lang('website.Shopping cart')</h2>
     </div>
   </div>
 
@@ -45,6 +46,40 @@
                ?>
               @foreach( $result['cart'] as $products)
               <?php
+              $listOfAttributes = array();
+            $index3 = 0;
+
+            // dd($getAllProductsParallel);
+            $getAllAttributes = DB::table('products_attributes')
+                ->where('products_id', '=', $products->products_id)
+                // ->whereIn('products_id', $getAllProductsParallel)
+                ->select('options_id', 'options_values_id', 'products_id')
+                ->get();
+            //  dd($getAllAttributes);
+
+            // foreach($getAllAttributes as $attribute){
+            //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+            //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+            //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+            // }
+
+            foreach($getAllAttributes as $attribute){
+                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value ;
+                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+            }
+            $listOfAttributes[$index3]['id'] = $products->products_id;
+            $index3++;
+            // $result['getAllAttributes'] = $getAllAttributes;
+            // dd($listOfAttributes[0]['name']);
               $price+= $products->final_price * $products->customers_basket_quantity;
               ?>
               <tbody  @if(session::get('out_of_stock') == 1 and session::get('out_of_stock_product') == $products->products_id)style="	box-shadow: 0 20px 50px rgba(0,0,0,.5); border:2px solid #FF9999;"@endif>
@@ -58,12 +93,12 @@
                         <img class="img-fluid" src="{{asset('').$products->image_path}}" alt="{{$products->products_name}}"/>
                         </a>
                     </td>
-                      <td class="col-12 col-md-4 item-detail-left">
+                      <td class="col-12 col-md-2 item-detail-left">
                         <div class="item-detail">
                             <span>
                               @foreach($products->categories as $key=>$category)
                                   {{$category->categories_name}}@if(++$key === count($products->categories)) @else, @endif
-                              @endforeach 
+                              @endforeach
                             </span>
                             <h4>{{$products->products_name}}
                             </h4>
@@ -83,8 +118,25 @@
                                 <a href="{{ URL::to('/deleteCart?id='.$products->customers_basket_id)}}"  class="btn" >
                                   <span class="fas fa-times"></span>
                               </a>
-                            </div>                          
-                          </div>                        
+                            </div>
+                          </div>
+
+                      </td>
+                      <td class="col-12 col-md-2 item-detail-left">
+                        <div class="item-detail">
+                            {{-- <span>
+                              {{$attribute_option_name}}:
+                            </span>
+                            <h4>{{$attribute_option_value}}
+                            </h4> --}}
+                            <div class="item-attributes">
+                              @if(isset($listOfAttributes[0]['name']))
+                              @foreach($listOfAttributes[0]['name'] as $attributes)
+                                <b>{{$attributes}}</b>
+                              @endforeach
+                              @endif
+                            </div>
+                        </div>
 
                       </td>
                       <?php
@@ -119,17 +171,17 @@
                     @endif
 
                    </td>
-                    <td class="col-12 col-md-2 Qty">                          
-                        <div class="input-group item-quantity">                          
+                    <td class="col-12 col-md-2 Qty">
+                        <div class="input-group item-quantity">
                             <input name="quantity[]" type="text" readonly value="{{$products->customers_basket_quantity}}" class="form-control qty" min="{{$products->min_order}}" max="{{$products->max_order}}">
                             <span class="input-group-btn ">
-                                <button type="button" value="quantity" class="quantity-right-plus btn qtypluscart" data-type="plus" data-field="">                                  
+                                <button type="button" value="quantity" class="quantity-right-plus btn qtypluscart" data-type="plus" data-field="">
                                     <span class="fas fa-plus"></span>
                                 </button>
                                 <button type="button" value="quantity" class="quantity-left-minus btn qtyminuscart" data-type="minus" data-field="">
                                     <span class="fas fa-minus"></span>
-                                </button>            
-                            </span> 
+                                </button>
+                            </span>
                         </div>
                     </td>
                     <td class="align-middle item-total col-12 col-md-1" align="center">
@@ -176,9 +228,9 @@
                     <a  href="{{ URL::to('/shop')}}" class="btn btn-secondary swipe-to-top">@lang('website.Back To Shopping')</a>
                     <button class="btn btn-light swipe-to-top" id="update_cart">@lang('website.Update Cart')</button>
                   </div>
-               
+
                 </div>
-               
+
               </div>
             </div>
           </div>
@@ -196,7 +248,7 @@
                     @php
 
                     if(!empty(session('coupon_discount'))){
-                      $coupon_amount = session('currency_value') * session('coupon_discount');  
+                      $coupon_amount = session('currency_value') * session('coupon_discount');
                     }else{
                       $coupon_amount = 0;
                     }
