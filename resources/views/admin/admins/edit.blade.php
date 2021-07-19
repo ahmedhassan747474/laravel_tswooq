@@ -1,4 +1,8 @@
 @extends('admin.layout')
+<?php
+$images = new App\Models\Core\Images;
+$allimage = $images->getimages();
+?>
 @section('content')
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -22,7 +26,7 @@
         <div class="box">
           <div class="box-header">
             <h3 class="box-title">{{ trans('labels.editadmin') }} </h3>
-          </div> 
+          </div>
 
           <!-- /.box-header -->
           <div class="box-body">
@@ -82,7 +86,7 @@
                             @else
                             <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
                             @endif
-                            
+
                             <hr>
                             <h4>{{ trans('labels.Personal Info') }} </h4>
                             <hr>
@@ -122,8 +126,68 @@
                                     <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                   </div>
                                 </div>
-                                
-                                
+                                <div class="form-group show_hide_shop_name">
+                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.RecordNumber') }} </label>
+                                    <div class="col-sm-10 col-md-4">
+                                      {!! Form::text('record_number',  $result['admins'][0]->record_number, array('class'=>'form-control field-validate', 'id'=>'record_number')) !!}
+                                      <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.RecordNumberText') }}</span>
+                                      <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                    </div>
+                                </div>
+                                <div class="form-group show_hide_shop_name" id="imageIcone">
+                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Logo') }}</label>
+                                    <div class="col-sm-10 col-md-4">
+                                        <!-- Modal -->
+                                        <div class="modal fade embed-images" id="ModalmanufacturedICone" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" id="closemodal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                        <h3 class="modal-title text-primary" id="myModalLabel">{{ trans('labels.Choose Image') }} </h3>
+                                                    </div>
+                                                    <div class="modal-body manufacturer-image-embed">
+                                                        @if(isset($allimage))
+                                                        <select class="image-picker show-html " name="image_id" id="select_img">
+                                                            <option value=""></option>
+                                                            @foreach($allimage as $key=>$image)
+                                                              <option data-img-src="{{asset($image->path)}}" class="imagedetail" data-img-alt="{{$key}}" value="{{$image->id}}"> {{$image->id}} </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @endif
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a href="{{url('admin/media/add')}}" target="_blank" class="btn btn-primary pull-left" >{{ trans('labels.Add Image') }}</a>
+                                                        <button type="button" class="btn btn-default refresh-image"><i class="fa fa-refresh"></i></button>
+                                                        <button type="button" class="btn btn-success" id="selectedICONE" data-dismiss="modal">{{ trans('labels.Done') }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="imageselected">
+                                          {!! Form::button(trans('labels.Add Image'), array('id'=>'newIcon','class'=>"btn btn-primary field-validate", 'data-toggle'=>"modal", 'data-target'=>"#ModalmanufacturedICone" )) !!}
+                                          <br>
+                                          <div id="selectedthumbnailIcon" class="selectedthumbnail col-md-5"> </div>
+                                          <div class="closimage">
+                                              <button type="button" class="close pull-left image-close " id="image-Icone"
+                                                style="display: none; position: absolute;left: 105px; top: 54px; background-color: black; color: white; opacity: 2.2; " aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                              </button>
+                                          </div>
+                                        </div>
+                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.ImageText') }}</span>
+
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="form-group show_hide_shop_name">
+                                    <label for="name" class="col-sm-2 col-md-3 control-label"></label>
+                                    <div class="col-sm-10 col-md-4">
+
+                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.OldImage') }}</span>
+                                        <br>
+                                        <img src="{{asset($result['image'])}}" alt="" width=" 100px">
+                                    </div>
+                                </div>
                                 <hr>
                                 <h4>{{ trans('labels.Login Info') }}</h4>
                                 <hr>

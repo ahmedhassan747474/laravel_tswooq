@@ -40,7 +40,7 @@ class AdminController extends Controller
 		$dataOrders = DB::table('orders')
 			->LeftJoin('currencies', 'currencies.code', '=', 'orders.currency')
 			->where('customers_id','!=','');
-			
+
 
 		if(auth()->user()->role_id == 11) {
 			$dataOrders->where('admin_id', '=', auth()->user()->id);
@@ -53,7 +53,7 @@ class AdminController extends Controller
 		$index = 0;
 		$purchased_price = 0;
 		$sold_cost = 0;
-		
+
 		foreach($orders as $orders_data){
 
 			$orders_status_history = DB::table('orders_status_history')
@@ -65,7 +65,7 @@ class AdminController extends Controller
 				->where('orders_status.role_id','=',2)->orderby('orders_status_history.date_added', 'DESC')->first();
 
 			$orders[$index]->orders_status_id = $orders_status_history->orders_status_id;
-			$orders[$index]->orders_status = $orders_status_history->orders_status_name;			
+			$orders[$index]->orders_status = $orders_status_history->orders_status_name;
 
 			$orders_products = DB::table('orders_products')
 				->select('final_price', DB::raw('SUM(final_price) as total_price') ,'products_id','products_quantity' )
@@ -73,7 +73,7 @@ class AdminController extends Controller
 				->groupBy('final_price')
 				->get();
 
-			
+
 			if(count($orders_products)>0 and !empty($orders_products[0]->total_price)){
 				$orders[$index]->total_price = $orders_products[0]->total_price;
 			}else{
@@ -89,17 +89,17 @@ class AdminController extends Controller
 					}else{
 						$single_product_purchase_price = 0;
 					}
-	
-				}	
+
+				}
 			}
-			
+
 			$index++;
 
 		  }
-		  
+
 
   		$result['profit'] = number_format($sold_cost,2);
-		
+
   		$compeleted_orders = 0;
   		$pending_orders = 0;
   		foreach($orders as $orders_data){
@@ -113,21 +113,21 @@ class AdminController extends Controller
   				$pending_orders++;
   			}
 		  }
-		  
+
 
 
   		$result['orders'] = $orders->chunk(10);
   		$result['pending_orders'] = $pending_orders;
   		$result['compeleted_orders'] = $compeleted_orders;
 		$result['total_orders'] = count($orders);
-		  
+
 
   		$result['inprocess'] = count($orders)-$pending_orders-$compeleted_orders;
   		//add to cart orders
   		$cart = DB::table('customers_basket')->get();
 
   		$result['cart'] = count($cart);
-		  
+
   		//Rencently added products
 		$dataRecentProducts = DB::table('products')
 			->LeftJoin('image_categories', function ($join) {
@@ -151,7 +151,7 @@ class AdminController extends Controller
 		$recentProducts = $dataRecentProducts->orderBy('products.products_id', 'DESC')->paginate(8);
 
   		$result['recentProducts'] = $recentProducts;
-		  
+
   		//products
   		$dataProducts = DB::table('products')
   			->leftJoin('products_description','products_description.products_id','=','products.products_id')
@@ -165,7 +165,7 @@ class AdminController extends Controller
 
 		$products = $dataProducts->orderBy('products.products_id', 'DESC')->get();
 
-			
+
   		//low products & out of stock
   		$lowLimit = 0;
   		$outOfStock = 0;
@@ -194,16 +194,16 @@ class AdminController extends Controller
   			// 	$outOfStock++;
   			// }
   		}
-		  
+
   		$result['lowLimit'] = $lowLimit;
   		$result['outOfStock'] = $outOfStock;
   		$result['totalProducts'] = count($products);
-		
-      	$users = array();		  
-		 
+
+      	$users = array();
+
   		$result['customers'] = $users;//->chunk(21);
   		$result['totalCustomers'] = count($users);
-		$result['reportBase'] = $reportBase; 
+		$result['reportBase'] = $reportBase;
 
 
 		$result['commonContent'] = $this->Setting->commonContent();
@@ -385,6 +385,7 @@ class AdminController extends Controller
   //addnewadmin
 	public function addnewadmin(Request $request){
 
+
 		//get function from other controller
 		$myVar = new SiteSettingController();
 		$extensions = $myVar->imageType();
@@ -400,7 +401,12 @@ class AdminController extends Controller
 			return redirect()->back()->with('errorMessage', $errorMessage);
 		}else{
 
-			$uploadImage = '';
+			if ($request->image_id !== null) {
+
+                $uploadImage = $request->image_id;
+            } else {
+                $uploadImage = '';
+            }
 
 			$customers_id = DB::table('users')->insertGetId([
 						'user_name'		 		    =>   $request->first_name.'_'.$request->last_name.time(),
@@ -411,6 +417,7 @@ class AdminController extends Controller
 						'password'		 			=>   Hash::make($request->password),
 						'status'		 	 		=>   $request->isActive,
 						'avatar'	 				=>	 $uploadImage,
+						'record_number'	 		    =>   $request->record_number,
 						'role_id'					=>	 $request->adminType,
 						'parent_admin_id'			=>   $request->admin_id,
 						'shop_name'					=>   $request->shop_name
@@ -443,6 +450,8 @@ class AdminController extends Controller
 		$result['myid'] = $myid;
 
 		$admins = DB::table('users')->where('id','=', $myid)->get();
+        $imagePath=DB::table('image_categories')->where('id','=', $admins[0]->avatar)->first()->path;
+        // dd($imagePath);
 		$zones = 0;
 
 		if($zones>0){
@@ -458,7 +467,7 @@ class AdminController extends Controller
 		$result['admins'] = $admins;
 		$result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
 		$result['commonContent'] = $this->Setting->commonContent();
-
+        $result['image']=$imagePath;
 		return view("admin.admins.edit",$title)->with('result', $result);
 	}
 
@@ -480,7 +489,11 @@ class AdminController extends Controller
 			return redirect()->back()->with('errorMessage', $errorMessage);
 		}else{
 
-			$uploadImage = '';
+			if ($request->image_id !== null) {
+                $uploadImage = $request->image_id;
+            } else {
+                $uploadImage = $request->oldImage;
+            }
 
 			$admin_data = array(
 				'first_name'		 		=>   $request->first_name,
@@ -489,6 +502,7 @@ class AdminController extends Controller
 				'email'	 					=>   $request->email,
 				'status'		 	 		=>   $request->isActive,
 				'avatar'	 				=>	 $uploadImage,
+				'record_number'	 		    =>   $request->record_number,
 				'role_id'	 				=>	 $request->adminType,
 			);
 
@@ -665,7 +679,7 @@ class AdminController extends Controller
 
 	//deleteProduct
 	public function deleteadmintype(Request $request){
-		
+
 		$user_types_id = $request->user_types_id;
 
 		// dd($request->all());
@@ -781,7 +795,7 @@ class AdminController extends Controller
 			$admintype_update = $roles[0]->admintype_update;
 			$admintype_delete = $roles[0]->language_delete;
 			$manage_admins_role = $roles[0]->manage_admins_role;
-			
+
 			$reviews_view = $roles[0]->reviews_view;
 			$reviews_update = $roles[0]->reviews_update;
 
@@ -807,7 +821,7 @@ class AdminController extends Controller
             $deliveryboy_create = 0;
             $deliveryboy_update = 0;
 			$deliveryboy_delete = 0;
-			
+
 			$dashboard_view = '0';
 
 			$manufacturer_view = '0';
@@ -1088,7 +1102,7 @@ class AdminController extends Controller
 					'2'=>array('name'=>'supplier_update','value'=>$supplier_update),
 					'3'=>array('name'=>'supplier_delete','value'=>$supplier_delete)
 					);
-					
+
 		$result2[25]['link_name'] = 'POS';
 		$result2[25]['permissions'] = array(
 					'0'=>array('name'=>'pos_view','value'=>$pos_view),
@@ -1204,7 +1218,7 @@ class AdminController extends Controller
 						'admintype_update' => $request->admintype_update,
 						'admintype_delete' => $request->admintype_delete,
 						'manage_admins_role' => $request->manage_admins_role,
-						
+
 						'reviews_view' => $request->reviews_view,
 						'reviews_update' => $request->reviews_update,
 
@@ -1224,7 +1238,7 @@ class AdminController extends Controller
 						// 'pos_delete' => $request->pos_delete,
 
 						'shop_view' => $request->shop_view,
-						
+
 						]);
 
 		$message = Lang::get("labels.Roles has been added successfully");

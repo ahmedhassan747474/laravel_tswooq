@@ -1,3 +1,7 @@
+<?php
+    $web_setting = DB::table('settings')->get();
+
+?>
 <section class="new-products-content pro-content" >
   <div class="container">
     <div class="products-area">
@@ -10,9 +14,9 @@
             <p>
               @lang('website.Top Sellings Of the Week Detail')</p>
           </div>
-        </div> 
+        </div>
       </div>
-      <div class="row ">  
+      <div class="row ">
         @if($result['weeklySoldProducts']['success']==1)
         @foreach($result['weeklySoldProducts']['product_data'] as $key=>$products)
         @if($key==0)
@@ -27,9 +31,9 @@
                     $discount_price = $products->discount_price * session('currency_value');
                   }
                   $orignal_price = $products->products_price * session('currency_value');
-            
+
                   if(!empty($products->discount_price)){
-            
+
                   if(($orignal_price+0)>0){
                     $discounted_price = $orignal_price-$discount_price;
                     $discount_percentage = $discounted_price/$orignal_price*100;
@@ -38,16 +42,16 @@
                      $discounted_price = 0;
                   }
                   ?>
-                  
+
                     <span class="badge badge-danger"  data-toggle="tooltip" data-placement="bottom" title="<?php echo (int)$discount_percentage; ?>% off"><?php echo (int)$discount_percentage; ?>%</span>
                     <?php }?>
                     @if($products->is_feature == 1)
-                      <span class="badge badge-success">@lang('website.Featured')</span>                                            
-                                
+                      <span class="badge badge-success">@lang('website.Featured')</span>
+
                   @else
-                  <?php 
+                  <?php
                   $current_date = date("Y-m-d", strtotime("now"));
-            
+
                   $string = substr($products->products_date_added, 0, strpos($products->products_date_added, ' '));
                   $date=date_create($string);
                   date_add($date,date_interval_create_from_date_string($web_setting[20]->value." days"));
@@ -57,18 +61,18 @@
                     print __('website.New');
                     print '</span>';
                   }
-                  ?> 
-                  @endif   
+                  ?>
+                  @endif
                 </div>
                 <div class="detail">
                   <span class="tag">
-                    <?php 
+                    <?php
                     $cates = '';
                     foreach($products->categories as $key=>$category){
                       $cates = trim($category->categories_name);
-                    } 
-                    echo $cates ;                    
-                    ?>                               
+                    }
+                    echo $cates ;
+                    ?>
                 </span>
                 <h5 class="title"><a href="{{ URL::to('/product-detail/'.$products->products_slug)}}">{{$products->products_name}}</a></h5>
                 <p class="discription">
@@ -77,26 +81,26 @@
                       echo stripslashes($descriptions);
                     ?>
                 </p>
-                      
-                <div class="price">                                    
+
+                <div class="price">
                   @if(!empty($products->discount_price))
                     {{Session::get('symbol_left')}}&nbsp;{{$discount_price+0}}&nbsp;{{Session::get('symbol_right')}}<span>{{Session::get('symbol_left')}}{{$orignal_price+0}}{{Session::get('symbol_right')}}</span>
                   @else
                     {{Session::get('symbol_left')}}&nbsp;{{$orignal_price+0}}&nbsp;{{Session::get('symbol_right')}}
-                  @endif   
-                </div>  
-               
+                  @endif
+                </div>
+
               <div class="pro-sub-buttons">
                   <div class="buttons">
                       <button type="button" class="btn  btn-link is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Wishlist')"><i class="fas fa-heart"></i>@lang('website.Add to Wishlist')</button>
                       <button type="button" class="btn btn-link" onclick="myFunction3({{$products->products_id}})" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Compare')"><i class="fas fa-align-right" ></i>@lang('website.Add to Compare')</button>
                   </div>
-                  </div>          
-             
+                  </div>
+
                  </div>
                 <picture>
                     <div class="product-hover">
-                    
+
                         @if($products->products_type==0)
                           @if(!in_array($products->products_id,$result['cartArray']))
                               @if($products->defaultStock==0)
@@ -118,13 +122,13 @@
                     </div>
                   <img class="img-fluid" src="{{asset('').$products->image_path}}" alt="{{$products->products_name}}">
                 </picture>
-              
-    
-                 
+
+
+
               </article>
             </div>
-          </div> 
-          
+          </div>
+
           @endif
           @endforeach
           @endif
@@ -135,14 +139,14 @@
 
           <div class="col-12 col-sm-6 col-lg-3">
             @include('web.common.product')
-          </div>  
+          </div>
           @endif
           @endif
           @endforeach
           @endif
-   
+
       </div>
     </div>
-  </div>  
+  </div>
 </section>
 

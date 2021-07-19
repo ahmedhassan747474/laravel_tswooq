@@ -51,9 +51,10 @@
                       <th>{{ trans('labels.Full Name') }}</th>
                       <th>{{ trans('labels.Email') }}</th>
                       <th>{{ trans('labels.ShopName') }}</th>
+                      <th>{{ trans('labels.RecordNumber') }}</th>
                       <th>{{ trans('labels.AdminType') }}</th>
                       <th>{{ trans('labels.Status') }}</th>
-                      <th>{{ trans('labels.Action') }}</th>                      
+                      <th>{{ trans('labels.Action') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,18 +62,21 @@
 						@foreach ($result['admins']  as $key=>$admin)
 							<tr>
 								<td>{{ $admin->id }}</td>
-							
+
                 <td>
-                  {{ $admin->first_name }} {{ $admin->last_name }} 
+                  {{ $admin->first_name }} {{ $admin->last_name }}
                 </td>
                 <td>
-                   {{ $admin->email }} 
+                   {{ $admin->email }}
                 </td>
 
                 <td>
-                  {{ $admin->shop_name != null ? $admin->shop_name : '---------' }} 
+                  {{ $admin->shop_name != null ? $admin->shop_name : '---------' }}
                </td>
-							               
+
+               <td>
+                {{ $admin->record_number }}
+                </td>
 
               </td>
                                 <td>

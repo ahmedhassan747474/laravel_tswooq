@@ -2478,6 +2478,8 @@ return [
 	'Choose Invoice'			=> 'اختر الفاتورة',
 	'ShopName' 					=> 'اسم المحل',
 	'ShopNameText' 				=> 'الرجاء إدخال اسم المحل.',
+	'RecordNumberText' 				=> 'الرجاء إدخال رقم السجل.',
+	'RecordNumber' 				=> 'رقم السجل',
 	'POS'						=> 'نقاط البيع',
 	'Order Completed Successfully.'	=> 'اكتمل الطلب بنجاح',
 	'Something went wrong'		=> 'هناك خطأ ما',
