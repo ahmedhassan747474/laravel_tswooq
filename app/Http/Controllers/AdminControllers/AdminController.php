@@ -450,7 +450,7 @@ class AdminController extends Controller
 		$result['myid'] = $myid;
 
 		$admins = DB::table('users')->where('id','=', $myid)->get();
-        $imagePath=DB::table('image_categories')->where('id','=', $admins[0]->avatar)->first()->path;
+        $imagePath=DB::table('image_categories')->where('id','=', $admins[0]->avatar)->first();
         // dd($imagePath);
 		$zones = 0;
 
@@ -500,10 +500,13 @@ class AdminController extends Controller
 				'last_name'			 		=>   $request->last_name,
 				'phone'	 					=>	 $request->phone,
 				'email'	 					=>   $request->email,
+                'password'		 			=>   Hash::make($request->password),
 				'status'		 	 		=>   $request->isActive,
 				'avatar'	 				=>	 $uploadImage,
 				'record_number'	 		    =>   $request->record_number,
 				'role_id'	 				=>	 $request->adminType,
+                'parent_admin_id'			=>   $request->admin_id,
+                'shop_name'					=>   $request->shop_name
 			);
 
 			if($request->changePassword == 'yes'){

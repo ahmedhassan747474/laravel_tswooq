@@ -118,12 +118,12 @@ $allimage = $images->getimages();
                                 <div class="form-group show_hide_shop_name">
                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.RecordNumber') }} </label>
                                     <div class="col-sm-10 col-md-4">
-                                      {!! Form::text('record_number',  '', array('class'=>'form-control field-validate', 'id'=>'record_number')) !!}
+                                      {!! Form::text('record_number',  '', array('class'=>'form-control', 'id'=>'record_number')) !!}
                                       <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.RecordNumberText') }}</span>
                                       <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                     </div>
                                 </div>
-                                <div class="form-group" id="imageIcone">
+                                <div class="form-group show_hide_shop_name" id="imageIcone">
                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
                                     <div class="col-sm-10 col-md-4">
                                         <!-- Modal -->
@@ -153,7 +153,7 @@ $allimage = $images->getimages();
                                             </div>
                                         </div>
                                         <div id="imageselected">
-                                          {!! Form::button(trans('labels.Add Image'), array('id'=>'newIcon','class'=>"btn btn-primary field-validate", 'data-toggle'=>"modal", 'data-target'=>"#ModalmanufacturedICone" )) !!}
+                                          {!! Form::button(trans('labels.Add Image'), array('id'=>'newIcon','class'=>"btn btn-primary ", 'data-toggle'=>"modal", 'data-target'=>"#ModalmanufacturedICone" )) !!}
                                           <br>
                                           <div id="selectedthumbnailIcon" class="selectedthumbnail col-md-5"> </div>
                                           <div class="closimage">
