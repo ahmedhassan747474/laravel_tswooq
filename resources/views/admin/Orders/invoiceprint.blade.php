@@ -28,14 +28,14 @@
                 {{ session()->get('error') }}
             </div>
         @endif
-        
-        
+
+
        </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
           <h2 class="page-header" style="padding-bottom: 25px">
-            <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }} 
+            <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }}
             <small class="pull-right">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
           </h2>
         </div>
@@ -47,6 +47,7 @@
         <div class="col-sm-4 invoice-col">
           {{ trans('labels.CustomerInfo') }}:
           <address>
+
             <strong>{{ $data['orders_data'][0]->customers_name }}</strong><br>
             {{ $data['orders_data'][0]->customers_street_address }} <br>
             {{ $data['orders_data'][0]->customers_city }}, {{ $data['orders_data'][0]->customers_state }} {{ $data['orders_data'][0]->customers_postcode }}, {{ $data['orders_data'][0]->customers_country }}<br>
@@ -63,15 +64,15 @@
             {{ $data['orders_data'][0]->delivery_street_address }} <br>
             {{ $data['orders_data'][0]->delivery_city }}, {{ $data['orders_data'][0]->delivery_state }} {{ $data['orders_data'][0]->delivery_postcode }}, {{ $data['orders_data'][0]->delivery_country }}<br>
            <strong> {{ trans('labels.ShippingMethod') }}:</strong> {{ $data['orders_data'][0]->shipping_method }} <br>
-           <strong> {{ trans('labels.ShippingCost') }}:</strong> @if(!empty($data['orders_data'][0]->shipping_cost)) 
-           
+           <strong> {{ trans('labels.ShippingCost') }}:</strong> @if(!empty($data['orders_data'][0]->shipping_cost))
+
            @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
             @else --- @endif <br>
           </address>
         </div>
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
-         {{ trans('labels.BillingInfo') }} 
+         {{ trans('labels.BillingInfo') }}
           <address>
             <strong>{{ $data['orders_data'][0]->billing_name }}</strong><br>
             {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->billing_phone }}<br>
@@ -97,9 +98,9 @@
             </tr>
             </thead>
             <tbody>
-            
+
             @foreach($data['orders_data'][0]->data as $products)
-            	
+
             <tr>
                 <td>{{  $products->products_quantity }}</td>
                 <td  width="30%">
@@ -115,16 +116,16 @@
                     <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br>
 
                 @endforeach</td>
-                
+
                 <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->final_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
              </tr>
             @endforeach
-            
+
             </tbody>
           </table>
         </div>
         <!-- /.col -->
-        
+
       </div>
       <!-- /.row -->
 
@@ -145,8 +146,8 @@
                 	@foreach( json_decode($data['orders_data'][0]->coupon_code) as $couponData)
                     	<tr>
                         	<td>{{ $couponData->code}}</td>
-                            <td>{{ $couponData->amount}} 
-                            	
+                            <td>{{ $couponData->amount}}
+
                                 @if($couponData->discount_type=='percent_product')
                                     ({{ trans('labels.Percent') }})
                                 @elseif($couponData->discount_type=='percent')
@@ -159,9 +160,9 @@
                             </td>
                         </tr>
                     @endforeach
-				</table>                
+				</table>
           @endif
-          
+
           </p>
 
           @if($data['orders_data'][0]->payment_method == 'Bank Account')
@@ -172,7 +173,7 @@
 
           <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account Image') }}:</p>
           <img src="{{asset('images/bank_account/')}}/{{$data['orders_data'][0]->bank_account_image}}" width="400px">
-          @endif  
+          @endif
         </div>
         <!-- /.col -->
         <div class="col-xs-5">
@@ -201,7 +202,7 @@
               @if(!empty($data['orders_data'][0]->coupon_code))
               <tr>
                 <th>{{ trans('labels.DicountCoupon') }}:</th>
-                <td>                  
+                <td>
                   @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->coupon_amount }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
               </tr>
               @endif
@@ -213,8 +214,15 @@
               </tr>
             </table>
           </div>
-              
-        </div>     
+
+        </div>
+        <div class="col-xs-12">
+        	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Notes') }}:</p>
+        	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
+                {{$data['orders_data'][0]->comments}}
+            </p>
+        </div>
+        
         <div class="col-xs-12">
         	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Orderinformation') }}:</p>
         	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
@@ -224,13 +232,14 @@
            		---
             @endif
             </p>
-        </div>  
-        
+        </div>
+
+
         <!-- /.col -->
       </div>
       <!-- /.row -->
 
-     
+
     </section>
   <!-- /.content -->
 </div>

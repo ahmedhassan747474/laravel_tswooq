@@ -50,7 +50,7 @@
                                     <div class="card-body">
                                         <div class="aiz-pos-product-list c-scrollbar-light">
                                             <div class="row gutters-5" id="product-list">
-            
+
                                             </div>
                                             <div id="load-more">
                                                 <p class="text-center fs-14 fw-600 p-2 bg-soft-primary c-pointer" onclick="loadMoreProduct()">Load More</p>
@@ -191,7 +191,7 @@
                                                         <input type="radio" name="shipping" id="radioExample_2a" value="0" checked onchange="setShipping()">
                                                         <label for="radioExample_2a">Without Shipping Charge</label>
                                                     </div>
-            
+
                                                     <div class="radio radio-inline">
                                                         <input type="radio" name="shipping" id="radioExample_2b" value="1" onchange="setShipping()">
                                                         <label for="radioExample_2b">With Shipping Charge</label>
@@ -273,7 +273,7 @@
                                     <label class="col-sm-2 control-label" for="email">Country</label>
                                     <div class="col-sm-10">
                                         <input type="hidden" name="country" value="">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -512,19 +512,19 @@
 
             $.post('{{ route('pos.order_place') }}',
             {
-                _token:'{{ csrf_token() }}', 
-                user_id:user_id, 
-                first_name:first_name, 
-                last_name:last_name, 
-                email:email, 
-                address:address, 
-                country:country, 
-                city:city, 
-                postal_code:postal_code, 
-                phone:phone, 
-                shipping_address:shipping_address, 
-                payment_type:payment_type, 
-                shipping:shipping, 
+                _token:'{{ csrf_token() }}',
+                user_id:user_id,
+                first_name:first_name,
+                last_name:last_name,
+                email:email,
+                address:address,
+                country:country,
+                city:city,
+                postal_code:postal_code,
+                phone:phone,
+                shipping_address:shipping_address,
+                payment_type:payment_type,
+                shipping:shipping,
                 discount:discount,
                 total_price:total_price,
                 comment: comment,

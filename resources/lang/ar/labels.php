@@ -740,7 +740,7 @@ return [
 	'ShippingInfo' => 'معلومات الشحن',
 	'ShippingMethod' => 'طريقة الشحن',
 	'ShippingCost' => 'تكلفة الشحن',
-	'BillingInfo' => 'مهلومات الفاتورة',
+	'BillingInfo' => 'معلومات الفاتورة',
 	'AdditionalAttributes'=>'سمات إضافية',
 	'Qty' => 'الكمية',
 	'ProductModal' => 'طراز المنتج',

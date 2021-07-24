@@ -23,15 +23,15 @@ class OrdersController extends Controller
     //add listingOrders
     public function display()
     {
-        $title = array('pageTitle' => Lang::get("labels.ListingOrders"));        
+        $title = array('pageTitle' => Lang::get("labels.ListingOrders"));
 
         $message = array();
-        $errorMessage = array();        
-        
+        $errorMessage = array();
+
         $ordersData['orders'] = $this->Order->paginator();
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
-        $ordersData['currency'] = $this->myVarsetting->getSetting(); 
+        $ordersData['currency'] = $this->myVarsetting->getSetting();
         $result['commonContent'] = $this->Setting->commonContent();
         return view("admin.Orders.index", $title)->with('listingOrders', $ordersData)->with('result', $result);
     }
@@ -45,14 +45,14 @@ class OrdersController extends Controller
         $errorMessage = array();
 
         //orders data
-        $ordersData = $this->Order->detail($request);        
+        $ordersData = $this->Order->detail($request);
 
         // current order status
-        $orders_status_history = $this->Order->currentOrderStatus($request);  
+        $orders_status_history = $this->Order->currentOrderStatus($request);
 
-        //all statuses 
-        $orders_status = $this->Order->orderStatuses();  
-        
+        //all statuses
+        $orders_status = $this->Order->orderStatuses();
+
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
         $ordersData['orders_status'] = $orders_status;
@@ -78,13 +78,13 @@ class OrdersController extends Controller
         $orders_id = $request->orders_id;
 
         //get function from other controller
-        $setting = $this->myVarsetting->getSetting();       
+        $setting = $this->myVarsetting->getSetting();
 
         if ($old_orders_status == $orders_status) {
             return redirect()->back()->with('error', Lang::get("labels.StatusChangeError"));
         } else {
             //update order
-            $orders_status = $this->Order->updateRecord($request);  
+            $orders_status = $this->Order->updateRecord($request);
             return redirect()->back()->with('message', Lang::get("labels.OrderStatusChangedMessage"));
         }
 
@@ -92,11 +92,11 @@ class OrdersController extends Controller
 
     //deleteorders
     public function deleteOrder(Request $request)
-    {       
+    {
         //reverse stock
-        $this->Order->reverseStock($request);     
+        $this->Order->reverseStock($request);
         $this->Order->deleteRecord($request);
-        
+
         return redirect()->back()->withErrors([Lang::get("labels.OrderDeletedMessage")]);
     }
 
@@ -133,6 +133,7 @@ class OrdersController extends Controller
             $total_tax = 0;
             $product = array();
             $subtotal = 0;
+            // dd($order);
             foreach ($orders_products as $orders_products_data) {
 
                 //categories
@@ -174,6 +175,7 @@ class OrdersController extends Controller
         $orders_status = DB::table('orders_status')->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
             ->where('orders_status_description.language_id', '=', $language_id)->where('orders_status.role_id', '<=', 2)->get();
 
+            // dd($orders_data);
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
         $ordersData['orders_data'] = $orders_data;

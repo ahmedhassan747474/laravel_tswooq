@@ -38,8 +38,8 @@ class POSController extends Controller
         $language_id = '1';
         $categories = DB::table('categories')
             ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
-            ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added', 
-            'categories.updated_at as last_modified', 'categories_description.categories_name as name', 
+            ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added',
+            'categories.updated_at as last_modified', 'categories_description.categories_name as name',
             'categories.categories_slug as slug', 'categories.parent_id')
             ->where('categories_description.language_id','=', $language_id )
             ->where('parent_id', '0')
@@ -48,8 +48,8 @@ class POSController extends Controller
 
         $brands = DB::table('categories')
             ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
-            ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added', 
-            'categories.updated_at as last_modified', 'categories_description.categories_name as name', 
+            ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added',
+            'categories.updated_at as last_modified', 'categories_description.categories_name as name',
             'categories.categories_slug as slug', 'categories.parent_id')
             ->where('categories_description.language_id','=', $language_id )
             ->where('parent_id', '!=', '0')
@@ -129,7 +129,7 @@ class POSController extends Controller
         if (!empty($request->category) and $request->category != 'all') {
             if(!empty($request->brand) and $request->brand != 'all') {
                 $brand = $this->getBrands($request);
-                
+
                 if(!empty($brand) and count($brand)>0){
                     $categories_id = $brand[0]->categories_id;
                     //for main
@@ -148,7 +148,7 @@ class POSController extends Controller
                 }
             } else {
                 $category = $this->getCategories($request);
-                
+
                 if(!empty($category) and count($category)>0){
                     $categories_id = $category[0]->categories_id;
                     //for main
@@ -176,7 +176,7 @@ class POSController extends Controller
             }
         } else if(!empty($request->brand) and $request->brand != 'all') {
             $brand = $this->getBrands($request);
-            
+
             if(!empty($brand) and count($brand)>0){
                 $categories_id = $brand[0]->categories_id;
                 //for main
@@ -219,7 +219,7 @@ class POSController extends Controller
             'categories_id' => $categories_id, 'search' => $search,
             'filters' => $filters, 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
 
-        $products = $this->products($data);        
+        $products = $this->products($data);
         $result['products'] = $products;
 
         if ($limit > $result['products']['total_record']) {
@@ -343,7 +343,7 @@ class POSController extends Controller
 
         }
 
-        
+
         //get single products
         if (!empty($data['products_id']) && $data['products_id'] != "") {
             $categories->where('products.products_id', '=', $data['products_id']);
@@ -358,7 +358,7 @@ class POSController extends Controller
                 if($current_currency->is_default == 0){
                     $max_price = $max_price / session('currency_value');
                     $min_price = $min_price / session('currency_value');
-                }    
+                }
             }
             $categories->whereBetween('products.products_price', [$min_price, $max_price]);
         }
@@ -368,7 +368,7 @@ class POSController extends Controller
             $searchValue = $data['search'];
 
             // $categories->where('products_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
-            
+
             $categories->where('products_options.products_options_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
 
             if (!empty($data['categories_id'])) {
@@ -407,8 +407,8 @@ class POSController extends Controller
             }
             $categories->whereNotIn('products.products_id', function ($query) use ($currentDate) {
                 $query->select('flash_sale.products_id')->from('flash_sale')->where('flash_sale.flash_status', '=', '1');
-            });           
-            
+            });
+
 
             $categories->orWhere('products_options_values.products_options_values_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
             if (!empty($data['categories_id'])) {
@@ -565,7 +565,7 @@ class POSController extends Controller
         if ($type == "is_feature") {
             $categories->where('products.is_feature', '=', 1);
         }
-        
+
         $categories->where('products_description.language_id', '=', $language_id)->where('products_status', '=', 1);
 
         //get single category products
@@ -628,7 +628,7 @@ class POSController extends Controller
         $products = $categories->skip($skip)->take($take)->get();
         $paginate = $categories->skip($skip)->paginate($take);
         // dd($skip, $take);
-        
+
         $result = array();
         $result2 = array();
 
@@ -809,7 +809,7 @@ class POSController extends Controller
                     ->where('categories_description.language_id', '=', $language_id)
                     ->where('categories.categories_status', 1)
                     ->orderby('parent_id', 'ASC')->get();
-                
+
                 $products_data->categories = $categories;
                 array_push($result, $products_data);
 
@@ -884,18 +884,18 @@ class POSController extends Controller
                 $index++;
             }
             $responseData = array(
-                'success' => '1', 
-                'product_data' => $result, 
-                'message' => Lang::get('website.Returned all products'), 
+                'success' => '1',
+                'product_data' => $result,
+                'message' => Lang::get('website.Returned all products'),
                 'total_record' => count($total_record),
                 'paginate' => $paginate
             );
 
         } else {
             $responseData = array(
-                'success' => '0', 
-                'product_data' => $result, 
-                'message' => Lang::get('website.Empty record'), 
+                'success' => '0',
+                'product_data' => $result,
+                'message' => Lang::get('website.Empty record'),
                 'total_record' => count($total_record),
                 'paginate' => $paginate
             );
@@ -1126,7 +1126,7 @@ class POSController extends Controller
     //order place
     public function order_store(Request $request)
     {
-        // dd($request->all());
+        // return $request->all();
         if(Session::has('posCart') && count(Session::get('posCart')) > 0){
             // $order = new Order;
             $first_name = '';
@@ -1262,7 +1262,7 @@ class POSController extends Controller
             // $order_price = (session('products_price') + $tax_rate + $shipping_price) - $coupon_discount;
             $order_price = $request->total_price;
 
-            // if($shipping_method == "smsaexpress") {    
+            // if($shipping_method == "smsaexpress") {
             //     $passKey = "10001000";
             //     $refno = 'refno1000';
             //     $arrayToSendShip = [
@@ -1302,11 +1302,11 @@ class POSController extends Controller
             //         // "prefDelvDate"  => "string",
             //         // "gpsPoints"     => $delivery_latitude . ',' . $delivery_longitude
             //     ];
-                
+
             //     $json = json_encode($arrayToSendShip);
-                    
+
             //     $curl = curl_init();
-                
+
             //     curl_setopt_array($curl, array(
             //         CURLOPT_URL => "https://track.smsaexpress.com/SecomRestWebApi/api/addship",
             //         CURLOPT_RETURNTRANSFER => true,
@@ -1321,12 +1321,12 @@ class POSController extends Controller
             //             "content-type: application/json"
             //         ),
             //     ));
-                
+
             //     $responseShip = curl_exec($curl);
             //     $err = curl_error($curl);
-                
+
             //     curl_close($curl);
-                
+
             //     if ($err) {
             //         // echo "cURL Error #:" . $err;
             //         dd($err);
@@ -1336,7 +1336,7 @@ class POSController extends Controller
             //         $resultsResponseShip = json_decode($responseShip);
             //         $shipment_status = 'success';
             //     }
-    
+
             // }
 
             $orders_status = '1';
@@ -1356,12 +1356,23 @@ class POSController extends Controller
                 $payment_method_name = 'Visa';
             }
 
-            if($request->first_name && $request->first_name){
-                $customers_name = $delivery_firstname . ' ' . $delivery_lastname;
-            } else {
-                $customers_name = null;
+            // if($request->first_name && $request->first_name){
+            //     $customers_name = $delivery_firstname . ' ' . $delivery_lastname;
+            // } else {
+            //     $customers_name = null;
+            // }
+
+            if ($request->customer_id) {
+                $get_detail_customer = DB::table('users')->where('id', $request->customer_id)->first();
+                if ($get_detail_customer) {
+                    $customers_name         = $get_detail_customer->first_name . ' ' . $get_detail_customer->last_name;
+                    $customers_telephone = $get_detail_customer -> phone;
+                }
+            }else
+            {
+                $customers_name = '';
             }
-            
+
             $orders_id = DB::table('orders')->insertGetId([
                 'customers_id' => $customers_id,
                 'customers_name' => $customers_name,
@@ -1371,7 +1382,7 @@ class POSController extends Controller
                 'customers_postcode' => $delivery_postcode,
                 'customers_state' => $delivery_state,
                 'customers_country' => $delivery_country,
-                //'customers_telephone' => $customers_telephone,
+                'customers_telephone' => $customers_telephone,
                 'email' => $email,
                 // 'customers_address_format_id' => $delivery_address_format_id,
 
@@ -1413,7 +1424,7 @@ class POSController extends Controller
                 'ordered_source' => '3',
                 'delivery_phone' => $delivery_phone,
                 'billing_phone' => $billing_phone,
-                
+
                 // 'delivery_latitude' => $delivery_latitude,
                 // 'delivery_longitude' => $delivery_longitude,
                 // 'transaction_id'    => $transaction_id,
@@ -1440,7 +1451,7 @@ class POSController extends Controller
 
                 foreach (Session::get('posCart') as $key => $cartItem){
                     // $product = Product::find($cartItem['id']);
-                    
+
                     $product = DB::table('products')
                         ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                         ->where('products.products_id', $cartItem['id'])
@@ -1502,16 +1513,16 @@ class POSController extends Controller
                         'stock_type' => 'out',
                         'orders_id' => $orders_id,
                     ]);
-    
+
                     // if (Session::get('guest_checkout') == 1) {
                     //     DB::table('customers_basket')->where('session_id', Session::getId())->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
-    
+
                     // } else {
                         DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
                     // }
-    
+
                     // if (!empty($products->attributes) and count($products->attributes)>0) {
-    
+
                     //     foreach ($products->attributes as $attribute) {
                     //         DB::table('orders_products_attributes')->insert([
                     //             'orders_id' => $orders_id,
@@ -1522,7 +1533,7 @@ class POSController extends Controller
                     //             'options_values_price' => $attribute->values_price,
                     //             'price_prefix' => $attribute->prefix,
                     //         ]);
-    
+
                     //         DB::table('inventory_detail')->insert([
                     //             'inventory_ref_id' => $inventory_ref_id,
                     //             'products_id' => $products->products_id,
@@ -1534,21 +1545,22 @@ class POSController extends Controller
 
                     $request->session()->put('order_id', $orders_id);
 
-                    Session::forget('pos_shipping_info');
+
+                }
+                Session::forget('pos_shipping_info');
                     Session::forget('shipping');
                     Session::forget('pos_discount');
                     Session::forget('posCart');
                     // return 1;
-        
+
                     $responseData = array(
-                        'success' => '1', 
-                        'data' => 1, 
+                        'success' => '1',
+                        'data' => 1,
                         'message' => "Order has been placed successfully.",
                         'order_id' => $orders_id,
                         'print_url' => route('invoiceprint', $orders_id)
                     );
                     return $responseData;
-                }
             }
             else {
                 return 0;
