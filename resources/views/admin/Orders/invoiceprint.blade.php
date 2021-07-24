@@ -209,8 +209,8 @@
               <tr>
                 <th>{{ trans('labels.Total') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->order_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-                  </td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['subtotal'] }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
               </tr>
             </table>
           </div>
@@ -222,7 +222,7 @@
                 {{$data['orders_data'][0]->comments}}
             </p>
         </div>
-        
+
         <div class="col-xs-12">
         	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Orderinformation') }}:</p>
         	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
