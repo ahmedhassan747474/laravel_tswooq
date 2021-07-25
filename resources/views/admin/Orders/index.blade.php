@@ -68,7 +68,7 @@
                                                         {{ trans('labels.POS') }}
                                                         @endif</td>
                                                     <td>
-                                                        
+
                                                         @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $orderData->order_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
                                                     <td>{{ date('d/m/Y', strtotime($orderData->date_purchased)) }}</td>
                                                     <td>

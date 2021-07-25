@@ -13,7 +13,7 @@ class Order extends Model
         $data = DB::table('orders')
             ->join('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
             ->join('products', 'products.products_id', '=', 'orders_products.products_id')
-            ->orderBy('orders.created_at', 'DESC');
+            ->orderBy('orders.orders_id', 'DESC');
             // ->where('customers_id', '!=', '');
 
         if(auth()->user()->role_id == 11) {
@@ -68,8 +68,8 @@ class Order extends Model
     public function detail($request){
 
         $language_id = '1';
-        $orders_id = $request->id; 
-        $ordersData = array();       
+        $orders_id = $request->id;
+        $ordersData = array();
         $subtotal  = 0;
         DB::table('orders')->where('orders_id', '=', $orders_id)
             ->where('customers_id', '!=', '')->update(['is_seen' => 1]);
@@ -77,7 +77,7 @@ class Order extends Model
         $order = DB::table('orders')
             ->where('orders.orders_id', '=', $orders_id)
             ->get();
-        
+
         foreach ($order as $data) {
             $orders_id = $data->orders_id;
 
@@ -124,7 +124,7 @@ class Order extends Model
 
             $data->orders_status_id = $orders_status_history->orders_status_id;
             $data->orders_status_name = $orders_status_history->orders_status_name;
-            
+
             $data->data = $product;
             $orders_data[] = $data;
         }
@@ -184,7 +184,7 @@ class Order extends Model
 
         $status = DB::table('orders_status')->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
             ->where('orders_status_description.language_id', '=', 1)->where('role_id', '<=', 2)->where('orders_status_description.orders_status_id', '=', $orders_status)->get();
-        
+
         $current_boy = DB::table('orders_to_delivery_boy')
             ->leftjoin('deliveryboy_info','deliveryboy_info.users_id','=','orders_to_delivery_boy.deliveryboy_id')
             ->where('orders_to_delivery_boy.orders_id', '=', $orders_id)
@@ -200,7 +200,7 @@ class Order extends Model
                 'customer_notified' => '1',
                 'comments' => $comments,
             ]);
-        
+
 
         if ($orders_status == '2') {
 
@@ -323,7 +323,7 @@ class Order extends Model
         $data['status'] = $status[0]->orders_status_name;
 
         return 'success';
-    }    
+    }
 
 
     //
