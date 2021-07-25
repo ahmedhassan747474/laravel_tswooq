@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminControllers;
 use App;
 use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App\Http\Controllers\Controller;
+use App\Models\Core\Categories;
 use App\Models\Core\Setting;
 use App\Models\Core\Reports;
 use App\Models\Core\Customers;
@@ -25,7 +26,7 @@ use App\Models\Core\DeliveryBoys;
 
 class ReportsController extends Controller
 {
-    public function __construct(Reports $reports, Setting $setting, DeliveryBoys $deliveryBoys, Customers $customers, Products $products, Suppliers $suppliers) {
+    public function __construct(Reports $reports, Setting $setting, DeliveryBoys $deliveryBoys, Customers $customers, Categories $category, Products $products, Suppliers $suppliers) {
         $this->reports = $reports;
         $this->myVarsetting = new SiteSettingController($setting);
         $this->myVaralter = new AlertController($setting);
@@ -34,6 +35,7 @@ class ReportsController extends Controller
         $this->Customers = $customers;
         $this->Products = $products;
         $this->Suppliers = $suppliers;
+        $this->category = $category;
     }
 
     //statsCustomers
@@ -44,7 +46,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->customersReport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -52,7 +54,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.statsCustomers", $title)->with('result', $result);
 
     }
@@ -61,10 +63,10 @@ class ReportsController extends Controller
     {
 
         $title = array('pageTitle' => Lang::get("labels.CustomerOrdersTotal"));
-        
+
         $result['reports'] = $this->reports->customersReport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -77,6 +79,25 @@ class ReportsController extends Controller
 
     }
 
+    public function productsDisplay(Request $request)
+    {
+        $language_id = '1';
+        $categories_id = $request->categories_id;
+        $product = $request->product;
+        $title = array('pageTitle' => Lang::get("labels.Products"));
+        $subCategories = $this->category->allcategories($language_id);
+        $products = $this->Products->getter();
+        // dd($products);
+        $results['products'] = $products;
+        $results['currency'] = $this->myVarsetting->getSetting();
+        $results['units'] = $this->myVarsetting->getUnits();
+        $results['subCategories'] = $subCategories;
+        $currentTime = array('currentTime' => time());
+        $result['commonContent'] = $this->Setting->commonContent();
+        return view("admin.reports.products", $title)->with('result', $result)->with('results', $results)->with('categories_id', $categories_id)->with('product', $product);
+
+    }
+
     public function salesreportPrint(Request $request)
     {
 
@@ -84,7 +105,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->salesreport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -104,7 +125,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->shopsalesreport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -116,7 +137,7 @@ class ReportsController extends Controller
         return view("admin.reports.shopsalesreportinvoice", $title)->with('result', $result);
 
     }
-    
+
     public function couponReport(Request $request)
     {
         $title = array('pageTitle' => Lang::get("labels.CustomerOrdersTotal"));
@@ -126,7 +147,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.couponreport", $title)->with('result', $result);
 
     }
@@ -140,7 +161,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.couponreportinvoice", $title)->with('result', $result);
 
     }
@@ -151,7 +172,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->salesreport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -159,7 +180,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.salesreport", $title)->with('result', $result);
     }
 
@@ -169,7 +190,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->shopsalesreport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -178,7 +199,7 @@ class ReportsController extends Controller
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
         $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
-        
+
         return view("admin.reports.shopsalesreport", $title)->with('result', $result);
     }
 
@@ -188,7 +209,7 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->shopemployereport($request);
         $result['price'] = $this->reports->customersReportTotal($request);
-        
+
         $result['customers'] = $this->Customers->getter();
         $result['orderstatus'] = $this->reports->allorderstatuses();
         $result['deliveryboys'] = $this->DeliveryBoys->getter();
@@ -197,7 +218,7 @@ class ReportsController extends Controller
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
         $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
-        
+
         return view("admin.reports.shopemployereport", $title)->with('result', $result);
     }
 
@@ -213,12 +234,12 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->inventoryreport($request);
 
-        $result['products'] = $this->Products->getter();   
-                
+        $result['products'] = $this->Products->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.inventoryreport", $title)->with('result', $result);
         // return view("admin.reports.statsProductsPurchased", $title)->with('result', $result);
     }
@@ -229,12 +250,12 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->inventoryreport($request);
 
-        $result['products'] = $this->Products->getter();   
-                
+        $result['products'] = $this->Products->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.inventoryreportprint", $title)->with('result', $result);
     }
 
@@ -244,12 +265,12 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->suppliersmainreport($request);
 
-        $result['suppliers'] = $this->Suppliers->getter();   
-                
+        $result['suppliers'] = $this->Suppliers->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.suppliersmainreport", $title)->with('result', $result);
     }
 
@@ -265,12 +286,12 @@ class ReportsController extends Controller
 
         $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
 
-        $result['suppliers'] = $this->Suppliers->getter();   
-                
+        $result['suppliers'] = $this->Suppliers->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.suppliersreport", $title)->with('result', $result)->with('id', $id);
     }
 
@@ -286,12 +307,12 @@ class ReportsController extends Controller
 
         $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
 
-        $result['products'] = $this->Products->getter();   
-                
+        $result['products'] = $this->Products->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.suppliersreportprint", $title)->with('result', $result);
     }
 
@@ -314,7 +335,7 @@ class ReportsController extends Controller
         }
 
         $id = $request->supplier_main_id;
-        
+
         $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
 
         $result['reports'] = $this->reports->suppliersreport($request, $id);
@@ -325,8 +346,8 @@ class ReportsController extends Controller
 
         $result['report_detail_total'] = $this->reports->suppliersreportDetailTotal($request, $id);
 
-        $result['suppliers'] = $this->Suppliers->getter();   
-                
+        $result['suppliers'] = $this->Suppliers->getter();
+
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
@@ -347,7 +368,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.minstock", $title)->with('result', $result);
     }
 
@@ -360,7 +381,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.minstockprint", $title)->with('result', $result);
     }
 
@@ -374,10 +395,10 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.maxstock", $title)->with('result', $result);
     }
-    
+
 
     public function maxstockprint(Request $request)
     {
@@ -388,7 +409,7 @@ class ReportsController extends Controller
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
-        
+
         return view("admin.reports.maxstockprint", $title)->with('result', $result);
     }
 
@@ -443,7 +464,7 @@ class ReportsController extends Controller
 
     }
 
-    
+
 
     //lowinstock
     public function lowinstock(Request $request)
@@ -565,7 +586,7 @@ class ReportsController extends Controller
         //$reportBase = 'last_year';
 
         if ($reportBase == 'this_month') {
-            
+
 
             $dateLimit = date('d', $date);
 
@@ -574,11 +595,11 @@ class ReportsController extends Controller
 
                 $dateFrom = date('Y-m-' . $j . ' 00:00:00', time());
                 $dateTo = date('Y-m-' . $j . ' 23:59:59', time());
-                
+
                 $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                 $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
@@ -604,11 +625,11 @@ class ReportsController extends Controller
                 $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                 $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
-                    ->count(); 
+                    ->count();
 
 
                 //website orders
@@ -634,11 +655,11 @@ class ReportsController extends Controller
                 $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                 $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
-                    ->count(); 
+                    ->count();
 
                 $saleData[$j - 1]['date'] = date('M Y', strtotime($dateFrom));
                 $saleData[$j - 1]['totalSale'] = $totalSale;
@@ -678,11 +699,11 @@ class ReportsController extends Controller
                     $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                     $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
-                    ->count(); 
+                    ->count();
 
                     $saleData[$j - 1]['date'] = date('h a', strtotime($dateFrom));
                     $saleData[$j - 1]['totalSale'] = $totalSale;
@@ -722,10 +743,10 @@ class ReportsController extends Controller
                     $producQuantity = DB::table('orders')
                         ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                         ->where('ordered_source', 2)
-                        ->count();  
+                        ->count();
 
                     $saleData[$j - 1]['date'] = date('d M', strtotime($dateFrom));
-                    $saleData[$j - 1]['totalSale'] = $totalSale;                    
+                    $saleData[$j - 1]['totalSale'] = $totalSale;
                     $saleData[$j - 1]['productQuantity'] = $producQuantity;
                     //print $dateLimitFrom.'<br>';
                     if ($dateLimitFrom == $lastday) {
@@ -771,11 +792,11 @@ class ReportsController extends Controller
                     $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                     $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
-                    ->count(); 
+                    ->count();
 
                     $saleData[$i]['date'] = date('M Y', strtotime($dateFrom));
                     $saleData[$i]['totalSale'] = $totalSale;
@@ -839,11 +860,11 @@ class ReportsController extends Controller
                     $totalSale = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 1)
-                    ->count(); 
+                    ->count();
                 $producQuantity = DB::table('orders')
                     ->whereBetween('date_purchased', [$dateFrom, $dateTo])
                     ->where('ordered_source', 2)
-                    ->count(); 
+                    ->count();
 
                     $saleData[$i]['date'] = date('Y', strtotime($dateFrom));
                     $saleData[$i]['totalSale'] = $totalSale;
@@ -873,9 +894,9 @@ class ReportsController extends Controller
 
     public function driverreportsdetail(Request $request)
     {
-        
+
             $title = array('pageTitle' => Lang::get("labels.Drivers Report Detail"));
-    
+
             $data = DB::table('orders')
                 ->join('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
                 ->leftjoin('orders_status_history', 'orders_status_history.orders_id', '=', 'orders_products.orders_id')
@@ -908,16 +929,16 @@ class ReportsController extends Controller
                     array_push($alldata, $content);
                     $totalsale += $content->final_price;
                     $product_price = $content->final_price;
-                    
+
                     $alldata[$index]->deliveryboy_name = $deliveryboy->first_name . ' ' . $deliveryboy->last_name;
                     $alldata[$index]->deliveryboy_id = $deliveryboy->id;
                     $index++;
                 }
             }
-    
-    
+
+
         $result['reportdata'] = $alldata;
-                 
+
 
         $myVar = new SiteSettingController();
         $result['setting'] = $myVar->getSetting();

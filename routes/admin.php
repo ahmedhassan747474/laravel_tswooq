@@ -45,7 +45,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
         Route::get('/topoffer/display', 'ThemeController@topoffer');
         Route::post('/topoffer/update', 'ThemeController@updateTopOffer');
-        
+
 
         Route::get('/dashboard/{reportBase}', 'AdminController@dashboard');
         //add adddresses against customers
@@ -170,7 +170,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/update', 'CurrencyController@update')->middleware('edit_general_setting');
         Route::post('/delete', 'CurrencyController@delete')->middleware('edit_general_setting');
 
-        
+
     });
 
     Route::group(['prefix' => 'admin/products', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -452,23 +452,25 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
     Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
 
+        Route::get('/products-report', 'ReportsController@productsDisplay')->middleware('view_product');
+
         Route::get('/customers-orders-report', 'ReportsController@statsCustomers')->middleware('report');
         Route::get('/customer-orders-print', 'ReportsController@customerOrdersPrint')->middleware('report');
         Route::get('/statsproductspurchased', 'ReportsController@statsProductsPurchased')->middleware('report');
         Route::get('/statsproductsliked', 'ReportsController@statsProductsLiked')->middleware('report');
         Route::get('/outofstock', 'ReportsController@outofstock')->middleware('report');
         Route::get('/outofstockprint', 'ReportsController@outofstockprint')->middleware('report');
-        
-        Route::get('/lowinstock', 'ReportsController@lowinstock')->middleware('report');
-        
 
-        Route::post('/productSaleReport', 'ReportsController@productSaleReport')->middleware('report');        
-        Route::get('/driversreport', 'ReportsController@driversreport')->middleware('report');     
+        Route::get('/lowinstock', 'ReportsController@lowinstock')->middleware('report');
+
+
+        Route::post('/productSaleReport', 'ReportsController@productSaleReport')->middleware('report');
+        Route::get('/driversreport', 'ReportsController@driversreport')->middleware('report');
         Route::get('/driverreportsdetail/{id}', 'ReportsController@driverreportsdetail')->middleware('report');
         Route::get('/couponreport', 'ReportsController@couponReport')->middleware('report');
         Route::get('/couponreport-print', 'ReportsController@couponReportPrint')->middleware('report');
 
-        
+
         Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
 
         Route::get('/shopsalesreport', 'ReportsController@shopsalesreport')->middleware('view_shop');
@@ -477,23 +479,23 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/salesreport-print', 'ReportsController@salesreportPrint')->middleware('view_shop');
         Route::get('/shopsalesreport-print', 'ReportsController@shopsalesreportPrint')->middleware('view_shop');
         // Route::get('/customer-orders-print', 'ReportsController@customerOrdersPrint')->middleware('report');
-        
+
         Route::get('/inventoryreport', 'ReportsController@inventoryreport')->middleware('report');
         Route::get('/inventoryreportprint', 'ReportsController@inventoryreportprint')->middleware('report');
 
-        
+
         Route::get('/minstock', 'ReportsController@minstock')->middleware('report');
         Route::get('/minstockprint', 'ReportsController@minstockprint')->middleware('report');
-        
+
         Route::get('/maxstock', 'ReportsController@maxstock')->middleware('report');
         Route::get('/maxstockprint', 'ReportsController@maxstockprint')->middleware('report');
-        
+
         Route::get('/suppliersmainreport', 'ReportsController@suppliersmainreport')->middleware('view_supplier');
         Route::get('/suppliersreport/{id}', 'ReportsController@suppliersreport')->middleware('view_supplier')->name('suppliersreport');
         Route::get('/suppliersreportprint/{id}', 'ReportsController@suppliersreportprint')->middleware('view_supplier');
         Route::post('/insertsuppliersreport', 'ReportsController@insertsuppliersreport')->middleware('view_supplier')->name('insertsuppliersreport');
-        
-        
+
+
         ////////////////////////////////////////////////////////////////////////////////////
         //////////////     APP ROUTES
         ////////////////////////////////////////////////////////////////////////////////////
@@ -520,11 +522,11 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         ////////////////////////////////////////////////////////////////////////////////////
         //////////////     SITE ROUTES
         ////////////////////////////////////////////////////////////////////////////////////
-        
+
         // home page banners
         Route::get('/homebanners', 'HomeBannersController@display')->middleware('view_web_setting', 'website_routes');
         Route::post('/homebanners/insert', 'HomeBannersController@insert')->middleware('view_web_setting', 'website_routes');
-        
+
         Route::get('/menus', 'MenusController@menus')->middleware('view_web_setting', 'website_routes');
         Route::get('/addmenus', 'MenusController@addmenus')->middleware('edit_web_setting', 'website_routes');
         Route::post('/addnewmenu', 'MenusController@addnewmenu')->middleware('edit_web_setting', 'website_routes');
@@ -535,7 +537,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/menuposition', 'MenusController@menuposition')->middleware('edit_web_setting', 'website_routes');
         Route::get('/catalogmenu', 'MenusController@catalogmenu')->middleware('edit_web_setting', 'website_routes');
 
-        
+
 
         //site pages controller
         Route::get('/webpages', 'PagesController@webpages')->middleware('view_web_setting', 'website_routes');
@@ -584,11 +586,11 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/updateAlertSetting', 'SiteSettingController@updateAlertSetting');
         Route::get('/setting', 'SiteSettingController@setting')->middleware('edit_general_setting');
         Route::post('/updateSetting', 'SiteSettingController@updateSetting')->middleware('edit_general_setting');
-        
-        
+
+
         Route::get('/clearcache', 'SiteSettingController@clearcache');
         Route::get('/firebase', 'SiteSettingController@firebase')->middleware('view_general_setting');
-        
+
         //login
         Route::get('/loginsetting', 'SiteSettingController@loginsetting')->middleware('view_general_setting');
 
@@ -639,16 +641,16 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/ratings/{id}', 'DeliveryBoysController@ratings')->middleware('view_deliveryboy');
         Route::post('/ratings/delete', 'DeliveryBoysController@ratingdelete')->middleware('delete_deliveryboy');
         Route::get('/setting', 'SiteSettingController@deliveryboysetting')->middleware('delete_deliveryboy');
-      
+
         Route::group(['prefix'=>'finance/'], function () {
           Route::get('/sattlement/deliveryboy/{deliveryboys_id}', 'DeliveryboyFinanceController@deliveryboysattlement')->middleware('view_finance');
           Route::get('/monthreport/{month}/vendor/{vendor_id}', 'DeliveryboyFinanceController@earningsbymonthvendor')->middleware('view_finance');
           Route::get('/sattlement/orders', 'DeliveryboyFinanceController@orders')->middleware('view_finance');
-      
+
           //Route::get('/paidpopupdetail', 'DeliveryboyFinanceController@paidpopupdetail')->middleware('view_finance');
           //Route::get('/popupdetail', 'DeliveryboyFinanceController@popupdetail')->middleware('view_finance');
         });
-      
+
         Route::group(['prefix'=>'withdraw/'], function () {
           Route::get('/display', 'DeliveryBoysWithdrawController@display')->middleware('view_web_setting');
           Route::get('/paidpopupdetail', 'DeliveryBoysWithdrawController@paidpopupdetail')->middleware('view_web_setting');

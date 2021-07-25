@@ -55,7 +55,7 @@
           <i class="fa fa-circle-o"></i> {{ trans('labels.currency') }}
         </a>
       </li>
-      <?php } ?>    
+      <?php } ?>
       <?php
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->customers_view == 1){
       ?>
@@ -96,7 +96,7 @@
         <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}{{ Request::is('admin/shopemployereport') ? 'active' : '' }}">
           <a href="#">
             <i class="fa fa-file-text-o" aria-hidden="true"></i>
-            <span>{{ trans('labels.shops') }}</span> 
+            <span>{{ trans('labels.shops') }}</span>
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
@@ -105,7 +105,7 @@
           </ul>
         </li>
 
-      <?php }        
+      <?php }
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->products_view == 1 or $result['commonContent']['roles']!= null and $result['commonContent']['roles']->categories_view == 1 ){
       ?>
         <li class="treeview {{ Request::is('admin/reviews/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/add') ? 'active' : '' }} {{ Request::is('admin/manufacturers/edit/*') ? 'active' : '' }} {{ Request::is('admin/units') ? 'active' : '' }} {{ Request::is('admin/addunit') ? 'active' : '' }} {{ Request::is('admin/editunit/*') ? 'active' : '' }} {{ Request::is('admin/products/display') ? 'active' : '' }} {{ Request::is('admin/products/add') ? 'active' : '' }} {{ Request::is('admin/products/edit/*') ? 'active' : '' }} {{ Request::is('admin/editattributes/*') ? 'active' : '' }} {{ Request::is('admin/products/attributes/display') ? 'active' : '' }}  {{ Request::is('admin/products/attributes/add') ? 'active' : '' }} {{ Request::is('admin/products/attributes/add/*') ? 'active' : '' }} {{ Request::is('admin/addinventory/*') ? 'active' : '' }} {{ Request::is('admin/addproductimages/*') ? 'active' : '' }} {{ Request::is('admin/categories/display') ? 'active' : '' }} {{ Request::is('admin/categories/add') ? 'active' : '' }} {{ Request::is('admin/categories/edit/*') ? 'active' : '' }} {{ Request::is('admin/categories/filter') ? 'active' : '' }} {{ Request::is('admin/brands/display') ? 'active' : '' }} {{ Request::is('admin/brands/add') ? 'active' : '' }} {{ Request::is('admin/brands/edit/*') ? 'active' : '' }} {{ Request::is('admin/brands/filter') ? 'active' : '' }} {{ Request::is('admin/products/inventory/display') ? 'active' : '' }}">
@@ -175,9 +175,10 @@
             @if ($result['commonContent']['roles']->reports_view == 1)
             <!-- <li class="{{ Request::is('admin/lowinstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/lowinstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_products_low_stock') }}</a></li> -->
             <li class="{{ Request::is('admin/outofstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/outofstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_out_of_stock_products') }}</a></li>
+            <li class="{{ Request::is('admin/products-report') ? 'active' : '' }} "><a href="{{ URL::to('admin/products-report')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_all_products') }}</a></li>
             <li class="{{ Request::is('admin/inventoryreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/inventoryreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Inventory Report') }}</a></li>
             @endif
-            
+
             @if ($result['commonContent']['roles']->supplier_view == 1)
             <li class="{{ Request::is('admin/suppliersmainreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/suppliersmainreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Suppliers Report') }}</a></li>
             @endif
@@ -185,20 +186,20 @@
             <!-- <li class="{{ Request::is('admin/minstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/minstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Min Stock Report') }}</a></li>
             <li class="{{ Request::is('admin/maxstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/maxstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Max Stock Report') }}</a></li> -->
             <li class="{{ Request::is('admin/customers-orders-report') ? 'active' : '' }} "><a href="{{ URL::to('admin/customers-orders-report')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_customer_orders_total') }}</a></li>
-            
+
             <!-- <li class="{{ Request::is('admin/statsproductsliked') ? 'active' : '' }}"><a href="{{ URL::to('admin/statsproductsliked')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_products_liked') }}</a></li> -->
 
             <li class="{{ Request::is('admin/couponreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/couponreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Coupon Report') }}</a></li>
             <li class="{{ Request::is('admin/salesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/salesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
             @endif
-            
-            
+
+
           </ul>
         </li>
       <?php } ?>
-     
-  
-      
+
+
+
       <?php
           if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->tax_location_view == 1){
         ?>
@@ -254,7 +255,7 @@
             <li class="{{ Request::is('admin/news/display') ? 'active' : '' }}  {{ Request::is('admin/news/add') ? 'active' : '' }}  {{ Request::is('admin/news/edit/*') ? 'active' : '' }}"><a href="{{ URL::to('admin/news/display')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_sub_news') }}</a></li>
           </ul>
         </li>
-      <?php } ?> 
+      <?php } ?>
       @if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->notifications_view == 1)
       <li class="treeview {{ Request::is('admin/pushnotification') ? 'active' : '' }}{{ Request::is('admin/devices/display') ? 'active' : '' }} {{ Request::is('admin/devices/viewdevices/*') ? 'active' : '' }} {{ Request::is('admin/devices/notifications') ? 'active' : '' }}">
           <a href="{{ URL::to('admin/devices/display')}} ">
@@ -281,15 +282,15 @@
             <i class="fa fa-gears" aria-hidden="true"></i>
           <span> {{ trans('labels.link_general_settings') }}</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
-          <ul class="treeview-menu">            
+          <ul class="treeview-menu">
             <li class="{{ Request::is('admin/setting') ? 'active' : '' }}"><a href="{{ URL::to('admin/setting')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_store_setting') }}</a></li>
             <li class="{{ Request::is('admin/facebooksettings') ? 'active' : '' }}"><a href="{{ URL::to('admin/facebooksettings')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_facebook') }}</a></li>
             <li class="{{ Request::is('admin/googlesettings') ? 'active' : '' }}"><a href="{{ URL::to('admin/googlesettings')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_google') }}</a></li>
-            
+
             <li class="{{ Request::is('admin/alertsetting') ? 'active' : '' }}"><a href="{{ URL::to('admin/alertsetting')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.alertSetting') }}</a></li>
             <li class="{{ Request::is('admin/firebase') ? 'active' : '' }}"><a href="{{ URL::to('admin/firebase')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Firebase') }}</a></li>
             <!-- <li class="{{ Request::is('admin/loginsetting') ? 'active' : '' }}"><a href="{{ URL::to('admin/loginsetting')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Login Setting') }}</a></li> -->
-         
+
           </ul>
         </li>
       <?php } ?>
@@ -349,13 +350,13 @@
                         <i class="fa fa-picture-o" aria-hidden="true"></i> <span> {{ trans('labels.Top Offer') }} </span>
                     </a>
                 </li>
-               
+
                 <li class="treeview {{ Request::is('admin/webPagesSettings/8') ? 'active' : '' }} ">
                     <a href="{{url('admin/webPagesSettings')}}/8">
                         <i class="fa fa-picture-o" aria-hidden="true"></i> <span> {{ trans('labels.login') }} </span>
                     </a>
                 </li>
-                
+
                 <li class="treeview {{ Request::is('admin/webPagesSettings/9') ? 'active' : '' }} ">
                   <a href="{{url('admin/webPagesSettings')}}/9">
                       <i class="fa fa-picture-o" aria-hidden="true"></i> <span> {{ trans('labels.News') }} </span>
@@ -378,23 +379,23 @@
                         <i class="fa fa-picture-o" aria-hidden="true"></i> <span> {{ trans('labels.Contact Page Settings') }}</span>
                     </a>
                 </li>
-               
-               
+
+
                 <li class="treeview {{ Request::is('admin/webPagesSettings/4') ? 'active' : '' }} ">
                     <a href="{{url('admin/webPagesSettings')}}/4">
                         <i class="fa fa-picture-o" aria-hidden="true"></i> <span> {{ trans('labels.Product Page Settings') }} </span>
                     </a>
                 </li>
-             
-             
+
+
 
               </ul>
             </li>
-           
+
             <li class="{{ Request::is('admin/sliders') ? 'active' : '' }} {{ Request::is('admin/addsliderimage') ? 'active' : '' }} {{ Request::is('admin/editslide/*') ? 'active' : '' }} "><a href="{{ URL::to('admin/sliders')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_Sliders') }}</a></li>
             <li class="{{ Request::is('admin/homebanners') ? 'active' : '' }} "><a href="{{ URL::to('admin/homebanners')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Parallax Banners') }}</a></li>
             <li class="{{ Request::is('admin/constantbanners') ? 'active' : '' }} {{ Request::is('admin/constantbanners') ? 'active' : '' }} {{ Request::is('admin/constantbanners/*') ? 'active' : '' }} "><a href="{{ URL::to('admin/constantbanners')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_Banners') }}</a></li>
-           
+
             <li class="{{ Request::is('admin/menus') ? 'active' : '' }}  {{ Request::is('admin/addmenus') ? 'active' : '' }}  {{ Request::is('admin/editmenus/*') ? 'active' : '' }}"><a href="{{ URL::to('admin/menus')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.menus') }}</a></li>
 
             <li class="{{ Request::is('admin/webpages') ? 'active' : '' }}  {{ Request::is('admin/addwebpage') ? 'active' : '' }}  {{ Request::is('admin/editwebpage/*') ? 'active' : '' }}"><a href="{{ URL::to('admin/webpages')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.content_pages') }}</a></li>
@@ -465,16 +466,16 @@
               class="{{ Request::is('admin/deliveryboys/pages') ? 'active' : '' }}  {{ Request::is('admin/deliveryboys/addpage') ? 'active' : '' }}  {{ Request::is('admin/deliveryboys/editpage/*') ? 'active' : '' }}">
               <a href="{{ URL::to('admin/deliveryboys/pages')}}"><i class="fa fa-circle-o"></i>
                   {{ trans('labels.content_pages') }}</a></li>
-          
+
           <li
               class="{{ Request::is('admin/deliveryboys/status/display') ? 'active' : '' }}  {{ Request::is('admin/deliveryboys/status/add') ? 'active' : '' }}  {{ Request::is('admin/deliveryboys/status/edit/*') ? 'active' : '' }}">
               <a href="{{ URL::to('admin/deliveryboys/status/display')}}"><i class="fa fa-circle-o"></i>
-                  {{ trans('labels.Status') }}</a></li>     
-                  
+                  {{ trans('labels.Status') }}</a></li>
+
             <li
               class="{{ Request::is('admin/deliveryboys/setting') ? 'active' : '' }} ">
               <a href="{{ URL::to('admin/deliveryboys/setting')}}"><i class="fa fa-circle-o"></i>
-                  {{ trans('labels.Setting') }}</a></li>     
+                  {{ trans('labels.Setting') }}</a></li>
         </ul>
       </li>
 
@@ -496,7 +497,7 @@
             <li class="{{ Request::is('admin/manageroles') ? 'active' : '' }} {{ Request::is('admin/addadminType') ? 'active' : '' }} {{ Request::is('admin/editadminType/*') ? 'active' : '' }}"><a href="{{ URL::to('admin/manageroles')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_manage_roles') }}</a></li>
           </ul>
         </li>
-        <?php 
+        <?php
         }
         ?>
         <?php
@@ -531,7 +532,7 @@
           <ul class="treeview-menu">
             <li class="{{ Request::is('admin/managements/updater') ? 'active' : '' }}"><a href="{{ URL::to('admin/managements/backup')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.backup') }}</a></li>
             <li class="{{ Request::is('admin/managements/updater') ? 'active' : '' }}"><a href="{{ URL::to('admin/managements/import')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.restore') }}</a></li>
-           
+
           </ul>
         </li>
         <?php } ?>

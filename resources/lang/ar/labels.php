@@ -1926,6 +1926,8 @@ return [
 	'FlashSale'=>'بيع مفاجئ',
 	'FlashSaleText'=>'اختر \ "نعم \" إذا كان هذا في منتجات التخفيضات السريعة.',
 	'FlashSalePrice'=>'سعر البيع السريع',
+	'SalePrice'=>'سعر البيع',
+	'BuyPrice'=>'سعر الشراء',
 	'FlashSalePriceText'=>' اختار سعر الخص للبيع السريع.',
 	'FlashSaleDate'=>'تاريخ بدء البيع السريع',
 	'FlashSaleDateText'=>'جاء اختيار تاريخ بدء \ "بيع فلاش \".',
