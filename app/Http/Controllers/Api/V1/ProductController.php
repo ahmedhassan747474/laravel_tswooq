@@ -989,6 +989,7 @@ class ProductController extends BaseController
         $language_id = $request->language_id;
         $skip = $request->page_number . '0';
         $categories_id = $request->categories_id;
+        // dd($request->search);
         // $minPrice = $request->price['minPrice'];
         // $maxPrice = $request->price['maxPrice'];
         $minPrice = $request->minPrice;
@@ -1021,10 +1022,14 @@ class ProductController extends BaseController
                 // ->where('products_description.language_id','=', $language_id)
                 // ->where('manufacturers_info.languages_id','=', $language_id)
                     ->whereBetween('products.products_price', [$minPrice, $maxPrice])
+                    // ->when($request->search,function($query) use($request){
+                    //     return $query->where('products_name', 'LIKE', '%' .$request->search .'%' );
+                    // })
                     // ->where('products_to_categories.categories_id', '=', $categories_id)
                     ->where('products_options.products_options_name', '=', $filters_attribute['name'])
                     ->where('products_options_values.products_options_values_name', '=', $filters_attribute['value'])
                     // ->where('categories.parent_id', '!=', '0')
+
                     ->skip($skip)->take(10)
                     ->groupBy('products.products_id')
                     ->get();
@@ -1048,9 +1053,13 @@ class ProductController extends BaseController
                                 })
                                 ->select('products_to_categories.*', 'categories_description.categories_name', 'categories.*', 'products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price')
                                 ->where('products.products_id', '=', $getProduct->products_id)
+                                ->when($request->search,function($query) use($request){
+                                        return $query->orWhere('products_description.products_name', 'LIKE', '%' .$request->search .'%' );
+                                    })
                                 ->where('categories.parent_id', '!=', '0')
                                 ->get();
 
+                                // dd($products);
                             $result = array();
                             $index = 0;
                             foreach ($products as $products_data) {
@@ -1307,8 +1316,11 @@ class ProductController extends BaseController
                     $join->on('specials.products_id', '=', 'products_to_categories.products_id')->where('specials.status', '=', '1')->where('expires_date', '>', $currentDate);
                 })
                 ->whereBetween('products.products_price', [$minPrice, $maxPrice])
-                ->where('products_to_categories.categories_id', '=', $categories_id)
-                ->where('categories.parent_id', '!=', '0')
+                ->when($request->search,function($query) use($request){
+                    return $query->where('products_description.products_name', 'LIKE', '%' .$request->search .'%' );
+                })
+                // ->where('products_to_categories.categories_id', '=', $categories_id)
+                // ->where('categories.parent_id', '!=', '0')
                 ->get();
 
             $products = DB::table('products_to_categories')
@@ -1322,8 +1334,11 @@ class ProductController extends BaseController
                 })
                 ->select('products_to_categories.*', 'products.*', 'products_description.*', 'manufacturers.*', 'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price')
                 ->whereBetween('products.products_price', [$minPrice, $maxPrice])
-                ->where('products_to_categories.categories_id', '=', $categories_id)
-                ->where('categories.parent_id', '!=', '0')
+                ->when($request->search,function($query) use($request){
+                    return $query->where('products_description.products_name', 'LIKE', '%' .$request->search .'%' );
+                })
+                // ->where('products_to_categories.categories_id', '=', $categories_id)
+                // ->where('categories.parent_id', '!=', '0')
                 ->skip($skip)->take(10)
                 ->get();
 
@@ -1539,7 +1554,7 @@ class ProductController extends BaseController
                     }
                     $index++;
                 }
-                $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => count($total_record));
+                $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => $index);
             } else {
                 $total_record = array();
                 $responseData = array('success' => '0', 'product_data' => $result, 'message' => "Empty record.", 'total_record' => count($total_record));
