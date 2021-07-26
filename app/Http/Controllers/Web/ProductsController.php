@@ -108,7 +108,7 @@ class ProductsController extends Controller
         if (!empty($request->category) and $request->category != 'all') {
             if(!empty($request->brand) and $request->brand != 'all') {
                 $brand = $this->products->getBrands($request);
-                
+
                 if(!empty($brand) and count($brand)>0){
                     $categories_id = $brand[0]->categories_id;
                     //for main
@@ -127,7 +127,7 @@ class ProductsController extends Controller
                 }
             } else {
                 $category = $this->products->getCategories($request);
-                
+
                 if(!empty($category) and count($category)>0){
                     $categories_id = $category[0]->categories_id;
                     //for main
@@ -212,7 +212,7 @@ class ProductsController extends Controller
             'categories_id' => $categories_id, 'search' => $search,
             'filters' => $filters, 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
 
-        $products = $this->products->products($data);        
+        $products = $this->products->products($data);
         $result['products'] = $products;
 
         $data = array('limit' => $limit, 'categories_id' => $categories_id);
@@ -235,6 +235,7 @@ class ProductsController extends Controller
         $result['min_price'] = $min_price;
         $result['max_price'] = $max_price;
 
+        // dd($result);
         return view("web.shop", ['title' => $title, 'final_theme' => $final_theme])->with('result', $result);
 
     }
@@ -441,7 +442,7 @@ class ProductsController extends Controller
 
         $products = $this->products->getProductsBySlug($request->slug);
         if(!empty($products) and count($products)>0){
-            
+
             //category
             $category = $this->products->getCategoryByParent($products[0]->products_id);
 
@@ -510,8 +511,8 @@ class ProductsController extends Controller
 
             $data = array('page_number' => '0', 'type' => 'topseller', 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
             $top_seller = $this->products->products($data);
-            $result['top_seller'] = $top_seller;	
-            
+            $result['top_seller'] = $top_seller;
+
             // $getParallel = DB::table('products')->where('product_parent_id', '=', $products[0]->products_id)->select('products_id')->get();
             // $getAllProductsParallel = array();
             // $getAllProductsParallel[] = $products[0]->products_id;
@@ -530,14 +531,14 @@ class ProductsController extends Controller
             //         ->select('options_id', 'options_values_id', 'products_id')
             //         // ->groupBy('options_values_id')
             //         ->get();
-                
+
             //     dd($getAllAttributes);
 
             //     foreach($getAllAttributes as $attribute){
             //         $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
             //         $attribute->options_values_description = $option_value != null ? $option_value->options_values_name : 'Not Exist';
             //     }
-                
+
             //     $option->values = $getAllAttributes;
             // }
 
@@ -547,7 +548,7 @@ class ProductsController extends Controller
 
             $listOfAttributes = array();
             $index3 = 0;
-            
+
             // dd($getAllProductsParallel);
             $getAllAttributes = DB::table('products_attributes')
                 ->where('products_id', '=', $products[0]->products_id)
@@ -565,7 +566,7 @@ class ProductsController extends Controller
             //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
             //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
             // }
-            
+
             foreach($getAllAttributes as $attribute){
                 $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
                 $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
@@ -635,7 +636,7 @@ class ProductsController extends Controller
         // $products = $this->products->getProductsBySlug($request->slug);
         $products = DB::table('products')->where('products_id', '=', $request->products_id)->get();
         if(!empty($products) and count($products)>0){
-            
+
             //category
             $category = $this->products->getCategoryByParent($request->products_id);
 

@@ -265,13 +265,14 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->suppliersmainreport($request);
 
+        // dd($result['reports']);
         $result['suppliers'] = $this->Suppliers->getter();
 
         $myVar = new SiteSettingController();
         $result['currency'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
 
-        return view("admin.reports.suppliersmainreport", $title)->with('result', $result);
+        return view("admin.reports.suppliersmainreport", $title)->with(['result'=>$result, 'request'=>$request,'thisReport'=>$this->reports]);
     }
 
     public function suppliersreport(Request $request, $id)

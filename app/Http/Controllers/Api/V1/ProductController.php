@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use App\User;
+use App\Http\Controllers\AdminControllers\SiteSettingController;
 use JWTAuth;
 use Hash;
 use Auth;
@@ -25,7 +26,7 @@ use DB;
 
 class ProductController extends BaseController
 {
-    function __construct(UserTransformer $user_transformer) 
+    function __construct(UserTransformer $user_transformer)
     {
         config(['auth.defaults.guard' => 'api']);
         $this->user_transformer = $user_transformer;
@@ -34,7 +35,7 @@ class ProductController extends BaseController
     //get allcategories
 	public function allcategories(Request $request){
         $language_id = $request->language_id;
-        
+
         $item = DB::table('categories')
             ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'categories.categories_id')
             ->LeftJoin('image_categories', function ($join) {
@@ -63,7 +64,7 @@ class ProductController extends BaseController
             ->orderby('categories_id', 'ASC')
             ->groupby('categories_id')
             ->get();
-        
+
         // dd($categories);
 
         if (count($categories) > 0) {
@@ -96,7 +97,7 @@ class ProductController extends BaseController
     //get all brands
     public function allbrands(Request $request) {
         $language_id = $request->language_id;
-        
+
         $item = DB::table('categories')
             ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'categories.categories_id')
             ->LeftJoin('image_categories', function ($join) {
@@ -125,7 +126,7 @@ class ProductController extends BaseController
             ->orderby('categories_id', 'ASC')
             ->groupby('categories_id')
             ->get();
-        
+
         // dd($categories);
 
         if (count($categories) > 0) {
@@ -159,7 +160,7 @@ class ProductController extends BaseController
     public function allbrandsbycategory(Request $request) {
         $language_id = $request->language_id;
         $category_id = $request->category_id;
-        
+
         $item = DB::table('categories')
             ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'categories.categories_id')
             ->LeftJoin('image_categories', function ($join) {
@@ -188,7 +189,7 @@ class ProductController extends BaseController
             ->orderby('categories_id', 'ASC')
             ->groupby('categories_id')
             ->get();
-        
+
         // dd($categories);
 
         if (count($categories) > 0) {
@@ -224,7 +225,7 @@ class ProductController extends BaseController
         $skip = $request->page_number . '0';
         $currentDate = time();
         $type = $request->type;
-        
+
         if ($type == "a to z") {
             $sortby = "products_name";
             $order = "ASC";
@@ -622,7 +623,7 @@ class ProductController extends BaseController
             if ($type == "top seller") {
                 $categories->where('products.products_ordered', '>', 0);
             }
-            
+
             if ($type == "most liked") {
                 $categories->where('products.products_liked', '>', 0);
             }
@@ -639,7 +640,7 @@ class ProductController extends BaseController
             if ($type == "special") { //deals special products
                 $categories->groupBy('products.products_id');
             }
-            
+
             //count
             $total_record = $categories->get();
 
@@ -770,7 +771,7 @@ class ProductController extends BaseController
                         }else{
                             $avarage_rate = 0;
                         }
-                        
+
                         $total_user_rated = count($reviews);
                         $reviewed_customers = $reviews;
                     } else {
@@ -988,8 +989,10 @@ class ProductController extends BaseController
         $language_id = $request->language_id;
         $skip = $request->page_number . '0';
         $categories_id = $request->categories_id;
-        $minPrice = $request->price['minPrice'];
-        $maxPrice = $request->price['maxPrice'];
+        // $minPrice = $request->price['minPrice'];
+        // $maxPrice = $request->price['maxPrice'];
+        $minPrice = $request->minPrice;
+        $maxPrice = $request->maxPrice;
         $currentDate = time();
 
         $filterProducts = array();
@@ -997,8 +1000,9 @@ class ProductController extends BaseController
 
         if (!empty($request->filters)) {
 
+            // dd($request->filters);
             foreach ($request->filters as $filters_attribute) {
-                //print_r($filters_attribute);
+                // dd($filters_attribute['value']);
 
                 $getProducts = DB::table('products_to_categories')
                     ->join('products', 'products.products_id', '=', 'products_to_categories.products_id')
@@ -1013,18 +1017,19 @@ class ProductController extends BaseController
                     ->leftJoin('products_options', 'products_options.products_options_id', '=', 'products_attributes.options_id')
                     ->leftJoin('products_options_values', 'products_options_values.products_options_values_id', '=', 'products_attributes.options_values_id')
 
-                    ->select('products.*')
-                //->where('products_description.language_id','=', $language_id)
-                //->where('manufacturers_info.languages_id','=', $language_id)
+                    ->select('products.*','products_attributes.*','products_options_values.*','products_options.*')
+                // ->where('products_description.language_id','=', $language_id)
+                // ->where('manufacturers_info.languages_id','=', $language_id)
                     ->whereBetween('products.products_price', [$minPrice, $maxPrice])
-                    ->where('products_to_categories.categories_id', '=', $categories_id)
+                    // ->where('products_to_categories.categories_id', '=', $categories_id)
                     ->where('products_options.products_options_name', '=', $filters_attribute['name'])
                     ->where('products_options_values.products_options_values_name', '=', $filters_attribute['value'])
-                    ->where('categories.parent_id', '!=', '0')
+                    // ->where('categories.parent_id', '!=', '0')
                     ->skip($skip)->take(10)
                     ->groupBy('products.products_id')
                     ->get();
 
+                    // dd($getProducts);
                 if (count($getProducts) > 0) {
                     foreach ($getProducts as $getProduct) {
                         if (!in_array($getProduct->products_id, $eliminateRecord)) {
@@ -1032,7 +1037,7 @@ class ProductController extends BaseController
 
                             $products = DB::table('products_to_categories')
                                 ->leftJoin('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
-                                ->join('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
+                                // ->join('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
                                 ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'products_to_categories.categories_id')
                                 ->leftJoin('products', 'products.products_id', '=', 'products_to_categories.products_id')
                                 ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
@@ -1051,6 +1056,7 @@ class ProductController extends BaseController
                             foreach ($products as $products_data) {
                                 //check currency start
                                 $requested_currency = $request->currency_code;
+                                $current_currency = $request->current_currency;
                                 $current_price = $products_data->products_price;
 
                                 if ($current_currency == $request->currency) {
@@ -1075,8 +1081,8 @@ class ProductController extends BaseController
                                 foreach ($detail as $detail_data) {
 
                                     //get function from other controller
-                                    $myVar = new AdminSiteSettingController();
-                                    $languages = $myVar->getSingleLanguages($detail_data->language_id);
+                                    $myVar = new SiteSettingController();
+                                    $languages = $myVar->getLanguages($detail_data->language_id);
 
                                     $result2[$languages[$index3]->code] = $detail_data;
                                     $index3++;
@@ -1227,16 +1233,18 @@ class ProductController extends BaseController
                                 }
 
                                 //get function from other controller
-                                $myVar = new AdminSiteSettingController();
+                                $myVar = new SiteSettingController();
                                 $languages = $myVar->getLanguages();
                                 $data = array();
                                 foreach ($languages as $languages_data) {
                                     $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
                                     if (count($products_attribute) > 0) {
                                         $index2 = 0;
+
                                         foreach ($products_attribute as $attribute_data) {
                                             $option_name = DB::table('products_options')
                                                 ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+
 
                                             if (count($option_name) > 0) {
                                                 $temp = array();
@@ -1280,7 +1288,8 @@ class ProductController extends BaseController
                             }
                         }
                     }
-                    $responseData = array('success' => '1', 'product_data' => $filterProducts, 'message' => "Returned all products.", 'total_record' => count($index));
+                    // dd($filterProducts);
+                    $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => $index);
                 } else {
                     $total_record = array();
                     $responseData = array('success' => '0', 'product_data' => $filterProducts, 'message' => "Empty record.", 'total_record' => count($total_record));

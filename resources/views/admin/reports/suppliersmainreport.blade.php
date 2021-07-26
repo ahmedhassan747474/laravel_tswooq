@@ -52,17 +52,17 @@
                     </select>
                   </div>
                 </div>
-               
-                <div class="col-xs-2" style="padding-top: 25px">                  
+
+                <div class="col-xs-2" style="padding-top: 25px">
                   <div class="form-group">
                     <button class="btn btn-primary" id="submit" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                     @if(app('request')->input('type') and app('request')->input('type') == 'all')  <a class="btn btn-danger " href="{{url('admin/suppliersmainreport')}}"><i class="fa fa-ban" aria-hidden="true"></i> </a>@endif
                   </div>
-                </div>       
+                </div>
             </div>
               <!-- /.box-body -->
 
-            </form>  
+            </form>
           </div>
             <!-- /.box-body -->
           </div>
@@ -96,12 +96,22 @@
                       <th>{{ trans('labels.Reference Code') }}
                       <th>{{ trans('labels.Supplier Name') }}</th>
                       <th>{{ trans('labels.Price') }}</th>
+                      <th>{{ trans('labels.Paied Price') }}</th>
+                      <th>{{ trans('labels.Remaining Price') }}</th>
                       <th>{{ trans('labels.Date') }}</th>
                     </tr>
                   </thead>
                    <tbody>
                     @foreach ($result['reports'] as  $key=>$report)
-                   
+
+                    <?php
+                    $result['total_price'] = $thisReport->suppliersreportTotalPrice($request, $report->supplier_main_id);
+
+                    $result['report_detail'] = $thisReport->suppliersreportDetail($request, $report->supplier_main_id);
+
+                    $result['report_detail_total'] = $thisReport->suppliersreportDetailTotal($request, $report->supplier_main_id);
+
+                    ?>
                         <tr>
 
                             <td><a href="{{ URL::to('admin/suppliersreport') . '/' . $report->supplier_main_id}}">{{ $report->supplier_main_id }}</a></td>
@@ -109,23 +119,26 @@
                             @if($report->reference_code)
                             <td>{{ $report->reference_code }}</td>
                             @else
-                            <td>---</td>                            
+                            <td>---</td>
                             @endif
 
                             @if($report->supplier_name)
                             <td><a href="{{ URL::to('admin/suppliersreport') . '/' . $report->supplier_main_id}}">{{ $report->supplier_name }}</a></td>
                             @else
-                            <td>---</td>                            
+                            <td>---</td>
                             @endif
 
                             @if($report->price)
                             <td>{{ $report->price }}</td>
                             @else
-                            <td>---</td>                            
+                            <td>---</td>
                             @endif
 
+                            <td>{{$result['report_detail_total']}}</td>
+                            <td>{{$result['total_price'] - $result['report_detail_total']}}</td>
+
                             <td>{{ date('m/d/Y', strtotime($report->created_at)) }}</td>
-                            
+
                         </tr>
                     @endforeach
                   </tbody>

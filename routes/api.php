@@ -33,7 +33,7 @@ Route::middleware('auth:api', 'cors')->get('/user', function (Request $request) 
 Route::group(['namespace' => 'App'], function () {
 
 	//Route::post('/uploadimage', 'AppSettingController@uploadimage');
-	
+
 	Route::post('/getcategories', 'CategoriesController@getcategories');
 
 	//registration url
@@ -260,7 +260,7 @@ Route::group(['namespace' => 'App'], function () {
   */
 
   Route::get('/getlocation', 'AppSettingController@getlocation');
-  
+
   /*
   |--------------------------------------------------------------------------
   | currency location Controller Routes
@@ -287,6 +287,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 	Route::post('/get_brands_by_category', 'ProductController@allbrandsbycategory');
 	Route::post('/getallproducts', 'ProductController@getallproducts');
 	Route::post('/getfilters', 'ProductController@getfilters');
+	Route::post('/getfilterproducts', 'ProductController@getfilterproducts');
 
     Route::group(['middleware' => 'user'], function(){
         //Auth
@@ -304,7 +305,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 		Route::post('/add_to_cart/', 'OrderController@addtocart');
 		Route::post('/edit_cart', 'OrderController@editcart');
 		Route::post('/delete_cart', 'OrderController@deletecart');
-		
+
 		//Order
 		Route::post('/addtoorder', 'OrderController@addtoorder');
 		Route::post('/cancelorder', 'OrderController@updatestatus');
