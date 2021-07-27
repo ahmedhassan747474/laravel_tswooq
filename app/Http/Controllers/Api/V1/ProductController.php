@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\File;
 use App\Models\AppModels\Product;
 use Carbon;
 use DB;
+use Illuminate\Support\Facades\Session;
 
 class ProductController extends BaseController
 {
@@ -492,47 +493,130 @@ class ProductController extends BaseController
                                 }
 
                                 // fetch all options add join from products_options table for option name
-                                $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
-                                if (count($products_attribute) > 0) {
-                                    $index2 = 0;
-                                    foreach ($products_attribute as $attribute_data) {
-                                        $option_name = DB::table('products_options')
-                                            ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
-                                        if (count($option_name) > 0) {
-                                            $temp = array();
-                                            $temp_option['id'] = $attribute_data->options_id;
-                                            $temp_option['name'] = $option_name[0]->products_options_name;
-                                            $attr[$index2]['option'] = $temp_option;
+                                // $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
+                                // if (count($products_attribute) > 0) {
+                                //     $index2 = 0;
+                                //     foreach ($products_attribute as $attribute_data) {
+                                //         $option_name = DB::table('products_options')
+                                //             ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+                                //         if (count($option_name) > 0) {
+                                //             $temp = array();
+                                //             $temp_option['id'] = $attribute_data->options_id;
+                                //             $temp_option['name'] = $option_name[0]->products_options_name;
+                                //             $attr[$index2]['option'] = $temp_option;
 
-                                            // fetch all attributes add join from products_options_values table for option value name
-                                            $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
-                                            foreach ($attributes_value_query as $products_option_value) {
-                                                $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
-                                                $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
-                                                $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
-                                                $temp_i['id'] = $products_option_value->options_values_id;
-                                                $temp_i['value'] = $option_value[0]->products_options_values_name;
-                                                //check currency start
-                                                $current_price = $products_option_value->options_values_price;
+                                //             // fetch all attributes add join from products_options_values table for option value name
+                                //             $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
+                                //             foreach ($attributes_value_query as $products_option_value) {
+                                //                 $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
+                                //                 $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
+                                //                 $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
+                                //                 $temp_i['id'] = $products_option_value->options_values_id;
+                                //                 $temp_i['value'] = $option_value[0]->products_options_values_name;
+                                //                 //check currency start
+                                //                 $current_price = $products_option_value->options_values_price;
 
-                                                $attribute_price = Product::convertprice($current_price, $requested_currency);
+                                //                 $attribute_price = Product::convertprice($current_price, $requested_currency);
 
-                                                //check currency end
+                                //                 //check currency end
 
-                                                $temp_i['price'] = $attribute_price;
-                                                $temp_i['price_prefix'] = $products_option_value->price_prefix;
-                                                array_push($temp, $temp_i);
+                                //                 $temp_i['price'] = $attribute_price;
+                                //                 $temp_i['price_prefix'] = $products_option_value->price_prefix;
+                                //                 array_push($temp, $temp_i);
 
-                                            }
-                                            $attr[$index2]['values'] = $temp;
-                                            $result[$index]->attributes = $attr;
-                                            $index2++;
-                                        }
-                                    }
-                                } else {
-                                    $result[$index]->attributes = array();
+                                //             }
+                                //             $attr[$index2]['values'] = $temp;
+                                //             $result[$index]->attributes = $attr;
+                                //             $index2++;
+                                //         }
+                                //     }
+                                // } else {
+                                //     $result[$index]->attributes = array();
+                                // }
+                                // array_push($filterProducts, $result[$index]);
+                                $listOfAttributes = array();
+                                $index3 = 0;
+
+                                // dd($getAllProductsParallel);
+                                $getAllAttributes = DB::table('products_attributes')
+                                    ->where('products_id', '=', $products_id)
+                                    // ->whereIn('products_id', $getAllProductsParallel)
+                                    ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                                    ->get();
+                                // dd($getAllAttributes);
+
+                                // foreach($getAllAttributes as $attribute){
+                                //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+                                //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+                                //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+                                //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+                                //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+                                // }
+
+
+                                foreach($getAllAttributes as $attribute){
+                                    $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                    $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                    $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                    $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                    $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                    // $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                    // $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+
+                                    // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                    // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                    // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+
                                 }
-                                array_push($filterProducts, $result[$index]);
+                                $listOfAttributes[$index3]['id'] = $products_id;
+                                $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                                $listOfAttributes[$index3]['images'] = $products_images;
+
+                                $index3++;
+                                // $result['getAllAttributes'] = $getAllAttributes;
+
+                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                                if($getParallel) {
+                                    foreach ($getParallel as $parallel) {
+                                        $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                                        foreach($getAllAttributesParallel as $attribute){
+                                            $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                            $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                            $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                            $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                            $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                            // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                            // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                            // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                                        }
+                                        $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                                        $listOfAttributes[$index3]['price'] = $parallel->products_price;
+
+                                        //multiple images
+                                        $products_images = array();
+                                        $products_images = DB::table('products_images')
+                                            ->LeftJoin('image_categories', function ($join) {
+                                                $join->on('image_categories.image_id', '=', 'products_images.image')
+                                                    ->where(function ($query) {
+                                                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                                    });
+                                            })
+                                            ->select('products_images.*', 'image_categories.path as image')
+                                            ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+                                            // $products_data->images=$products_images;
+                                            $listOfAttributes[$index3]['images'] = $products_images;
+
+                                        $index3++;
+                                    }
+                                }
+                                // dd($listOfAttributes);
+                                $result[$index]->attributes = $listOfAttributes;
+                                // $result[$index]->images2 = $products_images;
                                 $index++;
                             }
                         }
@@ -881,7 +965,90 @@ class ProductController extends BaseController
                     // } else {
                     //     $result[$index]->attributes = array();
                     // }
-                    // $index++;
+                    $listOfAttributes = array();
+                    $index3 = 0;
+
+                    // dd($getAllProductsParallel);
+                    $getAllAttributes = DB::table('products_attributes')
+                        ->where('products_id', '=', $products_id)
+                        // ->whereIn('products_id', $getAllProductsParallel)
+                        ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                        ->get();
+                    // dd($getAllAttributes);
+
+                    // foreach($getAllAttributes as $attribute){
+                    //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+                    //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                    //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+                    //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                    //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+                    //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+                    //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+                    // }
+
+
+                    foreach($getAllAttributes as $attribute){
+                        $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                        $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                        $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                        // $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                        // $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+
+                        // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                        // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                        // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+
+                    }
+                    $listOfAttributes[$index3]['id'] = $products_id;
+                    $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['images'] = $products_images;
+
+                    $index3++;
+                    // $result['getAllAttributes'] = $getAllAttributes;
+
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                    if($getParallel) {
+                        foreach ($getParallel as $parallel) {
+                            $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                            foreach($getAllAttributesParallel as $attribute){
+                                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                            }
+                            $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                            $listOfAttributes[$index3]['price'] = $parallel->products_price;
+
+                            //multiple images
+                            $products_images = array();
+                            $products_images = DB::table('products_images')
+                                ->LeftJoin('image_categories', function ($join) {
+                                    $join->on('image_categories.image_id', '=', 'products_images.image')
+                                        ->where(function ($query) {
+                                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                        });
+                                })
+                                ->select('products_images.*', 'image_categories.path as image')
+                                ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+                                // $products_data->images=$products_images;
+                                $listOfAttributes[$index3]['images'] = $products_images;
+
+                            $index3++;
+                        }
+                    }
+                    // dd($listOfAttributes);
+                    $result[$index]->attributes = $listOfAttributes;
+                    // $result[$index]->images2 = $products_images;
+                    $index++;
                 }
 
                 $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => count($total_record));
@@ -1029,6 +1196,7 @@ class ProductController extends BaseController
                     ->where('products_options.products_options_name', '=', $filters_attribute['name'])
                     ->where('products_options_values.products_options_values_name', '=', $filters_attribute['value'])
                     // ->where('categories.parent_id', '!=', '0')
+                    ->where('products.product_parent_id', null)
 
                     ->skip($skip)->take(10)
                     ->groupBy('products.products_id')
@@ -1097,6 +1265,7 @@ class ProductController extends BaseController
                                     $index3++;
                                 }
                                 //multiple images
+                                $products_images = array();
                                 $products_images = DB::table('products_images')
                                     ->LeftJoin('image_categories', function ($join) {
                                         $join->on('image_categories.image_id', '=', 'products_images.image')
@@ -1109,6 +1278,15 @@ class ProductController extends BaseController
                                     ->select('products_images.*', 'image_categories.path as image')
                                     ->where('products_id', '=', $products_id)->orderBy('sort_order', 'ASC')->get();
 
+                                    // $products_data->images=$products_images;
+
+                                    // if(count($products_images)>0){
+                                    //     $result[$index]['listOfImages'] = $products_images;
+                                    // }else
+                                    // {
+                                    //     $result[$index]->images=[];
+                                    // }
+                                    // dd($products_images);
                                 $categories = DB::table('products_to_categories')
                                     ->leftjoin('categories', 'categories.categories_id', 'products_to_categories.categories_id')
                                     ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
@@ -1245,54 +1423,142 @@ class ProductController extends BaseController
                                 $myVar = new SiteSettingController();
                                 $languages = $myVar->getLanguages();
                                 $data = array();
-                                foreach ($languages as $languages_data) {
-                                    $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
-                                    if (count($products_attribute) > 0) {
-                                        $index2 = 0;
+                                // foreach ($languages as $languages_data) {
+                                //     $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
+                                //     if (count($products_attribute) > 0) {
+                                //         $index2 = 0;
 
-                                        foreach ($products_attribute as $attribute_data) {
-                                            $option_name = DB::table('products_options')
-                                                ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+                                //         foreach ($products_attribute as $attribute_data) {
+                                //             $option_name = DB::table('products_options')
+                                //                 ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
 
 
-                                            if (count($option_name) > 0) {
-                                                $temp = array();
-                                                $temp_option['id'] = $attribute_data->options_id;
-                                                $temp_option['name'] = $option_name[0]->products_options_name;
-                                                $attr[$index2]['option'] = $temp_option;
+                                //             if (count($option_name) > 0) {
+                                //                 $temp = array();
+                                //                 $temp_option['id'] = $attribute_data->options_id;
+                                //                 $temp_option['name'] = $option_name[0]->products_options_name;
+                                //                 $attr[$index2]['option'] = $temp_option;
 
                                                 // fetch all attributes add join from products_options_values table for option value name
-                                                $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
-                                                foreach ($attributes_value_query as $products_option_value) {
-                                                    $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
-                                                    $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
-                                                    $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
-                                                    $temp_i['id'] = $products_option_value->options_values_id;
-                                                    $temp_i['value'] = $option_value[0]->products_options_values_name;
+                                //                 $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
+                                //                 foreach ($attributes_value_query as $products_option_value) {
+                                //                     $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
+                                //                     $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
+                                //                     $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
+                                //                     $temp_i['id'] = $products_option_value->options_values_id;
+                                //                     $temp_i['value'] = $option_value[0]->products_options_values_name;
 
-                                                    //check currency start
-                                                    $current_price = $products_option_value->options_values_price;
+                                //                     //check currency start
+                                //                     $current_price = $products_option_value->options_values_price;
 
-                                                    $attribute_price = Product::convertprice($current_price, $requested_currency);
+                                //                     $attribute_price = Product::convertprice($current_price, $requested_currency);
 
-                                                    //check currency end
-                                                    $temp_i['price'] = $attribute_price;
-                                                    $temp_i['price_prefix'] = $products_option_value->price_prefix;
-                                                    array_push($temp, $temp_i);
+                                //                     //check currency end
+                                //                     $temp_i['price'] = $attribute_price;
+                                //                     $temp_i['price_prefix'] = $products_option_value->price_prefix;
+                                //                     array_push($temp, $temp_i);
 
-                                                }
-                                                $attr[$index2]['values'] = $temp;
-                                                $data[$languages_data->code] = $attr;
-                                                $result[$index]->detail = $result2;
-                                                $index2++;
-                                            }
+                                //                 }
+                                //                 $attr[$index2]['values'] = $temp;
+                                //                 $data[$languages_data->code] = $attr;
+                                //                 $result[$index]->detail = $result2;
+                                //                 $index2++;
+                                //             }
+
+                                //         }
+                                //         $result[$index]->attributes = $data;
+                                //     } else {
+                                //         $result[$index]->attributes = array();
+                                //     }
+                                // }
+
+                                $listOfAttributes = array();
+                                $index3 = 0;
+
+                                // dd($getAllProductsParallel);
+                                $getAllAttributes = DB::table('products_attributes')
+                                    ->where('products_id', '=', $products_id)
+                                    // ->whereIn('products_id', $getAllProductsParallel)
+                                    ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                                    ->get();
+                                // dd($getAllAttributes);
+
+                                // foreach($getAllAttributes as $attribute){
+                                //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+                                //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+                                //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+                                //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+                                //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+                                // }
+
+
+                                foreach($getAllAttributes as $attribute){
+                                    $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                    $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                    $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                    $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                    $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                    // $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                    // $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+
+                                    // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                    // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                    // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+
+                                }
+                                $listOfAttributes[$index3]['id'] = $products_id;
+                                $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                                $listOfAttributes[$index3]['images'] = $products_images;
+
+                                $index3++;
+                                // $result['getAllAttributes'] = $getAllAttributes;
+
+                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                                if($getParallel) {
+                                    foreach ($getParallel as $parallel) {
+                                        $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                                        foreach($getAllAttributesParallel as $attribute){
+                                            $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                            $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                            $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                            $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                            // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+                                            // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                            // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                            // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                                            $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
 
                                         }
-                                        $result[$index]->attributes = $data;
-                                    } else {
-                                        $result[$index]->attributes = array();
+                                        $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                                        $listOfAttributes[$index3]['price'] = $parallel->products_price;
+                                        $listOfAttributes[$index3]['images'] = $products_images;
+
+                                        $index3++;
+
+
+                                        //multiple images
+                                        $products_images = array();
+                                        $products_images = DB::table('products_images')
+                                            ->LeftJoin('image_categories', function ($join) {
+                                                $join->on('image_categories.image_id', '=', 'products_images.image')
+                                                    ->where(function ($query) {
+                                                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                                    });
+                                            })
+                                            ->select('products_images.*', 'image_categories.path as image')
+                                            ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+                                            // $products_data->images=$products_images;
                                     }
                                 }
+                                // dd($listOfAttributes);
+                                $result[$index]->attributes = $listOfAttributes;
+                                $result[$index]->images = $products_images;
+
                                 $index++;
                             }
                         }
@@ -1321,6 +1587,7 @@ class ProductController extends BaseController
                 })
                 // ->where('products_to_categories.categories_id', '=', $categories_id)
                 // ->where('categories.parent_id', '!=', '0')
+                ->where('products.product_parent_id', null)
                 ->get();
 
             $products = DB::table('products_to_categories')
@@ -1339,6 +1606,7 @@ class ProductController extends BaseController
                 })
                 // ->where('products_to_categories.categories_id', '=', $categories_id)
                 // ->where('categories.parent_id', '!=', '0')
+                ->where('products.product_parent_id', null)
                 ->skip($skip)->take(10)
                 ->get();
 
@@ -1364,6 +1632,9 @@ class ProductController extends BaseController
                     $products_id = $products_data->products_id;
 
                     //multiple images
+                    $imagesIndex=0;
+                    // $listOfImages
+
                     $products_images = DB::table('products_images')
                         ->LeftJoin('image_categories', function ($join) {
                             $join->on('image_categories.image_id', '=', 'products_images.image')
@@ -1376,14 +1647,17 @@ class ProductController extends BaseController
                         ->select('products_images.*', 'image_categories.path as image')
                         ->where('products_id', '=', $products_id)->orderBy('sort_order', 'ASC')->get();
 
-                    $categories = DB::table('products_to_categories')
-                        ->leftjoin('categories', 'categories.categories_id', 'products_to_categories.categories_id')
-                        ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
-                        ->select('categories.categories_id', 'categories_description.categories_name', 'categories.categories_image', 'categories.categories_icon', 'categories.parent_id')
-                        ->where('products_id', '=', $products_id)
-                        ->where('categories_description.language_id', '=', $language_id)->get();
+                        // array_push($result, $products_images);
 
-                    $products_data->categories = $categories;
+                        // $products_data->images=$products_images;
+                        $categories = DB::table('products_to_categories')
+                            ->leftjoin('categories', 'categories.categories_id', 'products_to_categories.categories_id')
+                            ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
+                            ->select('categories.categories_id', 'categories_description.categories_name', 'categories.categories_image', 'categories.categories_icon', 'categories.parent_id')
+                            ->where('products_id', '=', $products_id)
+                            ->where('categories_description.language_id', '=', $language_id)->get();
+
+                        $products_data->categories = $categories;
 
                     $reviews = DB::table('reviews')
                         ->join('users', 'users.id', '=', 'reviews.customers_id')
@@ -1512,46 +1786,130 @@ class ProductController extends BaseController
 
                     // fetch all options add join from products_options table for option name
                     $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
-                    if (count($products_attribute) > 0) {
-                        $index2 = 0;
-                        foreach ($products_attribute as $attribute_data) {
-                            $option_name = DB::table('products_options')
-                                ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
-                            $temp = array();
-                            $temp_option['id'] = $attribute_data->options_id;
-                            $temp_option['name'] = $option_name[0]->products_options_name;
-                            $attr[$index2]['option'] = $temp_option;
+                    // if (count($products_attribute) > 0) {
+                    //     $index2 = 0;
+                    //     foreach ($products_attribute as $attribute_data) {
+                    //         $option_name = DB::table('products_options')
+                    //             ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+                    //         $temp = array();
+                    //         $temp_option['id'] = $attribute_data->options_id;
+                    //         $temp_option['name'] = $option_name[0]->products_options_name;
+                    //         $attr[$index2]['option'] = $temp_option;
 
-                            // fetch all attributes add join from products_options_values table for option value name
+                    //         // fetch all attributes add join from products_options_values table for option value name
 
-                            $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
-                            foreach ($attributes_value_query as $products_option_value) {
-                                $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
-                                $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
-                                $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
-                                $temp_i['id'] = $products_option_value->options_values_id;
-                                $temp_i['value'] = $option_value[0]->products_options_values_name;
-                                //check currency start
-                                $current_price = $products_option_value->options_values_price;
+                    //         $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $products_id)->where('options_id', '=', $attribute_data->options_id)->get();
+                    //         foreach ($attributes_value_query as $products_option_value) {
+                    //             $option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions', 'products_options_values_descriptions.products_options_values_id', '=', 'products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name')->where('products_options_values_descriptions.language_id', '=', $language_id)->where('products_options_values.products_options_values_id', '=', $products_option_value->options_values_id)->get();
+                    //             $attributes = DB::table('products_attributes')->where([['products_id', '=', $products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
+                    //             $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
+                    //             $temp_i['id'] = $products_option_value->options_values_id;
+                    //             $temp_i['value'] = $option_value[0]->products_options_values_name;
+                    //             //check currency start
+                    //             $current_price = $products_option_value->options_values_price;
 
-                                $attribute_price = Product::convertprice($current_price, $requested_currency);
+                    //             $attribute_price = Product::convertprice($current_price, $requested_currency);
 
-                                //check currency end
+                    //             //check currency end
 
-                                $temp_i['price'] = $attribute_price;
+                    //             $temp_i['price'] = $attribute_price;
 
-                                $temp_i['price_prefix'] = $products_option_value->price_prefix;
-                                array_push($temp, $temp_i);
+                    //             $temp_i['price_prefix'] = $products_option_value->price_prefix;
+                    //             array_push($temp, $temp_i);
 
-                            }
-                            $attr[$index2]['values'] = $temp;
-                            $result[$index]->attributes = $attr;
-                            $index2++;
+                    //         }
+                    //         $attr[$index2]['values'] = $temp;
+                    //         $result[$index]->attributes = $attr;
+                    //         $index2++;
 
-                        }
-                    } else {
-                        $result[$index]->attributes = array();
+                    //     }
+                    // } else {
+                    //     $result[$index]->attributes = array();
+                    // }
+
+                    $listOfAttributes = array();
+                    $index3 = 0;
+
+                    // dd($getAllProductsParallel);
+                    $getAllAttributes = DB::table('products_attributes')
+                        ->where('products_id', '=', $products_id)
+                        // ->whereIn('products_id', $getAllProductsParallel)
+                        ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                        ->get();
+                    // dd($getAllAttributes);
+
+                    // foreach($getAllAttributes as $attribute){
+                    //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+                    //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                    //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+                    //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                    //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+                    //     $listOfAttributes[$attribute->products_id]['name'][] = $attribute_option_name;
+                    //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
+                    // }
+
+
+                    foreach($getAllAttributes as $attribute){
+                        $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                        $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                        $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                        // $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                        // $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+
+                        // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                        // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                        // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+
                     }
+                    $listOfAttributes[$index3]['id'] = $products_id;
+                    $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['images'] = $products_images;
+
+                    $index3++;
+                    // $result['getAllAttributes'] = $getAllAttributes;
+
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                    if($getParallel) {
+                        foreach ($getParallel as $parallel) {
+                            $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                            foreach($getAllAttributesParallel as $attribute){
+                                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                            }
+                            $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                            $listOfAttributes[$index3]['price'] = $parallel->products_price;
+
+                            //multiple images
+                            $products_images = array();
+                            $products_images = DB::table('products_images')
+                                ->LeftJoin('image_categories', function ($join) {
+                                    $join->on('image_categories.image_id', '=', 'products_images.image')
+                                        ->where(function ($query) {
+                                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                        });
+                                })
+                                ->select('products_images.*', 'image_categories.path as image')
+                                ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+                                // $products_data->images=$products_images;
+                                $listOfAttributes[$index3]['images'] = $products_images;
+
+                            $index3++;
+                        }
+                    }
+                    // dd($listOfAttributes);
+                    $result[$index]->attributes = $listOfAttributes;
+                    // $result[$index]->images2 = $products_images;
                     $index++;
                 }
                 $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => $index);

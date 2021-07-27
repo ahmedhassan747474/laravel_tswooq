@@ -5,24 +5,25 @@
   if($categories){
     $parent_id = 0;
     $option = '';
-    
-    
+
+
       $option .= '<a class="menu-item" href="/shop?category=">'.trans("website.Choose Any Category").'</a>';
       foreach($categories as $parents){
+        //   dd($categories);
         $option .= '<span class="dropdown">';
-        $option .= '<a class="menu-item dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="/shop?category='.$parents->categories_name.'">'.$parents->categories_name.'</a>';
+        $option .= '<a class="menu-item dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="/shop?category='.$parents->slug.'">'.$parents->categories_name.'</a>';
         if(isset($parents->childs)){
           $option .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">';
           foreach ($parents->brands as $brand) {
-            
+            // dd($parents->brands);
             $option .= '<li><a class="dropdown-item" href="/shop?category='.$brand->slug.'" style="text-align: center;">' . $brand->categories_name . '</a></li>';
-            
+
           }
           $option .= '</ul>';
         }
         $option .= '</span>';
       }
-    
+
 
     echo $option;
   }
@@ -42,7 +43,7 @@
         }
         ///shop?category=kia
         // $option .= '<a class="dropdown-item categories-list '.$selected.'" value="'.$parents->categories_name.'" slug="'.$parents->slug.'" '.$selected.'>'.$parents->categories_name.'</a>';
-        
+
         // $option .= '<a class="dropdown-item categories-list" href="/shop?category='.$parents->categories_name.'">'.$parents->categories_name.'</a>';
 
         $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="'.$parents->slug.'" data-id="'.$parents->categories_id.'">'.$parents->categories_name.'</option>';
@@ -65,7 +66,7 @@ function productBrands(){
       $option = '';
 
       foreach($categories as $parents){
-        
+
         if($parents->slug==app('request')->input('category')){
           $selected = "selected";
         }else {
@@ -98,7 +99,7 @@ function productPrices(){
   $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=20000;50000"> $20000  -  $50000 </option>';
 
   $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=50000;10000000000"> $50000  -  $ ??  </option>';
-  
+
   // $option .= '<a class="dropdown-item categories-list" href="/shop??min_price=0&max_price=2000&filters_applied=0&price=0%3B1000"> $0  -  $1000</a>';
 
   // $option .= '<a class="dropdown-item categories-list" href="/shop??min_price=0&max_price=2000&filters_applied=0&price=1000%3B2000"> $1000  -  $2000</a>';
@@ -188,4 +189,4 @@ function recursivebrands(){
   return  $items;
 }
 
- 
+
