@@ -25,7 +25,7 @@ use DB;
 
 class OrderController extends BaseController
 {
-    function __construct(UserTransformer $user_transformer) 
+    function __construct(UserTransformer $user_transformer)
     {
         config(['auth.defaults.guard' => 'api']);
         $this->user_transformer = $user_transformer;
@@ -114,7 +114,7 @@ class OrderController extends BaseController
             } else {
                 return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 400], 400);
             }
-            
+
         }
         else
         {
@@ -132,7 +132,7 @@ class OrderController extends BaseController
             if($getCart){
                 $deleteCart = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->where('product_id', '=', $request->product_id)->delete();
             }
-            
+
             return response()->json(['message' => trans('common.success_update'), 'status_code' => 200], 200);
         }
         else
@@ -140,7 +140,7 @@ class OrderController extends BaseController
             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
         }
     }
-    
+
     //addtoorder
     public function addtoorder(Request $request){
         $user = $this->getAuthenticatedUser();
@@ -151,14 +151,14 @@ class OrderController extends BaseController
                 $req = array();
                 $req['products_id'] = $products['products_id'];
                 $attr = array();
-                
+
                 // if (isset($products['attributes'])) {
                 //     foreach ($products['attributes'] as $key => $value) {
                 //         $attr[$key] = $value['products_options_id'];
                 //     }
                 //     $req['attributes'] = $attr;
                 // }
-                
+
                 $check = Product::getquantity($req);
                 $check = json_decode($check);
 
@@ -249,7 +249,7 @@ class OrderController extends BaseController
             //additional fields
             $delivery_phone						=	$request->delivery_phone;
             $billing_phone						=	$request->billing_phone;
-            
+
             $delivery_latitude                  = $request->latitude;
             $delivery_longitude                 = $request->longitude;
 
@@ -302,10 +302,10 @@ class OrderController extends BaseController
                     $fieldName = 'sub_name_2';
                     $paymentMethodName = 'Braintree Paypal';
                 }
-                    
+
                 // $paymentMethodName = $payments_setting->$fieldName;
 
-                            
+
 
                 //braintree transaction with nonce
                 $is_transaction  = '1'; 			# For payment through braintree
@@ -560,7 +560,7 @@ class OrderController extends BaseController
                     ]);
 
                 }
-                
+
                 //orders status history
                 $orders_history_id = DB::table('orders_status_history')->insertGetId(
                     [	 'orders_id'  => $orders_id,
@@ -706,7 +706,7 @@ class OrderController extends BaseController
         } else {
             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
         }
-        
+
     }
 
     //getorders
@@ -729,26 +729,26 @@ class OrderController extends BaseController
             $index = '0';
             foreach($order as $data){
 
-                // deliveryboy 
+                // deliveryboy
                 $current_boy = DB::table('orders_to_delivery_boy')
                         ->leftjoin('users', 'users.id', '=', 'orders_to_delivery_boy.deliveryboy_id')
                         ->LeftJoin('deliveryboy_info', 'deliveryboy_info.users_id', '=', 'users.id')
                         ->select('orders_to_delivery_boy.*',
                         'users.*',
                         'deliveryboy_info.*',
-                        'deliveryboy_info.users_id as deliveryboy_id'                 
+                        'deliveryboy_info.users_id as deliveryboy_id'
                         )
                         ->where('orders_to_delivery_boy.orders_id', '=', $data->orders_id)
                         ->where('orders_to_delivery_boy.is_current', '=', '1')
                         ->orderby('orders_to_delivery_boy.created_at', 'DESC')
                         ->get();
-                
+
                 if(count($current_boy)>0){
-                $data->deliveryboy_info = $current_boy; 
+                $data->deliveryboy_info = $current_boy;
                 }else{
-                $data->deliveryboy_info = array(); 
+                $data->deliveryboy_info = array();
                 }
-                
+
                 $data->total_tax     =  Orders::convertprice($data->total_tax, $requested_currency);
                 $data->order_price   =  Orders::convertprice($data->order_price, $requested_currency);
                 $data->shipping_cost =  Orders::convertprice($data->shipping_cost, $requested_currency);

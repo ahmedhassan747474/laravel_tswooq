@@ -58,7 +58,7 @@
                                     <div class="card-body">
                                         <div class="aiz-pos-product-list c-scrollbar-light">
                                             <div class="row gutters-5" id="product-list">
-            
+
                                             </div>
                                         </div>
                                     </div>
@@ -169,7 +169,7 @@
                                 </div>
                                 <div class="pos-footer mar-btm">
                                     <div class="d-flex justify-content-between">
-                                        
+
                                         <div class="">
                                             <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">Pay With Cash</button>
                                             <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">Pay With Visa</button>
@@ -231,7 +231,7 @@
                                     <label class="col-sm-2 control-label" for="email">Country</label>
                                     <div class="col-sm-10">
                                         <input type="hidden" name="country" value="">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -362,6 +362,7 @@
             // console.log(possubcategory);
             $.get('{{ route('pos_card.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory}, function(data){
                 products = data;
+                
                 $('#product-list').html(null);
                 // console.log(products.products.paginate);
                 setProductList(data);
@@ -479,19 +480,19 @@
 
             $.post('{{ route('pos_card.order_place') }}',
             {
-                _token:'{{ csrf_token() }}', 
-                user_id:user_id, 
-                first_name:first_name, 
-                last_name:last_name, 
-                email:email, 
-                address:address, 
-                country:country, 
-                city:city, 
-                postal_code:postal_code, 
-                phone:phone, 
-                shipping_address:shipping_address, 
-                payment_type:payment_type, 
-                shipping:shipping, 
+                _token:'{{ csrf_token() }}',
+                user_id:user_id,
+                first_name:first_name,
+                last_name:last_name,
+                email:email,
+                address:address,
+                country:country,
+                city:city,
+                postal_code:postal_code,
+                phone:phone,
+                shipping_address:shipping_address,
+                payment_type:payment_type,
+                shipping:shipping,
                 discount:discount,
                 total_price:total_price,
                 comment: comment,

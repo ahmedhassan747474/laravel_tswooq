@@ -286,8 +286,12 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 	Route::post('/get_brands', 'ProductController@allbrands');
 	Route::post('/get_brands_by_category', 'ProductController@allbrandsbycategory');
 	Route::post('/getallproducts', 'ProductController@getallproducts');
+	Route::post('/getproductsbycategory', 'ProductController@getproductsbycategory');
 	Route::post('/getfilters', 'ProductController@getfilters');
 	Route::post('/getfilterproducts', 'ProductController@getfilterproducts');
+
+    //like card
+	Route::post('/get_like_card_categories', 'LikeCardController@categories');
 
     Route::group(['middleware' => 'user'], function(){
         //Auth
@@ -299,6 +303,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 		//Product
 		Route::post('/likeproduct', 'ProductController@likeproduct');
 		Route::post('/unlikeproduct', 'ProductController@unlikeproduct');
+        Route::post('/getfavourites', 'ProductController@getproductsyfavourite');
 
 		//Cart
 		Route::post('/get_cart', 'OrderController@getcart');
