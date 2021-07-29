@@ -572,12 +572,13 @@ class ProductController extends BaseController
                                 }
                                 $listOfAttributes[$index3]['id'] = $products_id;
                                 $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                                $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                                 $listOfAttributes[$index3]['images'] = $products_images;
 
                                 $index3++;
                                 // $result['getAllAttributes'] = $getAllAttributes;
 
-                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                                 if($getParallel) {
                                     foreach ($getParallel as $parallel) {
                                         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -608,7 +609,7 @@ class ProductController extends BaseController
                                             ->select('products_images.*', 'image_categories.path as image')
                                             ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
 
-                                            // $products_data->images=$products_images;
+                                            $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                                             $listOfAttributes[$index3]['images'] = $products_images;
 
                                         $index3++;
@@ -987,12 +988,13 @@ class ProductController extends BaseController
                     }
                     $listOfAttributes[$index3]['id'] = $products_id;
                     $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                     $listOfAttributes[$index3]['images'] = $products_images;
 
                     $index3++;
                     // $result['getAllAttributes'] = $getAllAttributes;
 
-                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                     if($getParallel) {
                         foreach ($getParallel as $parallel) {
                             $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -1007,6 +1009,7 @@ class ProductController extends BaseController
                                 // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
                             }
                             $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                            $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                             $listOfAttributes[$index3]['price'] = $parallel->products_price;
 
                             //multiple images
@@ -1494,12 +1497,13 @@ class ProductController extends BaseController
                                 }
                                 $listOfAttributes[$index3]['id'] = $products_id;
                                 $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                                $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                                 $listOfAttributes[$index3]['images'] = $products_images;
 
                                 $index3++;
                                 // $result['getAllAttributes'] = $getAllAttributes;
 
-                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                                 if($getParallel) {
                                     foreach ($getParallel as $parallel) {
                                         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -1517,6 +1521,7 @@ class ProductController extends BaseController
                                         }
                                         $listOfAttributes[$index3]['id'] = $parallel->products_id;
                                         $listOfAttributes[$index3]['price'] = $parallel->products_price;
+                                        $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                                         $listOfAttributes[$index3]['images'] = $products_images;
 
                                         $index3++;
@@ -1541,7 +1546,7 @@ class ProductController extends BaseController
                                 }
                                 // dd($listOfAttributes);
                                 $result[$index]->attributes = $listOfAttributes;
-                                $result[$index]->images = $products_images;
+                                // $result[$index]->images = $products_images;
 
                                 $index++;
                             }
@@ -1849,12 +1854,13 @@ class ProductController extends BaseController
                     }
                     $listOfAttributes[$index3]['id'] = $products_id;
                     $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                     $listOfAttributes[$index3]['images'] = $products_images;
 
                     $index3++;
                     // $result['getAllAttributes'] = $getAllAttributes;
 
-                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                     if($getParallel) {
                         foreach ($getParallel as $parallel) {
                             $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -1886,6 +1892,7 @@ class ProductController extends BaseController
                                 ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
 
                                 // $products_data->images=$products_images;
+                                $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                                 $listOfAttributes[$index3]['images'] = $products_images;
 
                             $index3++;
@@ -2258,12 +2265,13 @@ class ProductController extends BaseController
                                 }
                                 $listOfAttributes[$index3]['id'] = $products_id;
                                 $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                                $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                                 $listOfAttributes[$index3]['images'] = $products_images;
 
                                 $index3++;
                                 // $result['getAllAttributes'] = $getAllAttributes;
 
-                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                                $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                                 if($getParallel) {
                                     foreach ($getParallel as $parallel) {
                                         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -2294,7 +2302,7 @@ class ProductController extends BaseController
                                             ->select('products_images.*', 'image_categories.path as image')
                                             ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
 
-                                            // $products_data->images=$products_images;
+                                            $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                                             $listOfAttributes[$index3]['images'] = $products_images;
 
                                         $index3++;
@@ -2673,12 +2681,13 @@ class ProductController extends BaseController
                     }
                     $listOfAttributes[$index3]['id'] = $products_id;
                     $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
                     $listOfAttributes[$index3]['images'] = $products_images;
 
                     $index3++;
                     // $result['getAllAttributes'] = $getAllAttributes;
 
-                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price')->get();
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
                     if($getParallel) {
                         foreach ($getParallel as $parallel) {
                             $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
@@ -2710,6 +2719,7 @@ class ProductController extends BaseController
                                 ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
 
                                 // $products_data->images=$products_images;
+                                $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
                                 $listOfAttributes[$index3]['images'] = $products_images;
 
                             $index3++;
@@ -3772,4 +3782,271 @@ class ProductController extends BaseController
         }
 
     }
+
+    //getproductsbybrand
+    public function getproductsbybrand(Request $request){
+        $language_id = $request->language_id;
+        $currentDate = time();
+
+        $filterProducts = array();
+        $eliminateRecord = array();
+
+        $details = DB::table('products_to_categories')
+            ->leftJoin('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
+            ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'products_to_categories.categories_id')
+            ->leftJoin('products', 'products.products_id', '=', 'products_to_categories.products_id')
+            ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+            ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+            ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+            ->leftJoin('specials', function ($join) use ($currentDate) {
+                $join->on('specials.products_id', '=', 'products_to_categories.products_id')
+                ->where('specials.status', '=', '1')
+                ->where('expires_date', '>', $currentDate);
+            })
+            ->LeftJoin('image_categories', function ($join) {
+                $join->on('image_categories.image_id', '=', 'products.products_image')
+                    ->where(function ($query) {
+                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                    });
+            })
+
+            ->select('products_to_categories.*', 'products.products_id',
+            'products.products_quantity', 'products.products_model', 'products.price_buy',
+            'products.products_status', 'products.is_current', 'products.products_price',
+            'products.product_parent_id', 'products.products_slug', 'products.products_min_order',
+            'products.barcode', 'products_description.products_name', 'products_description.products_description',
+            'image_categories.path as products_image', 'products.products_type',
+            'products.products_max_stock',
+            'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price',
+            'products_to_categories.categories_id', 'categories_description.*')
+            ->where('categories_description.language_id', '=', $language_id)
+            ->where('products_description.language_id', '=', $language_id)
+            // ->where('products.products_id', '=', $product->product_id)
+            // ->where('categories.parent_id', '!=', '0')
+            ->where('products_to_categories.categories_id', $request->brand_id)
+            ->where('product_parent_id', '=', null)
+            ->paginate($request->limit);
+
+        $index = 0;
+
+        foreach ($details as $products_data) {
+            $products_data->products_image = asset($products_data->products_image);
+            //check currency start
+            $requested_currency = 'SAR';//$request->currency_code;
+            $current_price = $products_data->products_price;
+            //dd($current_price, $requested_currency);
+
+            $products_price = Product::convertprice($current_price, $requested_currency);
+            ////////// for discount price    /////////
+            if (!empty($products_data->discount_price)) {
+                $discount_price = Product::convertprice($products_data->discount_price, $requested_currency);
+                $products_data->discount_price = $discount_price;
+            }
+
+            $products_data->products_price = $products_price;
+            $products_data->currency = $requested_currency;
+            //check currency end
+
+            //for flashsale currency price end
+            $products_id = $products_data->products_id;
+
+            $getParallelProducts = DB::table('products_to_categories')
+                ->leftJoin('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
+                ->leftJoin('categories_description', 'categories_description.categories_id', '=', 'products_to_categories.categories_id')
+                ->leftJoin('products', 'products.products_id', '=', 'products_to_categories.products_id')
+                ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+                ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+                ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+                ->leftJoin('specials', function ($join) use ($currentDate) {
+                    $join->on('specials.products_id', '=', 'products_to_categories.products_id')->where('specials.status', '=', '1')->where('expires_date', '>', $currentDate);
+                })
+                ->LeftJoin('image_categories', function ($join) {
+                    $join->on('image_categories.image_id', '=', 'products.products_image')
+                        ->where(function ($query) {
+                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                        });
+                })
+
+                ->select('products_to_categories.*', 'products.products_id',
+                'products.products_quantity', 'products.products_model', 'products.price_buy',
+                'products.products_status', 'products.is_current', 'products.products_price',
+                'products.product_parent_id', 'products.products_slug', 'products.products_min_order',
+                'products.barcode', 'products_description.products_name', 'products_description.products_description',
+                'image_categories.path as products_image', 'products.products_type',
+                'products.products_max_stock',
+                'manufacturers_info.manufacturers_url', 'specials.specials_new_products_price as discount_price',
+                'products_to_categories.categories_id', 'categories_description.*')
+                ->where('categories_description.language_id', '=', $language_id)
+                ->where('products_description.language_id', '=', $language_id)
+                // ->where('products.products_id', '=', $product->product_id)
+                // ->where('categories.parent_id', '!=', '0')
+                ->where('product_parent_id', '=', $products_id)
+                ->get();
+
+            $products_data->parallel = $getParallelProducts;
+
+            //multiple images
+            $products_images = DB::table('products_images')
+                ->LeftJoin('image_categories', function ($join) {
+                    $join->on('image_categories.image_id', '=', 'products_images.image')
+                        ->where(function ($query) {
+                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                        });
+                })
+                ->select('products_images.*', 'image_categories.path as image')
+                ->where('products_id', '=', $products_id)
+                ->orderBy('sort_order', 'ASC')
+                ->get();
+            foreach($products_images as $image){
+                $image->image = asset($image->image);
+            }
+            $products_data->images = $products_images;
+
+            $categories = DB::table('products_to_categories')
+                ->leftjoin('categories', 'categories.categories_id', 'products_to_categories.categories_id')
+                ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
+                ->select('categories.categories_id', 'categories_description.categories_name', 'categories.categories_image', 'categories.categories_icon', 'categories.parent_id')
+                ->where('products_id', '=', $products_id)
+                ->where('categories_description.language_id', '=', $language_id)->get();
+
+            $products_data->categories = $categories;
+
+            $reviews = DB::table('reviews')
+                ->join('users', 'users.id', '=', 'reviews.customers_id')
+                ->select('reviews.*', 'users.avatar as image')
+                ->where('products_id', $products_data->products_id)
+                ->where('reviews_status', '1')
+                ->get();
+
+            $avarage_rate = 0;
+            $total_user_rated = 0;
+
+            if (count($reviews) > 0) {
+
+                $five_star = 0;
+                $five_count = 0;
+
+                $four_star = 0;
+                $four_count = 0;
+
+                $three_star = 0;
+                $three_count = 0;
+
+                $two_star = 0;
+                $two_count = 0;
+
+                $one_star = 0;
+                $one_count = 0;
+
+                foreach ($reviews as $review) {
+
+                    //five star ratting
+                    if ($review->reviews_rating == '5') {
+                        $five_star += $review->reviews_rating;
+                        $five_count++;
+                    }
+
+                    //four star ratting
+                    if ($review->reviews_rating == '4') {
+                        $four_star += $review->reviews_rating;
+                        $four_count++;
+                    }
+                    //three star ratting
+                    if ($review->reviews_rating == '3') {
+                        $three_star += $review->reviews_rating;
+                        $three_count++;
+                    }
+                    //two star ratting
+                    if ($review->reviews_rating == '2') {
+                        $two_star += $review->reviews_rating;
+                        $two_count++;
+                    }
+
+                    //one star ratting
+                    if ($review->reviews_rating == '1') {
+                        $one_star += $review->reviews_rating;
+                        $one_count++;
+                    }
+
+                }
+
+                $five_ratio = round($five_count / count($reviews) * 100);
+                $four_ratio = round($four_count / count($reviews) * 100);
+                $three_ratio = round($three_count / count($reviews) * 100);
+                $two_ratio = round($two_count / count($reviews) * 100);
+                $one_ratio = round($one_count / count($reviews) * 100);
+                if(($five_star + $four_star + $three_star + $two_star + $one_star) > 0){
+                    $avarage_rate = (5 * $five_star + 4 * $four_star + 3 * $three_star + 2 * $two_star + 1 * $one_star) / ($five_star + $four_star + $three_star + $two_star + $one_star);
+                }else{
+                    $avarage_rate = 0;
+                }
+
+                $total_user_rated = count($reviews);
+                $reviewed_customers = $reviews;
+            } else {
+                $reviewed_customers = array();
+                $avarage_rate = 0;
+                $total_user_rated = 0;
+
+                $five_ratio = 0;
+                $four_ratio = 0;
+                $three_ratio = 0;
+                $two_ratio = 0;
+                $one_ratio = 0;
+            }
+
+            $products_data->rating = number_format($avarage_rate, 2);
+            $products_data->total_user_rated = $total_user_rated;
+
+            $products_data->five_ratio = $five_ratio;
+            $products_data->four_ratio = $four_ratio;
+            $products_data->three_ratio = $three_ratio;
+            $products_data->two_ratio = $two_ratio;
+            $products_data->one_ratio = $one_ratio;
+
+            //review by users
+            $products_data->reviewed_customers = $reviewed_customers;
+
+            // array_push($result, $products_data);
+            $options = array();
+            $attr = array();
+
+            $stocks = 0;
+            $stockOut = 0;
+            $defaultStock = 0;
+            if ($products_data->products_type == '0') {
+                $stocks = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'in')->sum('stock');
+                $stockOut = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'out')->sum('stock');
+                $defaultStock = $stocks - $stockOut;
+            }
+
+            if ($products_data->products_max_stock < $defaultStock && $products_data->products_max_stock > 0) {
+                $products_data->defaultStock = $products_data->products_max_stock;
+            } else {
+                $products_data->defaultStock = $defaultStock;
+            }
+
+            //like product
+            if (!empty($request->customers_id)) {
+                $liked_customers_id = $request->customers_id;
+                $categories = DB::table('liked_products')->where('liked_products_id', '=', $products_id)->where('liked_customers_id', '=', $liked_customers_id)->get();
+                if (count($categories) > 0) {
+                    $products_data->isLiked = '1';
+                } else {
+                    $products_data->isLiked = '0';
+                }
+            } else {
+                $products_data->isLiked = '0';
+            }
+        }
+
+        return response()->json($details);
+    }
+    
 }

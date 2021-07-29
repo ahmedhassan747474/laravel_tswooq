@@ -98,9 +98,8 @@
             </tr>
             </thead>
             <tbody>
-
+<?php $total=0 ; $tax=0; ?>
             @foreach($data['orders_data'][0]->data as $products)
-
             <tr>
                 <td>{{  $products->products_quantity }}</td>
                 <td  width="30%">
@@ -117,8 +116,9 @@
 
                 @endforeach</td>
 
-                <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->final_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-             </tr>
+                <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->products_price * $products->products_quantity }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+             <?php $total = $products->final_price; $tax += $products->products_tax ?>
+            </tr>
             @endforeach
 
             </tbody>
@@ -178,13 +178,12 @@
         <!-- /.col -->
         <div class="col-xs-5">
           <!--<p class="lead"></p>-->
-
           <div class="table-responsive ">
             <table class="table order-table">
               <tr>
                 <th style="width:50%">{{ trans('labels.Subtotal') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['subtotal'] }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $total }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                   </td>
               </tr>
               <tr>
@@ -206,10 +205,18 @@
                   @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->coupon_amount }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
               </tr>
               @endif
+              @if(!empty($data['orders_data'][0]->admin_discount))
+              <tr>
+                <th>{{ trans('labels.Discount') }}:</th>
+                <td>
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->admin_discount }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+              </tr>
+              @endif
+
               <tr>
                 <th>{{ trans('labels.Total') }}:</th>
                 <td>
-                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['subtotal'] }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->order_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                 </td>
               </tr>
             </table>

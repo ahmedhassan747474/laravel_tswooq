@@ -289,6 +289,8 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 	Route::post('/getproductsbycategory', 'ProductController@getproductsbycategory');
 	Route::post('/getfilters', 'ProductController@getfilters');
 	Route::post('/getfilterproducts', 'ProductController@getfilterproducts');
+    Route::post('/getproductsbybrand', 'ProductController@getproductsbybrand');
+	Route::post('/getsliders', 'SliderController@getsliders');
 
     //like card
 	Route::post('/get_like_card_categories', 'LikeCardController@categories');
