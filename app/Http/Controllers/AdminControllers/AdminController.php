@@ -418,6 +418,9 @@ class AdminController extends Controller
 						'status'		 	 		=>   $request->isActive,
 						'avatar'	 				=>	 $uploadImage,
 						'record_number'	 		    =>   $request->record_number,
+						'subscription_fee'	 		    =>   $request->subscription_fee,
+						'start_date'	 		    =>   $request->start_date,
+						'end_date'	 		    =>   $request->end_date,
 						'role_id'					=>	 $request->adminType,
 						'parent_admin_id'			=>   $request->admin_id,
 						'shop_name'					=>   $request->shop_name
@@ -450,6 +453,7 @@ class AdminController extends Controller
 		$result['myid'] = $myid;
 
 		$admins = DB::table('users')->where('id','=', $myid)->get();
+		// dd($admins);
         $imagePath=DB::table('image_categories')->where('id','=', $admins[0]->avatar)->first();
         // dd($imagePath);
 		$zones = 0;
@@ -504,6 +508,9 @@ class AdminController extends Controller
 				'status'		 	 		=>   $request->isActive,
 				'avatar'	 				=>	 $uploadImage,
 				'record_number'	 		    =>   $request->record_number,
+				'subscription_fee'	 		    =>   $request->subscription_fee,
+				'start_date'	 		    =>   $request->start_date,
+				'end_date'	 		    =>   $request->end_date,
 				'role_id'	 				=>	 $request->adminType,
                 'parent_admin_id'			=>   $request->admin_id,
                 'shop_name'					=>   $request->shop_name

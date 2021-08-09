@@ -48,11 +48,28 @@
                         <div class="sub-manu multi-collapse collapse" id="like_card_{{$category->id}}" style="">
                             <ul class="unorder-list">
                               @foreach($category->childs as $sub_category)
+                                @if(count($sub_category->childs) > 0)
+                                  <a class="main-manu collapsed" href="#like_card_{{$sub_category->id}}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="men-cloth"> 
+                                  <img class="img-fuild" src="{{$sub_category->amazonImage}}"> {{$sub_category->categoryName}}
+                                  </a>
+                                      <div class="sub-manu multi-collapse collapse" id="like_card_{{$sub_category->id}}" style="">
+                                        <ul class="unorder-list">
+                                          @foreach($sub_category->childs as $sub_sub_category)
+                                            <li class="list-item">
+                                                <a class="list-link" href="{{route('like_card')}}?category_id={{$sub_sub_category->id}}"> &nbsp;&nbsp;
+                                                    <i class="fas fa-angle-right"></i>{{$sub_sub_category->categoryName}}
+                                                </a>
+                                            </li>
+                                          @endforeach
+                                        </ul>
+                                    </div>
+                                @else
                                 <li class="list-item">
                                     <a class="list-link" href="{{route('like_card')}}?category_id={{$sub_category->id}}"> &nbsp;&nbsp;
                                         <i class="fas fa-angle-right"></i>{{$sub_category->categoryName}}
                                     </a>
                                 </li>
+                                @endif
                               @endforeach
                             </ul>
                         </div>

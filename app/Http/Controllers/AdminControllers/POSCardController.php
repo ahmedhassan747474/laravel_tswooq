@@ -65,14 +65,13 @@ class POSCardController extends Controller
         curl_close($curl);
         $categories = json_decode($response);
 
-        // dd($categories);
         $customers = User::all();
         $countries = DB::table('countries')->select('countries_id as id', 'countries_name as name')->get();
         $results = array();
         $results['categories'] = $categories;
         $results['customers'] = $customers;
         $results['countries'] = $countries;
-        return view("admin.pos_card.index", compact('results', $results));
+        return view("admin.pos_card.index", compact('results', 'result'));
     }
 
     public function search(Request $request)
@@ -110,10 +109,15 @@ class POSCardController extends Controller
             $category_id = $request->poscategory;
         } elseif (!empty($request->possubcategory)and $request->possubcategory != 'all') {
             $category_id = $request->possubcategory;
+        }elseif (!empty($request->possubofsubcategory)and $request->possubofsubcategory != 'all') {
+                $category_id = $request->possubofsubcategory;
         } else {
             $category_id = $categories->data[0]->childs[0]->id;
         }
 
+        // if (!empty($request->possubofsubcategory)and $request->possubofsubcategory != 'all') {
+        //         $category_id = $request->possubofsubcategory;
+        // }
         // dd($request->all(), $category_id);
 
         $curl2 = curl_init();
@@ -221,9 +225,9 @@ class POSCardController extends Controller
         $response2 = json_decode($response2);
 
         $responseData = array(
-            'success' => '1',
-            'product_data' => $response2,
-            'message' => Lang::get('website.Returned all products'),
+            'success' => '1', 
+            'product_data' => $response2, 
+            'message' => Lang::get('website.Returned all products'), 
             // 'total_record' => count($total_record),
             // 'paginate' => $paginate
         );
@@ -240,7 +244,7 @@ class POSCardController extends Controller
         // dd($request->all());
 
         $data = array();
-
+        
         $tax = 0;
         $data['variant'] = null;
 
@@ -457,7 +461,7 @@ class POSCardController extends Controller
             } else {
                 $customers_name = null;
             }
-
+            
             $orders_id = DB::table('order_like_card')->insertGetId([
                 'customers_id' => $customers_id,
                 'customers_name' => $customers_name,
@@ -525,10 +529,10 @@ class POSCardController extends Controller
 
                 Session::forget('pos_shipping_info');
                 Session::forget('posCardCart');
-
+    
                 $responseData = array(
-                    'success' => '1',
-                    'data' => 1,
+                    'success' => '1', 
+                    'data' => 1, 
                     'message' => "Order has been placed successfully.",
                     'order_id' => $orders_id,
                     // 'print_url' => route('invoiceprint')

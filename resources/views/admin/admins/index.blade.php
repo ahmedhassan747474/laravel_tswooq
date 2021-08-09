@@ -53,6 +53,9 @@
                       <th>{{ trans('labels.ShopName') }}</th>
                       <th>{{ trans('labels.RecordNumber') }}</th>
                       <th>{{ trans('labels.AdminType') }}</th>
+                      <th>{{ trans('labels.SubscriptionFee') }}</th>
+                      <th>{{ trans('labels.StartDate') }}</th>
+                      <th>{{ trans('labels.EndDate') }}</th>
                       <th>{{ trans('labels.Status') }}</th>
                       <th>{{ trans('labels.Action') }}</th>
                     </tr>
@@ -87,6 +90,16 @@
                                 @endif
                                 	{{$admin->user_types_name}}</strong>
                                 </td>
+                                <td>
+                                {{ $admin->subscription_fee }}
+                                </td>
+                                <td>
+                                {{ $admin->start_date }}
+                                </td>
+                                <td>
+                                {{ $admin->end_date }}
+                                </td>
+
                                 <td>
                                   @if($admin->isActive==1)
                                     <strong class="badge bg-green">{{trans('labels.Active')}} </strong>

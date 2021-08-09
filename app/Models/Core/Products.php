@@ -16,6 +16,10 @@ use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App\Http\Controllers\AdminControllers\AlertController;
 use Illuminate\Support\Facades\Lang;
 use Carbon\Carbon;
+use Illuminate\Contracts\Cache\Factory;
+use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Support\Facades\Cache;
+
 use Kyslik\ColumnSortable\Sortable;
 
 class Products extends Model
@@ -35,7 +39,20 @@ class Products extends Model
         $categories_id = $request->categories_id;
         $product  = $request->product;
         $results = array();
-        $data = $this->sortable(['products_id'=>'DESC'])
+        
+        $currentPage = request()->get('page',1);
+
+        $data = Cache::remember('products-' . $currentPage, 22*60, function() use($request) {
+        $setting = new Setting();
+        $myVarsetting = new SiteSettingController($setting);
+        $commonsetting = $myVarsetting->commonsetting();
+        $myVaralter = new AlertController($setting);
+
+        $language_id = '1';
+        $categories_id = $request->categories_id;
+        $product  = $request->product;
+        $results = array();
+            $data = $this->sortable(['products_id'=>'DESC'])
             ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
             ->LeftJoin('manufacturers', function ($join) {
                 $join->on('manufacturers.manufacturers_id', '=', 'products.manufacturers_id');
@@ -67,46 +84,54 @@ class Products extends Model
         'categories_description.categories_name')
             ->where('products_description.language_id', '=', $language_id)
             ->where('categories_description.language_id', '=', $language_id);
-        
+            
         if(auth()->user()->role_id == 11) {
-            $data->where('admin_id', '=', auth()->user()->id);
-        } elseif(auth()->user()->role_id == 12) {
-            $data->where('admin_id', '=', auth()->user()->parent_admin_id);
-        }
-
-        if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
-            if (!empty(session('categories_id'))) {
-                $cat_array = explode(',', session('categories_id'));
-                $data->whereIn('products_to_categories.categories_id', '=', $cat_array);
+                $data->where('admin_id', '=', auth()->user()->id);
+            } elseif(auth()->user()->role_id == 12) {
+                $data->where('admin_id', '=', auth()->user()->parent_admin_id);
             }
-
-            $data->where('products_to_categories.categories_id', '=', $_REQUEST['categories_id']);
-
-            if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+        
+            if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
+                if (!empty(session('categories_id'))) {
+                    $cat_array = explode(',', session('categories_id'));
+                    $data->whereIn('products_to_categories.categories_id', '=', $cat_array);
+                }
+    
+                $data->where('products_to_categories.categories_id', '=', $_REQUEST['categories_id']);
+    
+                if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+                    $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
+                    $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                }
+    
+                $products = $data->orderBy('products.products_id', 'DESC')
+                ->where('categories_status', '1')->paginate($commonsetting['pagination']);
+    
+            } else if(isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
                 $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
                 $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                $products = $data->orderBy('products.products_id', 'DESC')->where('categories_status', '1')->paginate($commonsetting['pagination']);
+            } else {
+    
+                if (!empty(session('categories_id'))) {
+                    $cat_array = explode(',', session('categories_id'));
+                    $data->whereIn('products_to_categories.categories_id', $cat_array);
+                }
+                $products = $data->orderBy('products.products_id', 'DESC')
+                ->where('categories_status', '1')
+                ->where('is_current', '1')
+                ->groupBy('products.products_id')->paginate($commonsetting['pagination']);
             }
-
-            $products = $data->orderBy('products.products_id', 'DESC')
-            ->where('categories_status', '1')->paginate($commonsetting['pagination']);
-
-        } else if(isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
-            $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
-            $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
-            $products = $data->orderBy('products.products_id', 'DESC')->where('categories_status', '1')->paginate($commonsetting['pagination']);
-        } else {
-
-            if (!empty(session('categories_id'))) {
-                $cat_array = explode(',', session('categories_id'));
-                $data->whereIn('products_to_categories.categories_id', $cat_array);
-            }
-            $products = $data->orderBy('products.products_id', 'DESC')
-            ->where('categories_status', '1')
-            ->where('is_current', '1')
-            ->groupBy('products.products_id')->paginate($commonsetting['pagination']);
-        }
 
         return $products;
+        });
+
+        // dd($data);
+
+       
+
+
+        return $data;
     }
 
   public function getter(){

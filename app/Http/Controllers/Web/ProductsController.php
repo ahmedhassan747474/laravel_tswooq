@@ -603,7 +603,7 @@ class ProductsController extends Controller
             $products = '';
             $result['detail']['product_data'] = '';
         }
-        dd($result);
+        // dd($result);
         return view("web.detail", ['title' => $title, 'final_theme' => $final_theme])->with('result', $result);
     }
 

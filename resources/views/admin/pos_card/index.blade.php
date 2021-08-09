@@ -29,7 +29,7 @@
                                             <input class="form-control form-control-sm" type="text" name="keyword" placeholder="Search by Product Name" onkeyup="filterProducts()">
                                         </div>
                                         <div class="row gutters-5">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <select name="poscategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
                                                     <option value="">All Categories</option>
                                                     @if($results['categories']->response == 1)
@@ -39,7 +39,7 @@
                                                     @endif
                                                 </select>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <select name="possubcategory"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
                                                     <option value="">All Sub Categories</option>
                                                     @if($results['categories']->response == 1)
@@ -53,6 +53,26 @@
                                                     @endif
                                                 </select>
                                             </div>
+
+                                            <div class="col-md-4">
+                                                <select name="possubofsubcategory"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
+                                                    <option value="all">All Sub of Sub Categories</option>
+                                                    @if($results['categories']->response == 1)
+                                                    @foreach ($results['categories']->data as $category)
+                                                    @if(count($category->childs))
+                                                    @foreach($category->childs as $child)
+                                                    @if(count($child->childs))
+                                                    @foreach($child->childs as $subchild)
+                                                        <option value="{{ $subchild->id }}">{{ $subchild->categoryName }}</option>
+                                                    @endforeach
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
+                                                    @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -357,10 +377,11 @@
             var keyword = $('input[name=keyword]').val();
             var poscategory = $('select[name=poscategory]').val();
             var possubcategory = $('select[name=possubcategory]').val();
+            var possubofsubcategory = $('select[name=possubofsubcategory]').val();
             // console.log(keyword);
             // console.log(poscategory);
             // console.log(possubcategory);
-            $.get('{{ route('pos_card.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory}, function(data){
+            $.get('{{ route('pos_card.search_product') }}',{keyword:keyword, poscategory:poscategory, possubcategory:possubcategory,possubofsubcategory:possubofsubcategory}, function(data){
                 products = data;
                 
                 $('#product-list').html(null);

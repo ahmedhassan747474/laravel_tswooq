@@ -11,12 +11,12 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $subtotal = 0;
+                    $tax = 0;
+                    $shipping = 0;
+                @endphp
                 @if (Session::has('posCart'))
-                    @php
-                        $subtotal = 0;
-                        $tax = 0;
-                        $shipping = 0;
-                    @endphp
                     @forelse (Session::get('posCart') as $key => $cartItem)
                         @php
                             $subtotal += $cartItem['price']*$cartItem['quantity'];
@@ -32,6 +32,7 @@
                                 ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id')
                                 ->where('products.products_id', $cartItem['id'])
                                 ->first();
+                            // dd($products);
                         @endphp
                         <tr>
                             <td>
@@ -52,17 +53,65 @@
                             <td>{{ $cartItem['price'] }}</td>
                             <td>{{ $cartItem['price']*$cartItem['quantity'] }}</td>
                             <td class="text-right">
-                                <button type="button" class="btn btn-circle btn-icon btn-sm btn-danger" onclick="removeFromCart({{ $key }})"><i class="fa fa-trash"></i></button>
+                                <button type="button" class="btn btn-circle btn-icon btn-sm btn-danger" onclick="removeFromCart({{ $key }})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @empty
-                        <tr>
+
+
+                        {{-- <tr>
                             <td colspan="5" class="text-center">
                                 <i class="las la-frown la-3x opacity-50"></i>
                                 <p>No Product Added</p>
                             </td>
-                        </tr>
+                        </tr> --}}
                     @endforelse
+                @endif
+                @if (Session::has('posCartNew'))
+                    @forelse (Session::get('posCartNew') as $key => $cartItem)
+                    @php
+                        $subtotal += $cartItem['price']*$cartItem['quantity'];
+                        $tax += $cartItem['tax']*$cartItem['quantity'];
+                        $shipping += $cartItem['shipping']*$cartItem['quantity'];
+                        if(Session::get('shipping', 0) == 0){
+                            $shipping = 0;
+                        }
+
+                        // dd($products);
+                    @endphp
+                    <tr>
+                        <td>
+                            <span class="media">
+
+                                <div class="media-body">
+                                    {{ $cartItem['name'] }}
+                                </div>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="">
+                                <input type="number" class="form-control px-0 text-center" placeholder="1" id="qtyNew-{{ $key }}" value="{{ $cartItem['quantity'] }}" onchange="updateQuantityNew({{ $key }})" min="1">
+                            </div>
+                        </td>
+                        <td>{{ $cartItem['price'] }}</td>
+                        <td>{{ $cartItem['price']*$cartItem['quantity'] }}</td>
+                        <td class="text-right">
+                            <button type="button" class="btn btn-circle btn-icon btn-sm btn-danger" onclick="removeFromCartNew({{ $key }})">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    {{-- <tr>
+                        <td colspan="5" class="text-center">
+                            <i class="las la-frown la-3x opacity-50"></i>
+                            <p>No Product Added</p>
+                        </td>
+                    </tr> --}}
+                    @endforelse
+
                 @endif
             </tbody>
         </table>

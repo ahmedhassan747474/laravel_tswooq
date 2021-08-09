@@ -98,6 +98,25 @@ class ReportsController extends Controller
 
     }
 
+    public function productsreportprint(Request $request)
+    {
+        $language_id = '1';
+        $categories_id = $request->categories_id;
+        $product = $request->product;
+        $title = array('pageTitle' => Lang::get("labels.Products"));
+        $subCategories = $this->category->allcategories($language_id);
+        $products = $this->Products->getter();
+        // dd($products);
+        $results['products'] = $products;
+        $results['currency'] = $this->myVarsetting->getSetting();
+        $results['units'] = $this->myVarsetting->getUnits();
+        $results['subCategories'] = $subCategories;
+        $currentTime = array('currentTime' => time());
+        $result['commonContent'] = $this->Setting->commonContent();
+        return view("admin.reports.productsreportprint", $title)->with('result', $result)->with('results', $results)->with('categories_id', $categories_id)->with('product', $product);
+
+    }
+
     public function salesreportPrint(Request $request)
     {
 
@@ -259,6 +278,7 @@ class ReportsController extends Controller
         return view("admin.reports.inventoryreportprint", $title)->with('result', $result);
     }
 
+
     public function suppliersmainreport(Request $request)
     {
         $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
@@ -296,6 +316,23 @@ class ReportsController extends Controller
         return view("admin.reports.suppliersreport", $title)->with('result', $result)->with('id', $id);
     }
 
+    public function allsuppliersreportprint(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));
+
+        $result['reports'] = $this->reports->suppliersmainreport($request);
+
+        // dd($result['reports']);
+        $result['suppliers'] = $this->Suppliers->getter();
+
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        return view("admin.reports.allsuppliersreportprint", $title)->with(['result'=>$result, 'request'=>$request,'thisReport'=>$this->reports]);
+    }
+
+   
     public function suppliersreportprint(Request $request, $id)
     {
         $title = array('pageTitle' => Lang::get("labels.Suppliers Report"));

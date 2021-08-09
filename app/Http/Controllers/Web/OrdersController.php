@@ -677,7 +677,6 @@ class OrdersController extends Controller
     //get default payment method
     public function getPaymentMethods()
     {
-
         /**   BRAIN TREE **/
         //////////////////////
         $result = array();

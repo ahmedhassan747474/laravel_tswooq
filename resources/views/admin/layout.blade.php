@@ -48,5 +48,6 @@
 @include('admin.common.scripts')
 <!-- ./end of js scripts -->
 
+@stack('scripts')
 </body>
 </html>

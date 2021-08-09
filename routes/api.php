@@ -292,8 +292,13 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
     Route::post('/getproductsbybrand', 'ProductController@getproductsbybrand');
 	Route::post('/getsliders', 'SliderController@getsliders');
 
+
+	Route::post('/getpaymentmethods', 'OrderController@getPaymentMethods');
+
     //like card
 	Route::post('/get_like_card_categories', 'LikeCardController@categories');
+	Route::post('/search', 'LikeCardController@search');
+	Route::post('/products', 'LikeCardController@products');
 
     Route::group(['middleware' => 'user'], function(){
         //Auth

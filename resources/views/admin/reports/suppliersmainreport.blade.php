@@ -76,14 +76,14 @@
           <div class="box-header">
             <h3 class="box-title">{{ trans('labels.Supplier Report') }} </h3>
 
-            {{-- <div class="box-tools pull-right">
-              <form action="{{ URL::to('admin/suppliersreportprint')}}" target="_blank">
-                <input type="hidden" name="page" value="invioce">
+             <div class="box-tools pull-right">
+              <form action="{{ URL::to('admin/allsuppliersreportprint')}}" target="_blank">
+              <input type="hidden" name="page" value="{{isset(request()->page) ? request()->page : 'invoice' }}">
                 <input type="hidden" name="user_supplier_id" value="{{app('request')->input('user_supplier_id')}}">
                 <input type="hidden" name="dateRange" value="{{app('request')->input('dateRange')}}">
                 <button type='submit' class="btn btn-default pull-right"><i class="fa fa-print"></i> {{ trans('labels.Print') }}</button>
               </form>
-            </div> --}}
+            </div> 
           </div>
           <!-- /.box-header -->
           <div class="box-body">

@@ -115,6 +115,24 @@ class Order extends Model
                 $i++;
             }
 
+            $orders_products_new = DB::table('orders_products')
+                ->select('orders_products.*')
+                ->where('orders_products.orders_id', '=', $orders_id)
+                ->where('orders_products.products_id', '=', 0)
+                ->get();
+
+            foreach ($orders_products_new as $index=>$orders_products_data) {
+
+                $orders_products_data->attribute = [];
+                $orders_products_data->image = "";
+                $product[$i] = $orders_products_data;
+                $total_price = $total_price + $orders_products_new[$index]->final_price;
+
+                $subtotal += $orders_products_new[$index]->final_price;
+
+                $i++;
+            }
+
             $orders_status_history = DB::table('orders_status_history')
                 ->LeftJoin('orders_status', 'orders_status.orders_status_id', '=', 'orders_status_history.orders_status_id')
                 ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')

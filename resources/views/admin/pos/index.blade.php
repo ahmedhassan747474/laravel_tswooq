@@ -19,8 +19,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="container-fluid">
-                    <form class="" action="" method="POST" enctype="multipart/form-data">
-                        @csrf
+                    {{-- <form class="" action="" method="POST" enctype="multipart/form-data">
+                        @csrf --}}
                         <div class="row gutters-10">
                             <div class="col-lg-5">
                                 <div class="card">
@@ -59,26 +59,54 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-7">
                                 <div class="card mb-3">
                                     <div class="card-body">
-                                        <div class="d-flex">
-                                            <div class="flex-grow-1">
-                                                <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
-                                                    <option value="" selected disabled>Walk In Customer</option>
-                                                    @foreach ($results['customers'] as $key => $customer)
-                                                        @if ($customer->user)
-                                                            <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
+                                        <form class="" action="" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="d-flex">
+                                                <div class="flex-grow-1">
+                                                    <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
+                                                        <option value="" selected disabled>Walk In Customer</option>
+                                                        @foreach ($results['customers'] as $key => $customer)
+                                                            @if ($customer->user)
+                                                                <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#new-customer" data-toggle="modal">
+                                                    <i class="fa fa-truck"></i>
+                                                </button>
                                             </div>
-                                            <button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#new-customer" data-toggle="modal">
-                                                <i class="fa fa-truck"></i>
-                                            </button>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
+                                <form method="POST" id="addNewForm" action="{{ route('pos.addToCartNew') }}">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                    @csrf
+                                                    <div class="flex-grow-1">
+                                                        <input type="text" required class="form-control" name="ProductName" placeholder="Product Name">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <input type="number" required class="form-control" name="ProductQuantity" placeholder="Quantity">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <input type="number" class="form-control" name="tax" placeholder="Tax">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <input type="number" required class="form-control" name="ProductPrice" placeholder="Price">
+                                                    </div>
+                                                    <button type="submit"  class="btn btn-icon btn-soft-dark ml-3"  >
+                                                        <i class="fa fa-plus"></i>
+                                                    </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                                 <div class="card mar-btm" id="cart-details">
                                     <div class="card-body">
                                         <div class="aiz-pos-cart-list c-scrollbar-light">
@@ -141,13 +169,59 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            <tr>
+
+
+                                                            {{-- <tr>
                                                                 <td colspan="5" class="text-center">
                                                                     <i class="las la-frown la-3x opacity-50"></i>
                                                                     <p>No Product Added</p>
                                                                 </td>
-                                                            </tr>
+                                                            </tr> --}}
                                                         @endforelse
+                                                    @endif
+                                                    @if (Session::has('posCartNew'))
+                                                        @forelse (Session::get('posCartNew') as $key => $cartItem)
+                                                        @php
+                                                            $subtotal += $cartItem['price']*$cartItem['quantity'];
+                                                            $tax += $cartItem['tax']*$cartItem['quantity'];
+                                                            $shipping += $cartItem['shipping']*$cartItem['quantity'];
+                                                            if(Session::get('shipping', 0) == 0){
+                                                                $shipping = 0;
+                                                            }
+
+                                                            // dd($products);
+                                                        @endphp
+                                                        <tr>
+                                                            <td>
+                                                                <span class="media">
+
+                                                                    <div class="media-body">
+                                                                        {{ $cartItem['name'] }}
+                                                                    </div>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <div class="">
+                                                                    <input type="number" class="form-control px-0 text-center" placeholder="1" id="qtyNew-{{ $key }}" value="{{ $cartItem['quantity'] }}" onchange="updateQuantityNew({{ $key }})" min="1">
+                                                                </div>
+                                                            </td>
+                                                            <td>{{ $cartItem['price'] }}</td>
+                                                            <td>{{ $cartItem['price']*$cartItem['quantity'] }}</td>
+                                                            <td class="text-right">
+                                                                <button type="button" class="btn btn-circle btn-icon btn-sm btn-danger" onclick="removeFromCartNew({{ $key }})">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        {{-- <tr>
+                                                            <td colspan="5" class="text-center">
+                                                                <i class="las la-frown la-3x opacity-50"></i>
+                                                                <p>No Product Added</p>
+                                                            </td>
+                                                        </tr> --}}
+                                                        @endforelse
+
                                                     @endif
                                                 </tbody>
                                             </table>
@@ -220,7 +294,7 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    {{-- </form> --}}
                 </div>
             </div>
             <!-- /.col -->
@@ -442,6 +516,14 @@
             });
         }
 
+        function removeFromCartNew(key){
+            $.post('{{ route('pos.removeFromCartNew') }}', {_token:'{{ csrf_token() }}', key:key}, function(data){
+                // location.reload();
+                $('#cart-details').html(data);
+                $('#product-variation').modal('hide');
+            });
+        }
+
         function addToCart(product_id, variant, quantity){
             $.post('{{ route('pos.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, variant:variant, quantity, quantity}, function(data){
                 $('#cart-details').html(data);
@@ -456,6 +538,14 @@
 
         function updateQuantity(key){
             $.post('{{ route('pos.updateQuantity') }}',{_token:'{{ csrf_token() }}', key:key, quantity: $('#qty-'+key).val()}, function(data){
+                $('#cart-details').html(data);
+                $('#product-variation').modal('hide');
+            });
+        }
+
+        function updateQuantityNew(key){
+            $.post('{{ route('pos.updateQuantityNew') }}',{_token:'{{ csrf_token() }}', key:key, quantity: $('#qtyNew-'+key).val()}, function(data){
+                // location.reload();
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });
@@ -539,6 +629,7 @@
                 } else if(data.status == 2) {
                     swal("", data.message, "error");
                 } else{
+                    // console.log(data);
                     // AIZ.plugins.notify('danger', '{{ trans('labels.Something went wrong') }}');
                     swal("", "{{ trans('labels.Something went wrong') }}", "error");
                 }

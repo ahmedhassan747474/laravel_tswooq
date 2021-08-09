@@ -87,6 +87,36 @@ $allimage = $images->getimages();
                             <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
                             @endif
 
+                            <hr class="show_hide_shop_name">
+                            <h4 class="show_hide_shop_name">{{ trans('labels.Subscription Info') }} </h4>
+                            <hr class="show_hide_shop_name">
+                                
+                                <div class="form-group show_hide_shop_name">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SubscriptionFee') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::number('subscription_fee',  $result['admins'][0]->subscription_fee ?? '', array('class'=>'form-control', 'id'=>'subscription_fee')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.SubscriptionFeeText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
+                                <div class="form-group show_hide_shop_name">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.StartDate') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::date('start_date',  $result['admins'][0]->start_date ?? '', array('class'=>'form-control', 'id'=>'start_date')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.StartDateText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
+
+                                <div class="form-group show_hide_shop_name">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.EndDate') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::date('end_date',  $result['admins'][0]->end_date ?? '', array('class'=>'form-control', 'id'=>'end_date')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.EndDateText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
+                                
                             <hr>
                             <h4>{{ trans('labels.Personal Info') }} </h4>
                             <hr>

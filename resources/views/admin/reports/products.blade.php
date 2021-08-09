@@ -53,6 +53,17 @@
                                 <a href="{{ URL::to('admin/products/add') }}" type="button" class="btn btn-block btn-primary">{{ trans('labels.AddNew') }}</a>
                             </div> --}}
                             </div>
+
+                            <div class="box-tools pull-right">
+                            <form action="{{ URL::to('admin/productsreportprint')}}" target="_blank">
+                                <input type="hidden" name="page" value="{{isset(request()->page) ? request()->page : 'invoice' }}">
+                                <input type="hidden" name="categories_id" value="{{app('request')->input('categories_id')}}">
+                                <input type="hidden" name="dateRange" value="{{app('request')->input('dateRange')}}">
+                                <!-- <input type="hidden" name="page" value="{{app('request')->page}}"> -->
+                                <button type='submit' class="btn btn-default pull-right"><i class="fa fa-print"></i> {{ trans('labels.Print') }}</button>
+                            </form>
+                            </div>
+
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -219,3 +230,29 @@
         <!-- /.content -->
     </div>
 @endsection
+
+<script type="text/javascript">
+    function PrintTable() {
+        var printWindow = window.open('', '', 'height=200,width=400');
+        printWindow.document.write('<html><head><title>Table Contents</title>');
+ 
+        //Print the Table CSS.
+        var table_style = document.getElementById("table_style").innerHTML;
+        printWindow.document.write('<style type = "text/css">');
+        printWindow.document.write(table_style);
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head>');
+ 
+        //Print the DIV contents i.e. the HTML Table.
+        printWindow.document.write('<body>');
+        var divContents = document.getElementById("example1").innerHTML;
+        printWindow.document.write(divContents);
+        printWindow.document.write('</body>');
+ 
+        printWindow.document.write('</html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    PrintTable();
+</script>

@@ -47,6 +47,7 @@ class OrdersController extends Controller
         //orders data
         $ordersData = $this->Order->detail($request);
 
+        // dd($ordersData);
         // current order status
         $orders_status_history = $this->Order->currentOrderStatus($request);
 
@@ -128,12 +129,15 @@ class OrdersController extends Controller
                 ->join('products', 'products.products_id', '=', 'orders_products.products_id')
                 ->select('orders_products.*', 'products.products_image as image')
                 ->where('orders_products.orders_id', '=', $orders_id)->get();
+
+
             $i = 0;
             $total_price = 0;
             $total_tax = 0;
             $product = array();
             $subtotal = 0;
             // dd($order);
+            // dd($orders_products_new);
             foreach ($orders_products as $orders_products_data) {
 
                 //categories
@@ -161,6 +165,28 @@ class OrdersController extends Controller
 
                 $i++;
             }
+
+
+            $orders_products_new = DB::table('orders_products')
+                ->select('orders_products.*')
+                ->where('orders_products.orders_id', '=', $orders_id)
+                ->where('orders_products.products_id', '=', 0)
+                ->get();
+
+                if(!empty($orders_products_new)){
+                    foreach ($orders_products_new as $index=>$orders_products_data) {
+
+                        $orders_products_data->attribute = [];
+                        $product[$i] = $orders_products_data;
+                        $total_price = $total_price + $orders_products_new[$index]->final_price;
+
+                        $subtotal += $orders_products_new[$index]->final_price;
+
+                        $i++;
+                    }
+                }
+
+
             $data->data = $product;
             $orders_data[] = $data;
         }
@@ -184,6 +210,7 @@ class OrdersController extends Controller
         $ordersData['orders_status_history'] = $orders_status_history;
         $ordersData['subtotal'] = $subtotal;
 
+        // dd($ordersData['orders_data']);
         //get function from other controller
 
         $ordersData['currency'] = $this->myVarsetting->getSetting();

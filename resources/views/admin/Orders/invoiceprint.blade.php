@@ -98,7 +98,7 @@
             </tr>
             </thead>
             <tbody>
-<?php $total=0 ; $tax=0; ?>
+            <?php $total=0 ; $tax=0; ?>
             @foreach($data['orders_data'][0]->data as $products)
             <tr>
                 <td>{{  $products->products_quantity }}</td>
@@ -109,15 +109,16 @@
                     {{  $products->products_model }}
                 </td>
                 <td>
-                @foreach($products->attribute as $attributes)
-                	<b>{{ trans('labels.Name') }}:</b> {{ $attributes->products_options }}<br>
-                    <b>{{ trans('labels.Value') }}:</b> {{ $attributes->products_options_values }}<br>
-                    <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br>
+                    @foreach($products->attribute as $attributes)
+                        <b>{{ $attributes->products_options }} :</b> {{ $attributes->products_options_values }} <br>
+                        {{-- <b>{{ trans('labels.Value') }}:</b> {{ $attributes->products_options_values }}<br> --}}
+                        {{-- <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br> --}}
 
-                @endforeach</td>
+                    @endforeach
+                </td>
 
                 <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->products_price * $products->products_quantity }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-             <?php $total = $products->final_price; $tax += $products->products_tax ?>
+                <?php $total = $total + $products->products_price * $products->products_quantity; $tax += $products->products_tax * $products->products_quantity?>
             </tr>
             @endforeach
 
@@ -189,7 +190,8 @@
               <tr>
                 <th>{{ trans('labels.Tax') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  {{-- @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif --}}
                   </td>
               </tr>
               <tr>

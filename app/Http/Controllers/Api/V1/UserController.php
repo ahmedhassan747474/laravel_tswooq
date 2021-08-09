@@ -11,7 +11,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use App\User;
-use JWTAuth;
 use Hash;
 use Auth;
 use Mail;
@@ -19,10 +18,11 @@ Use Image;
 use Str;
 use App;
 use Illuminate\Support\Facades\File;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseController
 {
-    function __construct(UserTransformer $user_transformer) 
+    function __construct(UserTransformer $user_transformer)
     {
         config(['auth.defaults.guard' => 'api']);
         $this->user_transformer = $user_transformer;
@@ -48,7 +48,7 @@ class UserController extends BaseController
             'password'          => 'required|confirmed',
         ], $messages);
 
-        if($validator->fails()) 
+        if($validator->fails())
         {
             return $this->getErrorMessage($validator);
         }
@@ -66,10 +66,12 @@ class UserController extends BaseController
         {
             // $sent_code = $this->otpCode($user, $type, $code);
             $token = Auth::login($user);//auth()->login($user);
+            $user->avatar = '/public/images/users/'. $user->avatar == null ? 'default.png' : $user->avatar;
+
             return $this->respond([
-                'message'       =>  trans('common.success_registeration'), 
-                'data'          =>  $this->user_transformer->transform($user), 
-                'token'         =>  $token, 
+                'message'       =>  trans('common.success_registeration'),
+                'data'          =>  $this->user_transformer->transform($user),
+                'token'         =>  $token,
                 'status_code'   =>  200
             ], 200);
         }
@@ -97,15 +99,15 @@ class UserController extends BaseController
             'token'             => 'nullable',
             // 'user_type'         => 'required|in:1,2'
         ], $messages);
-        
-        if($validator->fails()) 
+
+        if($validator->fails())
         {
             return $this->getErrorMessage($validator);
         }
-        
-        $credentials = $request->only('email', 'password');            
-        
-        if ($token = Auth::attempt($credentials)) //auth('api')->attempt($credentials)) 
+
+        $credentials = $request->only('email', 'password');
+
+        if ($token = Auth::attempt($credentials)) //auth('api')->attempt($credentials))
         {
             $user_data = auth('api')->user();
 
@@ -123,20 +125,21 @@ class UserController extends BaseController
             //     $sent_code = $this->otpCode($user_data, $type, $code);
 
             //     return response()->json([
-            //         'message'       => trans('common.you_number_phone_is_not_verified'), 
+            //         'message'       => trans('common.you_number_phone_is_not_verified'),
             //         'is_verified'   => 0,
             //         'type'          => 1,
-            //         'token'         => $token, 
+            //         'token'         => $token,
             //         'status_code'   => 400
             //     ], 400);
             // }
 
             $user_data->token = $request->token;
             $user_data->save();
+            $user_data->avatar = $user_data->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user_data->avatar;
 
             return response()->json([
-                'token'         => $token, 
-                'data'          => $this->user_transformer->transform($user_data), 
+                'token'         => $token,
+                'data'          => $this->user_transformer->transform($user_data),
                 'status_code'   => 200
             ], 200);
         }
@@ -146,7 +149,7 @@ class UserController extends BaseController
         }
     }
 
-    public function loginWithSocial(Request $request) 
+    public function loginWithSocial(Request $request)
     {
         $messages = [
             'email.regex'           => trans('common.enter your email like example@gmail.xyz'),
@@ -161,11 +164,11 @@ class UserController extends BaseController
             'token'         => 'nullable'
         ], $messages);
 
-        if($validator->fails()) 
+        if($validator->fails())
         {
             return $this->getErrorMessage($validator);
         }
-        
+
         $checkAccount = User::where('provider_facebook_id', '=', $request->provider_id)
             ->orWhere('provider_google_id', '=', $request->provider_id)
             ->orWhere('provider_twitter_id', '=', $request->provider_id)
@@ -178,9 +181,9 @@ class UserController extends BaseController
             if($checkEmail == 0) {
 
                 $newData = file_get_contents($request->image);
-                $dir = "images/users";
-                $uploadfile = $dir . "/pic_" .time() . uniqid() .".jpg";
-                file_put_contents(public_path() . '/' . $uploadfile, $newData);
+                $dir = "images/users/";
+                $uploadfile = "pic_" .time() . uniqid() .".jpg";
+                file_put_contents(public_path() . '/' . $dir. $uploadfile, $newData);
                 $profile_photo = $uploadfile;
 
                 $user = new User();
@@ -199,18 +202,19 @@ class UserController extends BaseController
                 }
 
                 $user->save();
-                        
+
                 $token = JWTAuth::fromUser($user);
+                $user->avatar = $user->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user->avatar;
 
                 return $this->respond([
-                    'message'       => trans('common.success_registeration'), 
-                    'data'          => $this->user_transformer->transform($user), 
-                    'token'         =>  $token, 
+                    'message'       => trans('common.success_registeration'),
+                    'data'          => $this->user_transformer->transform($user),
+                    'token'         =>  $token,
                     'status_code'   => 200
                 ], 200);
-                
+
             } else {
-                
+
                 if ($request->provider_type == 'facebook') {
                     User::where('email', '=', $request->email)
                         ->update([
@@ -230,21 +234,23 @@ class UserController extends BaseController
                             'provider_twitter_id'   => $request->provider_id,
                         ]);
                 }
-                
+
                 $user = User::where('email', '=', $request->email)->first();
 
                 $token = JWTAuth::fromUser($user);
-                
+
+            $user->avatar = $user->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user->avatar;
+
                 return $this->respond([
-                    'message'       => trans('common.success_registeration'), 
-                    'data'          => $this->user_transformer->transform($user), 
-                    'token'         =>  $token, 
+                    'message'       => trans('common.success_registeration'),
+                    'data'          => $this->user_transformer->transform($user),
+                    'token'         =>  $token,
                     'status_code'   => 200
                 ], 200);
             }
 
         } else {
-            
+
             if ($request->provider_type == 'facebook') {
                 User::where('provider_facebook_id', '=', $request->provider_id)->update(['token' => $request->token]);
             } elseif ($request->provider_type == 'google') {
@@ -252,22 +258,24 @@ class UserController extends BaseController
             } else {
                 User::where('provider_twitter_id', '=', $request->provider_id)->update(['token' => $request->token]);
             }
-            
+
             $user = User::where('email', '=', $request->email)->first();
 
             $token = JWTAuth::fromUser($user);
-                
+
+            $user->avatar = $user->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user->avatar;
+
             return $this->respond([
-                'message'       => trans('common.success_registeration'), 
-                'data'          => $this->user_transformer->transform($user), 
-                'token'         =>  $token, 
+                'message'       => trans('common.success_registeration'),
+                'data'          => $this->user_transformer->transform($user),
+                'token'         =>  $token,
                 'status_code'   => 200
             ], 200);
-            
+
         }
         return response()->json($response);
     }
-    
+
     public function forgetPassword(Request $request)
     {
         if($request->header('Authorization'))   //=== Already login user
@@ -331,7 +339,7 @@ class UserController extends BaseController
                         // ], 200);
                     }
                 // }
-                        
+
             }
             else
             {
@@ -427,7 +435,7 @@ class UserController extends BaseController
                 'image'             => 'nullable|image',
             ], $messages);
 
-            if($validator->fails()) 
+            if($validator->fails())
             {
                 return $this->getErrorMessage($validator);
             }
@@ -438,9 +446,9 @@ class UserController extends BaseController
                 $extension      = $image->getClientOriginalExtension();
                 $imageRename    = time(). uniqid() . '.'.$extension;
 
-                $path           = public_path("images\users");
+                $path           = public_path("images/users");
 
-                if(!File::exists($path)) File::makeDirectory($path, 775, true);
+                // if(!File::exists($path)) File::makeDirectory($path, 775, true);
 
                 // ->resize(700, 700, function ($constraint) {
                 //     $constraint->aspectRatio();
@@ -467,7 +475,7 @@ class UserController extends BaseController
             //     $type = '3';
             //     $sent_code = $this->otpCode($user, $type, $code);
             // }
-            
+
             $update_data = User::where('id', $user->id)->update([
                 'user_name'     => $request->user_name,
                 'first_name'    => $request->first_name,
@@ -479,6 +487,7 @@ class UserController extends BaseController
 
             $user = User::find($user->id);
 
+            $user->avatar = $user->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user->avatar;
             if($user)
             {
                 // $update_ride_source = Ride::where('user_id', $user->id)->update([
@@ -488,7 +497,7 @@ class UserController extends BaseController
                 // ]);
 
                 return response()->json([
-                    'message'       => trans('common.success_update'), 
+                    'message'       => trans('common.success_update'),
                     'data'          => $this->user_transformer->transform($user),
                     'token'         => $token,
                     'status_code'   => 200
@@ -509,8 +518,10 @@ class UserController extends BaseController
     {
         $user = $this->getAuthenticatedUser();
 
+
         if($user)
         {
+            $user->avatar = $user->avatar == null ? '/public/images/users/'.'default.png' : '/public/images/users/'.$user->avatar;
             return response()->json(['data' => $this->user_transformer->transform($user), 'status_code' => 200], 200);
         }
         else
@@ -522,7 +533,7 @@ class UserController extends BaseController
     public function logout()
     {
         $user = $this->getAuthenticatedUser();
-        
+
         if($user)
         {
             $user->token = null;

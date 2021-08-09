@@ -156,18 +156,18 @@ class IndexController extends Controller
         }
 
         $result['weeklySoldProducts'] = array('success' => '1', 'product_data' => $detail, 'message' => "Returned all products.", 'total_record' => count($detail));
-        
-        session(['paymentResponseData' => '']); 
-            
+
+        session(['paymentResponseData' => '']);
+
         session(['paymentResponse'=>'']);
         session(['payment_json','']);
-        
+
         $category_section = array();
        if(!empty($result['commonContent']['settings']['home_category'])){
             $categories_array = explode(',',$result['commonContent']['settings']['home_category']);
             $index = 0;
             foreach($categories_array as $item){
-                
+
                 //get category section detail
                 $category = $this->products->getCategorybyId($item);
                 if($category){
@@ -178,7 +178,7 @@ class IndexController extends Controller
                     $index++;
                 }
             }
-            
+
         }
         // dd($category_section);
         $result['category_section'] = $category_section;
@@ -371,14 +371,14 @@ class IndexController extends Controller
     public function newsletter(Request $request)
     {
         if (!empty(auth()->guard('customer')->user()->id)) {
-            $customers_id = auth()->guard('customer')->user()->id;  
+            $customers_id = auth()->guard('customer')->user()->id;
             $existUser = DB::table('customers')
                           ->leftJoin('users','customers.customers_id','=','users.id')
                           ->where('customers.fb_id', '=', $customers_id)
                           ->first();
 
-                      
-            if($existUser){                
+
+            if($existUser){
                 DB::table('customers')->where('user_id','=',$customers_id)->update([
                     'customers_newsletter' => 1,
                 ]);
@@ -388,31 +388,31 @@ class IndexController extends Controller
                     'customers_newsletter' => 1,
                 ]);
             }
-                                            
+
         }
         session(['newsletter' => 1]);
-        
+
         return 'subscribed';
     }
 
 
     public function subscribeMail(Request $request){
         $settings = $this->index->commonContent();
-        if(!empty($settings['setting'][122]->value) and !empty($settings['setting'][122]->value)){        
+        if(!empty($settings['setting'][122]->value) and !empty($settings['setting'][122]->value)){
             $email = $request->email;
 
             $list_id = $settings['setting'][123]->value;
             $api_key = $settings['setting'][122]->value;
-            
+
             $data_center = substr($api_key,strpos($api_key,'-')+1);
-            
+
             $url = 'https://'. $data_center .'.api.mailchimp.com/3.0/lists/'. $list_id .'/members';
-            
+
             $json = json_encode([
                 'email_address' => $email,
                 'status'        => 'subscribed', //pass 'subscribed' or 'pending'
             ]);
-            
+
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $api_key);
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -424,7 +424,7 @@ class IndexController extends Controller
             $result = curl_exec($ch);
             $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-            
+
             if($status_code==200){
                 //subscribed
                 print '1';
@@ -436,8 +436,8 @@ class IndexController extends Controller
         }else{
             print '0';
         }
-        
+
     }
-    
+
 
 }

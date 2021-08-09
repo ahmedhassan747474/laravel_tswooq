@@ -292,13 +292,18 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/products', 'POSController@search')->name('pos.search_product')->middleware('view_pos');
         Route::get('/variants', 'POSController@getVarinats')->name('variants')->middleware('view_pos');
         Route::post('/add-to-cart-pos', 'POSController@addToCart')->name('pos.addToCart')->middleware('view_pos');
+        Route::post('/add-to-cart-pos-new', 'POSController@addToCartNew')->name('pos.addToCartNew')->middleware('view_pos');
         Route::post('/update-quantity-cart-pos', 'POSController@updateQuantity')->name('pos.updateQuantity')->middleware('view_pos');
+        Route::post('/update-quantity-cart-pos-new', 'POSController@updateQuantityNew')->name('pos.updateQuantityNew')->middleware('view_pos');
         Route::post('/remove-from-cart-pos', 'POSController@removeFromCart')->name('pos.removeFromCart')->middleware('view_pos');
+        Route::post('/remove-from-cart-pos-new', 'POSController@removeFromCartNew')->name('pos.removeFromCartNew')->middleware('view_pos');
         Route::post('/get_shipping_address', 'POSController@getShippingAddress')->name('pos.getShippingAddress')->middleware('view_pos');
         Route::post('/get_shipping_address_seller', 'POSController@getShippingAddressForSeller')->name('pos.getShippingAddressForSeller')->middleware('view_pos');
         Route::post('/setDiscount', 'POSController@setDiscount')->name('pos.setDiscount')->middleware('view_pos');
         Route::post('/setShipping', 'POSController@setShipping')->name('pos.setShipping')->middleware('view_pos');
         Route::post('/pos-order', 'POSController@order_store')->name('pos.order_place')->middleware('view_pos');
+
+
     });
 
     Route::group(['prefix' => 'admin/poscard', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -453,6 +458,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
 
         Route::get('/products-report', 'ReportsController@productsDisplay')->middleware('view_product');
+        Route::get('/productsreportprint', 'ReportsController@productsreportprint')->middleware('report');
 
         Route::get('/customers-orders-report', 'ReportsController@statsCustomers')->middleware('report');
         Route::get('/customer-orders-print', 'ReportsController@customerOrdersPrint')->middleware('report');
@@ -489,7 +495,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
         Route::get('/maxstock', 'ReportsController@maxstock')->middleware('report');
         Route::get('/maxstockprint', 'ReportsController@maxstockprint')->middleware('report');
-
+        
+        Route::get('/allsuppliersreportprint', 'ReportsController@allsuppliersreportprint')->middleware('view_supplier');
         Route::get('/suppliersmainreport', 'ReportsController@suppliersmainreport')->middleware('view_supplier');
         Route::get('/suppliersreport/{id}', 'ReportsController@suppliersreport')->middleware('view_supplier')->name('suppliersreport');
         Route::get('/suppliersreportprint/{id}', 'ReportsController@suppliersreportprint')->middleware('view_supplier');

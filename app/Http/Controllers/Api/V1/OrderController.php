@@ -18,10 +18,14 @@ use Mail;
 Use Image;
 use Str;
 use App;
+use App\Http\Controllers\Web\AlertController;
+use App\Models\AppModels\Orders;
 use Illuminate\Support\Facades\File;
 use App\Models\AppModels\Product;
 use Carbon;
 use DB;
+use Essam\TapPayment\Payment;
+use Tap\TapPayment\Facade\TapPayment;
 
 class OrderController extends BaseController
 {
@@ -37,23 +41,32 @@ class OrderController extends BaseController
         $language_id=1;
         $type='';
         $total_record=0;
+        $productItem=[];
+        $data = [];
         if($user)
         {
-            $getCart = DB::table('carts')->where('user_id', $user->id)->get();
+            $getCart = DB::table('carts')->where('user_id', $user->id)->first();
 
+// dd($getCart);
             $products_cart=array();
             if($getCart){
 
-                foreach($getCart as $cart){
-                    $products_cart[] = DB::table('cart_product')->where('cart_id', '=', $cart->cart_id)->first();
-                }
+                $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
+                // if($productItem != null){
+                //     $products_cart[] = $productItem;
+                //     // array_push($products_cart,$productItem);
+                //     dd($productItem);
+                // }
+
             }
 
             // $getCart->products=$products_cart;
             // dd($products_cart[0]->product_id);
 
 
-            foreach($products_cart as $cart){
+            foreach($productItem as $cart){
+
+                // dd($products_cart);
                 $product = DB::table('products')
                 ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
                 ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
@@ -80,7 +93,11 @@ class OrderController extends BaseController
             //count
             $total_record+=1;
 
-            $data[] = $product->first();
+            $product= $product->first();
+            $product->quantity_ordered=$cart->quantity;
+            // dd($product);
+            $data[] = $product;
+            // dd(data);
         }
             $result = array();
             $result2 = array();
@@ -262,7 +279,7 @@ class OrderController extends BaseController
                         $result[$index]->isLiked = '0';
                     }
 
-                    // // fetch all options add join from products_options table for option name
+                    // fetch all options add join from products_options table for option name
                     // $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->groupBy('options_id')->get();
                     // if (count($products_attribute) > 0) {
                     //     $index2 = 0;
@@ -313,6 +330,7 @@ class OrderController extends BaseController
                     // } else {
                     //     $result[$index]->attributes = array();
                     // }
+
                     $listOfAttributes = array();
                     $index3 = 0;
 
@@ -342,49 +360,49 @@ class OrderController extends BaseController
                     $index3++;
                     // $result['getAllAttributes'] = $getAllAttributes;
 
-                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
-                    if($getParallel) {
-                        foreach ($getParallel as $parallel) {
-                            $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
-                            foreach($getAllAttributesParallel as $attribute){
-                                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
-                                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
-                                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
-                                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
-                                $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
-                                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
-                                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
-                                // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
-                            }
-                            $listOfAttributes[$index3]['id'] = $parallel->products_id;
-                            $listOfAttributes[$index3]['price'] = $parallel->products_price;
+                    // $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
+                    // if($getParallel) {
+                    //     foreach ($getParallel as $parallel) {
+                    //         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                    //         foreach($getAllAttributesParallel as $attribute){
+                    //             $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                    //             $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                    //             $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                    //             $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                    //             $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                    //             // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                    //             // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                    //             // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                    //         }
+                    //         $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                    //         $listOfAttributes[$index3]['price'] = $parallel->products_price;
 
-                            // dd($parallel);
-                            //multiple images
-                            $products_images = array();
-                            $products_images = DB::table('products_images')
-                                ->LeftJoin('image_categories', function ($join) {
-                                    $join->on('image_categories.image_id', '=', 'products_images.image')
-                                        ->where(function ($query) {
-                                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
-                                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
-                                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
-                                        });
-                                })
-                                ->select('products_images.*', 'image_categories.path as image')
-                                ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+                    //         // dd($parallel);
+                    //         //multiple images
+                    //         $products_images = array();
+                    //         $products_images = DB::table('products_images')
+                    //             ->LeftJoin('image_categories', function ($join) {
+                    //                 $join->on('image_categories.image_id', '=', 'products_images.image')
+                    //                     ->where(function ($query) {
+                    //                         $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                    //                             ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                    //                             ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                    //                     });
+                    //             })
+                    //             ->select('products_images.*', 'image_categories.path as image')
+                    //             ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
 
-                                // $products_data->images=$products_images;
-                                $listOfAttributes[$index3]['images'] = $products_images;
+                    //             // $products_data->images=$products_images;
+                    //             $listOfAttributes[$index3]['images'] = $products_images;
 
-                            $index3++;
-                        }
-                    }
+                    //         $index3++;
+                    //     }
+                    // }
                     // dd($listOfAttributes);
                     $result[$index]->attributes = $listOfAttributes;
                     // $result[$index]->images2 = $products_images;
                     $index++;
-                }
+             }
 
                 $responseData = array('success' => '1', 'product_data' => $result, 'message' => "Returned all products.", 'total_record' => $total_record);
             } else {
@@ -415,19 +433,47 @@ class OrderController extends BaseController
                 return $this->getErrorMessage($validator);
             }
 
-            $insertCart = DB::table('carts')->insertGetId([
-                'user_id'       => $user->id,
-                'created_at'    => now(),
-                'updated_at'    => now()
-            ]);
+            $getCart = DB::table('carts')->where('user_id', $user->id)->first();
 
-            $insertCartProduct = DB::table('cart_product')->insert([
-                'cart_id'       => $insertCart,
-                'product_id'    => $request->product_id,
-                'quantity'      => $request->quantity,
-                'created_at'    => now(),
-                'updated_at'    => now()
-            ]);
+            // dd($getCart);
+            if($getCart){
+                $insertCart = $getCart->cart_id;
+
+                $product =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->where('product_id', '=', $request->product_id)->first();
+
+                //if product already exist
+                if($product){
+                    DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->where('product_id', '=', $request->product_id)->update([
+                        'quantity'      => $product->quantity + 1,
+                        'updated_at'    => now()
+                    ]);
+                }else
+                {
+                    $insertCartProduct = DB::table('cart_product')->insert([
+                        'cart_id'       => $insertCart,
+                        'product_id'    => $request->product_id,
+                        'quantity'      => $request->quantity,
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ]);
+                }
+            }
+            else
+            {
+                $insertCart = DB::table('carts')->insertGetId([
+                    'user_id'       => $user->id,
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ]);
+                $insertCartProduct = DB::table('cart_product')->insert([
+                    'cart_id'       => $insertCart,
+                    'product_id'    => $request->product_id,
+                    'quantity'      => $request->quantity,
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ]);
+            }
+
 
             return response()->json(['message' => trans('common.success_insert'), 'status_code' => 200], 200);
         }
@@ -496,13 +542,210 @@ class OrderController extends BaseController
 
         if($user)
         {
-            foreach($request->products as $products){
+
+            $getCart = DB::table('carts')->where('user_id', $user->id)->first();
+
+// dd($getCart);
+            $products_cart=array();
+            if($getCart){
+
+                $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
+                // if($productItem != null){
+                //     $products_cart[] = $productItem;
+                //     // array_push($products_cart,$productItem);
+                //     dd($productItem);
+                // }
+
+            }
+
+            // $getCart->products=$products_cart;
+            // dd($products_cart[0]->product_id);
+
+
+            foreach($productItem as $cart){
+
+                // dd($products_cart);
+                $product = DB::table('products')
+                ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+                ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+                ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id');
+
+            $product->LeftJoin('image_categories', function ($join) {
+                $join->on('image_categories.image_id', '=', 'products.products_image')
+                    ->where(function ($query) {
+                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                    });
+            });
+
+            //get single products
+
+            $product->where('products.products_id', '=', $cart->product_id);
+
+
+            $product->where('products_description.language_id', '=', 1)
+                ->where('products.products_status', '=', '1');
+
+
+            //count
+
+            $product= $product->first();
+            $product->quantity_ordered=$cart->quantity;
+
+            //multiple images
+            $products_images = DB::table('products_images')
+            ->LeftJoin('image_categories', function ($join) {
+                $join->on('image_categories.image_id', '=', 'products_images.image')
+                    ->where(function ($query) {
+                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                    });
+            })
+            ->select('products_images.*', 'image_categories.path as image')
+            ->where('products_id', '=', $product->products_id)->orderBy('sort_order', 'ASC')->get();
+        // $products_data->images = $products_images;
+
+        // fetch all options add join from products_options table for option name
+                    $products_attribute = DB::table('products_attributes')->where('products_id', '=', $product->products_id)->groupBy('options_id')->get();
+                    if (count($products_attribute) > 0) {
+                        $index2 = 0;
+                        foreach ($products_attribute as $attribute_data) {
+                            $option_name = DB::table('products_options')
+                                ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $request->language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
+                            if (count($option_name) > 0) {
+                                $temp = array();
+                                $temp_option['id'] = $attribute_data->options_id;
+                                $temp_option['name'] = $option_name[0]->products_options_name;
+                                $attr[$index2]['option'] = $temp_option;
+
+                                // fetch all attributes add join from products_options_values table for option value name
+                                $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $product->products_id)->where('options_id', '=', $attribute_data->options_id)->get();
+                                foreach ($attributes_value_query as $products_option_value) {
+
+                                    //$option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions','products_options_values_descriptions.products_options_values_id','=','products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name' )->where('products_options_values_descriptions.language_id','=', $language_id)->where('products_options_values.products_options_values_id','=', $products_option_value->options_values_id)->get();
+                                    $option_value = DB::table('products_options_values')->where('products_options_values_id', '=', $products_option_value->options_values_id)->get();
+
+                                    $attributes = DB::table('products_attributes')->where([['products_id', '=', $product->products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
+                                    $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
+                                    $temp_i['id'] = $products_option_value->options_values_id;
+
+                                    if (!empty($option_value[0]->products_options_values_name)) {
+                                        $temp_i['value'] = $option_value[0]->products_options_values_name;
+                                    } else {
+                                        $temp_i['value'] = '';
+                                    }
+
+                                    //check currency start
+                                    $current_price = $products_option_value->options_values_price;
+
+                                    $attribute_price = Product::convertprice($current_price, $request->currency_code);
+
+                                    //check currency end
+
+                                    //$temp_i['price'] = $products_option_value->options_values_price;
+                                    $temp_i['price'] = $attribute_price;
+                                    $temp_i['price_prefix'] = $products_option_value->price_prefix;
+                                    array_push($temp, $temp_i);
+
+                                }
+                                $attr[$index2]['values'] = $temp;
+                                $product->attributes = $attr;
+                                $index2++;
+                            }
+                        }
+                    } else {
+                        $product->attributes = array();
+                    }
+
+
+            // $listOfAttributes = array();
+            // $index3 = 0;
+
+            // // dd($getAllProductsParallel);
+            // $getAllAttributes = DB::table('products_attributes')
+            //     ->where('products_id', '=', $product->products_id)
+            //     // ->whereIn('products_id', $getAllProductsParallel)
+            //     ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+            //     ->get();
+            // dd($getAllAttributes);
+
+            // foreach($getAllAttributes as $attribute){
+            //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $request->language_id)->first();
+            //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $request->language_id)->first();
+            //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            //     $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+
+
+            // }
+            // $listOfAttributes[$index3]['id'] = $product->products_id;
+            // $listOfAttributes[$index3]['price'] = $product->products_price;
+            // $listOfAttributes[$index3]['home_image'] =asset($product->products_image);
+            // $listOfAttributes[$index3]['images'] = $products_images;
+
+
+            // $index3++;
+            // $result['getAllAttributes'] = $getAllAttributes;
+
+            // $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
+            // if($getParallel) {
+            //     foreach ($getParallel as $parallel) {
+            //         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+            //         foreach($getAllAttributesParallel as $attribute){
+            //             $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+            //             $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            //             $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+            //             $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            //             $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+            //             // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+            //             // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+            //             // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+            //         }
+            //         $listOfAttributes[$index3]['id'] = $parallel->products_id;
+            //         $listOfAttributes[$index3]['price'] = $parallel->products_price;
+
+            //         // dd($parallel);
+            //         //multiple images
+            //         $products_images = array();
+            //         $products_images = DB::table('products_images')
+            //             ->LeftJoin('image_categories', function ($join) {
+            //                 $join->on('image_categories.image_id', '=', 'products_images.image')
+            //                     ->where(function ($query) {
+            //                         $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+            //                             ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+            //                             ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+            //                     });
+            //             })
+            //             ->select('products_images.*', 'image_categories.path as image')
+            //             ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+            //             // $products_data->images=$products_images;
+            //             $listOfAttributes[$index3]['images'] = $products_images;
+
+            //         $index3++;
+            //     }
+            // }
+            // dd($listOfAttributes);
+            // $product->attributes = $listOfAttributes;
+            // $result[$index]->images2 = $products_images;
+            // $index++;
+
+            // dd($product);
+            $data[] = $product;
+            // dd(data);
+        }
+
+        // dd($data);
+            foreach($data as $products){
                 $req = array();
-                $req['products_id'] = $products['products_id'];
+                // dd($products);
+                $req['products_id'] = $products->products_id;
                 $attr = array();
 
-                // if (isset($products['attributes'])) {
-                //     foreach ($products['attributes'] as $key => $value) {
+                // if (isset($products->attributes)) {
+                //     foreach ($products->attributes as $key => $value) {
                 //         $attr[$key] = $value['products_options_id'];
                 //     }
                 //     $req['attributes'] = $attr;
@@ -511,11 +754,12 @@ class OrderController extends BaseController
                 $check = Product::getquantity($req);
                 $check = json_decode($check);
 
-                if($products['customers_basket_quantity'] > $check->stock){
-                    $responseData = array('success'=>'1', 'data'=>array(),'products_id' => $products['products_id'], 'message'=>"Some Products are out of Stock.");
+                // dd($check);
+                if($products->quantity_ordered > $check->stock){
+                    $responseData = array('success'=>'0', 'data'=>array(),'products_id' => $products->products_id, 'message'=>"Some Products are out of Stock.");
                     // $orderResponse = json_encode($responseData);
                     // return $orderResponse;
-                    return response()->json($responseData);
+                    return response()->json($responseData,400);
                 }
             }
 
@@ -748,7 +992,7 @@ class OrderController extends BaseController
                         $payment_status = "failed";
                 }
 
-            }else if($payment_method == 'cod'){
+            }else if($payment_method == 'cash_on_delivery'){
 
                 $payments_setting = Orders::payments_setting_for_cod($request);
                 $paymentMethodName =  $payments_setting->name;
@@ -778,7 +1022,7 @@ class OrderController extends BaseController
                 $paymentMethodName = $payments_setting['paytm_mid']->name;
                 $payment_method = 'Paytm';
                 $payment_status='success';
-            }else if($payment_method == 'paytm'){
+            }else if($payment_method == 'directbank'){
                 $payments_setting = Orders::payments_setting_for_directbank($request);
                 $paymentMethodName = $payments_setting['account_name']->name;
                 $payment_method = 'directbank';
@@ -798,6 +1042,208 @@ class OrderController extends BaseController
                 $payment_method = 'paystack';
                 $payment_status='success';
                 $order_information = '';
+
+            }else if ($payment_method == 'tap') {
+                $paymentMethodName = 'tap';
+                $payments_setting = Orders::payments_setting_for_tap();
+                // dd(session()->all());
+                // dd($request->all());
+                // $arrayToSend = [
+                //     "amount"            => $order_price,
+                //     "currency"          => "SAR",
+                //     "threeDSecure"      => true,
+                //     "save_card"         => false,
+                //     // "description"       => "Test Description",
+                //     // "statement_descriptor"=> "Sample",
+                //     "customer" => [
+                //         "first_name"    => $billing_firstname,
+                //         "last_name"     => $billing_lastname,
+                //         "email"         => $email,
+                //         "phone" => [
+                //             "country_code"  => "966",
+                //             "number"        => $billing_phone
+                //         ]
+                //     ],
+                //     "source" => [
+                //         "id" => $request->token_id
+                //     ],
+                //     "post" => [
+                //         "url" => route('place_order')
+                //     ],
+                //     "redirect" => [
+                //         "url" => route('checkout_tap_payment')
+                //     ]
+                // ];
+
+                // $json = json_encode($arrayToSend);
+
+                // $curl = curl_init();
+
+                // curl_setopt_array($curl, array(
+                //   CURLOPT_URL => "https://api.tap.company/v2/charges",
+                //   CURLOPT_RETURNTRANSFER => true,
+                //   CURLOPT_ENCODING => "",
+                //   CURLOPT_MAXREDIRS => 10,
+                //   CURLOPT_TIMEOUT => 30,
+                //   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                //   CURLOPT_CUSTOMREQUEST => "POST",
+                //   CURLOPT_POSTFIELDS => $json,
+                //   CURLOPT_HTTPHEADER => array(
+                //     "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK",
+                //     "content-type: application/json"
+                //   ),
+                // ));
+
+                // $response = curl_exec($curl);
+                // $err = curl_error($curl);
+
+                // curl_close($curl);
+
+                // if ($err) {
+                //     // echo "cURL Error #:" . $err;
+                //     $payment_status = 'failed';
+                // } else {
+                //     // echo $response;
+                //     $resultsResponse = json_decode($response);
+                //     // dd($resultsResponse->transaction->url);
+                //     $payment_status = 'success';
+                //     $transaction_id = $resultsResponse->id;
+                //     $order_information = $resultsResponse;
+                //     // dd($order_information->transaction->url);
+                // }
+
+
+
+
+                // get token from app
+                // $token = $request->token;
+
+                $customer = \Stripe\Customer::create(array(
+                    'email' => $email,
+                    'source' => $token,
+                ));
+
+                $charge = \Stripe\Charge::create(array(
+                    'customer' => $customer->id,
+                    'amount' => 100 * $order_price,
+                    'currency' => 'usd',
+                ));
+
+                $fullnameBilling = $billing_firstname . ' ' . $billing_lastname;
+                $amountPay = 100 * $order_price;
+                $secret_api_Key = "pk_test_fILmzM42k3xrQT1UdEVWjK0X";
+                $TapPay = new Payment(['secret_api_Key'=> $secret_api_Key]);//pk_test_fILmzM42k3xrQT1UdEVWjK0X
+
+                $TapPay->card([
+                    'number' => '5123450000000008',
+                    'exp_month' => 05,
+                    'exp_year' => 21,
+                    'cvc' => 100,
+                ]);
+
+                dd($TapPay);
+
+                try {
+                    $TapPay->charge([
+                        'amount' => $amountPay,
+                        'currency' => 'SAR',
+                        'threeDSecure' => 'true',
+                        'description' => 'test description',
+                        'statement_descriptor' => 'sample',
+                        'customer' => [
+                            'first_name' => $fullnameBilling,
+                            'email' => $email,
+                        ],
+                        'post' => [
+                            'url' => null
+                        ],
+                        'redirect' => [
+                            'url' => null
+                        ]
+                    ]);
+
+                    dd($TapPay);
+
+                    $order_information = array(
+                        'paid' => 'true',
+                        'transaction_id' => $TapPay->getId(),
+                        'type' => $TapPay->outcome->type,
+                        'balance_transaction' => $TapPay->balance_transaction,
+                        'status' => $TapPay->status,
+                        'currency' => $TapPay->currency,
+                        'amount' => $TapPay->amount,
+                        'created' => date('d M,Y', $TapPay->created),
+                        'dispute' => $TapPay->dispute,
+                        'customer' => $TapPay->customer,
+                        'address_zip' => $TapPay->source->address_zip,
+                        'seller_message' => $TapPay->outcome->seller_message,
+                        'network_status' => $TapPay->outcome->network_status,
+                        'expirationMonth' => $TapPay->outcome->type,
+                    );
+
+                    $payment_status = "success";
+                } catch( \Exception $exception ) {
+                    $payment_status = "failed";
+                }
+
+                $payment = TapPayment::createCharge();
+                    $payment->setCustomerName($fullnameBilling);
+                    $payment->setCustomerPhone("20", $billing_phone);
+                    $payment->setDescription("Some description");
+                    $payment->setAmount($amountPay);
+                    $payment->setCurrency("SAR");
+                    $payment->setSource("src_all");
+                    $payment->setRedirectUrl("https://example.com");
+                    // $payment->setPostUrl("https://example.com"); // if you are using post request to handle payment updates
+                    // $payment->setMetaData(['package' => json_encode($package)]); // if you want to send metadata
+                    $invoice = $payment->pay();
+
+                    // dd($invoice);
+
+                try {
+
+
+                    if($payment->isSuccess()) {
+                        $order_information = array(
+                            'paid' => 'true',
+                            'transaction_id' => $invoice->getId(),
+                            'type' => $invoice->outcome->type,
+                            'balance_transaction' => $charge->balance_transaction,
+                            'status' => $invoice->status,
+                            'currency' => $invoice->currency,
+                            'amount' => $invoice->amount,
+                            'created' => date('d M,Y', $invoice->created),
+                            'dispute' => $invoice->dispute,
+                            'customer' => $invoice->customer,
+                            'address_zip' => $invoice->source->address_zip,
+                            'seller_message' => $invoice->outcome->seller_message,
+                            'network_status' => $invoice->outcome->network_status,
+                            'expirationMonth' => $invoice->outcome->type,
+                        );
+
+                        $payment_status = "success";
+                    } else {
+                        $payment_status = "failed";
+                    }
+
+                } catch( \Exception $exception ) {
+                    $payment_status = "failed";
+                }
+            } else if ($payment_method == 'bank_account') {
+                $paymentMethodName = 'Bank Account';
+                $payments_setting = $this->payments_setting_for_bank_account();
+
+                $bank_account_image='';
+                if($request->bank_account_image){
+                    $file = $request->bank_account_image;
+                    $ext = $file->getClientOriginalExtension();
+                    $imageName = time() . uniqid() . '.' . $ext;
+                    $file->move(public_path('images/bank_account'), $imageName);
+                    $bank_account_image = $imageName;
+                }
+
+                $bank_account_iban = $request->bank_account_iban;
+                $payment_status = 'success';
             }
 
             //check if order is verified
@@ -808,7 +1254,8 @@ class OrderController extends BaseController
 
                     //update database
                     DB::table('orders')->where('transaction_id','=',$request->transaction_id)->update(
-                        [	 'customers_id' => $customers_id,
+                        [
+                            'customers_id' => $customers_id,
                             'customers_name'  => $delivery_firstname.' '.$delivery_lastname,
                             'customers_street_address' => $delivery_street_address,
                             'customers_suburb'  =>  $delivery_suburb,
@@ -854,7 +1301,65 @@ class OrderController extends BaseController
                             'billing_phone'	 =>		$billing_phone
                         ]);
 
-                }else{
+                }else if ($payment_method == 'bank_account'){
+                    // dd($bank_account_image);
+                        //insert order
+                        $orders_id = DB::table('orders')->insertGetId(
+                        [	 'customers_id' => $customers_id,
+                            'customers_name'  => $delivery_firstname.' '.$delivery_lastname,
+                            'customers_street_address' => $delivery_street_address,
+                            'customers_suburb'  =>  $delivery_suburb,
+                            'customers_city' => $delivery_city,
+                            'customers_postcode'  => $delivery_postcode,
+                            'customers_state' => $delivery_state,
+                            'customers_country'  =>  $delivery_country,
+                            'customers_telephone' => $customers_telephone,
+                            'email'  => $email,
+
+                            'delivery_name'  =>  $delivery_firstname.' '.$delivery_lastname,
+                            'delivery_street_address' => $delivery_street_address,
+                            'delivery_suburb'  => $delivery_suburb,
+                            'delivery_city' => $delivery_city,
+                            'delivery_postcode'  =>  $delivery_postcode,
+                            'delivery_state' => $delivery_state,
+                            'delivery_country'  => $delivery_country,
+
+                            'billing_name'  => $billing_firstname.' '.$billing_lastname,
+                            'billing_street_address' => $billing_street_address,
+                            'billing_suburb'  =>  $billing_suburb,
+                            'billing_city' => $billing_city,
+                            'billing_postcode'  => $billing_postcode,
+                            'billing_state' => $billing_state,
+                            'billing_country'  =>  $billing_country,
+
+                            'payment_method'  =>  $paymentMethodName,
+                            'cc_type' => $cc_type,
+                            'cc_owner'  => $cc_owner,
+                            'cc_number' =>$cc_number,
+                            'cc_expires'  =>  $cc_expires,
+                            'last_modified' => $last_modified,
+                            'date_purchased'  => $date_purchased,
+                            'order_price'  => $order_price,
+                            'shipping_cost' =>$shipping_cost,
+                            'shipping_method'  =>  $shipping_method,
+                            'currency'  =>  $currency_code,
+                            'currency_value' => $last_modified,
+                            'order_information' => json_encode($order_information),
+                            'coupon_code'		 =>		$code,
+                            'coupon_amount' 	 =>		$coupon_amount,
+                            'total_tax'		 =>		$total_tax,
+                            'ordered_source' 	 => 	'2',
+                            'delivery_phone'	 =>		$delivery_phone,
+                            'billing_phone'	 =>		$billing_phone,
+                            'delivery_latitude' => $delivery_latitude,
+                            'delivery_longitude' => $delivery_longitude,
+                            // 'transaction_id'    => $transaction_id,
+                            'bank_account_image' => $bank_account_image,
+                            'bank_account_iban' => $bank_account_iban
+                        ]);
+
+                    }
+                else{
 
                     //insert order
                     $orders_id = DB::table('orders')->insertGetId(
@@ -905,7 +1410,10 @@ class OrderController extends BaseController
                         'delivery_phone'	 =>		$delivery_phone,
                         'billing_phone'	 =>		$billing_phone,
                         'delivery_latitude' => $delivery_latitude,
-                        'delivery_longitude' => $delivery_longitude
+                        'delivery_longitude' => $delivery_longitude,
+                        // 'transaction_id'    => $transaction_id,
+                        // 'bank_account_image' => $bank_account_image,
+                        // 'bank_account_iban' => $bank_account_iban
                     ]);
 
                 }
@@ -919,29 +1427,29 @@ class OrderController extends BaseController
                         'comments'  =>  $comments
                     ]);
 
-                foreach($request->products as $products){
-                    //dd($products['price'], $currency_code);
-                    $c_price = str_replace(',','',$products['price']);
-                    $c_final_price = str_replace(',','',$products['final_price']);
+                foreach($data as $products){
+                    //dd($products->products_price, $currency_code);
+                    $c_price = str_replace(',','',$products->products_price);
+                    $c_final_price = str_replace(',','',$products->products_price);
                     $price = Orders::converttodefaultprice($c_price, $currency_code);
-                    $final_price = $c_final_price*$products['customers_basket_quantity'];
+                    $final_price = $c_final_price*$products->quantity_ordered;
                     $final_price = Orders::converttodefaultprice($final_price, $currency_code);
 
                     $orders_products_id = DB::table('orders_products')->insertGetId(
                     [
                         'orders_id' 		 => 	$orders_id,
-                        'products_id' 	 	 =>		$products['products_id'],
-                        'products_name'	 => 	$products['products_name'],
+                        'products_id' 	 	 =>		$products->products_id,
+                        'products_name'	 => 	$products->products_name,
                         'products_price'	 =>  	$price,
                         'final_price' 		 =>  	$final_price,
                         'products_tax' 	 =>  	$products_tax,
-                        'products_quantity' =>  	$products['customers_basket_quantity'],
+                        'products_quantity' =>  	$products->quantity_ordered,
                     ]);
 
                     $inventory_ref_id = DB::table('inventory')->insertGetId([
-                        'products_id'   		=>   $products['products_id'],
+                        'products_id'   		=>   $products->products_id,
                         'reference_code'  		=>   '',
-                        'stock'  				=>   $products['customers_basket_quantity'],
+                        'stock'  				=>   $products->quantity_ordered,
                         'admin_id'  			=>   0,
                         'added_date'	  		=>   time(),
                         'purchase_price'  		=>   0,
@@ -949,30 +1457,33 @@ class OrderController extends BaseController
                     ]);
 
 
-                    if(!empty($products['attributes'])){
-                        foreach($products['attributes'] as $attribute){
+                    if(!empty($products->attributes)){
+                        foreach($products->attributes as $attribute){
+                            // dd($attribute);
+                            foreach($attribute['values'] as $value){
                             DB::table('orders_products_attributes')->insert(
                             [
                                 'orders_id' => $orders_id,
-                                'products_id'  => $products['products_id'],
+                                'products_id'  => $products->products_id,
                                 'orders_products_id'  => $orders_products_id,
-                                'products_options' =>$attribute['products_options'],
-                                'products_options_values'  =>  $attribute['products_options_values'],
-                                'options_values_price'  =>  $attribute['options_values_price'],
-                                'price_prefix'  =>  $attribute['price_prefix']
+                                'products_options' =>$attribute['option']['name'],
+                                'products_options_values'  =>  $value['value'],
+                                'options_values_price'  =>  $value['price'],
+                                'price_prefix'  => $value['price_prefix']
                             ]);
 
                             $products_attributes = DB::table('products_attributes')->where([
-                                ['options_id', '=', $attribute['products_options_id']],
-                                ['options_values_id', '=', $attribute['products_options_values_id']],
+                                ['options_id', '=', $attribute['option']['id']],
+                                ['options_values_id', '=', $value['id']],
                             ])->get();
 
                             DB::table('inventory_detail')->insert([
                                 'inventory_ref_id'  =>   $inventory_ref_id,
-                                'products_id'  		=>   $products['products_id'],
+                                'products_id'  		=>   $products->products_id,
                                 'attribute_id'		=>   $products_attributes[0]->products_attributes_id,
                             ]);
 
+                            }
                         }
                     }
 
@@ -1051,11 +1562,233 @@ class OrderController extends BaseController
 
             // return $orderResponse;
 
+            if($getCart){
+                $deleteCart = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->delete();
+            }
             return response()->json($responseData);
         } else {
             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
         }
 
+    }
+
+    //get default payment method
+    public function getPaymentMethods()
+    {
+        /**   BRAIN TREE **/
+        //////////////////////
+        $result = array();
+        $payments_setting = $this->payments_setting_for_brain_tree();
+        if ($payments_setting['merchant_id']->environment == '0') {
+            $braintree_enviroment = 'Test';
+        } else {
+            $braintree_enviroment = 'Live';
+        }
+
+        $braintree = array(
+            'environment' => $braintree_enviroment,
+            'name' => $payments_setting['merchant_id']->name,
+            'public_key' => $payments_setting['public_key']->value,
+            'active' => $payments_setting['merchant_id']->status,
+            'payment_method' => $payments_setting['merchant_id']->payment_method,
+            'payment_currency' => 'SAR',
+        );
+        /**  END BRAIN TREE **/
+        //////////////////////
+
+        /**   STRIPE**/
+        //////////////////////
+
+        $payments_setting = $this->payments_setting_for_stripe();
+        if ($payments_setting['publishable_key']->environment == '0') {
+            $stripe_enviroment = 'Test';
+        } else {
+            $stripe_enviroment = 'Live';
+        }
+
+        $stripe = array(
+            'environment' => $stripe_enviroment,
+            'name' => $payments_setting['publishable_key']->name,
+            'public_key' => $payments_setting['publishable_key']->value,
+            'active' => $payments_setting['publishable_key']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['publishable_key']->payment_method,
+        );
+
+        /**   END STRIPE**/
+        //////////////////////
+
+        /**   CASH ON DELIVERY**/
+        //////////////////////
+
+        $payments_setting = $this->payments_setting_for_cod();
+
+        $cod = array(
+            'environment' => 'Live',
+            'name' => $payments_setting->name,
+            'public_key' => '',
+            'active' => $payments_setting->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting->payment_method,
+        );
+
+        /**   END CASH ON DELIVERY**/
+        /*************************/
+
+
+        /**   INSTAMOJO**/
+        /*************************/
+        $payments_setting = $this->payments_setting_for_instamojo();
+        if ($payments_setting['auth_token']->environment == '0') {
+            $instamojo_enviroment = 'Test';
+        } else {
+            $instamojo_enviroment = 'Live';
+        }
+
+        $instamojo = array(
+            'environment' => $instamojo_enviroment,
+            'name' => $payments_setting['auth_token']->name,
+            'public_key' => $payments_setting['api_key']->value,
+            'active' => $payments_setting['api_key']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['api_key']->payment_method,
+        );
+
+        /**   END INSTAMOJO**/
+        /*************************/
+
+        /**   END HYPERPAY**/
+        /*************************/
+        $payments_setting = $this->payments_setting_for_hyperpay();
+        //dd($payments_setting);
+        if ($payments_setting['userid']->environment == '0') {
+            $hyperpay_enviroment = 'Test';
+        } else {
+            $hyperpay_enviroment = 'Live';
+        }
+
+        $hyperpay = array(
+            'environment' => $hyperpay_enviroment,
+            'name' => $payments_setting['userid']->name,
+            'public_key' => $payments_setting['userid']->value,
+            'active' => $payments_setting['userid']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['userid']->payment_method,
+        );
+        /**   END HYPERPAY**/
+        /*************************/
+
+        $payments_setting = $this->payments_setting_for_razorpay();
+
+        if ($payments_setting['RAZORPAY_SECRET']->environment == '0') {
+            $razorpay_enviroment = 'Test';
+        } else {
+            $razorpay_enviroment = 'Live';
+        }
+
+        $razorpay = array(
+            'environment' => $razorpay_enviroment,
+            'public_key' => $payments_setting['RAZORPAY_KEY']->value,
+            'name' => $payments_setting['RAZORPAY_KEY']->name,
+            'RAZORPAY_KEY' => $payments_setting['RAZORPAY_KEY']->value,
+            'RAZORPAY_SECRET' => $payments_setting['RAZORPAY_SECRET']->value,
+            'active' => $payments_setting['RAZORPAY_SECRET']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['RAZORPAY_SECRET']->payment_method,
+        );
+
+        $payments_setting = $this->payments_setting_for_paytm();
+
+
+        if ($payments_setting['paytm_mid']->environment == '0') {
+            $paytm_enviroment = 'Test';
+        } else {
+            $paytm_enviroment = 'Live';
+        }
+
+        $paytm = array(
+            'environment' => $paytm_enviroment,
+            'payment_currency' => 'SAR',
+            'public_key' => '',
+            'name' => $payments_setting['paytm_mid']->name,
+            'active' => $payments_setting['paytm_mid']->status,
+            'payment_method' => $payments_setting['paytm_mid']->payment_method,
+        );
+
+        /**   TAP   **/
+        //////////////////////
+
+        $payments_setting = $this->payments_setting_for_tap();
+        if ($payments_setting['api_key']->environment == '0') {
+            $tap_enviroment = 'Test';
+        } else {
+            $tap_enviroment = 'Live';
+        }
+
+        $tap = array(
+            'environment' => $tap_enviroment,
+            'name' => $payments_setting['api_key']->name,
+            'public_key' => $payments_setting['api_key']->value,
+            'active' => $payments_setting['api_key']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['api_key']->payment_method,
+        );
+
+        /**   END TAP   **/
+        //////////////////////
+
+        /**   Bank Account   **/
+        //////////////////////
+
+        $payments_setting = $this->payments_setting_for_bank_account();
+        if ($payments_setting['iban']->environment == '0') {
+            $tap_enviroment = 'Test';
+        } else {
+            $tap_enviroment = 'Live';
+        }
+
+        $bank = array(
+            'environment' => $tap_enviroment,
+            'name' => $payments_setting['iban']->name,
+            'public_key' => $payments_setting['iban']->value,
+            'active' => $payments_setting['iban']->status,
+            'payment_currency' => 'SAR',
+            'payment_method' => $payments_setting['iban']->payment_method,
+        );
+
+        /**   END TAP   **/
+        //////////////////////
+
+        array_push($result,$braintree);
+        array_push($result,$stripe);
+        array_push($result,$cod);
+        array_push($result,$instamojo);
+        array_push($result,$hyperpay);
+        array_push($result,$razorpay);
+        array_push($result,$paytm);
+        array_push($result,$tap);
+        array_push($result,$bank);
+        // $result[0] = $braintree;
+        // $result[1] = $stripe;
+        // $result[2] = $cod;
+        // $result[4] = $instamojo;
+        // $result[5] = $hyperpay;
+        // $result[6] = $razorpay;
+        // $result[7] = $paytm;
+        // $result[8] = $tap;
+        // $result[9] = $bank;
+
+        // dd($result);
+        if (count($result) > 0) {
+            $responseData = array('success' => '1', 'data' => $result, 'message' => "Sliders are returned successfull.");
+        } else {
+            $result = array();
+            $responseData = array('success' => '0', 'data' => $result, 'message' => "Sliders are empty.");
+        }
+
+        return response()->json($responseData);
+
+        // return $result;
     }
 
     //getorders
@@ -1241,7 +1974,7 @@ class OrderController extends BaseController
                             ->orWhere('image_categories.image_type', '=', 'ACTUAL');
                     });
                 })
-                ->select('orders_products.*', 'image_categories.path as image')
+                ->select('orders_products.*', 'image_categories.path as image','products.admin_id')
                 ->where('orders_products.orders_id', '=', $orders_id)->get();
                 $k = 0;
                 $product = array();
@@ -1249,6 +1982,10 @@ class OrderController extends BaseController
                 $orders_products_data->products_price =  Orders::convertprice($orders_products_data->products_price, $requested_currency);
                 $orders_products_data->final_price =  Orders::convertprice($orders_products_data->final_price, $requested_currency);
                 //categories
+                // dd($orders_products_data);
+                $getName=  DB::table('users')->where('id', $orders_products_data->admin_id)->first()->shop_name;
+                $orders_products_data->shop_name=$getName;
+
                 $categories = DB::table('products_to_categories')
                         ->leftjoin('categories','categories.categories_id','products_to_categories.categories_id')
                         ->leftjoin('categories_description','categories_description.categories_id','products_to_categories.categories_id')
@@ -1266,7 +2003,44 @@ class OrderController extends BaseController
                     ])
                     ->get();
 
-                $orders_products_data->attributes = $product_attribute;
+                    $listOfAttributes = array();
+                    $index3 = 0;
+
+
+                    //multiple images
+                    $products_images = DB::table('products_images')
+                    ->LeftJoin('image_categories', function ($join) {
+                        $join->on('image_categories.image_id', '=', 'products_images.image')
+                            ->where(function ($query) {
+                                $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                    ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                    ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                            });
+                    })
+                    ->select('products_images.*', 'image_categories.path as image')
+                    ->where('products_id', '=', $orders_products_data->orders_products_id)->orderBy('sort_order', 'ASC')->get();
+                    // $products_data->images = $products_images;
+
+                    if(!empty($product_attribute)){
+                        foreach($product_attribute as $attribute){
+                            $attribute_option_name = $attribute->products_options;
+                            $attribute_option_value = $attribute->products_options_values;
+
+                            $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+
+
+                        }
+                        $listOfAttributes[$index3]['id'] = $orders_products_data->orders_products_id;
+                        $listOfAttributes[$index3]['price'] = $orders_products_data->products_price;
+                        // $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
+                        $listOfAttributes[$index3]['images'] = $products_images;
+
+
+                        $index3++;
+
+                    }
+
+                $orders_products_data->attributes = $listOfAttributes;
                 $product[$k] = $orders_products_data;
                 $k++;
                 }
@@ -1311,5 +2085,175 @@ class OrderController extends BaseController
         {
             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
         }
+    }
+
+    public function payments_setting_for_brain_tree()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 1)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 1)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_stripe()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 2)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 2)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_cod()
+    {
+        $payments_setting = DB::table('payment_description')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_description.payment_methods_id')
+            ->select('payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 4)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 4)
+            ->first();
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_instamojo()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 5)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 5)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_hyperpay()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 6)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 6)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_razorpay()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 7)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 7)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_paytm()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 8)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 8)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_directbank()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            'payment_methods.payment_method', 'payment_description.sub_name_1')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 9)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 9)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_paystack()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 10)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 10)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_midtrans()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 11)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 11)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_tap()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 9)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 9)
+            ->get()->keyBy('key');
+        return $payments_setting;
+    }
+
+    public function payments_setting_for_bank_account()
+    {
+        $payments_setting = DB::table('payment_methods_detail')
+            ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 'payment_methods.payment_method')
+            ->where('language_id', session('language_id'))
+            ->where('payment_description.payment_methods_id', 10)
+            ->orwhere('language_id', 1)
+            ->where('payment_description.payment_methods_id', 10)
+            ->get()->keyBy('key');
+        return $payments_setting;
     }
 }

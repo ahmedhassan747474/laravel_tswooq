@@ -992,7 +992,7 @@ class POSController extends Controller
 
         $data['quantity'] = $request->quantity;
         $data['price'] = $price;
-        $data['tax'] = $tax;
+        $data['tax'] = 0;
         $data['shipping'] = 0;//$product->shipping_cost;
 
         if($request->session()->has('posCart')){
@@ -1038,6 +1038,42 @@ class POSController extends Controller
 
         return view('admin.pos.cart');
     }
+    public function addToCartNew(Request $request)
+    {
+
+        // dd('ddfdf');
+        $data = array();
+        $data['id'] = 0;
+        $tax = $request->tax ? $request->tax : 0 ;
+
+
+        $data['quantity'] = $request->ProductQuantity;
+        $data['name'] = $request->ProductName;
+        $data['price'] = $request->ProductPrice;
+        $data['tax'] = $tax;
+        $data['shipping'] = 0;//$product->shipping_cost;
+
+        if($request->session()->has('posCartNew')){
+            $foundInCart = false;
+            $cart = collect();
+
+            foreach ($request->session()->get('posCartNew') as $key => $cartItem){
+
+                $cart->push($cartItem);
+            }
+
+            if (!$foundInCart) {
+                $cart->push($data);
+            }
+            $request->session()->put('posCartNew', $cart);
+        }
+        else{
+            $cart = collect([$data]);
+            $request->session()->put('posCartNew', $cart);
+        }
+
+        return redirect()->back();
+    }
 
     //updated the quantity for a cart item
     public function updateQuantity(Request $request)
@@ -1072,6 +1108,21 @@ class POSController extends Controller
         return view('admin.pos.cart');
     }
 
+    //updated the quantity for a cart item
+    public function updateQuantityNew(Request $request)
+    {
+        $cart = $request->session()->get('posCartNew', collect([]));
+        $cart = $cart->map(function ($object, $key) use ($request) {
+            if($key == $request->key){
+                $object['quantity'] = $request->quantity;
+            }
+            return $object;
+        });
+        $request->session()->put('posCartNew', $cart);
+
+        return view('admin.pos.cart');
+    }
+
     //removes from Cart
     public function removeFromCart(Request $request)
     {
@@ -1079,6 +1130,18 @@ class POSController extends Controller
             $cart = Session::get('posCart', collect([]));
             $cart->forget($request->key);
             Session::put('posCart', $cart);
+        }
+
+        return view('admin.pos.cart');
+    }
+
+    //removes from Cart
+    public function removeFromCartNew(Request $request)
+    {
+        if(Session::has('posCartNew')){
+            $cart = Session::get('posCartNew', collect([]));
+            $cart->forget($request->key);
+            Session::put('posCartNew', $cart);
         }
 
         return view('admin.pos.cart');
@@ -1127,7 +1190,7 @@ class POSController extends Controller
     public function order_store(Request $request)
     {
         // return $request->all();
-        if(Session::has('posCart') && count(Session::get('posCart')) > 0){
+        if(Session::has('posCart') && count(Session::get('posCart')) > 0 || Session::has('posCartNew') && count(Session::get('posCartNew')) > 0 ){
             // $order = new Order;
             $first_name = '';
             $last_name = '';
@@ -1254,8 +1317,11 @@ class POSController extends Controller
             }
 
             $taxes_rate = 0;
-            foreach (Session::get('posCart') as $key => $cartItem){
-                $taxes_rate += $cartItem['tax']*$cartItem['quantity'];
+            if(Session::has('posCart') && count(Session::get('posCart')) > 0)
+            {
+                foreach (Session::get('posCart') as $key => $cartItem){
+                    $taxes_rate += $cartItem['tax']*$cartItem['quantity'];
+                }
             }
             $tax_rate = $taxes_rate;
             // $coupon_discount = number_format((float) session('coupon_discount'), 2, '.', '');
@@ -1348,7 +1414,7 @@ class POSController extends Controller
             $web_setting = DB::table('settings')->get();
             $currency = $web_setting[19]->value;
             // $total_tax = number_format((float) session('tax_rate'), 2, '.', '');
-            $products_tax = 1;
+            $products_tax = 0;
 
             if($request->payment_type == 'cash') {
                 $payment_method_name = 'Cash';
@@ -1370,7 +1436,8 @@ class POSController extends Controller
                 }
             }else
             {
-                $customers_name = '';
+                $customers_name = 'بدون اسم';
+                $customers_telephone = 'بدون هاتف';
             }
 
             $orders_id = DB::table('orders')->insertGetId([
@@ -1449,108 +1516,158 @@ class POSController extends Controller
                 $shipping = 0;
                 $total_tax = 0;
 
-                foreach (Session::get('posCart') as $key => $cartItem){
-                    // $product = Product::find($cartItem['id']);
+                if(Session::has('posCart') && count(Session::get('posCart')) > 0)
+                {
+                    foreach (Session::get('posCart') as $key => $cartItem){
+                        // $product = Product::find($cartItem['id']);
 
-                    $product = DB::table('products')
-                        ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
-                        ->where('products.products_id', $cartItem['id'])
-                        ->where('language_id', 1)
-                        ->first();
-                    $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
-                    $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
-                    $current_stock = $current_stock_in - $current_stock_out;
+                        $product = DB::table('products')
+                            ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+                            ->where('products.products_id', $cartItem['id'])
+                            ->where('language_id', 1)
+                            ->first();
+                        $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
+                        $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                        $current_stock = $current_stock_in - $current_stock_out;
 
-                    $subtotal += $cartItem['price']*$cartItem['quantity'];
-                    $tax += $cartItem['tax']*$cartItem['quantity'];
+                        $subtotal += $cartItem['price']*$cartItem['quantity'];
+                        $tax += $cartItem['tax']*$cartItem['quantity'];
 
-                    $product_variation = $cartItem['variant'];
+                        $product_variation = $cartItem['variant'];
 
-                    $total_tax += $cartItem['tax']*$cartItem['quantity'];
+                        $total_tax += $cartItem['tax']*$cartItem['quantity'];
 
-                    if($product_variation != null){
-                        // $product_stock = $product->stocks->where('variant', $product_variation)->first();
-                        // if($cartItem['quantity'] > $product_stock->qty){
-                        //     $order->delete();
-                        //     return 0;
-                        // }
-                        // else {
-                        //     $product_stock->qty -= $cartItem['quantity'];
-                        //     $product_stock->save();
-                        // }
-                    }
-                    else {
-                        if ($cartItem['quantity'] > $current_stock) {
-                            // $order->delete();
-                            // return 0;
-                            $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");
-                            return response()->json($responseData);
+                        if($product_variation != null){
+                            // $product_stock = $product->stocks->where('variant', $product_variation)->first();
+                            // if($cartItem['quantity'] > $product_stock->qty){
+                            //     $order->delete();
+                            //     return 0;
+                            // }
+                            // else {
+                            //     $product_stock->qty -= $cartItem['quantity'];
+                            //     $product_stock->save();
+                            // }
                         }
-                        // else {
-                        //     // $product->current_stock -= $cartItem['quantity'];
-                        //     // $product->save();
-                        //     $minusStock = DB::table('inventory')->insert([])
+                        else {
+                            if ($cartItem['quantity'] > $current_stock) {
+                                // $order->delete();
+                                // return 0;
+                                $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");
+                                return response()->json($responseData);
+                            }
+                            // else {
+                            //     // $product->current_stock -= $cartItem['quantity'];
+                            //     // $product->save();
+                            //     $minusStock = DB::table('inventory')->insert([])
+                            // }
+                        }
+
+                        DB::table('products')->where('products_id', $cartItem['id'])->increment('products_ordered', 1);
+                        $orders_products_id = DB::table('orders_products')->insertGetId([
+                            'orders_id' => $orders_id,
+                            'products_id' => $cartItem['id'],
+                            'products_name' => $product->products_name,
+                            'products_price' => $product->products_price,
+                            'final_price' => $subtotal + $total_tax,
+                            'products_tax' => $products_tax,
+                            'products_quantity' => $cartItem['quantity'],
+                        ]);
+                        $inventory_ref_id = DB::table('inventory')->insertGetId([
+                            'products_id' => $cartItem['id'],
+                            'reference_code' => '',
+                            'stock' => $cartItem['quantity'],
+                            'admin_id' => 0,
+                            'added_date' => time(),
+                            'purchase_price' => 0,
+                            'stock_type' => 'out',
+                            'orders_id' => $orders_id,
+                        ]);
+
+                        // if (Session::get('guest_checkout') == 1) {
+                        //     DB::table('customers_basket')->where('session_id', Session::getId())->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
+
+                        // } else {
+                            DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
                         // }
+
+                        // if (!empty($products->attributes) and count($products->attributes)>0) {
+
+                        //     foreach ($products->attributes as $attribute) {
+                        //         DB::table('orders_products_attributes')->insert([
+                        //             'orders_id' => $orders_id,
+                        //             'products_id' => $products->products_id,
+                        //             'orders_products_id' => $orders_products_id,
+                        //             'products_options' => $attribute->attribute_name,
+                        //             'products_options_values' => $attribute->attribute_value,
+                        //             'options_values_price' => $attribute->values_price,
+                        //             'price_prefix' => $attribute->prefix,
+                        //         ]);
+
+                        //         DB::table('inventory_detail')->insert([
+                        //             'inventory_ref_id' => $inventory_ref_id,
+                        //             'products_id' => $products->products_id,
+                        //             'attribute_id' => $attribute->products_attributes_id,
+                        //             'orders_id' => $orders_id,
+                        //         ]);
+                        //     }
+                        // }
+
+                        $request->session()->put('order_id', $orders_id);
+
                     }
-
-                    DB::table('products')->where('products_id', $cartItem['id'])->increment('products_ordered', 1);
-                    $orders_products_id = DB::table('orders_products')->insertGetId([
-                        'orders_id' => $orders_id,
-                        'products_id' => $cartItem['id'],
-                        'products_name' => $product->products_name,
-                        'products_price' => $product->products_price,
-                        'final_price' => $subtotal + $total_tax,
-                        'products_tax' => $products_tax,
-                        'products_quantity' => $cartItem['quantity'],
-                    ]);
-                    $inventory_ref_id = DB::table('inventory')->insertGetId([
-                        'products_id' => $cartItem['id'],
-                        'reference_code' => '',
-                        'stock' => $cartItem['quantity'],
-                        'admin_id' => 0,
-                        'added_date' => time(),
-                        'purchase_price' => 0,
-                        'stock_type' => 'out',
-                        'orders_id' => $orders_id,
-                    ]);
-
-                    // if (Session::get('guest_checkout') == 1) {
-                    //     DB::table('customers_basket')->where('session_id', Session::getId())->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
-
-                    // } else {
-                        DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
-                    // }
-
-                    // if (!empty($products->attributes) and count($products->attributes)>0) {
-
-                    //     foreach ($products->attributes as $attribute) {
-                    //         DB::table('orders_products_attributes')->insert([
-                    //             'orders_id' => $orders_id,
-                    //             'products_id' => $products->products_id,
-                    //             'orders_products_id' => $orders_products_id,
-                    //             'products_options' => $attribute->attribute_name,
-                    //             'products_options_values' => $attribute->attribute_value,
-                    //             'options_values_price' => $attribute->values_price,
-                    //             'price_prefix' => $attribute->prefix,
-                    //         ]);
-
-                    //         DB::table('inventory_detail')->insert([
-                    //             'inventory_ref_id' => $inventory_ref_id,
-                    //             'products_id' => $products->products_id,
-                    //             'attribute_id' => $attribute->products_attributes_id,
-                    //             'orders_id' => $orders_id,
-                    //         ]);
-                    //     }
-                    // }
-
-                    $request->session()->put('order_id', $orders_id);
-
-
                 }
+
+                if(Session::has('posCartNew') && count(Session::get('posCartNew')) > 0)
+                {
+                    foreach (Session::get('posCartNew') as $key => $cartItem){
+                        // $product = Product::find($cartItem['id']);
+
+
+                        $subtotal += $cartItem['price']*$cartItem['quantity'];
+                        $tax += $cartItem['tax']*$cartItem['quantity'];
+
+                        // $product_variation = $cartItem['variant'];
+
+                        $total_tax += $cartItem['tax']*$cartItem['quantity'];
+
+
+                        $orders_products_id = DB::table('orders_products')->insertGetId([
+                            'orders_id' => $orders_id,
+                            'products_id' => $cartItem['id'],
+                            'products_name' => $cartItem['name'],
+                            'products_price' => $cartItem['price'],
+                            'final_price' => $subtotal + $total_tax,
+                            'products_tax' => $cartItem['tax'],
+                            'products_quantity' => $cartItem['quantity'],
+                        ]);
+                        $inventory_ref_id = DB::table('inventory')->insertGetId([
+                            'products_id' => $cartItem['id'],
+                            'reference_code' => '',
+                            'stock' => $cartItem['quantity'],
+                            'admin_id' => 0,
+                            'added_date' => time(),
+                            'purchase_price' => 0,
+                            'stock_type' => 'out',
+                            'orders_id' => $orders_id,
+                        ]);
+
+
+                        // } else {
+                            DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
+                        // }
+
+
+                        $request->session()->put('order_id', $orders_id);
+
+                    }
+                }
+
+
                 Session::forget('pos_shipping_info');
                     Session::forget('shipping');
                     Session::forget('pos_discount');
                     Session::forget('posCart');
+                    Session::forget('posCartNew');
                     // return 1;
 
                     $responseData = array(

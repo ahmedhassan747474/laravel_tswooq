@@ -23,6 +23,8 @@
         }
         $option .= '</span>';
       }
+      $option .= '<a class="menu-item" href="/like_card_index">Like Card</a>';
+
 
 
     echo $option;
@@ -86,19 +88,19 @@ function productPrices(){
 
   $option = '';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="0;1000"> $0  -  $1000</option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="0;1000"> 0  -  1000</option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=1000;2000"> $1000  -  $2000</option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=1000;2000"> 1000  -  2000</option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=2000;5000"> $2000  -  $5000</option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=2000;5000"> 2000  -  5000</option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=5000;10000"> $5000  -  $10000</option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=5000;10000"> 5000  -  10000</option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=10000;20000"> $10000  -  $20000 </option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=10000;20000"> 10000  -  20000 </option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=20000;50000"> $20000  -  $50000 </option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=20000;50000"> 20000  -  50000 </option>';
 
-  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=50000;10000000000"> $50000  -  $ ??  </option>';
+  $option .= '<option class="dropdown-item" style="background-color: #EEE;color: #000;" value="=50000;10000000000"> 50000  -   ??  </option>';
 
   // $option .= '<a class="dropdown-item categories-list" href="/shop??min_price=0&max_price=2000&filters_applied=0&price=0%3B1000"> $0  -  $1000</a>';
 
