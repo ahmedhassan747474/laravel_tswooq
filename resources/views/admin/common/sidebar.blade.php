@@ -176,6 +176,7 @@
             <!-- <li class="{{ Request::is('admin/lowinstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/lowinstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_products_low_stock') }}</a></li> -->
             <li class="{{ Request::is('admin/outofstock') ? 'active' : '' }} "><a href="{{ URL::to('admin/outofstock')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_out_of_stock_products') }}</a></li>
             <li class="{{ Request::is('admin/products-report') ? 'active' : '' }} "><a href="{{ URL::to('admin/products-report')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_all_products') }}</a></li>
+            <li class="{{ Request::is('admin/products-barcode') ? 'active' : '' }} "><a href="{{ URL::to('admin/products-barcode')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.barcode') }}</a></li>
             <li class="{{ Request::is('admin/inventoryreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/inventoryreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Inventory Report') }}</a></li>
             @endif
 

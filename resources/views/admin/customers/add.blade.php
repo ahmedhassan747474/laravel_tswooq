@@ -86,6 +86,16 @@
                                                                             <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.FaxText') }}</span>
                                                                           </div>
                                                                         </div> -->
+
+                                                                        <div class="form-group">
+                                                                            <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.BarCode') }}<span style="color:red;">*</span></label>
+                                                                            <div class="col-sm-10 col-md-4">
+                                                                                <input class="form-control field-validate" name="barcode">
+                                                                                <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                                {{ trans('labels.AddBarCodeText') }}</span>
+                                                                            </div>
+                                                                        </div>
+
                                                                         <hr>
                                                                         <div class="form-group">
                                                                           <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.EmailAddress') }} </label>

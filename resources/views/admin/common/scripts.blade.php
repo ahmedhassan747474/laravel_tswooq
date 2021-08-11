@@ -32,6 +32,11 @@
 <script src="{!! asset('admin/plugins/fastclick/fastclick.js') !!}"></script>
 <!-- AdminLTE App -->
 <script src="{!! asset('admin/dist/js/app.min.js') !!}"></script>
+
+{{--<!-- Jqurey Print_this -->--}}
+<script src="{{ asset('admin/js/printThis.js') }}"></script>
+
+
 <script src="{{url('admin/js/clipboard.min.js')}}"></script>
 @if(Request::path() == 'admin/dashboard/last_year' or Request::path() == 'admin/dashboard/last_month' or Request::path() == 'admin/dashboard/this_month')
     <!--<script src="{!! asset('dist/js/pages/dashboard.js') !!}"></script>-->

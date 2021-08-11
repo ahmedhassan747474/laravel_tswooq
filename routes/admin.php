@@ -263,6 +263,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     });
     //customers
     Route::group(['prefix' => 'admin/customers', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/barcode', 'CustomersController@barcode')->middleware('view_product');
         Route::get('/display', 'CustomersController@display')->middleware('view_customer');
         Route::get('/add', 'CustomersController@add')->middleware('add_customer');
         Route::post('/add', 'CustomersController@insert')->middleware('add_customer');
@@ -458,6 +459,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     Route::group(['prefix' => 'admin', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
 
         Route::get('/products-report', 'ReportsController@productsDisplay')->middleware('view_product');
+        Route::get('/products-barcode', 'ReportsController@barcode')->middleware('view_product');
         Route::get('/productsreportprint', 'ReportsController@productsreportprint')->middleware('report');
 
         Route::get('/customers-orders-report', 'ReportsController@statsCustomers')->middleware('report');

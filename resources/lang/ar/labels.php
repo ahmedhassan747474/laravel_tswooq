@@ -521,6 +521,7 @@ return [
 	'Telephone' => 'رقم الهاتف',
 	'Fax' => 'رقم الفاكس',
 	'Devices' => 'أجهزة',
+	'barcode'=>'الباركود',
 	'Company' => 'الشركة',
 	'SubscriptionFee'=>'قيمة الاشتراك',
 	'SubscriptionFeeText'=>'ادخل قيمة الاشتراك',

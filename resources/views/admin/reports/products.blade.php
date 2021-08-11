@@ -63,7 +63,7 @@
                                 <button type='submit' class="btn btn-default pull-right"><i class="fa fa-print"></i> {{ trans('labels.Print') }}</button>
                             </form>
                             </div>
-
+                            
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">

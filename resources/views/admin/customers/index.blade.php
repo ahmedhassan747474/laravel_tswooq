@@ -48,6 +48,10 @@
                                 <div class="box-tools pull-right">
                                     <a href="{{ url('admin/customers/add')}}" type="button" class="btn btn-block btn-primary">{{ trans('labels.AddNew') }}</a>
                                 </div>
+                                <div class="box-tools pull-right">
+                                    <a href="{{ url('admin/customers/barcode')}}" style="position: relative;
+                                    right: 10px;" type="button" class="btn btn-block btn-primary">{{ trans('labels.barcode') }}</a>
+                                </div>
                             </div>
                         </div>
                     </div>

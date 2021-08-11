@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Picqer;
+use App\Models\Core\User;
+
 use Kyslik\ColumnSortable\Sortable;
 
 class CustomersController extends Controller
@@ -49,8 +52,43 @@ class CustomersController extends Controller
         $customerData['message'] = $message;
         $customerData['errorMessage'] = $errorMessage;
         $customerData['result'] = $customers;
+        
         $result['commonContent'] = $this->Setting->commonContent();
         return view("admin.customers.index", $title)->with('customers', $customerData)->with('result', $result);
+    }
+
+    public function barcode(Request $request)
+    {
+        // This will output the barcode as HTML output to display in the browser
+        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+       
+
+        $title = array('pageTitle' => Lang::get("labels.StatsProductsLiked"));
+
+        $barcodes = User::sortable(['id'=>'ASC'])
+         
+          ->where('role_id',2)
+          ->when($request->search, function ($q) use ($request) {
+
+            return $q->where('first_name','LIKE', '%' . $request->search . '%')
+                      ->orWhere('last_name','LIKE', '%' . $request->search . '%')
+                ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
+            })
+          ->select('users.*')
+          ->groupby('users.id')
+          ->get();
+          
+        //get function from other controller
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        // dd($barcodes);
+
+        // return view("admin.reports.barcodes.barcode", $title)->with('result', $result]);
+
+        return view('admin.customers.barcodes.barcode', compact('barcodes', 'generator','result','title'));
     }
 
     public function add(Request $request)
@@ -90,6 +128,7 @@ class CustomersController extends Controller
             'customers_telephone' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'barcode' => 'required',
             'isActive' => 'required',
         ]);
 
@@ -218,6 +257,7 @@ class CustomersController extends Controller
             'last_name'		 	=>   $request->last_name,
             'dob'	 			 	  =>	 $request->dob,
             'phone'	 	      =>	 $request->phone,
+            'barcode'	 	      =>	 $request->barcode,
             'status'		    =>   $request->status,
             'avatar'	 		  =>	 $customers_picture,
             'updated_at'    => date('Y-m-d H:i:s'),
