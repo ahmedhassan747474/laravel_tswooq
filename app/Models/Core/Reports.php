@@ -16,6 +16,7 @@ class Reports extends Model
         $language_id = '1';
         $report = DB::table('orders');
 
+        
         if (isset($request->orderid)) {
             $report->where('orders_id', $request->orderid);
         }

@@ -56,6 +56,7 @@ class ReportsController extends Controller
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
 
+        // dd($result['reports']);
         return view("admin.reports.statsCustomers", $title)->with('result', $result);
 
     }

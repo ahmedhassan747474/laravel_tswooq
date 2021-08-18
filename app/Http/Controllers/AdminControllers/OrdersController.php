@@ -71,7 +71,6 @@ class OrdersController extends Controller
     //update order
     public function updateOrder(Request $request)
     {
-
         $orders_status = $request->orders_status;
         $old_orders_status = $request->old_orders_status;
 
@@ -215,6 +214,7 @@ class OrdersController extends Controller
 
         $ordersData['currency'] = $this->myVarsetting->getSetting();
         $result['commonContent'] = $this->Setting->commonContent();
+        // dd($orders_data);
 
         return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData)->with('result', $result);
 

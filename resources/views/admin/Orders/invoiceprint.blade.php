@@ -37,10 +37,23 @@
           <h2 class="page-header" style="padding-bottom: 25px">
             <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }}
             <small class="pull-right">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
+            <br>
+            <?php 
+            $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+
+            // $barcode = App\Models\Core\User::where('email',$data['orders_data'][0]->email)->first();
+            // dd($data['orders_data'][0]);
+            $barcode=$data['orders_data'][0]->orders_id;
+            if(!empty($barcode) && $barcode != null){
+                echo '<img style="padding-top: 15px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode ?? 'null', $generator::TYPE_CODE_128)) . '"> ';
+            }
+        
+            ?>
           </h2>
         </div>
         <!-- /.col -->
       </div>
+      
       <!-- info row -->
       <img src="{{ asset('/images/admin_logo/logo_print.jpeg') }}" height="100" width="150" class="float-right">
       <div class="row invoice-info">
@@ -49,6 +62,7 @@
           <address>
 
             <strong>{{ $data['orders_data'][0]->customers_name }}</strong><br>
+            {{-- <strong>{{ $data['orders_data'][0]->customers_id }}</strong><br> --}}
             {{ $data['orders_data'][0]->customers_street_address }} <br>
             {{ $data['orders_data'][0]->customers_city }}, {{ $data['orders_data'][0]->customers_state }} {{ $data['orders_data'][0]->customers_postcode }}, {{ $data['orders_data'][0]->customers_country }}<br>
             {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->customers_telephone }}<br>
