@@ -19735,7 +19735,7 @@ a.text-dark:focus {
 }
 
 p {
-  color: #212529;
+  color: #100e0e;
   font-family: "Montserrat-Regular", sans-serif;
 }
 
@@ -23400,7 +23400,7 @@ a.carousel-control-next.btn-secondary.swipe-to-top:focus {
 
 /* Ion.RangeSlider
 // css version 2.0.3
-// Â© 2013-2014 Denis Ineshin | IonDen.com
+// Ã‚Â© 2013-2014 Denis Ineshin | IonDen.com
 // ===================================================================================================================*/
 
 /* =====================================================================================================================
@@ -23676,8 +23676,8 @@ a.carousel-control-next.btn-secondary.swipe-to-top:focus {
 
 /* Ion.RangeSlider, Simple Skin
 // css version 2.0.3
-// Â© Denis Ineshin, 2014    https://github.com/IonDen
-// Â© guybowden, 2014        https://github.com/guybowden
+// Ã‚Â© Denis Ineshin, 2014    https://github.com/IonDen
+// Ã‚Â© guybowden, 2014        https://github.com/guybowden
 // ===================================================================================================================*/
 
 /* =====================================================================================================================
@@ -33675,8 +33675,8 @@ body[dir=rtl] .header-mobile .header-navbar .form-inline .search .btn-secondary 
 
 .footer-one {
   padding: 65px 0 0 0;
-  background-color: #fff;
-  color: #212529;
+  background-color: #133445;
+  color: #ffffff !important;
 }
 
 .footer-one .links-list li {
@@ -33687,7 +33687,7 @@ body[dir=rtl] .header-mobile .header-navbar .form-inline .search .btn-secondary 
 .footer-one .links-list li a {
   display: block;
   font-size: 0.875rem;
-  color: #212529;
+  color: #ffffff;
 }
 
 .footer-one .links-list li a:hover {
@@ -33708,7 +33708,7 @@ body[dir=rtl] .header-mobile .header-navbar .form-inline .search .btn-secondary 
 }
 
 .footer-one .socials li a {
-  color: #6c757d;
+  color: #ffffff;
   transition: 0.4s;
 }
 
@@ -33724,7 +33724,7 @@ body[dir=rtl] .header-mobile .header-navbar .form-inline .search .btn-secondary 
 }
 
 .footer-one .mail li a {
-  color: #6c757d;
+  color: #ffffff;
   transition: 0.4s;
 }
 
@@ -33738,6 +33738,7 @@ body[dir=rtl] .header-mobile .header-navbar .form-inline .search .btn-secondary 
 
 .footer-one p {
   margin-bottom: 1.5rem;
+  color: #fefefe;
 }
 
 .footer-one .single-footer h5 {

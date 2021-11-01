@@ -62,7 +62,7 @@
                               </div>
                             </div>
                             <div class="col-12 col-md-4 detail">
-                              <div class="share"><a href="{{ URL::to("/UnlikeMyProduct")}}/{{$products->products_id}}">@lang('website.Remove') &nbsp;<i class="fas fa-trash-alt"></i></a> </div>
+                              <div class="share"><a href="{{ URL::to("/UnlikeMyProduct")}}/{{$products->products_id}}">@lang('website.Remove') &nbsp;<i class="fa fa-trash-alt"></i></a> </div>
                             </div>
                             </div>
                         </div>									

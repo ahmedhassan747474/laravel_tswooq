@@ -11,7 +11,6 @@ use App\Models\Core\Customers;
 use App\Models\Core\Products;
 use App\Models\Core\Suppliers;
 use Illuminate\Support\Facades\Validator;
-use Picqer;
 
 //for password encryption or hash protected
 use DB;
@@ -39,6 +38,59 @@ class ReportsController extends Controller
         $this->category = $category;
     }
 
+    public function barcode(Request $request)
+    {
+        // This will output the barcode as HTML output to display in the browser
+        // $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+        // $barcode= $generator->getBarcode('BDR', $generator::TYPE_CODE_128);
+        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '"> ';
+        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '">';
+
+        // $barcodes = Product::when($request->search, function ($q) use ($request) {
+
+        //     return $q->where('name','LIKE', '%' . $request->search . '%')
+        //         ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
+        // })->when($request->category_id, function ($q) use ($request) {
+
+        //     return $q->where('category_id', $request->category_id);
+        // })->when($request->company_id, function ($q) use ($request) {
+
+        //     return $q->where('company_id', $request->company_id);
+        // })->get();
+
+        // $barcodes = $this->Products->getter();
+
+        $title = array('pageTitle' => Lang::get("labels.StatsProductsLiked"));
+
+        $barcodes = DB::table('products')
+            ->join('products_description', 'products_description.products_id', '=', 'products.products_id')
+            ->where('products_description.language_id', '=', '1')
+            ->when($request->search, function ($q) use ($request) {
+
+                return $q->where('products_name','LIKE', '%' . $request->search . '%')
+                    ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
+            });
+            if(auth()->user()->role_id != 1) {
+                $barcodes->where('admin_id', '=', auth()->user()->id);
+            } 
+            $barcodes->orderBy('products_liked', 'DESC')
+            ->get();
+
+        // $result['data'] = $products;
+
+        //get function from other controller
+        $myVar = new SiteSettingController();
+        $result['currency'] = $myVar->getSetting();
+
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        // dd($barcodes);
+
+        // return view("admin.reports.barcodes.barcode", $title)->with('result', $result]);
+
+        return view('admin.reports.barcodes.barcode', compact('barcodes','result','title'));
+    }
+
     //statsCustomers
     public function statsCustomers(Request $request)
     {
@@ -56,7 +108,6 @@ class ReportsController extends Controller
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
 
-        // dd($result['reports']);
         return view("admin.reports.statsCustomers", $title)->with('result', $result);
 
     }
@@ -504,56 +555,6 @@ class ReportsController extends Controller
 
     }
 
-
-    public function barcode(Request $request)
-    {
-        // This will output the barcode as HTML output to display in the browser
-        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-        // $barcode= $generator->getBarcode('BDR', $generator::TYPE_CODE_128);
-        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '"> ';
-        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '">';
-
-        // $barcodes = Product::when($request->search, function ($q) use ($request) {
-
-        //     return $q->where('name','LIKE', '%' . $request->search . '%')
-        //         ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
-        // })->when($request->category_id, function ($q) use ($request) {
-
-        //     return $q->where('category_id', $request->category_id);
-        // })->when($request->company_id, function ($q) use ($request) {
-
-        //     return $q->where('company_id', $request->company_id);
-        // })->get();
-
-        // $barcodes = $this->Products->getter();
-
-        $title = array('pageTitle' => Lang::get("labels.StatsProductsLiked"));
-
-        $barcodes = DB::table('products')
-            ->join('products_description', 'products_description.products_id', '=', 'products.products_id')
-            ->where('products_description.language_id', '=', '1')
-            ->when($request->search, function ($q) use ($request) {
-
-                return $q->where('products_name','LIKE', '%' . $request->search . '%')
-                    ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
-            })
-            ->orderBy('products_liked', 'DESC')
-            ->get();
-
-        // $result['data'] = $products;
-
-        //get function from other controller
-        $myVar = new SiteSettingController();
-        $result['currency'] = $myVar->getSetting();
-
-        $result['commonContent'] = $myVar->Setting->commonContent();
-
-        // dd($barcodes);
-
-        // return view("admin.reports.barcodes.barcode", $title)->with('result', $result]);
-
-        return view('admin.reports.barcodes.barcode', compact('barcodes', 'generator','result','title'));
-    }
 
 
     //lowinstock

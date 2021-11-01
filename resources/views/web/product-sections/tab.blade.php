@@ -1,17 +1,17 @@
-@if($result['special']['success']==1 or $result['top_seller']['success']==1 or $result['most_liked']['success']==1 )
+{{-- @if($result['special']['success']==1 or $result['top_seller']['success']==1 or $result['most_liked']['success']==1 )
 
 <section class="tabs-content pro-content" >
   <div class="container">
     <div class="products-area">
        <div class="row justify-content-center">
          <div class="col-12 col-lg-6">
-           <div class="pro-heading-title">
+           <!--<div class="pro-heading-title">
              <h2>  @lang('website.WELCOME TO STORE')
              </h2>
              <p> 
                @lang('website.WELCOME TO STORE DETAIL')
               </p>
-             </div>
+             </div><-->
            </div>
        </div>
     
@@ -128,5 +128,96 @@
  
  </div>  
 </section>
+
+@endif --}}
+
+@push('styles')
+<style>
+  .bodyrtl .slick-slider .slick-slide {
+    width: 240px!important;
+  }
+  </style>
+    
+@endpush
+@if($result['groups'] !=null)
+@foreach ($result['groups'] as $index=>$item)
+<section class="tabs-content pro-content" >
+  <div class="container">
+    <div class="products-area">
+       <div class="row justify-content-center">
+         <div class="col-12 col-lg-6">
+          <div class="pro-heading-title">
+            <h2> {{ $item->name_ar }}
+            </h2>
+            
+          </div>
+         </div>
+       </div>
+    
+    </div>
+  </div>
+  <div class="tabs-main">
+    <div class="container">
+      <div class="row">
+         <div class="col-md-12 p-0">
+             {{-- <div class="nav" role="tablist" id="tabCarousel">
+               @php
+                 $counter=0;
+               @endphp
+              @foreach ($result['groups'] as $index=>$item)
+              @if($item->products!=[])
+              <a class="nav-link btn  {{ $counter==0 ? 'active show' : '' }}" data-toggle="tab" href="#g{{ $item->id }}" role="tab" ><span data-toggle="tooltip" data-placement="bottom" title="{{ $item->name_ar}}">{{ $item->name_ar }}</span></a>     
+              @php
+                $counter++;
+              @endphp
+              @endif
+              @endforeach
+                
+
+                </div>  --}}
+           <!-- Tab panes -->
+           <div class="tab-content">
+             @php
+               $counter=0;
+             @endphp
+
+            
+            @if($item->products)
+            <div role="tabpanel" class="tab-pane fade {{ $counter==0 ? 'active show' : 'active show' }}" id="g{{ $item->id }}">
+                <div class="tab-carousel-js">
+                    @php
+                    $counter++;
+                    @endphp
+                      @foreach($item->products as $key=>$products)
+                      <div class="slick " >
+                        @include('web.common.product')
+                      </div> 
+                      @endforeach
+
+                      <div class="">
+                        <div class="product">
+                          <article>
+                          <div class="btn-all">
+                            <a href="{{url('/shop?type=topseller')}}" class="btn btn-secondary swipe-to-top">@lang('website.View All')</a>
+                          </div>                              
+                          </article>
+                        </div>
+                      </div>
+                </div>
+              <!-- 1st tab --> 
+            </div>
+
+            @endif        
+
+
+           
+             
+           </div>
+         </div>
+      </div>
+    </div>
+ </div>  
+</section>
+@endforeach
 
 @endif

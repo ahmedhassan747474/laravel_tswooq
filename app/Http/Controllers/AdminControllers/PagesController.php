@@ -21,7 +21,7 @@ class PagesController extends Controller
         $result = Pages::pages(); 
         $result['commonContent'] = $this->Setting->commonContent();
         return view("admin.pages.index", $title)->with('result', $result);
-
+        
     }
 
     public function addpage(Request $request)

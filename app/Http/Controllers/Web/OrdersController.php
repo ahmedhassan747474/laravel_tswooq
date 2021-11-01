@@ -102,20 +102,20 @@ class OrdersController extends Controller
             }
 
             if(auth()->guard('customer')->check()){
-
+                
                 $all_addresses = $this->shipping->getShippingAddress(array());
-
+                
                 if (!empty($all_addresses) and count($all_addresses)>0) {
                     foreach($all_addresses as $default_address){
-                        if($default_address->default_address==1){
+                        if($default_address->default_address==1){                        
                             $default_address->delivery_phone = auth()->guard('customer')->user()->phone;
                             $address = $default_address;
                         }
                     }
-
+                    
                 }
             }
-
+            
             if (empty(session('shipping_address'))) {
                 session(['shipping_address' => $address]);
             }
@@ -143,7 +143,7 @@ class OrdersController extends Controller
             $result['shipping_methods'] = $this->shipping_methods();
 
             //payment methods
-            $result['payment_methods'] = $this->getPaymentMethods();
+            $result['payment_methods'] = $this->getPaymentMethods();           
 
             //price
             $price = 0;
@@ -177,7 +177,7 @@ class OrdersController extends Controller
 
             //breaintree token
             $token = $this->generateBraintreeTokenWeb();
-            session(['braintree_token' => $token]);
+            session(['braintree_token' => $token]);            
 
             return view("web.checkout", ['title' => $title, 'final_theme' => $final_theme])->with('result', $result);
         }
@@ -296,6 +296,7 @@ class OrdersController extends Controller
     //generate token
     public function generateBraintreeTokenWeb()
     {
+
         $payments_setting = $this->order->payments_setting_for_brain_tree();
         if ($payments_setting['merchant_id']->status == 1) {
             //braintree transaction get nonce
@@ -312,19 +313,19 @@ class OrdersController extends Controller
             $braintree_private_key = $payments_setting['private_key']->value;
 
             //for token please check index.php file
-            require_once app_path('braintree/index.php');
+            require_once app_path('braintree/index.php');  
         } else {
             $clientToken = '';
         }
         return $clientToken;
 
     }
-
+    
     public function checkout_tap_payment(Request $request)
     {
         // $url = "https://api.tap.company/v2/charges/%7B" . $request->tap_id . "%7D";
         $url = "https://api.tap.company/v2/charges/" . $request->tap_id;
-
+        
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -340,12 +341,12 @@ class OrdersController extends Controller
                 "authorization: Bearer sk_test_AZ4bmEMR1rqGLzoTShvkwFNK"
             ),
         ));
-
+        
         $response = curl_exec($curl);
         $err = curl_error($curl);
-
+        
         curl_close($curl);
-
+        
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
@@ -365,9 +366,9 @@ class OrdersController extends Controller
                 $deleteOrderInventoryDetail = DB::table('inventory_detail')->where('orders_id', '=', $orderId->orders_id)->delete();
             }
         }
-
+        
         $curl = curl_init();
-
+        
         // return redirect()->route('set_home');
         $message = Lang::get("website.Payment has been processed successfully");
         return redirect('/thankyou');
@@ -399,7 +400,7 @@ class OrdersController extends Controller
     public function thankyou(Request $request)
     {
         $title = array('pageTitle' => Lang::get('website.Thank You'));
-        $bankdetail = array();
+        $bankdetail = array();        
         $final_theme = $this->theme->theme();
         $result = $this->order->orders($request);
         return view("web.thankyou", ['title' => $title, 'final_theme' => $final_theme, 'bankdetail'=>$bankdetail])->with('result', $result);
@@ -410,7 +411,7 @@ class OrdersController extends Controller
     {
         $title = array('pageTitle' => Lang::get("website.My Orders"));
         $final_theme = $this->theme->theme();
-        $result = $this->order->orders($request);
+        $result = $this->order->orders($request);       
         return view("web.orders", ['title' => $title, 'final_theme' => $final_theme])->with('result', $result);
     }
 
@@ -677,6 +678,7 @@ class OrdersController extends Controller
     //get default payment method
     public function getPaymentMethods()
     {
+
         /**   BRAIN TREE **/
         //////////////////////
         $result = array();
@@ -781,7 +783,7 @@ class OrdersController extends Controller
         /*************************/
 
         $payments_setting = $this->order->payments_setting_for_razorpay();
-
+        
         if ($payments_setting['RAZORPAY_SECRET']->environment == '0') {
             $razorpay_enviroment = 'Test';
         } else {
@@ -800,7 +802,7 @@ class OrdersController extends Controller
         );
 
         $payments_setting = $this->order->payments_setting_for_paytm();
-
+        
 
         if ($payments_setting['paytm_mid']->environment == '0') {
             $paytm_enviroment = 'Test';
@@ -815,8 +817,8 @@ class OrdersController extends Controller
             'name' => $payments_setting['paytm_mid']->name,
             'active' => $payments_setting['paytm_mid']->status,
             'payment_method' => $payments_setting['paytm_mid']->payment_method,
-        );
-
+        );    
+        
         /**   TAP   **/
         //////////////////////
 
@@ -950,7 +952,7 @@ class OrdersController extends Controller
         if(Auth::guard('customer')->check()){
             $email = auth()->guard('customer')->user()->email;
         }else{
-            $email = session('shipping_address')->email;
+            $email = session('shipping_address')->email;          
         }
 
         $url = $env_url;
@@ -1071,7 +1073,7 @@ class OrdersController extends Controller
         if(Auth::guard('customer')->check()){
             $email = auth()->guard('customer')->user()->email;
         }else{
-            $email = session('shipping_address')->email;
+            $email = session('shipping_address')->email;          
         }
         $payments_setting = $this->order->payments_setting_for_paystack();
         $amount = number_format((float) session('total_price') + 0, 2) ;
@@ -1093,7 +1095,7 @@ class OrdersController extends Controller
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec ($ch);
-
+        
         if ($response === false) {
             throw new \Exception('CURL Error: ' . curl_error($ch), curl_errno($ch));
         }
@@ -1103,8 +1105,8 @@ class OrdersController extends Controller
 		// if ($response) {
 		// 	$result = json_decode($response, true);
         // }
-
-
+        
+       
 		print_r($response);
     }
 
@@ -1130,19 +1132,19 @@ class OrdersController extends Controller
            // dd($result);
 
             if($result){
-            //message
+            //message    
             session(['paymentResponseData'=> $message]);
 
             if(!empty($result['data']) and count($result['data'])>0){
                 //something came in
                 if($result['data']['status'] == 'success'){
                 // the transaction was successful, you can deliver value
-                /*
-                @ also remember that if this was a card transaction, you can store the
-                @ card authorization to enable you charge the customer subsequently.
-                @ The card authorization is in:
+                /* 
+                @ also remember that if this was a card transaction, you can store the 
+                @ card authorization to enable you charge the customer subsequently. 
+                @ The card authorization is in: 
                 @ $result['data']['authorization']['authorization_code'];
-                @ PS: Store the authorization with this email address used for this transaction.
+                @ PS: Store the authorization with this email address used for this transaction. 
                 @ The authorization will only work with this particular email.
                 @ If the user changes his email on your system, it will be unusable
                 */
@@ -1174,11 +1176,11 @@ class OrdersController extends Controller
             session(['paymentResponseData'=> $message]);
         }
 
-
-
+        
+        
          return redirect('checkout');
     }
-
+    
 
 
 }

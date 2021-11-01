@@ -12,16 +12,16 @@
             <div class="icon-liked"> 
   
               <a class="icon active swipe-to-top is_liked" products_id="<?=$product->productId?>">
-                <i class="fas fa-heart"></i>
+                <i class="fa fa-heart"></i>
               </a>
   
             </div>
   
             <div class="icon modal_show " products_id ="{{$product->productId}}">
-              <i class="fas fa-eye"></i>
+              <i class="fa fa-eye"></i>
             </div>
             <a onclick="myFunction3({{$product->productId}})" class="icon">
-              <i class="fas fa-align-right" data-fa-transform="rotate-90"></i>
+              <i class="fa fa-align-right" data-fa-transform="rotate-90"></i>
             </a>
           </div>
         </div>

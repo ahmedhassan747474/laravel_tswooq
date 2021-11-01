@@ -16,7 +16,6 @@ class Reports extends Model
         $language_id = '1';
         $report = DB::table('orders');
 
-        
         if (isset($request->orderid)) {
             $report->where('orders_id', $request->orderid);
         }
@@ -57,7 +56,7 @@ class Reports extends Model
 
         $report->select('orders.*')->where('customers_id', '!=', '')->orderby('orders.orders_id', 'ASC')->groupby('orders.orders_id');
 
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
             $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
@@ -139,7 +138,7 @@ class Reports extends Model
 
         $report->select('orders.*')->where('customers_id', '!=', '')->where('coupon_code', '!=', '')->orderby('orders.orders_id', 'ASC')->groupby('orders.orders_id');
 
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
             $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
@@ -205,7 +204,7 @@ class Reports extends Model
 
         // $report->groupby('orders.orders_id');
 
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
             $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
@@ -367,7 +366,7 @@ class Reports extends Model
         //     $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
         //     and (CURDATE() - INTERVAL 1 DAY)");
 
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
             $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
@@ -689,7 +688,7 @@ class Reports extends Model
             ->groupBy('supplier_main.supplier_main_id');
 
             // dd($report);
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('suppliers.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
             $report->where('suppliers.admin_id', '=', auth()->user()->parent_admin_id);
@@ -897,12 +896,9 @@ class Reports extends Model
                     ->groupby('inventory.products_id')
                     ->havingRaw("SUM(IF(stock_type = 'in', stock, 0)) - SUM(IF(stock_type = 'out', stock, 0)) = 0");
 
-        if(auth()->user()->role_id == 11) {
+        if(auth()->user()->role_id != 1) {
             $report->where('products.admin_id', '=', auth()->user()->id);
-        } elseif(auth()->user()->role_id == 12) {
-            $report->where('products.admin_id', '=', auth()->user()->parent_admin_id);
-        }
-
+        } 
         if ($request->page and $request->page == 'invioce') {
             $orders = $report->get();
         } else {

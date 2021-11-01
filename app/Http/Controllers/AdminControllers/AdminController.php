@@ -373,7 +373,6 @@ class AdminController extends Controller
 		$myVar = new AddressController();
 		$result['countries'] = $myVar->getAllCountries();
 		$result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
-
 		$adminTypes = DB::table('user_types')->where('isActive', 1)->where('user_types_id','>','10')->get();
 		$result['adminTypes'] = $adminTypes;
 		$result['commonContent'] = $this->Setting->commonContent();
@@ -408,6 +407,13 @@ class AdminController extends Controller
                 $uploadImage = '';
             }
 
+			if ($request->image_shop_id !== null) {
+
+                $uploadImage_shop = $request->image_shop_id;
+            } else {
+                $uploadImage_shop = '';
+            }
+
 			$customers_id = DB::table('users')->insertGetId([
 						'user_name'		 		    =>   $request->first_name.'_'.$request->last_name.time(),
 						'first_name'		 		=>   $request->first_name,
@@ -417,12 +423,14 @@ class AdminController extends Controller
 						'password'		 			=>   Hash::make($request->password),
 						'status'		 	 		=>   $request->isActive,
 						'avatar'	 				=>	 $uploadImage,
+						'shopImg'	 				=>	 $uploadImage_shop,
 						'record_number'	 		    =>   $request->record_number,
 						'subscription_fee'	 		    =>   $request->subscription_fee,
 						'start_date'	 		    =>   $request->start_date,
 						'end_date'	 		    =>   $request->end_date,
 						'role_id'					=>	 $request->adminType,
 						'parent_admin_id'			=>   $request->admin_id,
+						'like_limit'			=>   $request->like_limit,
 						'shop_name'					=>   $request->shop_name
 						]);
 
@@ -513,6 +521,7 @@ class AdminController extends Controller
 				'end_date'	 		    =>   $request->end_date,
 				'role_id'	 				=>	 $request->adminType,
                 'parent_admin_id'			=>   $request->admin_id,
+				'like_limit'			=>   $request->like_limit,
                 'shop_name'					=>   $request->shop_name
 			);
 

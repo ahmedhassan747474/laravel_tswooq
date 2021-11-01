@@ -14,7 +14,11 @@
                   <span>
                     <ul>
                       @foreach($languages as $language)
-                      <li><a onclick="myFunction1({{$language->languages_id}})" href="#"><img class="img-fluid" src="{{asset('').$language->image_path}}"></a></li>
+                      <li>
+                      <a onclick="myFunction1({{$language->languages_id}})" href="#">
+                        {{$language->code}}
+                      </a>
+                      </li>
                     @endforeach
                       
                     </ul>

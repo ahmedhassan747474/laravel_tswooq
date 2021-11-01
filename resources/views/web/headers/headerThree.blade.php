@@ -105,7 +105,7 @@
             <ul class="top-right-list">
                 <li class="phone-header">
                     <a href="#">
-                        <i class="fas fa-phone"></i>
+                        <i class="fa fa-phone"></i>
                         <span class="block">
                           <span class="title">@lang('website.Call Us Now')</span>                    
                           <span class="items" dir="ltr">{{$result['commonContent']['setting'][11]->value}}</span>

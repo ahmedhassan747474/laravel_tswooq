@@ -67,16 +67,14 @@
                                                             </div>
                                                             <!-- /.box-header -->
                                                             <div class="box-body">
-                                                                {!! Form::open(array('url' =>'admin/products/inventory/addnewstock', 'name'=>'inventoryfrom', 'id'=>'addewinventoryfrom', 'method'=>'post', 'class' => 'form-horizontal form-validate',
-                                                                'enctype'=>'multipart/form-data')) !!}
-
+                                 
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Products') }}<span style="color:red;">*</span> </label>
                                                                     <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control field-validate product-type select2" name="products_id" style="width: 100%;">
+                                                                        <select id="product" class="form-control field-validate product-type select2" name="products_id" style="width: 100%;">
                                                                             <option value="">{{ trans('labels.Choose Product') }}</option>
                                                                             @foreach ($result['products'] as $pro)
-                                                                            <option value="{{$pro->products_id}}">{{$pro->products_name}}
+                                                                            <option value="{{$pro->products_id}}" {{ isset($pro_id) && $pro_id == $pro->products_id ? 'selected':'' }}>{{$pro->products_name}}
                                                                                 @if (count($pro->attr) > 0)
                                                                                     @foreach ($pro->attr as $item)
                                                                                     {{$item}}
@@ -120,7 +118,7 @@
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.stocktype') }} </label>
                                                                     <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control" name="stock_type">
+                                                                        <select id="stock_type" class="form-control" name="stock_type">
                                                                             <option value="in">{{ trans('labels.in') }}</option>
                                                                             <option value="out">{{ trans('labels.out') }}</option>
                                                                         </select>
@@ -132,7 +130,7 @@
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Enter Stock') }}<span style="color:red;">*</span></label>
                                                                     <div class="col-sm-10 col-md-8">
-                                                                        <input type="text" name="stock" value="" class="form-control stock-validate">
+                                                                        <input id="stock" type="text" name="stock" value="" class="form-control stock-validate">
                                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                                                             {{ trans('labels.Enter Stock Text') }}</span>
                                                                     </div>
@@ -141,75 +139,22 @@
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Purchase Price') }}</label>
                                                                     <div class="col-sm-10 col-md-8">
-                                                                        <input type="text" name="purchase_price" value="0" class="form-control number-validate">
+                                                                        <input type="text" id="purchase_price" name="purchase_price" value="0" class="form-control number-validate">
                                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                                                             {{ trans('labels.Purchase Price Text') }}</span>
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.SuppliersType') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <div class="custom-control custom-radio custom-control-inline">
-                                                                            <input type="radio" id="customRadioInline1" name="supplier_type" value="term" class="custom-control-input">
-                                                                            <label class="custom-control-label" for="customRadioInline1">{{ trans('labels.term') }}</label>
-                                                                        </div>
-                                                                        <div class="custom-control custom-radio custom-control-inline">
-                                                                            <input type="radio" id="customRadioInline2" name="supplier_type" value="end" class="custom-control-input">
-                                                                            <label class="custom-control-label" for="customRadioInline2">{{ trans('labels.end') }}</label>
-                                                                        </div>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Suppliers') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control field-validate supplier-id" name="supplier_id">
-                                                                            <option value="">{{ trans('labels.Choose Supplier') }}</option>
-                                                                            @foreach ($result['suppliers'] as $pro)
-                                                                            <option value="{{$pro->supplier_id}}">{{$pro->supplier_name}}</option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Invoices') }}<span style="color:red;">*</span> </label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <select class="form-control get_invoices" name="invoice_id">
-                                                                            <option value="">{{ trans('labels.Choose Invoice') }}</option>
-                                                                            
-                                                                        </select>
-                                                                        {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Supplier Type Text') }}.</span> --}}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Reference') }}</label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <input type="text" name="reference_code" value="" class="form-control">
-                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.Reference Text') }}</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- /.users-list -->
-                                                            </div>
+                                                                
                                                            @if(count($result['products'])> 0)
                                                                 @if(count($result['attributes'])>0 and $result['products'][0]->products_type==1 or $result['products'][0]->products_type==0)
                                                                 <!-- /.box-body -->
                                                                 <div class="box-footer text-center">
-                                                                    <button type="submit" id="attribute-btn" class="btn btn-primary pull-right">{{ trans('labels.Add Stock') }}</button>
+                                                                    <button type="buttton" id="add" class="btn btn-primary pull-right">{{ trans('labels.Add') }}</button>
                                                                 </div>
                                                                 @endif
                                                             @endif
 
-                                                            {!! Form::close() !!}
                                                             <!-- /.box-footer -->
                                                         </div>
                                                         <!--/.box -->
@@ -332,6 +277,116 @@
                                                 <a href="{{ URL::to("admin/products/attach/attribute/display/".$result['products'][0]->products_id) }}" class="btn btn-default pull-left">{{ trans('labels.AddOptions') }}</a>
                                                 @endif
                                             </div>
+
+                                            <div class="row">
+                                                {!! Form::open(array('url' =>'admin/products/inventory/addnewstock', 'name'=>'inventoryfrom', 'id'=>'addewinventoryfrom', 'method'=>'post', 'class' => 'form-horizontal form-validate',
+                                                            'enctype'=>'multipart/form-data')) !!}
+
+                                                <div class="col-xs-12">
+                                                    <table id="example1" class="table table-bordered table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            {{-- <th>@sortablelink('page_id', trans('labels.ID') )</th>
+                                                            <th>@sortablelink('Name', trans('labels.Name') )</th>
+                                                            <th>@sortablelink('slug', trans('labels.Slug') )</th> --}}
+                                                        {{--<!-- <th>{{ trans('labels.Page Type') }}</th>-->--}}
+                                                            <th>{{ trans('labels.Product') }}</th>
+                                                            <th>{{ trans('labels.stocktype') }}</th>
+                                                            <th>{{ trans('labels.Stock') }}</th>
+                                                            <th>{{ trans('labels.Purchase Price') }}</th>
+                                                            <th>{{ trans('labels.Status') }}</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody class="add_more">
+                                                        
+                                                        </tbody>
+                                                    </table>
+                                                   
+                                                </div>
+                
+                                                <!-- /.col -->
+                                                <div class="col-md-12">
+                                                    <!-- USERS LIST -->
+                                                    <div class="box box-info">
+                                                        <div class="box-header with-border">
+                                                            <h3 class="box-title">{{ trans('labels.Add Stock') }}</h3>
+                                                            <div class="box-tools pull-right">
+
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.box-header -->
+                                                        <div class="box-body">  
+
+                                                            <div class="form-group">
+                                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.SuppliersType') }}<span style="color:red;">*</span> </label>
+                                                                <div class="col-sm-10 col-md-8">
+                                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                                        <input type="radio" id="customRadioInline1" name="supplier_type" value="term" class="custom-control-input">
+                                                                        <label class="custom-control-label" for="customRadioInline1">{{ trans('labels.term') }}</label>
+                                                                    </div>
+                                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                                        <input type="radio" id="customRadioInline2" name="supplier_type" value="end" class="custom-control-input">
+                                                                        <label class="custom-control-label" for="customRadioInline2">{{ trans('labels.end') }}</label>
+                                                                    </div>
+                                                                    {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                        {{ trans('labels.Supplier Type Text') }}.</span> --}}
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Suppliers') }}<span style="color:red;">*</span> </label>
+                                                                <div class="col-sm-10 col-md-8">
+                                                                    <select class="form-control field-validate supplier-id" name="supplier_id">
+                                                                        <option value="">{{ trans('labels.Choose Supplier') }}</option>
+                                                                        @foreach ($result['suppliers'] as $pro)
+                                                                        <option value="{{$pro->supplier_id}}">{{$pro->supplier_name}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                        {{ trans('labels.Supplier Type Text') }}.</span> --}}
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Invoices') }}<span style="color:red;">*</span> </label>
+                                                                <div class="col-sm-10 col-md-8">
+                                                                    <select class="form-control field-validate get_invoices" name="invoice_id" required>
+                                                                        <option value="">{{ trans('labels.Choose Invoice') }}</option>
+                                                                        
+                                                                    </select>
+                                                                    {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                        {{ trans('labels.Supplier Type Text') }}.</span> --}}
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Reference') }}</label>
+                                                                <div class="col-sm-10 col-md-8">
+                                                                    <input type="text" name="reference_code" value="" class="form-control">
+                                                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                        {{ trans('labels.Reference Text') }}</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- /.users-list -->
+                                                        </div>
+                                                       @if(count($result['products'])> 0)
+                                                            @if(count($result['attributes'])>0 and $result['products'][0]->products_type==1 or $result['products'][0]->products_type==0)
+                                                            <!-- /.box-body -->
+                                                            <div class="box-footer text-center">
+                                                                <button type="submit" id="attribute-btn" class="btn btn-primary pull-right">{{ trans('labels.Add Stock') }}</button>
+                                                            </div>
+                                                            @endif
+                                                        @endif
+
+                                                        
+                                                        <!-- /.box-footer -->
+                                                    </div>
+                                                    <!--/.box -->
+                                                </div>
+                                                {!! Form::close() !!}
+                                            </div>
                                         </div>
                                     </div>
                                 {{-- </div> --}}
@@ -360,3 +415,99 @@
 <!-- /.row -->
 
 @endsection
+
+
+@push('scripts')
+
+<script>
+    @if (isset($pro_id))
+    var i = 0;
+    var div = '';
+        var product = document.getElementById('product');
+        var stock_type = document.getElementById('stock_type');
+        var stock = document.getElementById('stock');
+        var purchase_price = document.getElementById('purchase_price');
+      div += '<tr class="row_id_'+i+'">';
+      div += '<input type="hidden" name="products_id[]" value="'+product.value+'">';
+        div += '<td>';
+          div += product.options[product.selectedIndex].text;
+        div += '</td>';
+
+        div += '<td>';
+          div += '<select class="form-control" name="stock_type[]">';
+            div +=  '<option value="in">{{ trans("labels.in") }}</option>';
+            div +=  '<option value="out">{{ trans("labels.out") }}</option>';
+            div += '</select>';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="stock[]" value="'+stock.value+'" class="form-control stock-validate">';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="purchase_price[]" value="'+purchase_price.value+'" class="form-control number-validate">';
+        div += '</td>';
+
+
+        div += '<td>';
+          div += '<button type="button" data-id="' + i + '" class="btn btn-danger btn-block py-2 deleteMore">Delete</button>';
+        div += '</td>';
+
+      div += '</tr>';
+
+      $('.add_more').prepend(div);
+
+      div = '';
+      i++;
+    
+
+    @endif
+     var i = 0;
+    var div = '';
+    $('#add').on('click', function () {
+        var product = document.getElementById('product');
+        var stock_type = document.getElementById('stock_type');
+        var stock = document.getElementById('stock');
+        var purchase_price = document.getElementById('purchase_price');
+      div += '<tr class="row_id_'+i+'">';
+      div += '<input type="hidden" name="products_id[]" value="'+product.value+'">';
+        div += '<td>';
+          div += product.options[product.selectedIndex].text;
+        div += '</td>';
+
+        div += '<td>';
+          div += '<select class="form-control" name="stock_type[]">';
+            div +=  '<option value="in">{{ trans("labels.in") }}</option>';
+            div +=  '<option value="out">{{ trans("labels.out") }}</option>';
+            div += '</select>';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="stock[]" value="'+stock.value+'" class="form-control stock-validate">';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="purchase_price[]" value="'+purchase_price.value+'" class="form-control number-validate">';
+        div += '</td>';
+
+
+        div += '<td>';
+          div += '<button type="button" data-id="' + i + '" class="btn btn-danger btn-block py-2 deleteMore">Delete</button>';
+        div += '</td>';
+
+      div += '</tr>';
+
+      $('.add_more').prepend(div);
+
+      div = '';
+      i++;
+    });
+
+    $(document).on('click', '.deleteMore', function(){
+        var button_id = $(this).data("id");
+        $('.row_id_'+button_id+'').remove();
+    });
+
+    </script>
+    
+@endpush

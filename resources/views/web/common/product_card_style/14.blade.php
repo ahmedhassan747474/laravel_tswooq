@@ -47,14 +47,14 @@
     <div class="product-action-vertical">
       
       <a href="javascript:void(0)" class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="@lang('website.Wishlist')">
-        <i class="fas fa-heart"></i>
+        <i class="fa fa-heart"></i>
       </a>
 
       <div class="icon swipe-to-top modal_show" products_id ="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Quick View')">
-        <i class="fas fa-eye"></i>
+        <i class="fa fa-eye"></i>
       </div>
       <a onclick="myFunction3({{$products->products_id}})" class="btn-secondary icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Compare')">
-        <i class="fas fa-align-right" data-fa-transform="rotate-90"></i>
+        <i class="fa fa-align-right" data-fa-transform="rotate-90"></i>
       </a>
     </div>
 
@@ -106,19 +106,19 @@
           @if(!in_array($products->products_id,$result['cartArray']))
               @if($products->defaultStock==0)
 
-                  <button type="button" class="btn btn-block btn-danger swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fas fa-shopping-bag"></i> @lang('website.Out of Stock')</button>
+                  <button type="button" class="btn btn-block btn-danger swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fa fa-shopping-bag"></i> @lang('website.Out of Stock')</button>
               @elseif($products->products_min_order>1)
-              <a class="btn btn-block btn-secondary swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fas fa-shopping-bag"></i> @lang('website.View Detail')</a>
+              <a class="btn btn-block btn-secondary swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fa fa-shopping-bag"></i> @lang('website.View Detail')</a>
               @else
-                  <button type="button" class="btn btn-block btn-secondary cart swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fas fa-shopping-bag"></i> @lang('website.Add to Cart')</button>
+                  <button type="button" class="btn btn-block btn-secondary cart swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fa fa-shopping-bag"></i> @lang('website.Add to Cart')</button>
               @endif
           @else
-              <button type="button" class="btn btn-block btn-secondary active swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Added')"><i class="fas fa-shopping-bag"></i> @lang('website.Added')</button>
+              <button type="button" class="btn btn-block btn-secondary active swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Added')"><i class="fa fa-shopping-bag"></i> @lang('website.Added')</button>
           @endif
       @elseif($products->products_type==1)
-          <a class="btn btn-block btn-secondary swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fas fa-shopping-bag"></i> @lang('website.View Detail')</a>
+          <a class="btn btn-block btn-secondary swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fa fa-shopping-bag"></i> @lang('website.View Detail')</a>
       @elseif($products->products_type==2)
-          <a href="{{$products->products_url}}" target="_blank" class="btn btn-block btn-secondary" data-toggle="tooltip" data-placement="bottom" title="@lang('website.External Link')"><i class="fas fa-shopping-bag"></i>@lang('website.External Link')</a>
+          <a href="{{$products->products_url}}" target="_blank" class="btn btn-block btn-secondary" data-toggle="tooltip" data-placement="bottom" title="@lang('website.External Link')"><i class="fa fa-shopping-bag"></i>@lang('website.External Link')</a>
       @endif
       
   </div><!-- End .product-action -->

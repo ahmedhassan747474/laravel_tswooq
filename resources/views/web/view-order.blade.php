@@ -37,31 +37,31 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/profile')}}">
-                    <i class="fas fa-user"></i>
+                    <i class="fa fa-user"></i>
                   @lang('website.Profile')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/wishlist')}}">
-                    <i class="fas fa-heart"></i>
+                    <i class="fa fa-heart"></i>
                  @lang('website.Wishlist')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/orders')}}">
-                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fa fa-shopping-cart"></i>
                   @lang('website.Orders')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/shipping-address')}}">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <i class="fa fa-map-marker-alt"></i>
                  @lang('website.Shipping Address')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/logout')}}">
-                    <i class="fas fa-power-off"></i>
+                    <i class="fa fa-power-off"></i>
                   @lang('website.Logout')
                 </a>
             </li>
@@ -70,7 +70,7 @@
           <ul class="list-group">
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/orders')}}">
-                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fa fa-shopping-cart"></i>
                   @lang('website.Orders')
                 </a>
             </li>
@@ -206,7 +206,7 @@
                         @lang('website.DeliveryboyInfo')  
                         
                         <button class="btn btn-success" data-toggle="modal" data-target="#mapModal">
-                          @lang('website.Track') <i class="fas fa-location-arrow"></i> </button>
+                          @lang('website.Track') <i class="fa fa-location-arrow"></i> </button>
                     </h2>
                     <hr>
                   </div>
@@ -413,7 +413,7 @@
           </div>
           <div class="modal-footer">
    
-   <button type="button" class="btn btn-primary" onclick="setUserLocation()"><i class="fas fa-location-arrow"></i></button>
+   <button type="button" class="btn btn-primary" onclick="setUserLocation()"><i class="fa fa-location-arrow"></i></button>
    <button type="button" class="btn btn-secondary" onclick="saveAddress()">Save</button>
  </div>
     </div>

@@ -30,3 +30,7 @@ operable program or batch file.
 operable program or batch file.
 'php' is not recognized as an internal or external command,
 operable program or batch file.
+'php' is not recognized as an internal or external command,
+operable program or batch file.
+'php' is not recognized as an internal or external command,
+operable program or batch file.

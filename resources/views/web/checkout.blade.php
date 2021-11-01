@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
 <!--        <span class="whirly-loader">Loading&#8230</span>-->
 <!--    </div>-->
 <!--</div>-->
-
+    
 <div class="container-fuild">
   <nav aria-label="breadcrumb">
       <div class="container">
@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
           </ol>
       </div>
     </nav>
-</div>
+</div> 
 <section class="pro-content">
 
   <div class="container">
@@ -56,10 +56,10 @@ jQuery(document).ready(function() {
  <section class="checkout-area">
  <div class="container">
    <div class="row">
-
+     
      <div class="col-12 col-xl-9 checkout-left">
        <input type="hidden" id="hyperpayresponse" value="@if(!empty(session('paymentResponse'))) @if(session('paymentResponse')=='success') {{session('paymentResponse')}} @else {{session('paymentResponse')}}  @endif @endif">
-
+       
        <div class="alert alert-danger alert-dismissible" id="paymentError" role="alert" style="display:none;">
            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
            @if(!empty(session('paymentResponse')) and session('paymentResponse')=='error') {{session('paymentResponseData') }} @endif
@@ -111,7 +111,7 @@ jQuery(document).ready(function() {
                         <input type="text" required class="form-control field-validate" id="lastname" name="lastname" value="@if(!empty(session('shipping_address'))){{session('shipping_address')->lastname}}@endif" aria-describedby="NameHelp1" placeholder="Enter Your Last Name">
                         <span style="color:red;" class="help-block error-content" hidden>@lang('website.Please enter your last name')</span>
                       </div>
-
+                      
                       <?php if(Session::get('guest_checkout') == 1){ ?>
                       <div class="form-group">
                         <label for=""> @lang('website.Email')</label>
@@ -128,7 +128,7 @@ jQuery(document).ready(function() {
                       {{-- <div class="form-group">
                         <label for=""> @lang('website.Location')</label>
                         <input type="text" required class="form-control field-validate" data-toggle="modal" data-target="#mapModal" name="location" id="location" aria-describedby="addressHelp" placeholder="@lang('website.Please enter your location or click here to open map')" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->location}}@endif">
-
+                       
                       </div> --}}
                       <?php }?>
                       <input type="hidden" name="latitude" id="latitude" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->latitude}}@endif">
@@ -138,9 +138,9 @@ jQuery(document).ready(function() {
                         <input type="text" required class="form-control field-validate" name="street" id="street" aria-describedby="addressHelp" placeholder="@lang('website.Please enter your address')" value="@if(!empty(session('shipping_address'))) {{session('shipping_address')->street}}@endif">
                         <span style="color:red;" class="help-block error-content" hidden>@lang('website.Please enter your address')</span>
                       </div>
-
-
-
+                      
+                     
+                     
                       <div class="form-group">
                         <label for=""> @lang('website.Country')</label>
                         <div class="input-group select-control">
@@ -186,7 +186,7 @@ jQuery(document).ready(function() {
                           <input required type="text" class="form-control" id="delivery_phone" aria-describedby="numberHelp" placeholder="@lang('website.Enter Your Phone Number')" name="delivery_phone" value="@if(!empty(session('shipping_address'))){{session('shipping_address')->delivery_phone}}@endif">
                           <span style="color:red;" class="help-block error-content" hidden>@lang('website.Please enter your valid phone number')</span>
                         </div>
-
+                                                
                       </div>
                       <div class="form-row">
                         <div class="form-group">
@@ -317,9 +317,9 @@ jQuery(document).ready(function() {
                                                         @elseif($shipping_methods['is_default']==1) checked @endif
                                                         @if($shipping_methods['is_default']==1) checked @endif
                                                         >
-
-
-                                                         <label for="{{$method_name}}">{{$services['name']}} ---
+                                                       
+                                                        
+                                                         <label for="{{$method_name}}">{{$services['name']}} ---                                                          
                                                          @if($result['commonContent']['setting'][82]->value <= session('total_price'))
                                                          {{Session::get('symbol_left')}}0
                                                          @else
@@ -358,7 +358,7 @@ jQuery(document).ready(function() {
                                  {!! csrf_field() !!}
 
                                        <table class="table top-table">
-
+                                           
                                            @foreach( $result['cart'] as $products)
                                            <?php
                                               $orignal_price = $products->final_price * session('currency_value');
@@ -379,16 +379,16 @@ jQuery(document).ready(function() {
                                                       <span class="pro-info">
                                                         @foreach($products->categories as $key=>$category)
                                                             {{$category->categories_name}}@if(++$key === count($products->categories)) @else, @endif
-                                                        @endforeach
+                                                        @endforeach 
                                                       </span>
                                                       <h5 class="pro-title">
-
+                                                          
                                                         <a href="{{ URL::to('/product-detail/'.$products->products_slug)}}">
                                                           {{$products->products_name}}
                                                         </a>
-
+                                                       
                                                       </h5>
-
+                                                      
                                                       <div class="item-attributes">
                                                         @if(isset($products->attributes))
                                                           @foreach($products->attributes as $attributes)
@@ -398,13 +398,13 @@ jQuery(document).ready(function() {
                                                       </div>
                                                     </div>
                                                 </td>
-                                                <?php
+                                                <?php                                                      
                                                     $orignal_price = $products->final_price * session('currency_value');
                                                 ?>
                                               <td class="item-price col-12 col-md-2"><span>{{Session::get('symbol_left')}}{{$orignal_price+0}}{{Session::get('symbol_right')}}</span></td>
                                               <td class="col-12 col-md-1">
-                                                  <div class="input-group item-quantity">
-                                                    <input type="text" id="quantity" readonly name="quantity" class="form-control input-number" value="{{$products->customers_basket_quantity}}">
+                                                  <div class="input-group item-quantity">                                                      
+                                                    <input type="text" id="quantity" readonly name="quantity" class="form-control input-number" value="{{$products->customers_basket_quantity}}">                    
                                                   </div>
                                               </td>
                                               <td class="align-middle item-total col-12 col-md-2 ">{{Session::get('symbol_left')}}{{$orignal_price*$products->customers_basket_quantity}}{{Session::get('symbol_right')}}</td>
@@ -415,13 +415,13 @@ jQuery(document).ready(function() {
                                        </table>
                                                    <?php
                                                       if(!empty(session('coupon_discount'))){
-                                                        $coupon_amount = session('currency_value') * session('coupon_discount');
+                                                        $coupon_amount = session('currency_value') * session('coupon_discount');  
                                                       }else{
                                                         $coupon_amount = 0;
                                                       }
 
                                                       if(!empty(session('tax_rate'))){
-                                                        $tax_rate = session('currency_value') * session('tax_rate');
+                                                        $tax_rate = session('currency_value') * session('tax_rate');  
                                                       }else{
                                                         $tax_rate = 0;
                                                       }
@@ -447,15 +447,15 @@ jQuery(document).ready(function() {
                                     <div class="row">
                                         <div class="heading">
                                             <h4>@lang('website.orderNotesandSummary')</h4>
-
+                                            
                                           </div>
-
+                                      
                                       <div class="form-group" style="width:100%; padding:0;">
                                         <label for="exampleFormControlTextarea1">@lang('website.Please write notes of your order')</label>
                                           <textarea name="comments" id="exampleFormControlTextarea1"  class="form-control" id="order_comments" rows="3">@if(!empty(session('order_comments'))){{session('order_comments')}}@endif</textarea>
                                         </div>
                                     </div>
-
+                                      
                                 </div>
 
                                    <div class="col-12 col-sm-12 mb-3">
@@ -470,32 +470,33 @@ jQuery(document).ready(function() {
                                             @lang('website.Please select your payment method')
                                          </div>
 
-
+                                         
                                          <form name="shipping_mehtods" method="post" id="payment_mehtods_form" enctype="multipart/form-data" action="{{ URL::to('/order_detail')}}">
                                           <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-
+                                      
                                          <div class="form-group" style="width:100%; padding:0;">
                                           <label for="exampleFormControlTextarea1" style="width:100%; margin-bottom:30px;">@lang('website.Please select a prefered payment method to use on this order')</label>
                                           <input id="payment_currency" type="hidden" onClick="paymentMethods();" name="payment_currency" value="{{session('currency_code')}}">
                                           @foreach($result['payment_methods'] as $payment_methods)
+                                          
                                             @if($payment_methods['active']==1)
-
+                                                
                                               @if($payment_methods['payment_method']=='braintree')
 
                                                   <input id="{{$payment_methods['payment_method']}}_public_key" type="hidden" name="public_key" value="{{$payment_methods['public_key']}}">
                                                   <input id="{{$payment_methods['payment_method']}}_environment" type="hidden" name="{{$payment_methods['payment_method']}}_environment" value="{{$payment_methods['environment']}}">
-
-
+                                          
+                                          
                                                 <div class="form-check form-check-inline">
                                                     <input id="{{$payment_methods['payment_method']}}_label" type="radio" onClick="paymentMethods();" name="payment_method" class="form-check-input payment_method" value="{{$payment_methods['payment_method']}}" @if(!empty(session('payment_method'))) @if(session('payment_method')==$payment_methods['payment_method']) checked @endif @endif>
                                                     <label class="form-check-label" for="{{$payment_methods['payment_method']}}_label"><img src="{{asset('web/images/miscellaneous').'/'.$payment_methods['payment_method'].'.png'}}" alt="{{$payment_methods['name']}}"></label>
                                                 </div>
                                               @else
-
+                                              
                                                   <input id="{{$payment_methods['payment_method']}}_public_key" type="hidden" name="public_key" value="{{$payment_methods['public_key']}}">
                                                   <input id="{{$payment_methods['payment_method']}}_environment" type="hidden" name="{{$payment_methods['payment_method']}}_environment" value="{{$payment_methods['environment']}}">
-
-
+                                                
+                                                  
                                                   <div class="form-check form-check-inline">
                                                     <input onClick="paymentMethods();" id="{{$payment_methods['payment_method']}}_label" type="radio" name="payment_method" class="form-check-input payment_method" value="{{$payment_methods['payment_method']}}" @if(!empty(session('payment_method'))) @if(session('payment_method')==$payment_methods['payment_method']) checked @endif @endif>
                                                     <label class="form-check-label" for="{{$payment_methods['payment_method']}}_label">
@@ -506,17 +507,17 @@ jQuery(document).ready(function() {
                                                       @endif
                                                     </label>
                                                   </div>
-                                              @endif
+                                              @endif  
                                             @endif
 
-                                          @endforeach
-
+                                          @endforeach 
+                                                                                 
                                         </div>
                                          </form>
-
+                                          
                                            <div class="button">
                                             @foreach($result['payment_methods'] as $payment_methods)
-
+                                          
                                               @if($payment_methods['active']==1 and $payment_methods['payment_method']=='banktransfer')
                                               <div class="alert alert-info alert-dismissible" id="payment_description" role="alert" style="display: none">
                                               <span>{{$payment_methods['descriptions']}}</span>
@@ -611,7 +612,7 @@ jQuery(document).ready(function() {
                                     										<input type="text" name="phone_number" id="insta_phone_number" placeholder="@lang('website.Phone Number')" class="form-control">
                                     										<span class="help-block error-content" hidden>@lang('website.Please enter your valid phone number')</span>
                                     								 </div>
-                                    								</div>
+                                    								</div>                                                       
 
                                                        <div class="alert alert-danger alert-dismissible" id="insta_mojo_error" role="alert" style="display: none">
                                                             <span class="sr-only">@lang('website.Error'):</span>
@@ -705,7 +706,7 @@ jQuery(document).ready(function() {
                                                                 <button type="submit" class="btn btn-dark">@lang('website.Pay') {{Session::get('symbol_left')}}{{number_format((float)$total_price+0, 2, '.', '')}}{{Session::get('symbol_right')}}</button>
                                                             </div>
                                                         </form> --}}
-
+                                                           
                                                         <form id="form-container" method="post" action="{{ URL::to('/place_order')}}">
                                                           {{-- <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" /> --}}
                                                           <!-- Tap element will be here -->
@@ -731,7 +732,7 @@ jQuery(document).ready(function() {
                                                           </div>
                                                         </div>
                                                     </main>
-
+                                                  
                                               </div>
                                             </div>
                                           </div>
@@ -779,12 +780,12 @@ jQuery(document).ready(function() {
          </div>
          </div>
      </div>
-
+     
      <div class="col-12 col-xl-3 checkout-right cart-page-one cart-area">
       <table class="table right-table">
         <thead>
           <tr>
-            <th scope="col" colspan="2" align="center">@lang('website.Order Summary')</th>
+            <th scope="col" colspan="2" align="center">@lang('website.Order Summary')</th>                    
           </tr>
         </thead>
         <tbody>
@@ -813,9 +814,9 @@ jQuery(document).ready(function() {
             <td align="right" >{{Session::get('symbol_left')}}{{number_format((float)$total_price+0, 2, '.', '')+0*session('currency_value')}}{{Session::get('symbol_right')}}</td>
 
           </tr>
-
+      
         </tbody>
-
+        
       </table>
 
        </div>
@@ -829,14 +830,14 @@ jQuery(document).ready(function() {
 
 <!-- map model code start -->
 <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-modal="true">
-
+       
        <div class="modal-dialog modal-dialog-centered modal-lg " role="document">
          <div class="modal-content">
              <div class="modal-body">
 
                  <div class="container">
-                     <div class="row align-items-center">
-
+                     <div class="row align-items-center">                   
+                  
                      <div class="form-group">
     <input type="text" id="pac-input" name="address_address" class="form-control map-input">
 </div>
@@ -850,8 +851,8 @@ jQuery(document).ready(function() {
                  </div>
                </div>
                <div class="modal-footer">
-
-        <button type="button" class="btn btn-primary" onclick="setUserLocation()"><i class="fas fa-location-arrow"></i></button>
+        
+        <button type="button" class="btn btn-primary" onclick="setUserLocation()"><i class="fa fa-location-arrow"></i></button>
         <button type="button" class="btn btn-secondary" onclick="saveAddress()">Save</button>
       </div>
          </div>
@@ -927,7 +928,6 @@ jQuery(document).ready(function() {
 
   var elements = tap.elements({});
 
-// console.log("fgfgfgg" +elements);
   var style = {
     base: {
       color: '#535353',
@@ -966,7 +966,6 @@ jQuery(document).ready(function() {
   //create element, pass style and payment options
   var card = elements.create('card', {style: style},paymentOptions);
   //mount element
-  console.log(card);
   card.mount('#element-container');
   //card change event listener
   card.addEventListener('change', function(event) {
@@ -1056,13 +1055,13 @@ jQuery(document).ready(function() {
     // xhr.setRequestHeader("authorization", "Bearer pk_test_fILmzM42k3xrQT1UdEVWjK0X");
     // xhr.setRequestHeader("content-type", "application/json");
     // xhr.setRequestHeader("X-CSRF-TOKEN", jQuery('meta[name="csrf-token"]').attr('content'));
-
+    
     // xhr.send(data);
-
+    
     // header('Access-Control-Allow-Origin: *');
     // header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
     // header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
-
+    
     // var settings = {
     //     "async": true,
     //     "crossDomain": true,
@@ -1075,11 +1074,11 @@ jQuery(document).ready(function() {
     //     "processData": false,
     //     "data": data
     // }
-
+    
     // $.ajax(settings).done(function (response) {
     //     console.log(response);
     // });
-
+    
     // var settings = {
     //     "async": true,
     //     "crossDomain": true,
@@ -1094,17 +1093,17 @@ jQuery(document).ready(function() {
     //     "processData": false,
     //     "data": data
     // }
-
+    
     // $.ajax(settings).done(function (response) {
     //     console.log(response);
     // });
-
+    
     $.ajaxSetup({
         headers: {
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    
     $.ajax({
         type: "POST",
         dataType: "json",
@@ -1213,8 +1212,8 @@ foreach($result['payment_methods'] as $payment_methods){
     }
   }
 }
-
-
+                                          
+                                            
 
 ?>
 
@@ -1277,8 +1276,8 @@ jQuery( document ).ready( function () {
 
           }, function() {
           });
-        }
-     }
+        } 
+     } 
      function saveAddress(){
       var latlng = markers.getPosition();
       geocoder.geocode({'location': latlng}, function(results, status) {
@@ -1303,7 +1302,7 @@ jQuery( document ).ready( function () {
                                 country = results[0].address_components[i].long_name;
                                 break;
                             case 'postal_code':
-                              postal_code =  results[0].address_components[i].long_name;
+                              postal_code =  results[0].address_components[i].long_name; 
                               break;
                             case 'route':
                               if (street == "") {
@@ -1327,7 +1326,7 @@ jQuery( document ).ready( function () {
                 $("#longitude").val(markers.getPosition().lng());
 
                 // $("#entry_country_id").val(country);
-
+               
                 $("#location").val(latlng);
 
                 $("#entry_country_id option").filter(function() {
@@ -1368,8 +1367,8 @@ jQuery( document ).ready( function () {
           position: defaultPOS
         });
 
-
-
+        
+        
         var infowindow = new google.maps.InfoWindow;
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
@@ -1405,7 +1404,7 @@ jQuery( document ).ready( function () {
             // Create a marker for each place.
             markers.setPosition(place.geometry.location);
             markers.setTitle(place.name);
-
+            
 
             if (place.geometry.viewport) {
               // Only geocodes have viewport.

@@ -1,7 +1,10 @@
 
 <script src="{!! asset('admin/plugins/jQuery/jQuery-2.2.0.min.js') !!}"></script>
 <script src="{!! asset('admin/bootstrap/js/bootstrap.min.js') !!}"></script>
-<script src="{!! asset('admin/plugins/select2/select2.full.min.js') !!}"></script>
+{{-- <script src="{!! asset('admin/plugins/select2/select2.full.min.js') !!}"></script> --}}
+
+<script src="{!! asset('admin/js/vendors.js') !!}" ></script>
+<script src="{!! asset('admin/js/aiz-core.js') !!}" ></script>
 
 <!-- InputMask -->
 <script src="{!! asset('admin/plugins/input-mask/jquery.inputmask.js') !!}"></script>
@@ -57,9 +60,13 @@
 
 <script src="{!! asset('admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') !!}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script type="text/javascript">
 
-
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+});
 
 $(function() {
 $("img").click(function() {
@@ -312,7 +319,7 @@ $.ajaxSetup({
 $(function () {
 
 	//Initialize Select2 Elements
-	$(".select2").select2();
+	// $(".select2").select2();
 	// $(".select3").select2();
 
 	//Datemask dd/mm/yyyy
@@ -2616,6 +2623,20 @@ $(document).on('click','#selected', function(){
 		$('#image-close').show();
 		$('#imageselected').removeClass('has-error');
 		$('#newImage').removeClass('field-validate');
+		$('.thumbnail.selected').removeClass('selected');
+	}
+});
+
+$(document).on('click','#selected2', function(){
+    var image_src = $('.thumbnail.selected').children('img').attr('src');
+	if(image_src != undefined){
+		var id = this.value;
+		// alert(id);
+		$('#selectedthumbnail'+id).html('<img src="'+image_src+'" class = "thumbnail" style="max-height: 100px; margin-top: 20px;">');
+		$('#selectedthumbnail'+id).show();
+		$('#image-close'+id).show();
+		$('#imageselected'+id).removeClass('has-error');
+		$('#newImage'+id).removeClass('field-validate');
 		$('.thumbnail.selected').removeClass('selected');
 	}
 });

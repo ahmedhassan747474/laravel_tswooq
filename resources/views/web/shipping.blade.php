@@ -27,37 +27,37 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/profile')}}">
-                    <i class="fas fa-user"></i>
+                    <i class="fa fa-user"></i>
                   @lang('website.Profile')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/wishlist')}}">
-                    <i class="fas fa-heart"></i>
+                    <i class="fa fa-heart"></i>
                  @lang('website.Wishlist')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/orders')}}">
-                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fa fa-shopping-cart"></i>
                   @lang('website.Orders')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/shipping-address')}}">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <i class="fa fa-map-marker-alt"></i>
                  @lang('website.Shipping Address')
                 </a>
             </li>
             <li class="list-group-item">
                 <a class="nav-link" href="{{ URL::to('/logout')}}">
-                    <i class="fas fa-power-off"></i>
+                    <i class="fa fa-power-off"></i>
                   @lang('website.Logout')
                 </a>
             </li>
             <li class="list-group-item">
               <a class="nav-link" href="{{ URL::to('/change-password')}}">
-                  <i class="fas fa-unlock-alt"></i>
+                  <i class="fa fa-unlock-alt"></i>
                 @lang('website.Change Password')
               </a>
           </li>
@@ -105,7 +105,7 @@
               </td>
               <td class="edit-tag">
                 <ul>
-                  <li><a href="{{ URL::to('/shipping-address?address_id='.$address_data->address_id)}}"> <i class="fas fa-pen"></i> @lang('website.Edit') </a></li>
+                  <li><a href="{{ URL::to('/shipping-address?address_id='.$address_data->address_id)}}"> <i class="fa fa-pen"></i> @lang('website.Edit') </a></li>
                   @if($address_data->default_address == 0)
                   <a  href="{{url('delete-address')}}/{{$address_data->address_id}}" ><i class="fa fa-trash" aria-hidden="true"></i>@lang('website.Remove') </a>
                   @endif

@@ -1,7 +1,4 @@
 @extends('admin.layoutLlogin')
-<?php
-    $web_setting = DB::table('settings')->get();
-?>
 @section('content')
 <style>
 	.wrapper{

@@ -13,10 +13,12 @@ class Images extends Model
     //
 use Sortable;
 public $sortable =['id','name'];
-
+    public function product(){
+        return $this->hasOne('App\Models\Web\Products','products_image');
+    }
     public function image_category(){
 
-        return $this->hasMany('App\Image_category');
+        return $this->hasOne('App\Image_category','image_id');
     }
 
     public function getimages(){

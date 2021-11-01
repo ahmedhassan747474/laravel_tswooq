@@ -47,37 +47,37 @@
            <ul class="list-group">
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/profile')}}">
-                       <i class="fas fa-user"></i>
+                       <i class="fa fa-user"></i>
                      @lang('website.Profile')
                    </a>
                </li>
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/wishlist')}}">
-                       <i class="fas fa-heart"></i>
+                       <i class="fa fa-heart"></i>
                     @lang('website.Wishlist')
                    </a>
                </li>
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/orders')}}">
-                       <i class="fas fa-shopping-cart"></i>
+                       <i class="fa fa-shopping-cart"></i>
                      @lang('website.Orders')
                    </a>
                </li>
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/shipping-address')}}">
-                       <i class="fas fa-map-marker-alt"></i>
+                       <i class="fa fa-map-marker-alt"></i>
                     @lang('website.Shipping Address')
                    </a>
                </li>
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/logout')}}">
-                       <i class="fas fa-power-off"></i>
+                       <i class="fa fa-power-off"></i>
                      @lang('website.Logout')
                    </a>
                </li>
                <li class="list-group-item">
                    <a class="nav-link" href="{{ URL::to('/change-password')}}">
-                       <i class="fas fa-unlock-alt"></i>
+                       <i class="fa fa-unlock-alt"></i>
                      @lang('website.Change Password')
                    </a>
                </li>
@@ -174,7 +174,7 @@
                         <input readonly name="customers_dob" type="text" id="customers_dob" data-provide="datepicker" class="form-control" placeholder="@lang('website.Date of Birth')" value="{{ auth()->guard('customer')->user()->dob }}" aria-label="date-picker" aria-describedby="date-picker-addon1">
                           
                           <div class="input-group-prepend">
-                              <span class="input-group-text" id="date-picker-addon1"><i class="fas fa-calendar-alt"></i></span>
+                              <span class="input-group-text" id="date-picker-addon1"><i class="fa fa-calendar-alt"></i></span>
                             </div>
                         </div>
 

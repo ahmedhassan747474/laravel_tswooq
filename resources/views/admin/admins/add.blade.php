@@ -27,10 +27,11 @@ $allimage = $images->getimages();
           <div class="box-header">
             <h3 class="box-title">{{ trans('labels.addadmins') }} </h3>
           </div>
-
+<d
           <!-- /.box-header -->
           <div class="box-body">
             <div class="row">
+            
               <div class="col-xs-12">
               		<div class="box box-info">
                         <br>
@@ -108,6 +109,7 @@ $allimage = $images->getimages();
                                     <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.EndDateText') }}</span>
                                     <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                   </div>
+                                  
                                 </div>
                                 
                             <hr>
@@ -154,6 +156,14 @@ $allimage = $images->getimages();
                                       <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                     </div>
                                 </div>
+                                <div class="form-group ">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('like_limit',  '', array('class'=>'form-control field-validate', 'id'=>'like_limit')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.LikeCardLimitText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
                                 <div class="form-group show_hide_shop_name" id="imageIcone">
                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
                                     <div class="col-sm-10 col-md-4">
@@ -199,6 +209,13 @@ $allimage = $images->getimages();
                                         <br>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-md-3 control-label">اضافه صوره محل</label>
+                                    <div class="col-sm-10 col-md-4">
+                                        <input class="form-control" type="file" name="shopImg">
+                                    </div>
+                                </div>
+                               
                             <hr>
                             <h4>{{ trans('labels.AddressInfo') }}</h4>
                             <hr>
@@ -249,11 +266,6 @@ $allimage = $images->getimages();
                                     <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.StateText') }}</span>
                                   </div>
                                 </div>
-
-
-
-
-
                                 <hr>
                                 <h4>{{ trans('labels.Login Info') }}</h4>
                                 <hr>

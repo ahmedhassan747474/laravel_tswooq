@@ -57,7 +57,7 @@
                                           @foreach($sub_category->childs as $sub_sub_category)
                                             <li class="list-item">
                                                 <a class="list-link" href="{{route('like_card')}}?category_id={{$sub_sub_category->id}}"> &nbsp;&nbsp;
-                                                    <i class="fas fa-angle-right"></i>{{$sub_sub_category->categoryName}}
+                                                    <i class="fa fa-angle-right"></i>{{$sub_sub_category->categoryName}}
                                                 </a>
                                             </li>
                                           @endforeach
@@ -66,7 +66,7 @@
                                 @else
                                 <li class="list-item">
                                     <a class="list-link" href="{{route('like_card')}}?category_id={{$sub_category->id}}"> &nbsp;&nbsp;
-                                        <i class="fas fa-angle-right"></i>{{$sub_category->categoryName}}
+                                        <i class="fa fa-angle-right"></i>{{$sub_category->categoryName}}
                                     </a>
                                 </li>
                                 @endif

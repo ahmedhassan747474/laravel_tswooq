@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -18,23 +19,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'role_id',
-        'user_name',
-        'first_name',
-        'last_name',
-        'gender',
-        'country_code',
-        'phone',
-        'avatar',
-        'status',
-        'is_seen',
-        'phone_verified',
-        'created_at',
-        'updated_at',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -53,6 +38,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['image_path'];
+
+    public function getImagePathAttribute()
+    {
+        $image=DB::table('image_categories')->where('image_id',$this->avatar)
+                                            
+                                            ->where('image_type', '=', 'ACTUAL')->first()->path?? null;
+                if($image){
+                    return asset($image);
+                }
+                return $image;
+    }
 
     public function saveAdmin(array $data)
     {
@@ -81,6 +79,13 @@ class User extends Authenticatable
           ->paginate(10);
           return $user;
 
+    }
+    public function products(){
+        return $this->hasMany('App\Models\Core\Products','admin_id');
+    }
+
+    public function avatari(){
+        return $this->belongsTo('App\Models\Core\Images','avatar');
     }
 
 }

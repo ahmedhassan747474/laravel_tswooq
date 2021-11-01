@@ -39,8 +39,8 @@
                               <div class="block">
                                   <label>@lang('website.Display')</label>
                                   <div class="buttons">
-                                    <a href="javascript:void(0);" id="grid"><i class="fas fa-th-large"></i></a>
-                                    <a href="javascript:void(0);" id="list"><i class="fas fa-list"></i></a>
+                                    <a href="javascript:void(0);" id="grid"><i class="fa fa-th-large"></i></a>
+                                    <a href="javascript:void(0);" id="list"><i class="fa fa-list"></i></a>
                                   </div>
                               </div>
                           </div> 
@@ -233,9 +233,9 @@
                       @foreach ($result['commonContent']['manufacturers'] as $item)
                       <li class="list-item">
                         @if($item->manufacturers_url)
-                        <a class="brands-btn list-item" href="{{url($item->manufacturers_url)}}" role="button"><i class="fas fa-angle-right"></i>{{$item->manufacturer_name}}</a>
+                        <a class="brands-btn list-item" href="{{url($item->manufacturers_url)}}" role="button"><i class="fa fa-angle-right"></i>{{$item->manufacturer_name}}</a>
                        @else
-                       <a class="brands-btn list-item" href="#" role="button"><i class="fas fa-angle-right"></i>{{$item->manufacturer_name}}</a>
+                       <a class="brands-btn list-item" href="#" role="button"><i class="fa fa-angle-right"></i>{{$item->manufacturer_name}}</a>
                        @endif</li>
                       @endforeach
                     </ul>    

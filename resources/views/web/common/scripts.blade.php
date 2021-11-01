@@ -7,17 +7,7 @@
 <script type="text/javascript">
 
 //$.noConflict();
-jQuery(document).ready(function(e) {
 
-	braintree.setup(
-		// Replace this with a client token from your server
-		" <?php print session('braintree_token')?>",
-		"dropin", {
-		container: "payment-form"
-	});
-
-
-});
 
 
 </script>
@@ -710,11 +700,11 @@ jQuery(document).on('click', '.connection', function(e){
 				html_form =+ '<input type="text" readonly name="quantity" class="form-control qty" value="' + set_quantity_cart + '" min="'+ response.detail.product_data[0].products_min_order +'" max="'+ response.detail.product_data[0].products_max_stock +'">';
 				html_form =+ '<span class="input-group-btn">';
 					html_form =+ '<button type="button" class="quantity-plus1 btn qtyplus">';
-						html_form =+ '<i class="fas fa-plus"></i>';
+						html_form =+ '<i class="fa fa-plus"></i>';
 					html_form =+ '</button>';
                   
 					html_form =+ '<button type="button" class="quantity-minus1 btn qtyminus">';
-						html_form =+ '<i class="fas fa-minus"></i>';
+						html_form =+ '<i class="fa fa-minus"></i>';
 					html_form =+ '</button>';
 				html_form =+ '</span>';
 			html_form =+ '</div>';

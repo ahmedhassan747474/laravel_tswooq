@@ -61,7 +61,7 @@
                   @else
 
                       <button class="btn-secondary icon swipe-to-top cart" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')">
-                                  <i class="fas fa-shopping-bag"></i>
+                                  <i class="fa fa-shopping-bag"></i>
                       </button>
 
                       @endif
@@ -77,10 +77,10 @@
                             
 
                               <button class="btn-secondary icon swipe-to-top modal_show" products_id ="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Quick View')">
-                                <i class="fas fa-eye"></i>
+                                <i class="fa fa-eye"></i>
                               </button>
                               <button onclick="myFunction3({{$products->products_id}})" class="btn-secondary icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Compare')">
-                                <i class="fas fa-align-right" data-fa-transform="rotate-90"></i>
+                                <i class="fa fa-align-right" data-fa-transform="rotate-90"></i>
                               </button>
                             </div>
 
@@ -112,7 +112,7 @@
       </div>  
                            
                             <button  class="btn-secondary icon swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
-                                <i class="fas fa-heart"></i>
+                                <i class="fa fa-heart"></i>
                               </button>            
                           </div>
                     

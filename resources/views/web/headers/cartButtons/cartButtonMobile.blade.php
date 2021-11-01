@@ -4,7 +4,7 @@
                 @endforeach
 
                 <a class="cart-dropdown-toggle" href="#" role="button" id="ddAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-cart-arrow-down" aria-hidden="true"></i>
+                  <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
                     <span class="badge badge-secondary">{{ $qunatity }}</span>
 
                 </a>

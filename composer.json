@@ -29,8 +29,10 @@
         "php-http/guzzle6-adapter": "^2.0",
         "php-http/message": "^1.8",
         "razorpay/razorpay": "^2.5",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spacemudd/laravel-tap-payments": "^2.0",
         "spatie/db-dumper": "^2.14",
+        "spatie/laravel-backup": "^6.16",
         "tymon/jwt-auth": "^1.0",
         "vectorcoder/laravel-installer": "dev-master"
     },

@@ -87,7 +87,7 @@
             <div class="col-6 col-sm-6 col-md-4 col-lg-9">
               <ul class="top-right-list">
                 <li class="panel">
-                  <h3 class="fas fa-truck"></h3>
+                  <h3 class="fa fa-truck"></h3>
                   <div class="block">
                       <h4 class="title">@lang('website.bannerLabel1')</h4>
                       <p>@lang('website.bannerLabel1Text') {{$result['commonContent']['setting'][82]->value}}</p>
@@ -95,7 +95,7 @@
                 </li>
                   <li class="phone-header">
                       <a href="#">
-                        <i class="fas fa-phone"></i>
+                        <i class="fa fa-phone"></i>
                         <span class="block">
                           <span class="title">@lang('website.Call Us Now')</span>                    
                           <span class="items" dir="ltr">{{$result['commonContent']['setting'][11]->value}}</span>

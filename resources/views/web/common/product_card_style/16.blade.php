@@ -45,14 +45,14 @@
          
 
           <a href="javascript:void(0)" class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="@lang('website.Wishlist')">
-            <i class="fas fa-heart"></i>
+            <i class="fa fa-heart"></i>
           </a>
 
           <div class="icon swipe-to-top modal_show" products_id ="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Quick View')">
-            <i class="fas fa-eye"></i>
+            <i class="fa fa-eye"></i>
           </div>
           <a onclick="myFunction3({{$products->products_id}})" class="btn-secondary icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Compare')">
-            <i class="fas fa-align-right" data-fa-transform="rotate-90"></i>
+            <i class="fa fa-align-right" data-fa-transform="rotate-90"></i>
           </a>
         
         </div>
@@ -96,20 +96,20 @@
             <input name="products_{{$products->products_id}}" type="text" readonly value="{{$products->products_min_order}}" class="form-control qty products_{{$products->products_id}}" max="{{$products->products_max_stock}}" min="{{$products->products_min_order}}" >
             <span class="input-group-btn">
                 <button type="button" value="quantity" class="quantity-plus1 btn qtypluscart" data-type="plus" data-field="">
-                    <i class="fas fa-plus"></i>
+                    <i class="fa fa-plus"></i>
                 </button>
             
                 <button type="button" value="quantity" class="quantity-minus1 btn qtyminuscart" data-type="minus" data-field="">
-                    <i class="fas fa-minus"></i>
+                    <i class="fa fa-minus"></i>
                 </button>
             </span>
           </div>
 
           @if($products->products_type==0)
             @if($products->defaultStock==0)
-                <button type="button" class="btn-secondary btn icon swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fas fa-shopping-bag"></i></button>
+                <button type="button" class="btn-secondary btn icon swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fa fa-shopping-bag"></i></button>
               @else
-                <button type="button" class="btn-secondary btn icon swipe-to-top cart" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fas fa-shopping-bag"></i></button>
+                <button type="button" class="btn-secondary btn icon swipe-to-top cart" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fa fa-shopping-bag"></i></button>
             @endif
           @endif    
       </div>

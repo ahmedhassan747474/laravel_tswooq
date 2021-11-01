@@ -44,7 +44,7 @@
                             <div class="col-12"> <label for="inlineFormInputGroup">@lang('website.Email')</label></div>
                             <div class="input-group col-12">
                               <div class="input-group-prepend">
-                                  <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                                  <div class="input-group-text"><i class="fa fa-lock"></i></div>
                               </div>
                               <input class="form-control" type="email" name="email" id="email"placeholder="@lang('website.Please enter your valid email address')">
                               <span class="help-block error-content" hidden>@lang('website.Please enter your valid email address')</span>                            </div>

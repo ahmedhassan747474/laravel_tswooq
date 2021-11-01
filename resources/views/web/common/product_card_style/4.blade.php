@@ -47,11 +47,11 @@
                 <div class="product-action-vertical">
                  
                   <a class="icon active swipe-to-top is_liked" products_id="<?= $products->products_id ?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
-                    <i class="fas fa-heart"></i>
+                    <i class="fa fa-heart"></i>
                   </a>
                 <div class="icon swipe-to-top modal_show"  products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Quick View')">
-                  <i class="fas fa-eye"></i></div>
-                <a onclick="myFunction3({{$products->products_id}})" class="icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" data-original-title="@lang('website.Compare')"><i class="fas fa-align-right" data-fa-transform="rotate-90"></i></a>
+                  <i class="fa fa-eye"></i></div>
+                <a onclick="myFunction3({{$products->products_id}})" class="icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" data-original-title="@lang('website.Compare')"><i class="fa fa-align-right" data-fa-transform="rotate-90"></i></a>
             
                 </div>
          

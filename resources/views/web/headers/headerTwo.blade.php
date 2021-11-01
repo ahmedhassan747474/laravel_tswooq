@@ -110,7 +110,7 @@
           <ul class="pro-header-right-options">
             <li>
               <a href="{{ URL::to('/wishlist')}}" class="btn" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
-                <i class="far fa-heart"></i>
+                <i class="fa fa-heart"></i>
                 <span class="badge badge-secondary total_wishlist">{{$result['commonContent']['total_wishlist']}}</span>
               </a>
             </li>

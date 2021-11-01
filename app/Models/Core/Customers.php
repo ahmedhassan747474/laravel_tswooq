@@ -92,7 +92,6 @@ class Customers extends Model
             'email' => $request->email,
             'country_code' => $request->country_code,
             'phone' => $request->customers_telephone,
-            'barcode' => $request->barcode,
             'password' => Hash::make($request->password),
             'status' => $request->isActive,
             'avatar' => $uploadImage,

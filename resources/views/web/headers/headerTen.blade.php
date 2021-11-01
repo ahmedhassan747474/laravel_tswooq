@@ -15,7 +15,7 @@
                   <span>
                     <ul>
                       @foreach($languages as $language)
-                      <li><a onclick="myFunction1({{$language->languages_id}})" href="#"><img class="img-fluid" src="{{asset('').$language->image_path}}" style="width: 1.9rem;"></a></li>
+                      <li><a onclick="myFunction1({{$language->languages_id}})" href="#">{{$language->code}}</a></li>
                       @endforeach 
                       
                     </ul>
@@ -58,7 +58,7 @@
                 </li>
                 <?php if(auth()->guard('customer')->check()){ ?>
                   <li class="nav-item"> <a href="{{url('profile')}}" class="nav-link">@lang('website.Profile')</a> </li>
-                  <li class="nav-item"> <a href="{{url('wishlist')}}" class="nav-link">@lang('website.Wishlist')<span class="total_wishlist"> ({{$result['commonContent']['total_wishlist']}})</span></a> </li>
+                  <li class="nav-item"> <a href="{{url('wishlist')}}" class="nav-link">@lang('website.Wishlist')<span class="total_wishlist"> ({{$result['commonContent']['total_wishlist']}})</span>hello</a> </li>
                   {{-- <li class="nav-item"> <a href="{{url('compare')}}" class="nav-link">@lang('website.Compare')&nbsp;(<span id="compare">{{$count}}</span>)</a> </li> --}}
                   <li class="nav-item"> <a href="{{url('orders')}}" class="nav-link">@lang('website.Orders')</a> </li>
                   <li class="nav-item"> <a href="{{url('shipping-address')}}" class="nav-link">@lang('website.Shipping Address')</a> </li>
@@ -150,7 +150,7 @@
            <ul class="pro-header-right-options">
             <li>
               <a href="{{ URL::to('/wishlist')}}" class="btn" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
-                <i class="far fa-heart"></i>
+                <i class="fa fa-heart"></i>
                 <span class="badge badge-secondary total_wishlist">{{$result['commonContent']['total_wishlist']}}</span>
               </a>
             </li>
@@ -169,12 +169,7 @@
               <div class="navbar-collapse" >
                 <ul class="navbar-nav">
                   {!! $result['commonContent']["menusRecursive"] !!}
-                  <li class="nav-item ">
-                    <a class="nav-link">
-                        <span>@lang('website.Call Us Now')</span>
-                        <phone dir="ltr">{{$result['commonContent']['setting'][11]->value}}</phone>
-                    </a>
-                  </li>     
+                  
                 </ul>
               </div>
             </nav>
@@ -182,7 +177,7 @@
       </div>
       <div class="header-navbar bg-menu-bar">
         <!--<div class="container">-->
-          <nav id="menu-container" class="arrow" style="background-color: #483A6F;">
+          <nav id="menu-container" class="arrow" style="background-color: #143444 !important;">
             <div id="btn-nav-previous" style="direction: ltr;">&lt;</div>
             <div id="btn-nav-next" style="direction: ltr;">&gt;</div>  
             <div class="menu-inner-box">

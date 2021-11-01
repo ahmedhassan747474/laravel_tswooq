@@ -7,7 +7,7 @@
           <nav id="navbar_0_4" class="navbar navbar-expand-md navbar-dark navbar-0">
             <div class="navbar-phone">
                 <a href="#">
-                    <i class="fas fa-phone"></i>
+                    <i class="fa fa-phone"></i>
                     <span class="block">                   
                       <span class="items" dir="ltr">{{$result['commonContent']['setting'][11]->value}}</span>
                     </span>                   

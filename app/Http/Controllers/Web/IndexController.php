@@ -1,12 +1,15 @@
 <?php
 namespace App\Http\Controllers\Web;
 
+use App\Group;
+use App\Models\AppModels\Product;
 use App\Models\Web\Currency;
 use App\Models\Web\Index;
 use App\Models\Web\Languages;
 use App\Models\Web\News;
 use App\Models\Web\Order;
 use App\Models\Web\Products;
+use App\Models\Web\productCategory;
 use Auth;
 use Carbon;
 use Illuminate\Http\Request;
@@ -16,6 +19,7 @@ use Lang;
 use View;
 use DB;
 use Cookie;
+
 class IndexController extends Controller
 {
 
@@ -38,12 +42,313 @@ class IndexController extends Controller
 
     public function index()
     {
+        
+        //groups
+        $language_id = request()->language_id ?? 1;
+        $responseData=array();
+        $result = array();
+        $result2 = array();
+        $groups = Group::paginate(10);
+        // dd($groups[0]);
+        foreach($groups as $key=>$group){
+            $responseData[$key]=$group;
+            $language_id = request()->language_id ?? 1;
+        //   $categories =  $this->belongsToMany('App\Product','group_product','group_id','product_id','id','products_id')
+      
+
+        // $categories = DB::table('products')
+       
+        $categories =  DB::table('products')
+        // AppProduct::whereHas('productsofgroup', function($query) use ($group_id) {
+        // 	$query->where('group_id', $group_id);
+        // })
+            ->leftJoin('group_product', 'group_product.product_id', '=', 'products.products_id')
+            
+            ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
+            ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
+            ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id');
+
+        $categories->LeftJoin('image_categories', function ($join) {
+            $join->on('image_categories.image_id', '=', 'products.products_image')
+                ->where(function ($query) {
+                    $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                        ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                        ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                });
+        });
+        
+
+        $categories->where('products_description.language_id', '=', $language_id)
+                    ->where('group_product.group_id', '=', $group->id)
+                    // ->where('group_product.product_id', '=', $group->id)
+            ->where('products.products_status', '=', '1');
+        
+
+            $data = $categories->get();
+            if (count($data) > 0) {
+                $result =[];
+                $index = 0;
+                foreach ($data as $products_data) {
+                    $products_data->products_image = asset($products_data->products_image);
+                    //check currency start
+                    $requested_currency = 'SAR';//$request->currency_code;
+                    $current_price = $products_data->products_price;
+                    //dd($current_price, $requested_currency);
+    
+                    $products_price = Product::convertprice($current_price, $requested_currency);
+                    ////////// for discount price    /////////
+                    if (!empty($products_data->discount_price)) {
+                        $discount_price = Product::convertprice($products_data->discount_price, $requested_currency);
+                        $products_data->discount_price = $discount_price;
+                    }
+    
+                    $products_data->products_price = $products_price;
+                    $getName=  DB::table('users')->where('id', $products_data->admin_id)->first()->shop_name;
+                    $products_data->shop_name=$getName;
+                    $products_data->currency = $requested_currency;
+                    //check currency end
+    
+                    
+    
+                    //for flashsale currency price end
+                    $products_id = $products_data->products_id;
+    
+                    //multiple images
+                    $products_images = DB::table('products_images')
+                        ->LeftJoin('image_categories', function ($join) {
+                            $join->on('image_categories.image_id', '=', 'products_images.image')
+                                ->where(function ($query) {
+                                    $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                        ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                        ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                });
+                        })
+                        ->select('products_images.*', 'image_categories.path as image')
+                        ->where('products_id', '=', $products_id)->orderBy('sort_order', 'ASC')->get();
+                    $products_data->images = $products_images;
+    
+                    $categories = DB::table('products_to_categories')
+                        ->leftjoin('categories', 'categories.categories_id', 'products_to_categories.categories_id')
+                        ->leftjoin('categories_description', 'categories_description.categories_id', 'products_to_categories.categories_id')
+                        ->select('categories.categories_id', 'categories_description.categories_name', 'categories.categories_image', 'categories.categories_icon', 'categories.parent_id')
+                        ->where('products_id', '=', $products_id)
+                        ->where('categories_description.language_id', '=', $language_id)->get();
+    
+                    $products_data->categories = $categories;
+    
+                    $reviews = DB::table('reviews')
+                        ->join('users', 'users.id', '=', 'reviews.customers_id')
+                        ->select('reviews.*', 'users.avatar as image')
+                        ->where('products_id', $products_data->products_id)
+                        ->where('reviews_status', '1')
+                        ->get();
+    
+                    $avarage_rate = 0;
+                    $total_user_rated = 0;
+    
+                    if (count($reviews) > 0) {
+    
+                        $five_star = 0;
+                        $five_count = 0;
+    
+                        $four_star = 0;
+                        $four_count = 0;
+    
+                        $three_star = 0;
+                        $three_count = 0;
+    
+                        $two_star = 0;
+                        $two_count = 0;
+    
+                        $one_star = 0;
+                        $one_count = 0;
+    
+                        foreach ($reviews as $review) {
+    
+                            //five star ratting
+                            if ($review->reviews_rating == '5') {
+                                $five_star += $review->reviews_rating;
+                                $five_count++;
+                            }
+    
+                            //four star ratting
+                            if ($review->reviews_rating == '4') {
+                                $four_star += $review->reviews_rating;
+                                $four_count++;
+                            }
+                            //three star ratting
+                            if ($review->reviews_rating == '3') {
+                                $three_star += $review->reviews_rating;
+                                $three_count++;
+                            }
+                            //two star ratting
+                            if ($review->reviews_rating == '2') {
+                                $two_star += $review->reviews_rating;
+                                $two_count++;
+                            }
+    
+                            //one star ratting
+                            if ($review->reviews_rating == '1') {
+                                $one_star += $review->reviews_rating;
+                                $one_count++;
+                            }
+    
+                        }
+    
+                        $five_ratio = round($five_count / count($reviews) * 100);
+                        $four_ratio = round($four_count / count($reviews) * 100);
+                        $three_ratio = round($three_count / count($reviews) * 100);
+                        $two_ratio = round($two_count / count($reviews) * 100);
+                        $one_ratio = round($one_count / count($reviews) * 100);
+                        if(($five_star + $four_star + $three_star + $two_star + $one_star) > 0){
+                            $avarage_rate = (5 * $five_star + 4 * $four_star + 3 * $three_star + 2 * $two_star + 1 * $one_star) / ($five_star + $four_star + $three_star + $two_star + $one_star);
+                        }else{
+                            $avarage_rate = 0;
+                        }
+    
+                        $total_user_rated = count($reviews);
+                        $reviewed_customers = $reviews;
+                    } else {
+                        $reviewed_customers = array();
+                        $avarage_rate = 0;
+                        $total_user_rated = 0;
+    
+                        $five_ratio = 0;
+                        $four_ratio = 0;
+                        $three_ratio = 0;
+                        $two_ratio = 0;
+                        $one_ratio = 0;
+                    }
+    
+                    $products_data->rating = number_format($avarage_rate, 2);
+                    $products_data->total_user_rated = $total_user_rated;
+    
+                    $products_data->five_ratio = $five_ratio;
+                    $products_data->four_ratio = $four_ratio;
+                    $products_data->three_ratio = $three_ratio;
+                    $products_data->two_ratio = $two_ratio;
+                    $products_data->one_ratio = $one_ratio;
+    
+                    //review by users
+                    $products_data->reviewed_customers = $reviewed_customers;
+    
+                    array_push($result, $products_data);
+                    $options = array();
+                    $attr = array();
+    
+                    $stocks = 0;
+                    $stockOut = 0;
+                    $defaultStock = 0;
+                    if ($products_data->products_type == '0') {
+                        $stocks = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'in')->sum('stock');
+                        $stockOut = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'out')->sum('stock');
+                        $defaultStock = $stocks - $stockOut;
+                    }
+    
+                    if ($products_data->products_max_stock < $defaultStock && $products_data->products_max_stock > 0) {
+                        $result[$index]->defaultStock = $products_data->products_max_stock;
+                    } else {
+                        $result[$index]->defaultStock = $defaultStock;
+                    }
+    
+                    //like product
+                    if (auth()->check()) {
+                        // dd(auth()->user()->id);
+                        $liked_customers_id = auth()->user()->id;
+                        $categories = DB::table('liked_products')->where('liked_products_id', '=', $products_id)->where('liked_customers_id', '=', $liked_customers_id)->get();
+                        if (count($categories) > 0) {
+                            $result[$index]->isLiked = '1';
+                        } else {
+                            $result[$index]->isLiked = '0';
+                        }
+                    } else {
+                        $result[$index]->isLiked = '0';
+                    }
+    
+                    
+                    $listOfAttributes = array();
+                    $index3 = 0;
+    
+                    // dd($getAllProductsParallel);
+                    $getAllAttributes = DB::table('products_attributes')
+                        ->where('products_id', '=', $products_id)
+                        // ->whereIn('products_id', $getAllProductsParallel)
+                        ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                        ->get();
+                    // dd($getAllAttributes);
+    
+                    foreach($getAllAttributes as $attribute){
+                        $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                        $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                        $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                        $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+    
+    
+                    }
+                    $listOfAttributes[$index3]['id'] = $products_id;
+                    $listOfAttributes[$index3]['price'] = $products_data->products_price;
+                    $listOfAttributes[$index3]['home_image'] =asset($products_data->products_image);
+                    $listOfAttributes[$index3]['images'] = $products_images;
+    
+                    $index3++;
+                    // $result['getAllAttributes'] = $getAllAttributes;
+    
+                    $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
+                    if($getParallel) {
+                        foreach ($getParallel as $parallel) {
+                            $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                            foreach($getAllAttributesParallel as $attribute){
+                                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                                $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                                // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                            }
+                            $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                            $listOfAttributes[$index3]['home_image'] =asset($parallel->products_image);
+                            $listOfAttributes[$index3]['price'] = $parallel->products_price;
+    
+                            //multiple images
+                            $products_images = array();
+                            $products_images = DB::table('products_images')
+                                ->LeftJoin('image_categories', function ($join) {
+                                    $join->on('image_categories.image_id', '=', 'products_images.image')
+                                        ->where(function ($query) {
+                                            $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                                ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                                ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                        });
+                                })
+                                ->select('products_images.*', 'image_categories.path as image')
+                                ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+    
+                                // $products_data->images=$products_images;
+                                $listOfAttributes[$index3]['images'] = $products_images;
+    
+                            $index3++;
+                        }
+                    }
+                    // dd($listOfAttributes);
+                    $result[$index]->attributes = $listOfAttributes;
+                    // $result[$index]->images2 = $products_images;
+                    $index++;
+                }
+            }
+            $responseData[$key]['products']=$result;
+
+        }
         $title = array('pageTitle' => Lang::get("website.Home"));
         $final_theme = $this->theme->theme();
 /*********************************************************************/
 /**                   GENERAL CONTENT TO DISPLAY                    **/
 /*********************************************************************/
         $result = array();
+        $result['groups']=$responseData;
+
         $result['commonContent'] = $this->index->commonContent();
         $title = array('pageTitle' => Lang::get("website.Home"));
 /********************************************************************/
@@ -98,7 +403,7 @@ class IndexController extends Controller
         $data = array('page_number' => '0', 'type' => 'special', 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
         $special_products = $this->products->products($data);
         $result['special'] = $special_products;
-        //Flash sale
+        //Flash sale    
 
         $data = array('page_number' => '0', 'type' => 'flashsale', 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
         $flash_sale = $this->products->products($data);
@@ -156,18 +461,18 @@ class IndexController extends Controller
         }
 
         $result['weeklySoldProducts'] = array('success' => '1', 'product_data' => $detail, 'message' => "Returned all products.", 'total_record' => count($detail));
-
-        session(['paymentResponseData' => '']);
-
+        
+        session(['paymentResponseData' => '']); 
+            
         session(['paymentResponse'=>'']);
         session(['payment_json','']);
-
+        
         $category_section = array();
        if(!empty($result['commonContent']['settings']['home_category'])){
             $categories_array = explode(',',$result['commonContent']['settings']['home_category']);
             $index = 0;
             foreach($categories_array as $item){
-
+                
                 //get category section detail
                 $category = $this->products->getCategorybyId($item);
                 if($category){
@@ -178,10 +483,11 @@ class IndexController extends Controller
                     $index++;
                 }
             }
-
+            
         }
         // dd($category_section);
         $result['category_section'] = $category_section;
+        // $productCategory = \App\Models\Web\productCategory::where('categories_id',1)->get();
         return view("web.index", ['title' => $title, 'final_theme' => $final_theme])->with(['result' => $result]);
     }
 
@@ -371,14 +677,14 @@ class IndexController extends Controller
     public function newsletter(Request $request)
     {
         if (!empty(auth()->guard('customer')->user()->id)) {
-            $customers_id = auth()->guard('customer')->user()->id;
+            $customers_id = auth()->guard('customer')->user()->id;  
             $existUser = DB::table('customers')
                           ->leftJoin('users','customers.customers_id','=','users.id')
                           ->where('customers.fb_id', '=', $customers_id)
                           ->first();
 
-
-            if($existUser){
+                      
+            if($existUser){                
                 DB::table('customers')->where('user_id','=',$customers_id)->update([
                     'customers_newsletter' => 1,
                 ]);
@@ -388,31 +694,31 @@ class IndexController extends Controller
                     'customers_newsletter' => 1,
                 ]);
             }
-
+                                            
         }
         session(['newsletter' => 1]);
-
+        
         return 'subscribed';
     }
 
 
     public function subscribeMail(Request $request){
         $settings = $this->index->commonContent();
-        if(!empty($settings['setting'][122]->value) and !empty($settings['setting'][122]->value)){
+        if(!empty($settings['setting'][122]->value) and !empty($settings['setting'][122]->value)){        
             $email = $request->email;
 
             $list_id = $settings['setting'][123]->value;
             $api_key = $settings['setting'][122]->value;
-
+            
             $data_center = substr($api_key,strpos($api_key,'-')+1);
-
+            
             $url = 'https://'. $data_center .'.api.mailchimp.com/3.0/lists/'. $list_id .'/members';
-
+            
             $json = json_encode([
                 'email_address' => $email,
                 'status'        => 'subscribed', //pass 'subscribed' or 'pending'
             ]);
-
+            
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $api_key);
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -424,7 +730,7 @@ class IndexController extends Controller
             $result = curl_exec($ch);
             $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-
+            
             if($status_code==200){
                 //subscribed
                 print '1';
@@ -436,8 +742,8 @@ class IndexController extends Controller
         }else{
             print '0';
         }
-
+        
     }
-
+    
 
 }

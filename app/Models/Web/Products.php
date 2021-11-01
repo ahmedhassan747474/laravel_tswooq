@@ -9,10 +9,12 @@ use Session;
 
 class Products extends Model
 {
-
+     
+    public function image(){
+        return $this->belongsTo('App\Models\Core\Images','products_image');
+    }
     public function likedProducts()
     {
-
         $products = DB::table('liked_products')->where('liked_customers_id', '=', session('customers_id'))->get();
         $result = array();
         $index = 0;
@@ -133,7 +135,7 @@ class Products extends Model
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
-
+    
     public function productCategories1()
     {
         $categories = $this->recursivecategories1();
@@ -144,7 +146,7 @@ class Products extends Model
             foreach ($categories as $parents) {
                 if (isset($parents->childs)) {
                     $dropright = 'dropright';
-                    $right_arrow = '<i class="fas fa-chevron-right"></i>';
+                    $right_arrow = '<i class="fa fa-chevron-right"></i>';
                 } else {
                     $dropright = '';
                     $right_arrow = '';
@@ -197,11 +199,11 @@ class Products extends Model
             ';
             if (isset($child->childs)) {
                 $contents .= '
-                <i class="fas fa-chevron-right"></i>
+                <i class="fa fa-chevron-right"></i>
                 <div class="dropdown-menu pull-right">';
                 $contents .= '
                 <div class="dropdown-submenu submenu1">';
-
+                
                 $k = $i + 1;
                 $contents .= $this->childcat1($child->childs, $k, $parent_id, 1);
                 $cat = 'shop?category=' . $child->categories_slug;
@@ -212,7 +214,7 @@ class Products extends Model
         }
         return $contents;
     }
-
+    
 
     private function recursivecategories1()
     {
@@ -351,9 +353,13 @@ class Products extends Model
 
         }
 
-
+        
         //get single products
         if (!empty($data['products_id']) && $data['products_id'] != "") {
+            $categories->where('products.products_id', '=', $data['products_id']);
+        }
+
+        if (!empty($data['group_id']) && $data['group_id'] != "") {
             $categories->where('products.products_id', '=', $data['products_id']);
         }
 
@@ -366,7 +372,7 @@ class Products extends Model
                 if($current_currency->is_default == 0){
                     $max_price = $max_price / session('currency_value');
                     $min_price = $min_price / session('currency_value');
-                }
+                }    
             }
             $categories->whereBetween('products.products_price', [$min_price, $max_price]);
         }
@@ -374,7 +380,7 @@ class Products extends Model
         if (!empty($data['search'])) {
 
             $searchValue = $data['search'];
-
+            
             $categories->where('products_options.products_options_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
 
             if (!empty($data['categories_id'])) {
@@ -413,8 +419,8 @@ class Products extends Model
             }
             $categories->whereNotIn('products.products_id', function ($query) use ($currentDate) {
                 $query->select('flash_sale.products_id')->from('flash_sale')->where('flash_sale.flash_status', '=', '1');
-            });
-
+            });           
+            
 
             $categories->orWhere('products_options_values.products_options_values_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
             if (!empty($data['categories_id'])) {
@@ -570,7 +576,7 @@ class Products extends Model
         if ($type == "is_feature") {
             $categories->where('products.is_feature', '=', 1);
         }
-
+        
         $categories->where('products_description.language_id', '=', Session::get('language_id'))->where('products_status', '=', 1);
         $categories->where('products.is_show_web', '=', '1');
         $categories->where('products.product_parent_id', '=', null);
@@ -595,7 +601,7 @@ class Products extends Model
         }
 
         $categories->orderBy($sortby, $order)->groupBy('products.products_id');
-
+        
         //count
         $total_record = $categories->get();
         $products = $categories->skip($skip)->take($take)->get();
@@ -787,7 +793,7 @@ class Products extends Model
                     ->where('categories_description.language_id', '=', Session::get('language_id'))
                     ->where('categories.categories_status', 1)
                     ->orderby('parent_id', 'ASC')->get();
-
+                
                 $products_data->categories = $categories;
                 array_push($result, $products_data);
 
@@ -979,7 +985,7 @@ class Products extends Model
 
         }
 
-
+        
         //get single products
         if (!empty($data['products_id']) && $data['products_id'] != "") {
             $categories->where('products.products_id', '=', $data['products_id']);
@@ -994,7 +1000,7 @@ class Products extends Model
                 if($current_currency->is_default == 0){
                     $max_price = $max_price / session('currency_value');
                     $min_price = $min_price / session('currency_value');
-                }
+                }    
             }
             $categories->whereBetween('products.products_price', [$min_price, $max_price]);
         }
@@ -1002,7 +1008,7 @@ class Products extends Model
         if (!empty($data['search'])) {
 
             $searchValue = $data['search'];
-
+            
             $categories->where('products_options.products_options_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
 
             if (!empty($data['categories_id'])) {
@@ -1041,8 +1047,8 @@ class Products extends Model
             }
             $categories->whereNotIn('products.products_id', function ($query) use ($currentDate) {
                 $query->select('flash_sale.products_id')->from('flash_sale')->where('flash_sale.flash_status', '=', '1');
-            });
-
+            });           
+            
 
             $categories->orWhere('products_options_values.products_options_values_name', 'LIKE', '%' . $searchValue . '%')->where('products_status', '=', 1);
             if (!empty($data['categories_id'])) {
@@ -1198,7 +1204,7 @@ class Products extends Model
         if ($type == "is_feature") {
             $categories->where('products.is_feature', '=', 1);
         }
-
+        
         $categories->where('products_description.language_id', '=', Session::get('language_id'))->where('products_status', '=', 1);
         $categories->where('products.is_show_web', '=', '1');
 
@@ -1222,11 +1228,11 @@ class Products extends Model
         }
 
         $categories->orderBy($sortby, $order)->groupBy('products.products_id');
-
+        
         //count
         $total_record = $categories->get();
         $products = $categories->skip($skip)->take($take)->get();
-
+        
         $result = array();
         $result2 = array();
 
@@ -1407,7 +1413,7 @@ class Products extends Model
                     ->where('categories_description.language_id', '=', Session::get('language_id'))
                     ->where('categories.categories_status', 1)
                     ->orderby('parent_id', 'ASC')->get();
-
+                
                 $products_data->categories = $categories;
                 array_push($result, $products_data);
 
@@ -1853,7 +1859,7 @@ class Products extends Model
         if (!empty($priceContent)) {
             $priceContent = $priceContent * session('currency_value');
             $maxPrice = round($priceContent + 1);
-
+            
         } else {
             $maxPrice = 1;
         }

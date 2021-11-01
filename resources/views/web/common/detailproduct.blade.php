@@ -4,12 +4,12 @@
           <div class="icons mobile-icons d-lg-none d-xl-none">
               <div class="icon-liked">
                 <a class="icon active is_liked" products_id="<?=$products->products_id?>">
-                  <i class="fas fa-heart"></i>
+                  <i class="fa fa-heart"></i>
                   <span  class="badge badge-secondary counter"  >{{$products->products_liked}}</span>
                 </a>
               </div>
-              <div class="icon"><i class="fas fa-eye"></i></div>
-              <a href="{{url('compare')}}" class="icon"><i class="fas fa-align-right" data-fa-transform="rotate-90"></i></a>
+              <div class="icon"><i class="fa fa-eye"></i></div>
+              <a href="{{url('compare')}}" class="icon"><i class="fa fa-align-right" data-fa-transform="rotate-90"></i></a>
             </div>
           <img class="img-fluid" src="{{asset('').$products->image_path}}" alt="{{$products->products_name}}">
        </div>
@@ -19,7 +19,7 @@
             $discount_price = $products->discount_price * session('currency_value');
           }
           $orignal_price = $products->products_price * session('currency_value');
-
+          
            if(!empty($products->discount_price)){
 
             if(($orignal_price+0)>0){
@@ -65,12 +65,12 @@
         <div class="icons">
             <div class="icon-liked">
               <a class="icon active is_liked" products_id="<?=$products->products_id?>">
-                <i class="fas fa-heart"></i>
+                <i class="fa fa-heart"></i>
                 <span  class="badge badge-secondary counter"  >{{$products->products_liked}}</span>
               </a>
             </div>
-          <!-- <div class="icon modal_show" data-toggle="modal" data-target="#myModal" products_id="{{$products->products_id}}"><i class="fas fa-eye"></i></div> -->
-            <a onclick="myFunction3({{$products->products_id}})"class="icon"><i class="fas fa-align-right" data-fa-transform="rotate-90"></i></a>
+          <!-- <div class="icon modal_show" data-toggle="modal" data-target="#myModal" products_id="{{$products->products_id}}"><i class="fa fa-eye"></i></div> -->
+            <a onclick="myFunction3({{$products->products_id}})"class="icon"><i class="fa fa-align-right" data-fa-transform="rotate-90"></i></a>
         </div>
         @include('web.common.scripts.addToCompare')
         <div class="buttons">

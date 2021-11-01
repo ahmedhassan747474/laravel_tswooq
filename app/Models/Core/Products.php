@@ -24,11 +24,14 @@ use Kyslik\ColumnSortable\Sortable;
 
 class Products extends Model
 {
-
     use Sortable;
     public $sortable =['products_id','updated_at'];
     public $sortableAs =['categories_name','products_name'];
-
+    public function productDesc(){
+        return $this->hasOne('App\Models\Web\ProductDesc','products_id');
+    }
+    
+    
 	public function paginator($request){
         $setting = new Setting();
         $myVarsetting = new SiteSettingController($setting);
@@ -39,20 +42,8 @@ class Products extends Model
         $categories_id = $request->categories_id;
         $product  = $request->product;
         $results = array();
-        
-        $currentPage = request()->get('page',1);
 
-        $data = Cache::remember('products-' . $currentPage, 22*60, function() use($request) {
-        $setting = new Setting();
-        $myVarsetting = new SiteSettingController($setting);
-        $commonsetting = $myVarsetting->commonsetting();
-        $myVaralter = new AlertController($setting);
-
-        $language_id = '1';
-        $categories_id = $request->categories_id;
-        $product  = $request->product;
-        $results = array();
-            $data = $this->sortable(['products_id'=>'DESC'])
+        $data = $this->sortable(['products_id'=>'DESC'])
             ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
             ->LeftJoin('manufacturers', function ($join) {
                 $join->on('manufacturers.manufacturers_id', '=', 'products.manufacturers_id');
@@ -85,53 +76,150 @@ class Products extends Model
             ->where('products_description.language_id', '=', $language_id)
             ->where('categories_description.language_id', '=', $language_id);
             
-        if(auth()->user()->role_id == 11) {
-                $data->where('admin_id', '=', auth()->user()->id);
-            } elseif(auth()->user()->role_id == 12) {
-                $data->where('admin_id', '=', auth()->user()->parent_admin_id);
-            }
+        // if(auth()->user()->role_id == 11) {
+        //         $data->where('admin_id', '=', auth()->user()->id);
+        //     } elseif(auth()->user()->role_id == 12) {
+        //         $data->where('admin_id', '=', auth()->user()->parent_admin_id);
+        //     }
+
+        if(auth()->user()->role_id != 1) {
+            $data->where('admin_id', '=', auth()->user()->id);
+        } 
         
             if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
                 if (!empty(session('categories_id'))) {
                     $cat_array = explode(',', session('categories_id'));
                     $data->whereIn('products_to_categories.categories_id', '=', $cat_array);
+                    
                 }
     
                 $data->where('products_to_categories.categories_id', '=', $_REQUEST['categories_id']);
-    
+                
                 if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
                     $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
                     $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                    
                 }
     
                 $products = $data->orderBy('products.products_id', 'DESC')
                 ->where('categories_status', '1')->paginate($commonsetting['pagination']);
+
     
             } else if(isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
                 $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
                 $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                
                 $products = $data->orderBy('products.products_id', 'DESC')->where('categories_status', '1')->paginate($commonsetting['pagination']);
             } else {
     
                 if (!empty(session('categories_id'))) {
                     $cat_array = explode(',', session('categories_id'));
                     $data->whereIn('products_to_categories.categories_id', $cat_array);
+                    
                 }
                 $products = $data->orderBy('products.products_id', 'DESC')
                 ->where('categories_status', '1')
                 ->where('is_current', '1')
                 ->groupBy('products.products_id')->paginate($commonsetting['pagination']);
             }
+        
+        $currentPage = request()->get('page',1);
 
-        return $products;
-        });
+        // $data = Cache::remember('products-' . $currentPage, 22*60, function() use($request) {
+        // $setting = new Setting();
+        // $myVarsetting = new SiteSettingController($setting);
+        // $commonsetting = $myVarsetting->commonsetting();
+        // $myVaralter = new AlertController($setting);
+
+        // $language_id = '1';
+        // $categories_id = $request->categories_id;
+        // $product  = $request->product;
+        // $results = array();
+        //     $data = $this->sortable(['products_id'=>'DESC'])
+        //     ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
+        //     ->LeftJoin('manufacturers', function ($join) {
+        //         $join->on('manufacturers.manufacturers_id', '=', 'products.manufacturers_id');
+        //     })
+
+        //     ->LeftJoin('specials', function ($join) {
+        //         $join->on('specials.products_id', '=', 'products.products_id')->where('specials.status', '=', '1');
+        //     })
+        //     ->LeftJoin('image_categories', function ($join) {
+        //         $join->on('image_categories.image_id', '=', 'products.products_image')
+        //             ->where(function ($query) {
+        //                 $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+        //                     ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+        //                     ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+        //             });
+        //     });
+
+
+        //     $data->leftJoin('products_to_categories', 'products.products_id', '=', 'products_to_categories.products_id')
+        //         ->leftJoin('categories', 'categories.categories_id', '=', 'products_to_categories.categories_id')
+        //         ->leftJoin('categories_description', 'categories.categories_id', '=', 'categories_description.categories_id');
+
+
+
+        // $data->select('products.*', 'products_description.*', 'specials.specials_id', 'manufacturers.*',
+        // 'specials.products_id as special_products_id', 'specials.specials_new_products_price as specials_products_price',
+        // 'specials.specials_date_added as specials_date_added', 'specials.specials_last_modified as specials_last_modified',
+        // 'specials.expires_date', 'image_categories.path as path', 'products.updated_at as productupdate', 'categories_description.categories_id',
+        // 'categories_description.categories_name')
+        //     ->where('products_description.language_id', '=', $language_id)
+        //     ->where('categories_description.language_id', '=', $language_id);
+            
+        // if(auth()->user()->role_id == 11) {
+        //         $data->where('admin_id', '=', auth()->user()->id);
+        //     } elseif(auth()->user()->role_id == 12) {
+        //         $data->where('admin_id', '=', auth()->user()->parent_admin_id);
+        //     }
+        
+        //     if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
+        //         if (!empty(session('categories_id'))) {
+        //             $cat_array = explode(',', session('categories_id'));
+        //             $data->whereIn('products_to_categories.categories_id', '=', $cat_array);
+                    
+        //         }
+    
+        //         $data->where('products_to_categories.categories_id', '=', $_REQUEST['categories_id']);
+                
+        //         if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+        //             $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
+        //             $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                    
+        //         }
+    
+        //         $products = $data->orderBy('products.products_id', 'DESC')
+        //         ->where('categories_status', '1')->paginate($commonsetting['pagination']);
+
+    
+        //     } else if(isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+        //         $data->where('products_name', 'like', '%' . $_REQUEST['product'] . '%');
+        //         $data->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+                
+        //         $products = $data->orderBy('products.products_id', 'DESC')->where('categories_status', '1')->paginate($commonsetting['pagination']);
+        //     } else {
+    
+        //         if (!empty(session('categories_id'))) {
+        //             $cat_array = explode(',', session('categories_id'));
+        //             $data->whereIn('products_to_categories.categories_id', $cat_array);
+                    
+        //         }
+        //         $products = $data->orderBy('products.products_id', 'DESC')
+        //         ->where('categories_status', '1')
+        //         ->where('is_current', '1')
+        //         ->groupBy('products.products_id')->paginate($commonsetting['pagination']);
+        //     }
+
+        // return $products;
+        // });
 
         // dd($data);
 
        
 
 
-        return $data;
+        return $products;
     }
 
   public function getter(){
@@ -174,6 +262,9 @@ class Products extends Model
                   ->where('products_description.language_id', '=', $language_id)
                   ->where('categories_description.language_id', '=', $language_id);
 
+                  if(auth()->user()->role_id != 1) {
+                    $data->where('admin_id', '=', auth()->user()->id);
+                } 
               if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
                   if (!empty(session('categories_id'))) {
                       $cat_array = explode(',', session('categories_id'));
@@ -227,7 +318,6 @@ class Products extends Model
     $products_id = DB::table('products')->insertGetId([
         'products_image' => $uploadImage,
         'manufacturers_id' => $request->manufacturers_id,
-        'products_quantity' => 0,
         'products_model' => $request->products_model,
         'price_buy' => $request->price_buy,
         'products_price' => $request->products_price,
@@ -249,7 +339,8 @@ class Products extends Model
         'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
         'admin_id'          => $request->admin_id,
         'product_parent_id' => $request->product_parent_id,
-        'barcode'           => $request->barcode
+        'barcode'           => $request->barcode,
+        'products_quantity'  => $request->products_quantity
     ]);
 
     //insert Attributes 
@@ -606,7 +697,6 @@ class Products extends Model
           DB::table('products')->where('products_id', '=', $products_id)->update([
                 'products_image' => $uploadImage,
                 'manufacturers_id' => $request->manufacturers_id,
-                'products_quantity' => 0,
                 'products_model' => $request->products_model,
                 'products_price' => $request->products_price,
                 'price_buy' => $request->price_buy,
@@ -627,7 +717,8 @@ class Products extends Model
                 'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
                 'admin_id'          => $request->admin_id,
                 'product_parent_id' => $request->product_parent_id,
-                'barcode'           => $request->barcode
+                'barcode'           => $request->barcode,
+                'products_quantity' => $request->products_quantity
           ]);
 
             //insert Attributes 
@@ -1328,8 +1419,8 @@ class Products extends Model
 
   public function addnewstock($request){
 
-    // dd($request->all());
-    $products_id = $request->products_id;
+    foreach($request->products_id as $key=>$products_id){
+        // $products_id = $request->products_id;
     $language_id     =   1;
     $product = DB::table('products')
                 ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
@@ -1360,11 +1451,11 @@ class Products extends Model
     $inventory_ref_id = DB::table('inventory')->insertGetId([
         'products_id' => $products_id,
         'reference_code' => $request->reference_code,
-        'stock' => $request->stock,
+        'stock' => $request->stock[$key],
         'admin_id' => auth()->user()->id,
         'created_at' => $date_added,
-        'purchase_price' => $request->purchase_price,
-        'stock_type'  			=>   $request->stock_type
+        'purchase_price' => $request->purchase_price[$key],
+        'stock_type'  			=>   $request->stock_type[$key]
 
     ]);
     if($products[0]->products_type==1){
@@ -1398,13 +1489,13 @@ class Products extends Model
                 'inventory_id'      => $inventory_ref_id,
                 'admin_id'          => auth()->user()->id,
                 'supplier_main_id'  => $mainSupplier->supplier_main_id,
-                'stock'             => $request->stock,
-                'price'             => $request->purchase_price,
+                'stock'             => $request->stock[$key],
+                'price'             => $request->purchase_price[$key],
                 'date_added'        => $date_added,
                 'created_at'        => $date_added,
             ]);
 
-            $fullPrice = $mainSupplier->price + $request->purchase_price;
+            $fullPrice = $mainSupplier->price + $request->purchase_price[$key];
 
             $updatemainSupplier = DB::table('supplier_main')
                 ->where('supplier_main_id', '=', $request->invoice_id)
@@ -1417,7 +1508,7 @@ class Products extends Model
         $createmainSupplier = DB::table('supplier_main')->insertGetId([
             'admin_id'          => auth()->user()->id,
             'user_supplier_id'  => $request->supplier_id,
-            'price'             => $request->purchase_price,
+            'price'             => $request->purchase_price[$key],
             'date_added'        => $date_added,
             'supplier_type'     => $request->supplier_type,
             'created_at'        => $date_added,
@@ -1427,12 +1518,14 @@ class Products extends Model
             'inventory_id'      => $inventory_ref_id,
             'admin_id'          => auth()->user()->id,
             'supplier_main_id'  => $createmainSupplier,
-            'stock'             => $request->stock,
-            'price'             => $request->purchase_price,
+            'stock'             => $request->stock[$key],
+            'price'             => $request->purchase_price[$key],
             'date_added'        => $date_added,
             'created_at'        => $date_added,
         ]);
     }
+    }
+    
 
   }
 

@@ -25,7 +25,7 @@
                                 <br>
                            <div class="col-lg-10 form-inline">
 
-                                <form  name='registration' id="registration" class="registration" method="get">
+                                <form  name='registration' id="registration" class="registration" method="get" action="{{ url('/admin/products/display') }}">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
 
                                     <div class="input-group-form search-panel ">
@@ -78,6 +78,7 @@
                                             <th>{{ trans('labels.Image') }}</th>
                                             <th>@sortablelink('categories_name', trans('labels.Category') )</th>
                                             <th>@sortablelink('products_name', trans('labels.Name') )</th>
+                                            <th>الكمية</th>
                                             <th>{{ trans('labels.Additional info') }}</th>
                                             <th>@sortablelink('created_at', trans('labels.ModifiedDate') )</th>
                                             <th></th>
@@ -95,6 +96,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $product->products_name }} @if(!empty($product->products_model)) ( {{ $product->products_model }} ) @endif
+                                                    </td>
+                                                    <td>
+                                                        {{ $product->products_quantity }}
                                                     </td>
                                                     <td>
                                                         {{ $product->first_name }} {{ $product->last_name }}
@@ -140,7 +144,10 @@
                                                       <a class="btn btn-warning" style="width: 100%;  margin-bottom: 5px;" href="{{url('admin/products/images/display/'. $product->products_id) }}">{{ trans('labels.ProductImages') }}</a>
                                                       </br>
                                                       <a class="btn btn-danger" style="width: 100%;  margin-bottom: 5px;" id="deleteProductId" products_id="{{ $product->products_id }}">{{ trans('labels.DeleteProduct') }}</a>
-                                                      </td>
+                                                        </br>
+                                                        <a class="btn btn-primary" style="width: 100%;  margin-bottom: 5px;"  href="{{url('admin/products/inventory/select_product/'. $product->products_id) }}">الجرد</a>
+                                                      
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         @else
@@ -219,3 +226,4 @@
         <!-- /.content -->
     </div>
 @endsection
+

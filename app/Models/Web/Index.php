@@ -838,8 +838,8 @@ class Index extends Model
                     $ul .= '<a class="main-manu btn btn-primary"'  . $dropright . ' ' . $link  .' >
                 ' . $parents->name;
                     if (isset($parents->childs)) {
-                        $ul .= '<span><i class="fas fa-chevron-down"></i></span>
-                            <span><i class="fas fa-chevron-up"></i></span>';
+                        $ul .= '<span><i class="fa fa-chevron-down"></i></span>
+                            <span><i class="fa fa-chevron-up"></i></span>';
                     }
                     $ul .='</a>';
 
@@ -891,8 +891,8 @@ class Index extends Model
             $contents .= '<a class="main-manu btn btn-primary"'  . $dropright . ' ' . $link  .' >
             ' . $child->name;
                 if (isset($child->childs)) {
-                    $contents .= '<span><i class="fas fa-chevron-down"></i></span>
-                        <span><i class="fas fa-chevron-up"></i></span>';
+                    $contents .= '<span><i class="fa fa-chevron-down"></i></span>
+                        <span><i class="fa fa-chevron-up"></i></span>';
                 }
             $contents .='</a>';
 

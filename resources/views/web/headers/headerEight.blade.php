@@ -87,15 +87,7 @@
         </div>
         <div class="col-6 col-sm-6 col-md-4 col-lg-9">
           <ul class="pro-header-right-options">
-            <li class="phone-header">
-              <a href="#">
-                  <i class="fas fa-phone"></i>
-                  <span class="block">
-                    <span class="title">@lang('website.Call Us Now')</span>                    
-                    <span class="items" dir="ltr">{{$result['commonContent']['setting'][11]->value}}</span>
-                  </span>                   
-              </a>
-            </li>
+            
             <li class="dropdown head-cart-content">
               @include('web.headers.cartButtons.cartButton8') 
             </li>

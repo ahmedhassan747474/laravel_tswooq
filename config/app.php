@@ -170,6 +170,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
 
+        Spatie\Backup\BackupServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
         /*
@@ -192,6 +193,7 @@ return [
         Basel\Paytabs\PaytabsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
 
     ],
 
@@ -248,7 +250,10 @@ return [
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class,
 
         'Paytabs' => Basel\Paytabs\Facades\PaytabsFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
+
 
     ],
 

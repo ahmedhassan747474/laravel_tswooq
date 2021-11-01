@@ -58,6 +58,57 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                    <div class="card mb-3">
+                                        <div class="card-title">
+                                            <label> Customers Orders By QR</label>
+                                        </div>
+                                        <button type="button" onclick="location.reload();" class="btn btn-icon btn-soft-dark ml-3"  >
+                                            <i class="fa fa-refresh"></i> Refresh
+                                        </button>
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <table class="table aiz-table mb-0 mar-no" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="50%">customer</th>
+                                                            <th width="15%">products</th>
+                                                            
+                                                            <th class="text-right">add all</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                           $customers = DB::table('pos_standby')->groupBy('customer_id')->get();
+                                                        @endphp
+                                            
+                                                        @foreach($customers as $customer)
+                                                            @php
+                                                                $name = DB::table('users')->where('id',$customer->customer_id)->first();
+                                                            
+                                                                $products = DB::table('pos_standby')->where('customer_id',$customer->customer_id)->count();
+                                                            @endphp
+                                                            <tr>
+                                                                <td>{{ $name->first_name . ' '.$name->last_name }}</td>
+                                                                <td>{{ $products }}</td>
+                                                                <td class="text-right">
+                                                                    <form method="POST" id="addNewForm" action="{{ route('pos.addToPOS') }}">
+                                                                        @csrf                                    
+                                                                        <button type="submit" class="btn btn-icon btn-soft-dark ml-3"  >
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </button>
+                                                                        <input type="hidden" name="customer_id_pos" value="{{ $customer->customer_id }}">
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                
+                                                    </tbody>
+                                                </table>
+                                                    
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
 
                             <div class="col-lg-7">
@@ -302,6 +353,7 @@
 
         <!-- /.row -->
 
+
         <!-- Address Modal -->
         <div id="new-customer" class="modal fade" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-dialog-zoom" role="document">
@@ -333,7 +385,7 @@
                     <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
-                            <input type="hidden" name="customer_id" id="set_customer_id" value="">
+                            <input type="hidden" name="customer_id" id="set_customer_id" value="{{ Session::get('customerData')->id ?? '' }}">
                             <div class="form-group">
                                 <div class=" row">
                                     <label class="col-sm-2 control-label" for="address">Address</label>
@@ -371,7 +423,7 @@
                                 <div class=" row">
                                     <label class="col-sm-2 control-label" for="phone">Phone</label>
                                     <div class="col-sm-10">
-                                        <input type="number" min="0" placeholder="Phone" id="phone" name="phone" class="form-control" required>
+                                        <input type="number" min="0" value="{{ Session::get('customerData')->phone ?? '' }}" placeholder="Phone" id="phone" name="phone" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -598,7 +650,7 @@
             var discount = $('input[name=discount]').val();
             var address = $('input[name=address_id]:checked').val();
             var total_price = $('input[name=total_price]').val();
-            var customer_id = $('select[name=customer]').val();
+            var customer_id = $('input[name=customer_id]').val() != '' ? $('input[name=customer_id]').val() : $('select[name=customer]').val();
 
             $.post('{{ route('pos.order_place') }}',
             {
@@ -629,7 +681,6 @@
                 } else if(data.status == 2) {
                     swal("", data.message, "error");
                 } else{
-                    // console.log(data);
                     // AIZ.plugins.notify('danger', '{{ trans('labels.Something went wrong') }}');
                     swal("", "{{ trans('labels.Something went wrong') }}", "error");
                 }

@@ -52,7 +52,14 @@ return [
             'prefix' => '',
             'strict' => false,
             'engine' => null,
-            'dump_command_path' => env('DB_DUMP_COMMAND_PATH', 'C:\xampp\mysql\bin')
+            'dump_command_path' => env('DB_DUMP_COMMAND_PATH', 'C:\xampp\mysql\bin'),
+            'dump' => [
+                'dump_binary_path' => '/xampp/mysql/bin/', // only the path, so without `mysqldump` or `pg_dump`
+                'use_single_transaction',
+                'timeout' => 60 * 5, // 5 minute timeout
+                'exclude_tables' => ['table1', 'table2'],
+                'add_extra_option' => '--optionname=optionvalue', // for example '--column_statistics=0'
+             ]
 
         ],
 

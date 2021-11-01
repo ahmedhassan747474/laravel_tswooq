@@ -23,7 +23,7 @@
         }
         $option .= '</span>';
       }
-      $option .= '<a class="menu-item" href="/like_card_index">Like Card</a>';
+      $option .= '<a class="menu-item" href="/like_card_index">كروت شحن</a>';
 
 
 

@@ -64,7 +64,7 @@
                         <div class="list-main">
                             <div class="icon-liked">
                               <a class="icon active is_liked" products_id="<?=$result['detail']['product_data'][0]->products_id?>">
-                                <i class="fas fa-heart"></i>
+                                <i class="fa fa-heart"></i>
                                 <span  class="badge badge-secondary counter"  >{{$result['detail']['product_data'][0]->products_liked}}</span>
                               </a>
                               </div>
@@ -77,9 +77,9 @@
                                 <li> {{$result['detail']['product_data'][0]->products_ordered}}&nbsp;@lang('website.Order(s)')</li>
                                 @if($result['detail']['product_data'][0]->products_type == 0)
                                 @if($result['detail']['product_data'][0]->defaultStock == 0)
-                                <li class="outstock"><i class="fas fa-check"></i>@lang('website.Out of Stock')</li>
+                                <li class="outstock"><i class="fa fa-check"></i>@lang('website.Out of Stock')</li>
                                 @else
-                                <li class="instock"><i class="fas fa-check"></i>@lang('website.In stock')</li>
+                                <li class="instock"><i class="fa fa-check"></i>@lang('website.In stock')</li>
                                 @endif
                                 @endif
                             </ul>

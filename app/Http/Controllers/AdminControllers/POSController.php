@@ -932,6 +932,87 @@ class POSController extends Controller
         // }
     }
 
+    public function addToPOS(Request $request)
+    {
+        // dd($request->all());
+        $products = DB::table('pos_standby')->where('customer_id',$request->customer_id_pos)->get();
+        foreach($products as $item){
+            $product = DB::table('products')->where('products_id', $item->product_id)->first();
+            // dd($product);
+
+            $data = array();
+            $data['id'] = $product->products_id;
+            $tax = 0;
+            $data['variant'] = $request->variant;
+
+            if($request->variant != null && $product->variant_product){
+                $product_stock = $product->stocks->where('variant', $request->variant)->first();
+                $price = $product_stock->price;
+                $quantity = $product_stock->qty;
+
+                if($request['quantity'] > $quantity){
+                    return 0;
+                }
+            }
+            else{
+                $price = $product->products_price;
+            }
+
+            $tax = 0;
+
+            $data['quantity'] = $item->quantity;
+            $data['price'] = $price;
+            $data['tax'] = 0;
+            $data['shipping'] = 0;//$product->shipping_cost;
+
+            if($request->session()->has('posCart')){
+                $foundInCart = false;
+                $cart = collect();
+
+                foreach ($request->session()->get('posCart') as $key => $cartItem){
+                    if($cartItem['id'] == $item->product_id){
+                        if($cartItem['variant'] == $request->variant){
+                            $foundInCart = true;
+                            $product = DB::table('products')->where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
+                            $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
+                            $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                            $current_stock = $current_stock_in - $current_stock_out;
+                            if($cartItem['variant'] != null && $product->variant_product){
+                                $product_stock = $product->stocks->where('variant', $cartItem['variant'])->first();
+                                $quantity = $product_stock->qty;
+                                if($quantity >= $item->quantity){
+                                    if($item->quantity >= $product->min_qty){
+                                        $cartItem['quantity'] = $item->quantity;
+                                    }
+                                }
+                            }
+                            elseif ($current_stock >= $item->quantity) {
+                                // if($item->quantity >= $product->min_qty){
+                                    $cartItem['quantity'] = $item->quantity;
+                                // }
+                            }
+                        }
+                    }
+                    $cart->push($cartItem);
+                }
+
+                if (!$foundInCart) {
+                    $cart->push($data);
+                }
+                $request->session()->put('posCart', $cart);
+            }
+            else{
+                $cart = collect([$data]);
+                $request->session()->put('posCart', $cart);
+            }
+
+        }
+
+        $customer =DB::table('users')->where('id',$request->customer_id_pos) ->first();
+        DB::table('pos_standby')->where('customer_id',$request->customer_id_pos)->delete();
+        return redirect()->back()->with(['customerData'=>$customer]);
+    }
+
     public function addToCart(Request $request)
     {
         $product = DB::table('products')->where('products_id', $request->product_id)->first();

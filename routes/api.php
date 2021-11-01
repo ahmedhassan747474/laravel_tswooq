@@ -273,6 +273,10 @@ Route::group(['namespace' => 'App'], function () {
 
 Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 
+	//database
+    Route::get('backup', 'UserController@backup');
+    Route::get('drop', 'UserController@dropDB');
+
     //Auth
     Route::post('sign_in', 'UserController@login');
     Route::post('sign_up', 'UserController@registration');
@@ -281,15 +285,22 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
     Route::post('sign_with_social', 'UserController@loginWithSocial');
     Route::post('active_phone_number', 'UserController@verifyPhoneNumber');
 
+	//vendors 
+    Route::get('get_vendors', 'UserController@get_vendors');
+
 	//Product
 	Route::post('/get_categories', 'ProductController@allcategories');
 	Route::post('/get_brands', 'ProductController@allbrands');
 	Route::post('/get_brands_by_category', 'ProductController@allbrandsbycategory');
 	Route::post('/getallproducts', 'ProductController@getallproducts');
+	Route::get('/get_all_group_products', 'ProductController@get_all_group_products');
+	Route::get('/get_groups_by_vendor', 'ProductController@get_groups_by_vendor');
+	Route::get('/get_all_groups', 'ProductController@get_all_groups');
 	Route::post('/getproductsbycategory', 'ProductController@getproductsbycategory');
 	Route::post('/getfilters', 'ProductController@getfilters');
 	Route::post('/getfilterproducts', 'ProductController@getfilterproducts');
     Route::post('/getproductsbybrand', 'ProductController@getproductsbybrand');
+    Route::post('/getproductbyid', 'ProductController@getproductbyid');
 	Route::post('/getsliders', 'SliderController@getsliders');
 
 
@@ -301,7 +312,8 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 	Route::post('/products', 'LikeCardController@products');
 
     Route::group(['middleware' => 'user'], function(){
-        //Auth
+        
+		//Auth
         Route::post('update_profile', 'UserController@updateProfile');
         Route::post('logout', 'UserController@logout');
         Route::get('get_profile', 'UserController@getProfile');
@@ -320,6 +332,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
 
 		//Order
 		Route::post('/addtoorder', 'OrderController@addtoorder');
+		Route::post('/addtopos', 'OrderController@addtopos');
 		Route::post('/cancelorder', 'OrderController@updatestatus');
 		Route::post('/getorders', 'OrderController@getorders');
 

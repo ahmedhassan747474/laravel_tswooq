@@ -21,10 +21,10 @@
             </div>
             <!-- Left and right controls -->
             <a class="carousel-control-prev btn-secondary swipe-to-top" href="#quickViewCarousel" data-slide="prev">
-                <span class="fas fa-angle-left "></span>
+                <span class="fa fa-angle-left "></span>
             </a>
             <a class="carousel-control-next btn-secondary swipe-to-top" href="#quickViewCarousel" data-slide="next">
-                <span class="fas fa-angle-right "></span>
+                <span class="fa fa-angle-right "></span>
             </a>
           
         </div>
@@ -230,11 +230,11 @@
             <input type="text" readonly name="quantity" class="form-control qty" value="@if(!empty($result['cart'])) {{$result['cart'][0]->customers_basket_quantity}} @else @if($result['detail']['product_data'][0]->products_min_order>0 and $result['detail']['product_data'][0]->defaultStock > $result['detail']['product_data'][0]->products_min_order) {{$result['detail']['product_data'][0]->products_min_order}} @else 1 @endif @endif" min="@if($result['detail']['product_data'][0]->products_min_order>0 and $result['detail']['product_data'][0]->defaultStock > $result['detail']['product_data'][0]->products_min_order) {{$result['detail']['product_data'][0]->products_min_order}} @else 1 @endif" max="@if(!empty($result['detail']['product_data'][0]->products_max_stock) and $result['detail']['product_data'][0]->products_max_stock>0 and $result['detail']['product_data'][0]->defaultStock > $result['detail']['product_data'][0]->products_max_stock){{ $result['detail']['product_data'][0]->products_max_stock}}@else{{ $result['detail']['product_data'][0]->defaultStock}}@endif">              
             <span class="input-group-btn">
                 <button type="button" class="quantity-plus1 btn qtyplus">
-                    <i class="fas fa-plus"></i>
+                    <i class="fa fa-plus"></i>
                 </button>
             
                 <button type="button" class="quantity-minus1 btn qtyminus">
-                    <i class="fas fa-minus"></i>
+                    <i class="fa fa-minus"></i>
                 </button>
             </span>
           </div>

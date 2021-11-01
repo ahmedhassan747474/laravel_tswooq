@@ -44,7 +44,7 @@
 
     $contents.= '<li class="list-item">
         <a class="list-link" href='.url('shop?category=').$child->slug.' > '.$dash.'
-            <i class="fas fa-angle-right"></i>'.$child->categories_name.'
+            <i class="fa fa-angle-right"></i>'.$child->categories_name.'
         </a>
       </li>';
 

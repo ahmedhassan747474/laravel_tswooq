@@ -144,6 +144,14 @@ $allimage = $images->getimages();
                                    {{ trans('labels.TelephoneText') }}</span>
                                   </div>
                                 </div>
+                                <div class="form-group">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }}</label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('like_limit',  $result['admins'][0]->like_limit, array('class'=>'form-control', 'id'=>'like_limit')) !!}
+                                   <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                   {{ trans('labels.LikeCardLimitText') }}</span>
+                                  </div>
+                                </div>
                                 @if ($result['admins'][0]->role_id == 11)
                                 <div class="form-group show_hide_shop_name">
                                 @else
@@ -209,15 +217,7 @@ $allimage = $images->getimages();
                                         <br>
                                     </div>
                                 </div>
-                                <div class="form-group show_hide_shop_name">
-                                    <label for="name" class="col-sm-2 col-md-3 control-label"></label>
-                                    <div class="col-sm-10 col-md-4">
-
-                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.OldImage') }}</span>
-                                        <br>
-                                        <img src="{{asset($result['image'])}}" alt="" width=" 100px">
-                                    </div>
-                                </div>
+                                
                                 <hr>
                                 <h4>{{ trans('labels.Login Info') }}</h4>
                                 <hr>

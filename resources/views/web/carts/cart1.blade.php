@@ -112,11 +112,11 @@
 
                             <div class="item-controls">
                                 <a href="{{ url('/editcart/'.$products->customers_basket_id.'/'.$products->products_slug)}}"  class="btn" >
-                                  <span class="fas fa-pencil-alt"></span>
+                                  <span class="fa fa-pencil-alt"></span>
                                 </a>
 
                                 <a href="{{ URL::to('/deleteCart?id='.$products->customers_basket_id)}}"  class="btn" >
-                                  <span class="fas fa-times"></span>
+                                  <span class="fa fa-times"></span>
                               </a>
                             </div>
                           </div>
@@ -176,10 +176,10 @@
                             <input name="quantity[]" type="text" readonly value="{{$products->customers_basket_quantity}}" class="form-control qty" min="{{$products->min_order}}" max="{{$products->max_order}}">
                             <span class="input-group-btn ">
                                 <button type="button" value="quantity" class="quantity-right-plus btn qtypluscart" data-type="plus" data-field="">
-                                    <span class="fas fa-plus"></span>
+                                    <span class="fa fa-plus"></span>
                                 </button>
                                 <button type="button" value="quantity" class="quantity-left-minus btn qtyminuscart" data-type="minus" data-field="">
-                                    <span class="fas fa-minus"></span>
+                                    <span class="fa fa-minus"></span>
                                 </button>
                             </span>
                         </div>

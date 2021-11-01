@@ -545,7 +545,7 @@ class OrderController extends BaseController
 
             $getCart = DB::table('carts')->where('user_id', $user->id)->first();
 
-// dd($getCart);
+            // dd($getCart);
             $products_cart=array();
             if($getCart){
 
@@ -755,7 +755,8 @@ class OrderController extends BaseController
                 $check = json_decode($check);
 
                 // dd($check);
-                if($products->quantity_ordered > $check->stock){
+                // if($products->quantity_ordered > $check->stock){
+                    if($products->quantity_ordered > $products->products_quantity){
                     $responseData = array('success'=>'0', 'data'=>array(),'products_id' => $products->products_id, 'message'=>"Some Products are out of Stock.");
                     // $orderResponse = json_encode($responseData);
                     // return $orderResponse;
@@ -1446,16 +1447,17 @@ class OrderController extends BaseController
                         'products_quantity' =>  	$products->quantity_ordered,
                     ]);
 
-                    $inventory_ref_id = DB::table('inventory')->insertGetId([
-                        'products_id'   		=>   $products->products_id,
-                        'reference_code'  		=>   '',
-                        'stock'  				=>   $products->quantity_ordered,
-                        'admin_id'  			=>   0,
-                        'added_date'	  		=>   time(),
-                        'purchase_price'  		=>   0,
-                        'stock_type'  			=>   'out',
-                    ]);
+                    // $inventory_ref_id = DB::table('inventory')->insertGetId([
+                    //     'products_id'   		=>   $products->products_id,
+                    //     'reference_code'  		=>   '',
+                    //     'stock'  				=>   $products->quantity_ordered,
+                    //     'admin_id'  			=>   0,
+                    //     'added_date'	  		=>   time(),
+                    //     'purchase_price'  		=>   0,
+                    //     'stock_type'  			=>   'out',
+                    // ]);
 
+                    DB::table('products')->where('products_id',$products->products_id)->update(['products_quantity'=>$products->products_quantity - $products->quantity_ordered]);
 
                     if(!empty($products->attributes)){
                         foreach($products->attributes as $attribute){
@@ -1477,11 +1479,11 @@ class OrderController extends BaseController
                                 ['options_values_id', '=', $value['id']],
                             ])->get();
 
-                            DB::table('inventory_detail')->insert([
-                                'inventory_ref_id'  =>   $inventory_ref_id,
-                                'products_id'  		=>   $products->products_id,
-                                'attribute_id'		=>   $products_attributes[0]->products_attributes_id,
-                            ]);
+                            // DB::table('inventory_detail')->insert([
+                            //     'inventory_ref_id'  =>   $inventory_ref_id,
+                            //     'products_id'  		=>   $products->products_id,
+                            //     'attribute_id'		=>   $products_attributes[0]->products_attributes_id,
+                            // ]);
 
                             }
                         }
@@ -2256,4 +2258,39 @@ class OrderController extends BaseController
             ->get()->keyBy('key');
         return $payments_setting;
     }
+
+    public function addtopos(Request $request){
+        $user = $this->getAuthenticatedUser();
+
+        if($user)
+        {
+
+            $getCart = DB::table('carts')->where('user_id', $user->id)->first();
+
+// dd($getCart);
+            $products_cart=array();
+            if($getCart){
+
+                $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
+                
+            }
+
+
+            foreach($productItem as $cart){
+                DB::table('pos_standby')->insert([
+                    'customer_id'       => $user->id,
+                    'product_id'    => $cart->product_id,
+                    'quantity'      => $cart->quantity,
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ]);
+            }
+            if($getCart){
+                $deleteCart = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->delete();
+            }
+        }
+
+        return response()->json(['message'=>'Order placed to POS Successfully']);
+    }
+
 }

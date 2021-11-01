@@ -158,6 +158,6 @@
 
       <!-- Include js plugin -->
        @include('web.common.scripts')
-
+        @yield('scripts')
     </body>
 </html>

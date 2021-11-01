@@ -15,8 +15,20 @@ return [
 
 	//links labels
 	'Location' => 'Location',
+	'PriceQuantty'  => 'Product quantity',
   'Active' => 'Active',
   'Disable' => 'Disable',
+  'packges'  => 'Packges',
+  'packge_name' => 'packge name',
+  'packge_price' => 'packge price',
+  'packge_type'  => 'packge type',
+  'actions'      => 'Actions',
+  'delete'   => 'Delete',
+  'edit'     => 'Edit',
+  'packge_orders'  => 'Package requests',
+  'listPackgesRequests'  => 'list of Package requests',
+  'packgeRequestUserName'	=> 'Merchant name',
+  'listPackges'		=> 'list of packges',
   'Language Name' => 'Language Name',
   'Banner Style' => 'Banner Style',
   'menus' => 'Menus',
@@ -2127,12 +2139,12 @@ return [
 	'Cart Page Settings'=>'Cart Page Settings',
 	'Contact Page Settings'=>'Contact Page Settings',
 	'Colors Settings'=>'Colors Settings',
-	'Product Page Settings'=>'Product Page Settings',
+	'Product Page Settings'=>'Product Page Settings',	
 	'Login Page Settings'=>'Login Page Settings',
 	'Login'=>'Login',
 	'News Page Settings'=>'News Page Settings',
 	'Banner Transition Settings'=>'Banner Transition Settings',
-	'Transition'=>'Transition',
+	'Transition'=>'Transition',	
 	'External_Link'=>'External Link',
 	'FavIcon'=>'FavIcon',
 	'Choose Favicon for website'=>'Choose Favicon for website.',
@@ -2224,7 +2236,7 @@ return [
 	'Banner Style 17'=>'Banner Style 17',
 	'Banner Style 18'=>'Banner Style 18',
 	'Banner Style 19'=>'Banner Style 19',
-
+	
 	'Right Slider with Thumbs'=>'Right Slider with Thumbs',
 	'Left Slider with Thumbs'=>'Left Slider with Thumbs',
 	'Constant Image'=>'Constant Image',
@@ -2260,7 +2272,7 @@ return [
 	'serverkey'=>'Server Key',
 	'VideoEmbedCodeLink'=>'Video EmbedCode Link',
 	'VideoEmbedCodeLinkText'=>'You can add your youtube embed code link here.',
-
+	
 	'Floating Cash'=>'Floating Cash',
 	'Withdraw'=>'Settlement',
 	'Withdraw Amount'=>'Settlement Amount',
@@ -2394,7 +2406,7 @@ return [
 	'Cache Cleared Successfully'=>'Cache Cleared Successfully!',
 	'Clear cache after update your this settings'=>'Note: Clear cache after update your this settings',
 	'Language icon size should be 30x20'=>'Language icon size should be 30x20',
-
+	
 	// new labels
 
 	'Choose start and end date'=>'Choose start and end date',
@@ -2508,5 +2520,5 @@ return [
 	'manage shop_view'			=> 'Shop View',
 	'You Must Choose at least one in Attributes' => 'You Must Choose at least one in Attributes',
 	'SelectParallel'			=> 'Select Parallel',
-
+	
 ];

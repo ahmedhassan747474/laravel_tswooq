@@ -60,7 +60,7 @@
                       <textarea type="text" name="message"  placeholder="@lang('website.write your message here')..." rows="5" cols="56"></textarea>
                       <div class="help-block error-content invalid-feedback" hidden>@lang('website.Please enter your message')</div>
 
-                      <button type="submit" class="btn btn-secondary swipe-to-top">@lang('website.Submit') <i class="fas fa-location-arrow"></i>                 
+                      <button type="submit" class="btn btn-secondary swipe-to-top">@lang('website.Submit') <i class="fa fa-location-arrow"></i>                 
                      
                     </form>
                 </div>
@@ -70,11 +70,11 @@
               <div class="col-6">
                   
                   <ul class="contact-logo pl-0 mb-0">
-                    <li> <i class="fas fa-mobile-alt"></i><br>@lang('website.CONTACT US') </li>
-                    <li> <i class="fas fa-map-marker"></i><br>@lang('website.ADDRESS')
+                    <li> <i class="fa fa-mobile-alt"></i><br>@lang('website.CONTACT US') </li>
+                    <li> <i class="fa fa-map-marker"></i><br>@lang('website.ADDRESS')
                     </li>
-                    <li> <i class="fas fa-envelope"></i><br>@lang('website.EMAIL ADDRESS') </li>
-                    <li> <i class="fas fa-tty"></i><br><phone dir="ltr">@lang('website.FAX')</phone></li>
+                    <li> <i class="fa fa-envelope"></i><br>@lang('website.EMAIL ADDRESS') </li>
+                    <li> <i class="fa fa-tty"></i><br><phone dir="ltr">@lang('website.FAX')</phone></li>
                   </ul>
               </div>  
               <div class="col-6 right">

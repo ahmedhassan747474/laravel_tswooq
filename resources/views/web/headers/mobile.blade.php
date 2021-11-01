@@ -12,7 +12,7 @@
                 <div class="select-control">
                   <select class="form-control" onchange="myFunction1(this.options[this.selectedIndex].value)" >
                     @foreach($languages as $language)
-                    <option value="{{$language->languages_id}}" @if(Session::get('language_id')==$language->languages_id) selected @endif>{{$language->name}}</option>
+                    <option value="{{$language->languages_id}}" @if(Session::get('language_id')==$language->languages_id) selected @endif>{{$language->code}}</option>
                     @endforeach
                   </select>
                 </div>
@@ -50,7 +50,7 @@
           <div class="col-2 pr-0">
               <div class="navigation-mobile-container">
                   <a href="javascript:void(0)" class="navigation-mobile-toggler">
-                      <span class="fas fa-bars"></span>
+                      <span class="fa fa-bars"></span>
                   </a>
                   <nav id="navigation-mobile">
                       <div class="logout-main">
@@ -91,7 +91,8 @@
               @endif
 
               @if($result['commonContent']['settings']['sitename_logo']=='logo')
-              <img class="img-fluid" src="{{asset('').$result['commonContent']['settings']['website_logo']}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>">
+            <img class="img-fluid" src="{{asset('images/media/2021/06/Ei2G621102.png')}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>">
+              {{-- <img class="img-fluid" src="{{asset('').$result['commonContent']['settings']['website_logo']}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>"> --}}
               @endif
            </a>
           </div>

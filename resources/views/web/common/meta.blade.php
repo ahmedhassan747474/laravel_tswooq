@@ -21,6 +21,8 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<link href='https://fonts.googleapis.com/css?family=Cairo' rel='stylesheet'>
+
 <!-- Core CSS Files -->
 <link rel="stylesheet" type="text/css" href="{{asset('web/css').'/'.$result['commonContent']['setting'][81]->value}}.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -265,4 +267,7 @@ nav#menu-container {
 </style>
 @endforeach
 
+
 @endif
+
+@stack('styles')

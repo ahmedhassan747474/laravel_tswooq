@@ -61,7 +61,7 @@
                       <textarea type="text" name="message"  placeholder="@lang('website.write your message here')..." rows="5" cols="56"></textarea>
                       <div class="help-block error-content invalid-feedback" hidden>@lang('website.Please enter your message')</div>
 
-                      <button type="submit" class="btn btn-secondary swipe-to-top">@lang('website.Submit') <i class="fas fa-location-arrow"></i>                 
+                      <button type="submit" class="btn btn-secondary swipe-to-top">@lang('website.Submit') <i class="fa fa-location-arrow"></i>                 
                      
                     </form>
                 </div>
@@ -100,12 +100,12 @@
              
               <div class="">
                   <ul class="contact-info pl-0 mb-0"  >
-                      <li> <i class="fas fa-mobile-alt"></i><span><a href="tel:{{$result['commonContent']['setting'][11]->value}}">{{$result['commonContent']['setting'][11]->value}}</a></span> </li>
-                      <li> <i class="fas fa-map-marker"></i><a style="
+                      <li> <i class="fa fa-mobile-alt"></i><span><a href="tel:{{$result['commonContent']['setting'][11]->value}}">{{$result['commonContent']['setting'][11]->value}}</a></span> </li>
+                      <li> <i class="fa fa-map-marker"></i><a style="
     cursor: default;
 " href="javascript:void(0)">@lang('website.Ecommerce')<br>@lang('website.Demo Store 3654123')</a></span> </li>
-                      <li> <i class="fas fa-envelope"></i><span> <a href="mailto:{{$result['commonContent']['setting'][3]->value}}">{{$result['commonContent']['setting'][3]->value}}</a> </span> </li>
-                      <li> <i class="fas fa-tty"></i><span> <a href="tel:{{$result['commonContent']['setting'][11]->value}} dir="ltr">{{$result['commonContent']['setting'][11]->value}}</a> </span> </li>
+                      <li> <i class="fa fa-envelope"></i><span> <a href="mailto:{{$result['commonContent']['setting'][3]->value}}">{{$result['commonContent']['setting'][3]->value}}</a> </span> </li>
+                      <li> <i class="fa fa-tty"></i><span> <a href="tel:{{$result['commonContent']['setting'][11]->value}} dir="ltr">{{$result['commonContent']['setting'][11]->value}}</a> </span> </li>
                  
                     </ul>         
                 </div>

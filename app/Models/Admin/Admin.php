@@ -11,10 +11,9 @@ class Admin extends Model
 {
     //
     use Sortable;
-    public function images(){
-        return $this->belongsTo('App\Images');
-    }
-    
+    // public function images(){
+    //     return $this->belongsTo('App\Images');
+    // }
     //
     // public function categories_description(){
     //     return $this->beliesngsTo('App\Categories_description');
@@ -27,8 +26,8 @@ class Admin extends Model
         $admin = User::leftJoin('images','images.id', '=', 'users.avatar')
             ->leftJoin('user_to_address','users.id', '=', 'user_to_address.user_id')
             ->leftJoin('address_book','address_book.address_book_id', '=', 'user_to_address.address_book_id')
-            ->select('users.*', 'users.avatar as image','images.path as path','address_book.*')
-            ->where('users.id', $id)->get();
+            ->select('users.*', 'users.avatar as image','address_book.*')
+            ->where('users.id', $id)->first();
         return $admin;
     }
     public function updaterecord($data){

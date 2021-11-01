@@ -51,6 +51,7 @@
                       <th>{{ trans('labels.Full Name') }}</th>
                       <th>{{ trans('labels.Email') }}</th>
                       <th>{{ trans('labels.ShopName') }}</th>
+                      <th>صوره المحل</th>
                       <th>{{ trans('labels.RecordNumber') }}</th>
                       <th>{{ trans('labels.AdminType') }}</th>
                       <th>{{ trans('labels.SubscriptionFee') }}</th>
@@ -75,6 +76,13 @@
 
                 <td>
                   {{ $admin->shop_name != null ? $admin->shop_name : '---------' }}
+               </td>
+               <td>
+                @if(isset($admin->shopImg)) 
+                  <img src='{{$admin->shopImg??''}}'>
+                @else 
+                shop Img not found
+                @endif
                </td>
 
                <td>

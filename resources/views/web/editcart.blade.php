@@ -83,7 +83,7 @@
                               <div class="list-main">
                                   <div class="icon-liked">
                                       <a onclick="myLike({{$result['detail']['product_data'][0]->products_id}})" class="icon active">
-                                        <i class="fas fa-heart"></i>
+                                        <i class="fa fa-heart"></i>
                                         <span products_id='{{$result['detail']['product_data'][0]->products_id}}' class=" is_liked badge badge-secondary" id="like_count">{{$result['detail']['product_data'][0]->products_liked}}</span>
                                       </a>
                                     </div>
@@ -96,9 +96,9 @@
                                       <li> {{$result['detail']['product_data'][0]->products_ordered}}&nbsp;@lang('website.Order(s)')</li>
                                       @if($result['detail']['product_data'][0]->products_type == 0)
                                       @if($result['detail']['product_data'][0]->defaultStock == 0)
-                                      <li class="outstock"><i class="fas fa-check"></i>@lang('website.Out of Stock')</li>
+                                      <li class="outstock"><i class="fa fa-check"></i>@lang('website.Out of Stock')</li>
                                       @else
-                                      <li class="instock"><i class="fas fa-check"></i>@lang('website.In stock')</li>
+                                      <li class="instock"><i class="fa fa-check"></i>@lang('website.In stock')</li>
                                       @endif
                                       @endif
                                   </ul>
@@ -145,11 +145,11 @@
 
                                         <span class="input-group-btn">
                                             <button type="button" class="quantity-left-minus btn"  data-type="minus" data-field="">
-                                              <span class="fas fa-angle-up"></span>
+                                              <span class="fa fa-angle-up"></span>
                                             </button>
 
                                             <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-                                                <span class="fas fa-angle-down"></span>
+                                                <span class="fa fa-angle-down"></span>
                                             </button>
                                         </span>
 
@@ -278,12 +278,12 @@
                                   <div class="icons mobile-icons d-lg-none d-xl-none">
                                       <div class="icon-liked">
                                         <a onclick="myLike({{$result['detail']['product_data'][0]->products_id}})" class="icon active">
-                                          <i class="fas fa-heart"></i>
+                                          <i class="fa fa-heart"></i>
                                           <span class="badge badge-secondary">{{$products->products_liked}}</span>
                                         </a>
                                       </div>
-                                      <div class="icon" data-toggle="modal" data-target="#myModal"><i class="fas fa-eye"></i></div>
-                                      <a href="compare.html" class="icon"><i class="fas fa-align-right" data-fa-transform="rotate-90"></i></a>
+                                      <div class="icon" data-toggle="modal" data-target="#myModal"><i class="fa fa-eye"></i></div>
+                                      <a href="compare.html" class="icon"><i class="fa fa-align-right" data-fa-transform="rotate-90"></i></a>
                                     </div>
                                   <img class="img-fluid" src="{{asset('').$products->image_path}}" alt="{{$products->products_name}}">
                                </div>
@@ -323,12 +323,12 @@
                               <div class="icons">
                                   <div class="icon-liked">
                                     <a onclick="myLike({{$products->products_id}})" class="icon active">
-                                      <i class="fas fa-heart"></i>
+                                      <i class="fa fa-heart"></i>
                                       <span  class="badge badge-secondary" id="like_count">{{$products->products_liked}}</span>
                                     </a>
                                   </div>
-                                <div class="icon" data-toggle="modal" data-target="#myModal"><i class="fas fa-eye"></i></div>
-                                  <a onclick="myFunction3({{$products->products_id}})"class="icon"><i class="fas fa-align-right" data-fa-transform="rotate-90"></i></a>
+                                <div class="icon" data-toggle="modal" data-target="#myModal"><i class="fa fa-eye"></i></div>
+                                  <a onclick="myFunction3({{$products->products_id}})"class="icon"><i class="fa fa-align-right" data-fa-transform="rotate-90"></i></a>
                               </div>
                               @include('web.common.scripts.addToCompare')
                               <div class="buttons">

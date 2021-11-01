@@ -26,14 +26,13 @@ class Order extends Model
     //place_order
     public function place_order($request)
     {
-        $shipment_status='';
 
         // dd($request->all(), session()->all());
         $cart = new Cart();
         $result = array();
         $cart_items = $cart->myCart($result);
         $result['cart'] = $cart_items;
-
+        
         if (count($result['cart']) > 0) {
             foreach ($result['cart'] as $products) {
                 $req = array();
@@ -227,11 +226,11 @@ class Order extends Model
                 // "prefDelvDate"  => "string",
                 "gpsPoints"     => $delivery_latitude . ',' . $delivery_longitude
             ];
-
+            
             $json = json_encode($arrayToSendShip);
-
+                
             $curl = curl_init();
-
+            
             curl_setopt_array($curl, array(
                 CURLOPT_URL => "https://track.smsaexpress.com/SecomRestWebApi/api/addship",
                 CURLOPT_RETURNTRANSFER => true,
@@ -246,12 +245,12 @@ class Order extends Model
                     "content-type: application/json"
                 ),
             ));
-
+            
             $responseShip = curl_exec($curl);
             $err = curl_error($curl);
-
+            
             curl_close($curl);
-
+            
             if ($err) {
                 // echo "cURL Error #:" . $err;
                 dd($err);
@@ -327,7 +326,7 @@ class Order extends Model
             $braintree_private_key = $payments_setting['private_key']->value;
 
             //brain tree credential
-            require_once app_path('braintree/index.php');
+            require_once app_path('braintree/index.php');  
 
             if ($result->success) {
 
@@ -486,13 +485,13 @@ class Order extends Model
                 ],
                 "redirect" => [
                     "url" => route('checkout_tap_payment')
-                ]
+                ] 
             ];
-
+            
             $json = json_encode($arrayToSend);
-
+                
             $curl = curl_init();
-
+            
             curl_setopt_array($curl, array(
               CURLOPT_URL => "https://api.tap.company/v2/charges",
               CURLOPT_RETURNTRANSFER => true,
@@ -507,12 +506,12 @@ class Order extends Model
                 "content-type: application/json"
               ),
             ));
-
+            
             $response = curl_exec($curl);
             $err = curl_error($curl);
-
+            
             curl_close($curl);
-
+            
             if ($err) {
                 // echo "cURL Error #:" . $err;
                 $payment_status = 'failed';
@@ -525,10 +524,10 @@ class Order extends Model
                 $order_information = $resultsResponse;
                 // dd($order_information->transaction->url);
             }
-
-
-
-
+            
+            
+            
+            
             //get token from app
             // $token = $request->token;
 
@@ -613,10 +612,10 @@ class Order extends Model
             //     $invoice = $payment->pay();
 
             //     dd($invoice);
-
+            
             // try {
-
-
+                
+                
             //     if($payment->isSuccess()) {
             //         $order_information = array(
             //             'paid' => 'true',
@@ -639,7 +638,7 @@ class Order extends Model
             //     } else {
             //         $payment_status = "failed";
             //     }
-
+                    
             // } catch( \Exception $exception ) {
             //     $payment_status = "failed";
             // }
@@ -654,14 +653,14 @@ class Order extends Model
                 $file->move(public_path('images/bank_account'), $imageName);
                 $bank_account_image = $imageName;
             }
-
+            
             $bank_account_iban = $request->bank_account_iban;
             $payment_status = 'success';
         }
-
-        if ($shipment_status == "failed") {
-            return $shipment_status;
-        }
+//todo
+        // if ($shipment_status == "failed") {
+        //     return $shipment_status;
+        // }
 
         if ($payment_method == 'banktransfer') {
             session(['banktransfer' => 'yes']);
@@ -670,7 +669,7 @@ class Order extends Model
         }
 
         //check if order is verified
-        if ($payment_status == 'success') {
+        if ($payment_status == 'success') {            
 
             $orders_id = DB::table('orders')->insertGetId([
                 'customers_id' => $customers_id,
@@ -723,7 +722,7 @@ class Order extends Model
                 'ordered_source' => '1',
                 'delivery_phone' => $delivery_phone,
                 'billing_phone' => $billing_phone,
-
+                
                 'delivery_latitude' => $delivery_latitude,
                 'delivery_longitude' => $delivery_longitude,
                 'transaction_id'    => $transaction_id,
@@ -739,7 +738,7 @@ class Order extends Model
                 'customer_notified' => '1',
                 'comments' => $comments,
             ]);
-
+                
             foreach ($cart_items as $products) {
                 //get products info
 
@@ -858,8 +857,8 @@ class Order extends Model
             }
 
             session(['orders_id' => $orders_id]);
-            session(['paymentResponseData' => '']);
-
+            session(['paymentResponseData' => '']); 
+            
             session(['paymentResponse'=>'']);
             session(['payment_json','']);
 
@@ -869,15 +868,15 @@ class Order extends Model
                 DB::table('customers_basket')->where('session_id', Session::getId())->update(['is_order' => '1']);
             } else {
                 DB::table('customers_basket')->where('customers_id', auth()->guard('customer')->user()->id)->update(['is_order' => '1']);
-            }
-
+            }           
+            
             if ($payment_method == 'tap'){
                 $resultReturn = $order_information->transaction->url;
                 return $resultReturn;
             } else {
                 return $payment_status;
             }
-
+            
         } else if ($payment_status == "failed") {
             return $payment_status;
         }
@@ -917,7 +916,7 @@ class Order extends Model
                 // ->where('orders_status_description.language_id', session('language_id'))
                 ->orderby('orders_status_history.orders_status_history_id', 'DESC')
                 ->limit(1)->get();
-
+                
             // dd($orders_status_history);
 
             $orders[$index]->orders_status_id = $orders_status_history[0]->orders_status_id;
@@ -926,7 +925,7 @@ class Order extends Model
 
         }
 
-
+             
         $result['orders'] = $orders;
         return $result;
     }
@@ -953,25 +952,25 @@ class Order extends Model
             $index = 0;
             foreach ($orders as $orders_data) {
 
-
-                 // deliveryboy
+                
+                 // deliveryboy 
                 $current_boy = DB::table('orders_to_delivery_boy')
                         ->leftjoin('users', 'users.id', '=', 'orders_to_delivery_boy.deliveryboy_id')
                         ->LeftJoin('deliveryboy_info', 'deliveryboy_info.users_id', '=', 'users.id')
                         ->select('orders_to_delivery_boy.*',
                         'users.*',
                         'deliveryboy_info.*',
-                        'deliveryboy_info.users_id as deliveryboy_id'
+                        'deliveryboy_info.users_id as deliveryboy_id'                 
                         )
                         ->where('orders_to_delivery_boy.orders_id', '=', $orders_data->orders_id)
                         ->where('orders_to_delivery_boy.is_current', '=', '1')
                         ->orderby('orders_to_delivery_boy.created_at', 'DESC')
                         ->first();
-
+                
                 if($current_boy){
-                    $orders[$index]->deliveryboyinfo = $current_boy;
+                    $orders[$index]->deliveryboyinfo = $current_boy; 
                 }else{
-                    $orders[$index]->deliveryboyinfo = array();
+                    $orders[$index]->deliveryboyinfo = array(); 
                 }
 
                 $orders_status_history = DB::table('orders_status_history')
@@ -1023,8 +1022,8 @@ class Order extends Model
             $bankdetail = array();
 
             if($orders[0]->payment_method == 'banktransfer'){
-                $payments_setting = $this->payments_setting_for_directbank();
-
+                $payments_setting = $this->payments_setting_for_directbank();    
+                
                 $bankdetail = array(
                     'account_name' => $payments_setting['account_name']->value,
                     'account_number' => $payments_setting['account_number']->value,
@@ -1035,9 +1034,9 @@ class Order extends Model
                     'swift' => $payments_setting['swift']->value,
                 );
             }
+        
 
-
-            $result['bankdetail'] = $bankdetail;
+            $result['bankdetail'] = $bankdetail;  
 
             $result['res'] = "view-order";
             return $result;
@@ -1222,13 +1221,13 @@ class Order extends Model
             ->get()->keyBy('key');
         return $payments_setting;
     }
-
+    
     public function payments_setting_for_directbank()
     {
         $payments_setting = DB::table('payment_methods_detail')
             ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
             ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
-            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 
             'payment_methods.payment_method', 'payment_description.sub_name_1')
             ->where('language_id', session('language_id'))
             ->where('payment_description.payment_methods_id', 9)
@@ -1243,7 +1242,7 @@ class Order extends Model
         $payments_setting = DB::table('payment_methods_detail')
             ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
             ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
-            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 
             'payment_methods.payment_method')
             ->where('language_id', session('language_id'))
             ->where('payment_description.payment_methods_id', 10)
@@ -1258,7 +1257,7 @@ class Order extends Model
         $payments_setting = DB::table('payment_methods_detail')
             ->leftjoin('payment_description', 'payment_description.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
             ->leftjoin('payment_methods', 'payment_methods.payment_methods_id', '=', 'payment_methods_detail.payment_methods_id')
-            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status',
+            ->select('payment_methods_detail.*', 'payment_description.name', 'payment_methods.environment', 'payment_methods.status', 
             'payment_methods.payment_method')
             ->where('language_id', session('language_id'))
             ->where('payment_description.payment_methods_id', 11)

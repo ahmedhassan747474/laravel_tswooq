@@ -77,20 +77,20 @@
                 <input name="products_{{$products->products_id}}" type="text" readonly value="{{$products->products_min_order}}" class="form-control qty products_{{$products->products_id}}" min="{{$products->products_min_order}}" max="{{$products->products_max_stock}}">
                 <span class="input-group-btn">
                     <button type="button" value="quantity" class="quantity-plus1 btn qtypluscart" data-type="plus" data-field="">
-                        <i class="fas fa-plus"></i>
+                        <i class="fa fa-plus"></i>
                     </button>
                 
                     <button type="button" value="quantity" class="quantity-minus1 btn qtyminuscart" data-type="minus" data-field="">
-                        <i class="fas fa-minus"></i>
+                        <i class="fa fa-minus"></i>
                     </button>
                 </span>
               </div>
 
               @if($products->products_type==0)
                 @if($products->defaultStock==0)
-                    <button type="button" class="btn-secondary btn icon swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fas fa-shopping-bag"></i></button>
+                    <button type="button" class="btn-secondary btn icon swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fa fa-shopping-bag"></i></button>
                   @else
-                    <button type="button" class="btn-secondary btn icon swipe-to-top cart" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fas fa-shopping-bag"></i></button>
+                    <button type="button" class="btn-secondary btn icon swipe-to-top cart" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fa fa-shopping-bag"></i></button>
                 @endif
               @endif
       

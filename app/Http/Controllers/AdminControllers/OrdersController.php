@@ -71,6 +71,7 @@ class OrdersController extends Controller
     //update order
     public function updateOrder(Request $request)
     {
+
         $orders_status = $request->orders_status;
         $old_orders_status = $request->old_orders_status;
 
@@ -172,19 +173,16 @@ class OrdersController extends Controller
                 ->where('orders_products.products_id', '=', 0)
                 ->get();
 
-                if(!empty($orders_products_new)){
-                    foreach ($orders_products_new as $index=>$orders_products_data) {
+            foreach ($orders_products_new as $index=>$orders_products_data) {
 
-                        $orders_products_data->attribute = [];
-                        $product[$i] = $orders_products_data;
-                        $total_price = $total_price + $orders_products_new[$index]->final_price;
+                $orders_products_data->attribute = [];
+                $product[$i] = $orders_products_data;
+                $total_price = $total_price + $orders_products_new[$index]->final_price;
 
-                        $subtotal += $orders_products_new[$index]->final_price;
+                $subtotal += $orders_products_new[$index]->final_price;
 
-                        $i++;
-                    }
-                }
-
+                $i++;
+            }
 
             $data->data = $product;
             $orders_data[] = $data;
@@ -214,7 +212,6 @@ class OrdersController extends Controller
 
         $ordersData['currency'] = $this->myVarsetting->getSetting();
         $result['commonContent'] = $this->Setting->commonContent();
-        // dd($orders_data);
 
         return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData)->with('result', $result);
 

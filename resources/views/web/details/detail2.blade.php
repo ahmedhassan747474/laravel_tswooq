@@ -271,11 +271,11 @@
                   <input type="text" readonly name="quantity" class="form-control qty" value="@if(!empty($result['cart'])) {{$result['cart'][0]->customers_basket_quantity}} @else @if($result['detail']['product_data'][0]->products_min_order>0 and $result['detail']['product_data'][0]->defaultStock > $result['detail']['product_data'][0]->products_min_order) {{$result['detail']['product_data'][0]->products_min_order}} @else 1 @endif @endif"  min="{{$result['detail']['product_data'][0]->products_min_order}}" max="{{$result['detail']['product_data'][0]->products_max_stock}}">              
                   <span class="input-group-btn">
                       <button type="button" class="quantity-plus1 btn qtyplus">
-                          <i class="fas fa-plus"></i>
+                          <i class="fa fa-plus"></i>
                       </button>
                   
                       <button type="button" class="quantity-minus1 btn qtyminus">
-                          <i class="fas fa-minus"></i>
+                          <i class="fa fa-minus"></i>
                       </button>
                   </span>
                 </div>
@@ -305,8 +305,8 @@
 
           <div class="pro-sub-buttons">
               <div class="buttons">
-                  <button class="btn btn-link is_liked" products_id="<?=$result['detail']['product_data'][0]->products_id?>" style="padding-left: 0;"><i class="fas fa-heart"></i> @lang('website.Add to Wishlist') </button>
-                  <button type="button" class="btn btn-link" onclick="myFunction3({{$result['detail']['product_data'][0]->products_id}})"><i class="fas fa-align-right"></i>@lang('website.Add to Compare')</button>
+                  <button class="btn btn-link is_liked" products_id="<?=$result['detail']['product_data'][0]->products_id?>" style="padding-left: 0;"><i class="fa fa-heart"></i> @lang('website.Add to Wishlist') </button>
+                  <button type="button" class="btn btn-link" onclick="myFunction3({{$result['detail']['product_data'][0]->products_id}})"><i class="fa fa-align-right"></i>@lang('website.Add to Compare')</button>
               
               </div>
               <!-- AddToAny BEGIN -->

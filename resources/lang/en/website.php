@@ -12,7 +12,11 @@ return [
     | these language lines according to your application's requirements.
     |
 	*/
+	'Create an Account'=>'Create an Account',
 	'Location' => 'Location',
+	'product'  => 'Products',
+	'booking'	=> 'Reserve the package',
+	'Become_merchant_with_us' => 'Become merchant with us',
 	'Please enter your location or click here to open map' => 'Please click here to open map',
     'Guest Checkout' => 'Guest Checkout',
   'Ops! Product is available in stock But Not Active For Sale. Please contact to the admin' => 'Ops! Product is available in stock But Not Active For Sale. Please contact to the admin',

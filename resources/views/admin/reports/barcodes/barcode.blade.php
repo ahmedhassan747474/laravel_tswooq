@@ -42,10 +42,9 @@
                 @if($barcodes->count() > 0)
 
                             @foreach($barcodes as $index=>$barcode)
-                                    <div class="col-xs-12 text-center" id="printThisBarcode" style="cursor:pointer;" >
-                                        <?php
-                                            echo '<img style="padding-top: 15px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode->barcode, $generator::TYPE_CODE_128)) . '"> ';
-                                            ?>
+                                    <div class="col-xs-3 text-center" id="printThisBarcode" style="cursor:pointer;" >
+                                        {!! QrCode::size(200)->generate($barcode->products_id); !!}
+                                            {{-- // echo '<img style="padding-top: 15px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode->barcode, $generator::TYPE_CODE_128)) . '"> '; --}}
                                             <span style="display: block;" class="text-center">
                                             {{-- Nada ---  --}}
                                             {{$barcode->products_name}} ---

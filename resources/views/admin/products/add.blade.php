@@ -114,6 +114,18 @@
                                             </div>
 
                                             <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.PriceQuantty') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_quantity', '', array('class'=>'form-control number-validate', 'id'=>'products_quantity')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.products_quantity') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.products_quantity') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
                                                 <div class="form-group" id="tax-class">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>
                                                     <div class="col-sm-10 col-md-8">

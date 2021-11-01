@@ -25,7 +25,7 @@ class Admin extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['email', 'password'];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -38,5 +38,6 @@ class Admin extends Authenticatable
 	protected $primaryKey = 'id';
 
 	//public $table = true;
+    
 
 }

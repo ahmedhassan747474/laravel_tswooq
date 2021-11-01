@@ -7,7 +7,7 @@
                 <a href="#" id="dropdownCartButton_3" class="dropdown-toggle cart-down" 
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                     <div class="cart-left">
-                        <i class="fas fa-shopping-bag"></i>
+                        <i class="fa fa-shopping-bag"></i>
                         <span class="badge badge-secondary">{{ $qunatity }}</span>
                        </div>
                       <span class="block">
@@ -38,7 +38,7 @@
                             <div class="item-detail">
                               <h3 class="item-name">{{$cart_data->products_name}}</h3>
                 <div class="item-s">{{$cart_data->customers_basket_quantity}} x {{Session::get('symbol_left')}}{{$cart_data->final_price*session('currency_value')}}{{Session::get('symbol_right')}}
-                <a href="{{ URL::to('/deleteCart?id='.$cart_data->customers_basket_id)}}"><i class="fas fa-trash"></i></a></div>
+                <a href="{{ URL::to('/deleteCart?id='.$cart_data->customers_basket_id)}}"><i class="fa fa-trash"></i></a></div>
                            </div>
                         </li>
                         @endforeach

@@ -120,7 +120,7 @@
                   <td>
                     <div class="detail-buttons">
                         <a href="{{ URL::to('/product-detail/'.$products['product_data'][0]->products_slug)}}" class="btn btn-secondary">View Details</a>
-                        <div class="share"><a href="{{ URL::to("/deletecompare")}}/{{$products['product_data'][0]->products_id}}">Remove &nbsp;<i class="fas fa-trash-alt"></i></a> </div>
+                        <div class="share"><a href="{{ URL::to("/deletecompare")}}/{{$products['product_data'][0]->products_id}}">Remove &nbsp;<i class="fa fa-trash-alt"></i></a> </div>
 
                     </div>
 

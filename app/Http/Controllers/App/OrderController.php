@@ -97,6 +97,7 @@ class OrderController extends Controller
 	//get default payment method
 	public function getpaymentmethods(Request $request){
     $orderResponse = Orders::getpaymentmethods($request);
+	dd($orderResponse);
 		print $orderResponse;
 	}
 

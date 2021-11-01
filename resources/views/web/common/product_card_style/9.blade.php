@@ -45,19 +45,19 @@
       @if($products->products_type==0)
        @if(!in_array($products->products_id,$result['cartArray']))
           @if($products->defaultStock==0)
-              <button type="button" class="btn icon active swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fas fa-shopping-bag"></i></button>
+              <button type="button" class="btn icon active swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Out of Stock')"><i class="fa fa-shopping-bag"></i></button>
           @elseif($products->products_min_order>1)
-          <a class="btn icon swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fas fa-shopping-bag"></i></a>
+          <a class="btn icon swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fa fa-shopping-bag"></i></a>
           @else
-              <button type="button" class="btn icon cart swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fas fa-shopping-bag"></i></button>
+              <button type="button" class="btn icon cart swipe-to-top" products_id="{{$products->products_id}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Add to Cart')"><i class="fa fa-shopping-bag"></i></button>
           @endif
         @else
-            <button type="button" class="btn icon active swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Added')"><i class="fas fa-shopping-bag"></i></button>
+            <button type="button" class="btn icon active swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Added')"><i class="fa fa-shopping-bag"></i></button>
         @endif
       @elseif($products->products_type==1)
-          <a class="btn icon swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fas fa-shopping-bag"></i> </a>
+          <a class="btn icon swipe-to-top" href="{{ URL::to('/product-detail/'.$products->products_slug)}}" data-toggle="tooltip" data-placement="bottom" title="@lang('website.View Detail')"><i class="fa fa-shopping-bag"></i> </a>
       @elseif($products->products_type==2)
-          <a href="{{$products->products_url}}" target="_blank" class="btn icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.External Link')"><i class="fas fa-shopping-bag"></i></a>
+          <a href="{{$products->products_url}}" target="_blank" class="btn icon swipe-to-top" data-toggle="tooltip" data-placement="bottom" title="@lang('website.External Link')"><i class="fa fa-shopping-bag"></i></a>
       @endif
    
      </div>
@@ -99,7 +99,7 @@
           </div>  
 
           <a href="javascript:void(0)" class="btn-secondary icon swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
-            <i class="fas fa-heart"></i>
+            <i class="fa fa-heart"></i>
           </a>
 
      </div> 

@@ -6,9 +6,137 @@ use App\Http\Controllers\Admin\AdminSiteSettingController;
 use App\Http\Controllers\App\AppSettingController;
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class Product extends Model
 {
+
+    protected $appends = ['shop_name','products_name','products_description','attributes'];
+
+    public function groups()
+    {
+	    return $this->belongsToMany('App\Group','group_product','product_id','group_id','products_id','id');
+
+        // return $this->belongsToMany('App\Models\AppModels\Product','group_product','group_id','product_id','id','products_id');
+    }
+    public function getProductsNameAttribute()
+    {
+        return $this->descriptions->products_name??'';
+    }
+
+    public function getProductsDescriptionAttribute()
+    {
+        return $this->descriptions->products_description??'';
+    }
+    // public function getMainImageAttribute()
+    // {
+    //     // $image= DB::table('image_categories')->where('image_id',$this->products_image)
+                                            
+    //     //                                     ->where('image_type', '=', 'ACTUAL')->first()->path?? null;
+    
+    //     // if($image){
+    //     //     return asset($image);
+    //     // }
+    //     return '';
+    // }
+    public function getShopNameAttribute()
+    {
+        return DB::table('users')->where('id',$this->admin_id)
+                                            ->first()->shop_name;
+    }
+    public function descriptions()
+    {
+        $language_id= request()->language_id ?? 1 ;
+        return $this->hasOne('App\Models\AppModels\ProductDescriptions','products_id','products_id')->where('language_id',$language_id)->select('products_id','products_name','products_description');
+    }
+
+    public function getProductsImageAttribute($value)
+    {
+        $image= DB::table('image_categories')->where('image_id',$value)
+                                            
+                                            ->where('image_type', '=', 'ACTUAL')->first()->path?? null;
+    
+        if($image){
+            return asset($image);
+        }
+        return $image;
+    }
+    public function getAttributesAttribute()
+    {
+        $language_id=request()->language_id ?? 1 ;
+        $listOfAttributes = array();
+                $index3 = 0;
+
+                // dd($getAllProductsParallel);
+                $getAllAttributes = DB::table('products_attributes')
+                    ->where('products_id', '=', $this->products_id)
+                    // ->whereIn('products_id', $getAllProductsParallel)
+                    ->select('options_id', 'options_values_id', 'products_id','options_values_price')
+                    ->get();
+                // dd($getAllAttributes);
+
+                foreach($getAllAttributes as $attribute){
+                    $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                    $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                    $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                    $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                    $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+
+
+                }
+                $listOfAttributes[$index3]['id'] = $this->products_id;
+                $listOfAttributes[$index3]['price'] = $this->products_price;
+                $listOfAttributes[$index3]['home_image'] =$this->products_image;
+                // $listOfAttributes[$index3]['images'] = $products_images;
+
+                $index3++;
+                // $result['getAllAttributes'] = $getAllAttributes;
+
+                $getParallel = $this->where('product_parent_id', '=', $this->products_id)->select('products_id','products_price','products_image')->get();
+                if($getParallel) {
+                    foreach ($getParallel as $parallel) {
+                        $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
+                        foreach($getAllAttributesParallel as $attribute){
+                            $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
+                            $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+                            $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
+                            $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+                            $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
+                            // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+                            // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+                            // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
+                        }
+                        $listOfAttributes[$index3]['id'] = $parallel->products_id;
+                        $listOfAttributes[$index3]['home_image'] =$parallel->products_image;
+                        $listOfAttributes[$index3]['price'] = $parallel->products_price;
+
+                        //multiple images
+                        $products_images = array();
+                        $products_images = DB::table('products_images')
+                            ->LeftJoin('image_categories', function ($join) {
+                                $join->on('image_categories.image_id', '=', 'products_images.image')
+                                    ->where(function ($query) {
+                                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+                                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+                                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+                                    });
+                            })
+                            ->select('products_images.*', 'image_categories.path as image')
+                            ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
+
+                            // $products_data->images=$products_images;
+                            $listOfAttributes[$index3]['images'] = $products_images;
+
+                        $index3++;
+                    }
+                }
+                // dd($listOfAttributes);
+                return $listOfAttributes;
+                // $result[$index]->attributes = $listOfAttributes;
+                // // $result[$index]->images2 = $products_images;
+                // $index++;
+                // $responseData[$key]['products']=$result;
+    }
 
     public static function convertprice($current_price, $requested_currency)
     {

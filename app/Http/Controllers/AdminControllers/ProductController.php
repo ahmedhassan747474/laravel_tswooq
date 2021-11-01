@@ -36,6 +36,7 @@ class ProductController extends Controller
 
     public function reviews(Request $request)
     {
+        dd('kjkj');
         $title = array('pageTitle' => Lang::get("labels.reviews"));
         $result = array();
         $data = $this->reviews->paginator();
@@ -161,7 +162,7 @@ class ProductController extends Controller
             ->select('products.products_id as id', 'products_description.products_name as name')
             ->where('language_id', '=', 1)
             ->get();
-
+        
         $result['products'] = $products;
 
         return view("admin.products.add", $title)->with('result', $result)->with('allimage', $allimage);
@@ -289,6 +290,7 @@ class ProductController extends Controller
         $validator = Validator::make(
 			array(
 					'categories'    => $request->categories,
+                    'products_quantity' => $request->products_quantity
 				),
 			array(
 					'categories'    => 'required',
@@ -319,7 +321,7 @@ class ProductController extends Controller
         
             $language_id = '1';
             $products_id = $this->products->insert($request);
-            $result['data'] = array('products_id' => $products_id, 'language_id' => $language_id);
+            $result['data'] = array('products_id' => $products_id, 'language_id' => $language_id,'products_quantity',$request->products_quantity);
             $alertSetting = $this->myVaralter->newProductNotification($products_id);
             // if ($request->products_type == 1) {
             //     return redirect('/admin/products/attach/attribute/display/' . $products_id);
@@ -368,6 +370,15 @@ class ProductController extends Controller
         $result = $this->products->ajax_attr($id);
         $result['commonContent'] = $this->Setting->commonContent();
         return view("admin.products.inventory.attribute_div")->with('result', $result);
+
+    }
+
+    public function select_product($id)
+    {
+        $title = array('pageTitle' => Lang::get("labels.ProductInventory"));
+        $result = $this->products->addinventoryfromsidebar();
+        $result['commonContent'] = $this->Setting->commonContent();
+        return view("admin.products.inventory.add1", $title)->with(['result'=> $result, 'pro_id'=>$id]);
 
     }
 

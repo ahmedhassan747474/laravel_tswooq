@@ -90,9 +90,21 @@
           </a>
         </li>
 
+        
       <?php }
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->shop_view == 1){
       ?>
+        <li class="treeview {{ Request::is('admin/packges') ? 'active' : '' }}  {{ Request::is('admin/packges/add') ? 'active' : '' }}  {{ Request::is('admin/packges/edit/*') ? 'active' : '' }} ">
+          <a href="{{ URL::to('admin/packges')}}">
+            <i class="fa fa-gift" aria-hidden="true"></i> <span>{{trans('labels.packges')}}</span>
+          </a>
+        </li>
+
+        <li class="treeview {{ Request::is('admin/packge/requests') ? 'active' : '' }}  {{ Request::is('admin/packge/requests/*') ? 'active' : '' }}  {{ Request::is('admin/packge/requests/edit/*') ? 'active' : '' }} ">
+          <a href="{{ route('admin.getAllRequests')}}">
+            <i class="fa fa-gift" aria-hidden="true"></i> <span>{{trans('labels.packge_orders')}}</span>
+          </a>
+        </li>
         <li class="treeview {{ Request::is('admin/shopsalesreport') ? 'active' : '' }}{{ Request::is('admin/shopemployereport') ? 'active' : '' }}">
           <a href="#">
             <i class="fa fa-file-text-o" aria-hidden="true"></i>
@@ -108,6 +120,11 @@
       <?php }
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->products_view == 1 or $result['commonContent']['roles']!= null and $result['commonContent']['roles']->categories_view == 1 ){
       ?>
+      <li class="treeview {{ Request::is('admin/groups') ? 'active' : '' }}  {{ Request::is('admin/group_product_edit/*') ? 'active' : '' }}  {{ Request::is('admin/group_edit/*') ? 'active' : '' }} ">
+        <a href="{{ URL::to('admin/groups')}}">
+          <i class="fa fa-users" aria-hidden="true"></i> <span>{{ trans('labels.group') }}</span>
+        </a>
+      </li>
         <li class="treeview {{ Request::is('admin/reviews/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/display') ? 'active' : '' }} {{ Request::is('admin/manufacturers/add') ? 'active' : '' }} {{ Request::is('admin/manufacturers/edit/*') ? 'active' : '' }} {{ Request::is('admin/units') ? 'active' : '' }} {{ Request::is('admin/addunit') ? 'active' : '' }} {{ Request::is('admin/editunit/*') ? 'active' : '' }} {{ Request::is('admin/products/display') ? 'active' : '' }} {{ Request::is('admin/products/add') ? 'active' : '' }} {{ Request::is('admin/products/edit/*') ? 'active' : '' }} {{ Request::is('admin/editattributes/*') ? 'active' : '' }} {{ Request::is('admin/products/attributes/display') ? 'active' : '' }}  {{ Request::is('admin/products/attributes/add') ? 'active' : '' }} {{ Request::is('admin/products/attributes/add/*') ? 'active' : '' }} {{ Request::is('admin/addinventory/*') ? 'active' : '' }} {{ Request::is('admin/addproductimages/*') ? 'active' : '' }} {{ Request::is('admin/categories/display') ? 'active' : '' }} {{ Request::is('admin/categories/add') ? 'active' : '' }} {{ Request::is('admin/categories/edit/*') ? 'active' : '' }} {{ Request::is('admin/categories/filter') ? 'active' : '' }} {{ Request::is('admin/brands/display') ? 'active' : '' }} {{ Request::is('admin/brands/add') ? 'active' : '' }} {{ Request::is('admin/brands/edit/*') ? 'active' : '' }} {{ Request::is('admin/brands/filter') ? 'active' : '' }} {{ Request::is('admin/products/inventory/display') ? 'active' : '' }}">
           <a href="#">
             <i class="fa fa-database"></i> <span>{{ trans('labels.Catalog') }}</span> <i class="fa fa-angle-left pull-right"></i>

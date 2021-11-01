@@ -22,17 +22,17 @@
             <div class="col-12 col-lg-3">
                 <h5>@lang('website.Contact Us')</h5>
                 <ul class="contact-list  pl-0 mb-0">
-                  <li> <i class="fas fa-map-marker"></i><span>{{$result['commonContent']['setting'][4]->value}} {{$result['commonContent']['setting'][5]->value}} {{$result['commonContent']['setting'][6]->value}}, {{$result['commonContent']['setting'][7]->value}} {{$result['commonContent']['setting'][8]->value}}</span> </li>
-                  <li> <i class="fas fa-phone"></i><span dir="ltr">({{$result['commonContent']['setting'][11]->value}})</span> </li>
-                  <li> <i class="fas fa-envelope"></i><span> <a href="mailto:{{$result['commonContent']['setting'][3]->value}}">{{$result['commonContent']['setting'][3]->value}}</a> </span> </li>
+                  <li> <i class="fa fa-map-marker"></i><span>{{$result['commonContent']['setting'][4]->value}} {{$result['commonContent']['setting'][5]->value}} {{$result['commonContent']['setting'][6]->value}}, {{$result['commonContent']['setting'][7]->value}} {{$result['commonContent']['setting'][8]->value}}</span> </li>
+                  <li> <i class="fa fa-phone"></i><span dir="ltr">({{$result['commonContent']['setting'][11]->value}})</span> </li>
+                  <li> <i class="fa fa-envelope"></i><span> <a href="mailto:{{$result['commonContent']['setting'][3]->value}}">{{$result['commonContent']['setting'][3]->value}}</a> </span> </li>
 
                 </ul>
             </div>
             <div class="col-12 col-lg-3">
                 <div class="newsletter">
+                <img style="position: relative;left: -60px;margin-bottom: 15px;" width="100" src = "{{asset('web/images/miscellaneous/logo.jpg')}}" class = "rounded">
                     <h5>@lang('website.Subscribe')</h5>
                     <div class="block">
-
                       @if(!empty($result['commonContent']['setting'][118]) and $result['commonContent']['setting'][118]->value==1)
 
                       <form class="form-inline mailchimp-form" action="{{url('subscribeMail')}}" >
@@ -41,7 +41,7 @@
                           <div class="search-field-wrap">
                             <input type="email" name="email" class="email" placeholder="@lang('website.Your email address here')">
                               <button type="submit" class="btn btn-secondary swipe-to-top" >
-                              <i class="fas fa-location-arrow"></i></button>
+                              <i class="fa fa-location-arrow"></i></button>
                               <div class="alert alert-success alert-dismissible success-subscribte" role="alert" style="opacity: 500; display: none;"></div>
             
                                   <div class="alert alert-danger alert-dismissible error-subscribte" role="alert" style="opacity: 500; display: none;"></div>
@@ -53,8 +53,7 @@
                    </div>
                 </div>
                 <div class="socials">
-                    <h5>@lang('payment method')</h5>
-                    <img class="img-fluid" src="{{asset('web/images/miscellaneous/payments.png')}}">
+                    <img class="img-fluid" src="{{asset('web/images/miscellaneous/payment.jpg')}}">
                 </div>
               </div>
         </div>
