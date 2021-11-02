@@ -736,7 +736,7 @@ class Products extends Model
                                 ->where('image_id', '=', $products_data->products_image)
                                 ->where('image_type', 'ACTUAL')
                                 ->first();
-                            $products_data->image_path = $default_images->path;
+                            $products_data->image_path = $default_images->path??'';
                         } else {
                             $products_data->image_path = "";
                         }
@@ -749,14 +749,14 @@ class Products extends Model
                     ->where('image_type', 'LARGE')
                     ->first();
                 if ($default_images) {
-                    $products_data->default_images = $default_images->path;
+                    $products_data->default_images = $default_images->path??'';
                 } else {
                     $default_images = DB::table('image_categories')
                         ->where('image_type', 'ACTUAL')
                         ->where('image_id', '=', $products_data->products_image)
                         ->first();
                     if ($default_images) {
-                        $products_data->default_images = $default_images->path;
+                        $products_data->default_images = $default_images->path??'';
                     }
                 }
 

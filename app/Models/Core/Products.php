@@ -123,9 +123,12 @@ class Products extends Model
                 ->groupBy('products.products_id')->paginate($commonsetting['pagination']);
             }
         
-        $currentPage = request()->get('page',1);
+        // $currentPage = request()->get('page',1);
+
+        // cache()->forget('products-' . $currentPage);
 
         // $data = Cache::remember('products-' . $currentPage, 22*60, function() use($request) {
+            
         // $setting = new Setting();
         // $myVarsetting = new SiteSettingController($setting);
         // $commonsetting = $myVarsetting->commonsetting();
@@ -219,6 +222,7 @@ class Products extends Model
        
 
 
+        // return $data;
         return $products;
     }
 
@@ -318,21 +322,21 @@ class Products extends Model
     $products_id = DB::table('products')->insertGetId([
         'products_image' => $uploadImage,
         'manufacturers_id' => $request->manufacturers_id,
-        'products_model' => $request->products_model,
+        // 'products_model' => $request->products_model,
         'price_buy' => $request->price_buy,
         'products_price' => $request->products_price,
         'created_at' => $date_added,
-        'products_weight' => $request->products_weight,
+        // 'products_weight' => $request->products_weight,
         'products_status' => $request->products_status,
-        'products_tax_class_id' => $tax_Class_id,
-        'products_weight_unit' => $request->products_weight_unit,
+        // 'products_tax_class_id' => $tax_Class_id,
+        // 'products_weight_unit' => $request->products_weight_unit,
         'low_limit' => 0,
         'products_slug' => 0,
         'products_type' => 0,
-        'is_feature' => $request->is_feature,
+        'is_feature' => $request->is_feature??null,
         'products_min_order' => $request->products_min_order,
         'products_max_stock' => $request->products_max_stock,
-        'products_video_link' => $request->products_video_link,
+        // 'products_video_link' => $request->products_video_link,
         'is_current'         => 1,
         'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
         'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
@@ -453,24 +457,24 @@ class Products extends Model
     }
 
     //flash sale product
-    if($request->isFlash == 'yes'){
-        $startdate = $request->flash_start_date;
-        $starttime = $request->flash_start_time;
-        $start_date = str_replace('/','-',$startdate.' '.$starttime);
-        $flash_start_date = strtotime($start_date);
-        $expiredate = $request->flash_expires_date;
-        $expiretime = $request->flash_end_time;
-        $expire_date = str_replace('/','-',$expiredate.' '.$expiretime);
-        $flash_expires_date = strtotime($expire_date);
-        DB::table('flash_sale')->insert([
-            'products_id' => $products_id,
-            'flash_sale_products_price' => $request->flash_sale_products_price,
-            'created_at' => $date_added,
-            'flash_start_date' => $flash_start_date,
-            'flash_expires_date' => $flash_expires_date,
-            'flash_status' => $request->flash_status
-        ]);
-    }
+    // if($request->isFlash == 'yes'){
+    //     $startdate = $request->flash_start_date;
+    //     $starttime = $request->flash_start_time;
+    //     $start_date = str_replace('/','-',$startdate.' '.$starttime);
+    //     $flash_start_date = strtotime($start_date);
+    //     $expiredate = $request->flash_expires_date;
+    //     $expiretime = $request->flash_end_time;
+    //     $expire_date = str_replace('/','-',$expiredate.' '.$expiretime);
+    //     $flash_expires_date = strtotime($expire_date);
+    //     DB::table('flash_sale')->insert([
+    //         'products_id' => $products_id,
+    //         'flash_sale_products_price' => $request->flash_sale_products_price,
+    //         'created_at' => $date_added,
+    //         'flash_start_date' => $flash_start_date,
+    //         'flash_expires_date' => $flash_expires_date,
+    //         'flash_status' => $request->flash_status
+    //     ]);
+    // }
 
     //special product
     if($request->isSpecial == 'yes'){
@@ -697,21 +701,19 @@ class Products extends Model
           DB::table('products')->where('products_id', '=', $products_id)->update([
                 'products_image' => $uploadImage,
                 'manufacturers_id' => $request->manufacturers_id,
-                'products_model' => $request->products_model,
+                // 'products_model' => $request->products_model,
                 'products_price' => $request->products_price,
                 'price_buy' => $request->price_buy,
                 'updated_at' => $products_last_modified,
-                'products_weight' => $request->products_weight,
+                // 'products_weight' => $request->products_weight,
                 'products_status' => $request->products_status,
-                'products_tax_class_id' => $request->tax_class_id,
-                'products_weight_unit' => $request->products_weight_unit,
+                // 'products_weight_unit' => $request->products_weight_unit,
                 'low_limit' => 0,
                 'products_slug' => $slug,
                 'products_type' => 0,
-                'is_feature' => $request->is_feature,
+                'is_feature' => $request->is_feature??null,
                 'products_min_order' => $request->products_min_order,
                 'products_max_stock' => $request->products_max_stock,
-                'products_video_link' => $request->products_video_link,
                 'is_show_web'       => $request->is_show_web == 'on' ? '1' : '0',
                 'is_show_app'       => $request->is_show_app == 'on' ? '1' : '0',
                 'is_show_admin'     => $request->is_show_admin == 'on' ? '1' : '0',
@@ -857,30 +859,30 @@ class Products extends Model
             }
 
           //flash sale product
-          if($request->isFlash == 'yes'){
-            DB::table('flash_sale')->where('products_id', '=', $products_id)->update([
-                'updated_at' => $products_last_modified,
-                'flash_status' => 0,
-            ]);
-              $startdate = $request->flash_start_date;
-              $starttime = $request->flash_start_time;
-              $start_date = str_replace('/','-',$startdate.' '.$starttime);
-              $flash_start_date = strtotime($start_date);
-              $expiredate = $request->flash_expires_date;
-              $expiretime = $request->flash_end_time;
-              $expire_date = str_replace('/','-',$expiredate.' '.$expiretime);
-              $flash_expires_date = strtotime($expire_date);
-              DB::table('flash_sale')->insert([
-                  'products_id' => $products_id,
-                  'flash_sale_products_price' => $request->flash_sale_products_price,
-                  'created_at' => $products_last_modified,
-                  'flash_start_date' => $flash_start_date,
-                  'flash_expires_date' => $flash_expires_date,
-                  'flash_status' => $request->flash_status
-              ]);
-           }else if($request->isFlash == 'no'){
-             DB::table('flash_sale')->where('products_id', '=', $products_id)->delete();                
-            }
+        //   if($request->isFlash == 'yes'){
+        //     DB::table('flash_sale')->where('products_id', '=', $products_id)->update([
+        //         'updated_at' => $products_last_modified,
+        //         'flash_status' => 0,
+        //     ]);
+        //       $startdate = $request->flash_start_date;
+        //       $starttime = $request->flash_start_time;
+        //       $start_date = str_replace('/','-',$startdate.' '.$starttime);
+        //       $flash_start_date = strtotime($start_date);
+        //       $expiredate = $request->flash_expires_date;
+        //       $expiretime = $request->flash_end_time;
+        //       $expire_date = str_replace('/','-',$expiredate.' '.$expiretime);
+        //       $flash_expires_date = strtotime($expire_date);
+        //       DB::table('flash_sale')->insert([
+        //           'products_id' => $products_id,
+        //           'flash_sale_products_price' => $request->flash_sale_products_price,
+        //           'created_at' => $products_last_modified,
+        //           'flash_start_date' => $flash_start_date,
+        //           'flash_expires_date' => $flash_expires_date,
+        //           'flash_status' => $request->flash_status
+        //       ]);
+        //   }else if($request->isFlash == 'no'){
+        //      DB::table('flash_sale')->where('products_id', '=', $products_id)->delete();                
+        //     }
           $options = DB::table('products_options')
              ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')
              ->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('products_options_descriptions.language_id', '1')->get();

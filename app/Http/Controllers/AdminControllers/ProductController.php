@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\AdminControllers\AlertController;
 use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App\Http\Controllers\Controller;
+use App\Models\AppModels\Product;
 use App\Models\Core\Categories;
 use App\Models\Core\Images;
 use App\Models\Core\Languages;
@@ -85,8 +86,30 @@ class ProductController extends Controller
         $product = $request->product;
         $title = array('pageTitle' => Lang::get("labels.Products"));
         $subCategories = $this->category->allcategories($language_id);
-        $products = $this->products->paginator($request);
-        $results['products'] = $products;
+        // $products = $this->products->paginator($request);
+        // dd($products);
+
+        $products = Product::with('descriptions')->with('categories');
+
+        if(auth()->user()->role_id != 1) {
+            $products->where('admin_id', '=', auth()->user()->id);
+        } 
+        if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
+            $products->where('products_slug', 'like', '%' . $_REQUEST['product'] . '%');
+            $products->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
+            
+        }
+
+        if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {
+            $products->whereHas('categories',function($q){
+                $q->where('categories.categories_id',$_REQUEST['categories_id']);
+            });
+            
+        }
+
+
+        // dd($products->paginate(10));
+        $results['products'] = $products->paginate(10);
         $results['currency'] = $this->myVarsetting->getSetting();
         $results['units'] = $this->myVarsetting->getUnits();
         $results['subCategories'] = $subCategories;

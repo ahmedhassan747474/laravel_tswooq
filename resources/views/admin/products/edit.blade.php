@@ -80,19 +80,19 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control" name="is_feature">
-                                                            <option value="0" @if($result['product'][0]->is_feature==0) selected @endif>{{ trans('labels.No') }}</option>
-                                                            <option value="1" @if($result['product'][0]->is_feature==1) selected @endif>{{ trans('labels.Yes') }}</option>
-                                                        </select>
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.IsFeatureProuctsText') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!--<div class="col-xs-12 col-md-6">-->
+                                            <!--    <div class="form-group">-->
+                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>-->
+                                            <!--        <div class="col-sm-10 col-md-8">-->
+                                            <!--            <select class="form-control" name="is_feature">-->
+                                            <!--                <option value="0" @if($result['product'][0]->is_feature==0) selected @endif>{{ trans('labels.No') }}</option>-->
+                                            <!--                <option value="1" @if($result['product'][0]->is_feature==1) selected @endif>{{ trans('labels.Yes') }}</option>-->
+                                            <!--            </select>-->
+                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
+                                            <!--                {{ trans('labels.IsFeatureProuctsText') }}</span>-->
+                                            <!--        </div>-->
+                                            <!--    </div>-->
+                                            <!--</div>-->
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }} </label>
@@ -135,26 +135,26 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group" id="tax-class">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control field-validate" name="tax_class_id">
-                                                            <option selected> {{ trans('labels.SelectTaxClass') }}</option>
-                                                            @foreach ($result['taxClass'] as $taxClass)
-                                                            <option @if($result['product'][0]->products_tax_class_id == $taxClass->tax_class_id )
-                                                                selected
-                                                                @endif
-                                                                value="{{ $taxClass->tax_class_id }}">{{ $taxClass->tax_class_title }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.ChooseTaxClassForProductText') }}
-                                                        </span>
-                                                        <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!--<div class="col-xs-12 col-md-6">-->
+                                            <!--    <div class="form-group" id="tax-class">-->
+                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>-->
+                                            <!--        <div class="col-sm-10 col-md-8">-->
+                                            <!--            <select class="form-control field-validate" name="tax_class_id">-->
+                                            <!--                <option selected> {{ trans('labels.SelectTaxClass') }}</option>-->
+                                            <!--                @foreach ($result['taxClass'] as $taxClass)-->
+                                            <!--                <option @if($result['product'][0]->products_tax_class_id == $taxClass->tax_class_id )-->
+                                            <!--                    selected-->
+                                            <!--                    @endif-->
+                                            <!--                    value="{{ $taxClass->tax_class_id }}">{{ $taxClass->tax_class_title }}</option>-->
+                                            <!--                @endforeach-->
+                                            <!--            </select>-->
+                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
+                                            <!--                {{ trans('labels.ChooseTaxClassForProductText') }}-->
+                                            <!--            </span>-->
+                                            <!--            <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>-->
+                                            <!--        </div>-->
+                                            <!--    </div>-->
+                                            <!--</div>-->
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -220,7 +220,7 @@
 
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-6">
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Min Order Limit') }}</label>
                                                     <div class="col-sm-10 col-md-8">
@@ -231,8 +231,8 @@
                                                         <span class="help-block hidden">{{ trans('labels.Min Order Limit Text') }}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-12 col-md-6">
+                                            </div> --}}
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Max Order Limit') }}</label>
                                                     <div class="col-sm-10 col-md-8">
@@ -243,59 +243,48 @@
                                                         <span class="help-block hidden">{{ trans('labels.Max Order Limit Text') }}</span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsWeight') }}</label>
-                                                    <div class="col-sm-10 col-md-4">
-                                                        {!! Form::text('products_weight', $result['product'][0]->products_weight, array('class'=>'form-control', 'id'=>'products_weight')) !!}
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.RequiredTextForWeight') }}
-                                                        </span>
+                                            <!--<div class="col-xs-12 col-md-6">-->
+                                            <!--    <div class="form-group">-->
+                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsWeight') }}</label>-->
+                                            <!--        <div class="col-sm-10 col-md-4">-->
+                                            <!--            {!! Form::text('products_weight', $result['product'][0]->products_weight, array('class'=>'form-control', 'id'=>'products_weight')) !!}-->
+                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
+                                            <!--                {{ trans('labels.RequiredTextForWeight') }}-->
+                                            <!--            </span>-->
 
-                                                    </div>
-                                                    <div class="col-sm-10 col-md-4" style="padding-left: 0;">
-                                                        <select class="form-control" name="products_weight_unit">
-                                                            @if($result['units']) !== null)
-                                                            @foreach($result['units'] as $unit)
-                                                            <option value="{{$unit->units_name}}" @if($result['product'][0]->products_weight_unit==$unit->units_name) selected @endif>{{$unit->units_name}}</option>
-                                                            @endforeach
-                                                            @endif
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!--        </div>-->
+                                            <!--        <div class="col-sm-10 col-md-4" style="padding-left: 0;">-->
+                                            <!--            <select class="form-control" name="products_weight_unit">-->
+                                            <!--                @if($result['units']) !== null)-->
+                                            <!--                @foreach($result['units'] as $unit)-->
+                                            <!--                <option value="{{$unit->units_name}}" @if($result['product'][0]->products_weight_unit==$unit->units_name) selected @endif>{{$unit->units_name}}</option>-->
+                                            <!--                @endforeach-->
+                                            <!--                @endif-->
+                                            <!--            </select>-->
+                                            <!--        </div>-->
+                                            <!--    </div>-->
+                                            <!--</div>-->
 
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsModel') }}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        {!! Form::text('products_model', $result['product'][0]->products_model, array('class'=>'form-control', 'id'=>'products_model')) !!}
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.ProductsModelText') }}
-                                                        </span>
-                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!--<div class="col-xs-12 col-md-6">-->
+                                            <!--    <div class="form-group">-->
+                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsModel') }}</label>-->
+                                            <!--        <div class="col-sm-10 col-md-8">-->
+                                            <!--            {!! Form::text('products_model', $result['product'][0]->products_model, array('class'=>'form-control', 'id'=>'products_model')) !!}-->
+                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
+                                            <!--                {{ trans('labels.ProductsModelText') }}-->
+                                            <!--            </span>-->
+                                            <!--            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
+                                            <!--        </div>-->
+                                            <!--    </div>-->
+                                            <!--</div>-->
                                         </div>
 
                                         <div class="row">
 
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.VideoEmbedCodeLink') }}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        {!! Form::textarea('products_video_link', $result['product'][0]->products_video_link, array('class'=>'form-control', 'id'=>'products_video_link', 'rows'=>4)) !!}
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.VideoEmbedCodeLinkText') }}
-                                                        </span>
-                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                           
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -392,177 +381,7 @@
 
                                         </div>
                                         <hr>
-                                        <div class="row">
-
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSale') }}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control" onChange="showFlash()" name="isFlash" id="isFlash">
-                                                            <option value="no" @if($result['flashProduct'][0]->flash_status == 0)
-                                                                selected
-                                                                @endif>{{ trans('labels.No') }}</option>
-                                                            <option value="yes" @if($result['flashProduct'][0]->flash_status == 1)
-                                                                selected
-                                                                @endif>{{ trans('labels.Yes') }}</option>
-                                                        </select>
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.FlashSaleText') }}</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flash-container" style="display: none;">
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSalePrice') }}</label>
-                                                        <div class="col-sm-10 col-md-8">
-                                                            <input class="form-control" type="text" name="flash_sale_products_price" id="flash_sale_products_price" value="{{$result['flashProduct'][0]->flash_sale_products_price}}">
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.FlashSalePriceText') }}</span>
-                                                            <span class="help-block hidden">{{ trans('labels.FlashSalePriceText') }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSaleDate') }}</label>
-                                                        @if($result['flashProduct'][0]->flash_status == 1)
-                                                        <div class="col-sm-10 col-md-4">
-                                                            <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" value="{{date('d/m/Y', $result['flashProduct'][0]->flash_start_date) }}">
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.FlashSaleDateText') }}</span>
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
-                                                            <input type="text" class="form-control timepicker" readonly name="flash_start_time" id="flash_start_time"
-                                                              value="{{date('h:i:sA',  $result['flashProduct'][0]->flash_start_date ) }}">
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        @else
-                                                        <div class="col-sm-10 col-md-4">
-                                                            <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" value="">
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.FlashSaleDateText') }}</span>
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
-                                                            <input type="text" class="form-control timepicker" readonly name="flash_start_time" id="flash_start_time" value="">
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        @endif
-
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashExpireDate') }}</label>
-                                                        @if($result['flashProduct'][0]->flash_status == 1)
-                                                        <div class="col-sm-10 col-md-4">
-                                                            <input class="form-control datepicker" readonly type="text" name="flash_expires_date" id="flash_expires_date"
-                                                              value="{{ date('d/m/Y', $result['flashProduct'][0]->flash_expires_date )}}">
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.FlashExpireDateText') }}</span>
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
-                                                            <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="{{ date('h:i:sA', $result['flashProduct'][0]->flash_expires_date ) }}">
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        @else
-                                                        <div class="col-sm-10 col-md-4">
-                                                            <input class="form-control datepicker" readonly type="text" name="flash_expires_date" id="flash_expires_date" value="">
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.FlashExpireDateText') }}</span>
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
-                                                            <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="">
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                        @endif
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>
-                                                        <div class="col-sm-10 col-md-8">
-                                                            <select class="form-control" name="flash_status">
-                                                                <option value="1">{{ trans('labels.Active') }}</option>
-                                                                <option value="0">{{ trans('labels.Inactive') }}</option>
-                                                            </select>
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.ActiveFlashSaleProductText') }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xs-12 col-md-6">
-
-                                                <div class="form-group  special-link">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Special') }} </label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control" onChange="showSpecial()" name="isSpecial" id="isSpecial">
-                                                            <option @if($result['product'][0]->products_id != $result['specialProduct'][0]->products_id && $result['specialProduct'][0]->status == 0)
-                                                                selected
-                                                                @endif
-                                                                value="no">{{ trans('labels.No') }}</option>
-                                                            <option @if($result['product'][0]->products_id == $result['specialProduct'][0]->products_id && $result['specialProduct'][0]->status == 1)
-                                                                selected
-                                                                @endif
-                                                                value="yes">{{ trans('labels.Yes') }}</option>
-                                                        </select>
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;"> {{ trans('labels.SpecialProductText') }}</span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="special-container" style="display: none;">
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SpecialPrice') }}</label>
-                                                        <div class="col-sm-10 col-md-8">
-                                                            {!! Form::text('specials_new_products_price', $result['specialProduct'][0]->specials_new_products_price, array('class'=>'form-control', 'id'=>'special-price')) !!}
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.SpecialPriceTxt') }}.</span>
-                                                            <span class="help-block hidden">{{ trans('labels.SpecialPriceNote') }}.</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ExpiryDate') }}</label>
-                                                        <div class="col-sm-10 col-md-8">
-                                                            @if(!empty($result['specialProduct'][0]->status) and $result['specialProduct'][0]->status == 1)
-                                                            {!! Form::text('expires_date', date('d/m/Y', $result['specialProduct'][0]->expires_date), array('class'=>'form-control datepicker', 'id'=>'expiry-date', 'readonly'=>'readonly'))
-                                                            !!}
-                                                            @else
-                                                            {!! Form::text('expires_date', '', array('class'=>'form-control datepicker', 'id'=>'expiry-date', 'readonly'=>'readonly')) !!}
-                                                            @endif
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.SpecialExpiryDateTxt') }}
-                                                            </span>
-                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>
-                                                        <div class="col-sm-10 col-md-8">
-                                                          <select class="form-control" name="status">
-                                                            <option
-                                                             @if($result['specialProduct'][0]->status == 1 )
-                                                               selected
-                                                             @endif
-                                                             value="1">{{ trans('labels.Active') }}
-                                                             </option>
-                                                            <option
-                                                             @if($result['specialProduct'][0]->status == 0 )
-                                                               selected
-                                                             @endif
-                                                             value="0">{{ trans('labels.Inactive') }}</option>
-                                                          </select>
-                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                {{ trans('labels.ActiveSpecialProductText') }}.</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <hr>
+                                                        <hr>
 
                                         @if (session()->has('error'))
                                         <div class="alert alert-danger alert-dismissible show" role="alert">

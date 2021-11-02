@@ -74,13 +74,20 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                         <tr>
-                                            <th>@sortablelink('products_id', trans('labels.ID') )</th>
+                                            {{-- <th>@sortablelink('products_id', trans('labels.ID') )</th>
                                             <th>{{ trans('labels.Image') }}</th>
                                             <th>@sortablelink('categories_name', trans('labels.Category') )</th>
                                             <th>@sortablelink('products_name', trans('labels.Name') )</th>
                                             <th>الكمية</th>
                                             <th>{{ trans('labels.Additional info') }}</th>
-                                            <th>@sortablelink('created_at', trans('labels.ModifiedDate') )</th>
+                                            <th>@sortablelink('created_at', trans('labels.ModifiedDate') )</th> --}}
+                                            <th>{{ trans('labels.ID') }}</th>
+                                            <th>{{ trans('labels.Image') }}</th>
+                                            <th>{{ trans('labels.Category') }}</th>
+                                            <th>{{  trans('labels.Name') }}</th>
+                                            <th>الكمية</th>
+                                            <th>{{ trans('labels.Additional info') }}</th>
+                                            <th>{{  trans('labels.ModifiedDate')}}</th>
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -90,9 +97,13 @@
                                             @foreach ($resultsProduct as  $key=>$product)
                                                 <tr>
                                                     <td>{{ $product->products_id }}</td>
-                                                    <td><img src="{{asset($product->path)}}" alt="" height="50px"></td>
+                                                    <td><img src="{{asset($product->products_image)}}" alt="" height="50px"></td>
                                                     <td>
-                                                        {{ $product->categories_name }}
+                                                        @foreach ($product->categories??[] as $item)
+                                                            {{ $item->categories_slug }}
+                                                            <br>
+                                                        @endforeach
+                                                        
                                                     </td>
                                                     <td>
                                                         {{ $product->products_name }} @if(!empty($product->products_model)) ( {{ $product->products_model }} ) @endif

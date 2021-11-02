@@ -245,11 +245,7 @@ class IndexController extends Controller
                         $defaultStock = $stocks - $stockOut;
                     }
     
-                    if ($products_data->products_max_stock < $defaultStock && $products_data->products_max_stock > 0) {
-                        $result[$index]->defaultStock = $products_data->products_max_stock;
-                    } else {
-                        $result[$index]->defaultStock = $defaultStock;
-                    }
+                    
     
                     //like product
                     if (auth()->check()) {
@@ -419,13 +415,13 @@ class IndexController extends Controller
         $result['most_liked'] = $most_liked;
 
 //is feature
-        $data = array('page_number' => '0', 'type' => 'is_feature', 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
-        $featured = $this->products->products($data);
-        $result['featured'] = $featured;
+        // $data = array('page_number' => '0', 'type' => 'is_feature', 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
+        // $featured = $this->products->products($data);
+        // $result['featured'] = $featured;
 
-        $data = array('page_number' => '0', 'type' => '', 'limit' => '15', 'is_feature' => 1);
-        $news = $this->news->getAllNews($data);
-        $result['news'] = $news;
+        // $data = array('page_number' => '0', 'type' => '', 'limit' => '15', 'is_feature' => 1);
+        // $news = $this->news->getAllNews($data);
+        // $result['news'] = $news;
 //current time
 
         $currentDate = Carbon\Carbon::now();

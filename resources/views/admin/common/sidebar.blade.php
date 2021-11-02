@@ -149,11 +149,11 @@
               $status_check = DB::table('reviews')->where('reviews_read',0)->first();
               if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->reviews_view == 1){
             ?>
-              <li class="{{ Request::is('admin/reviews/display') ? 'active' : '' }}">
+              {{-- <li class="{{ Request::is('admin/reviews/display') ? 'active' : '' }}">
                 <a href="{{ URL::to('admin/reviews/display')}}">
                   <i class="fa fa-circle-o" aria-hidden="true"></i> <span>{{ trans('labels.reviews') }}</span>@if($result['commonContent']['new_reviews']>0)<span class="label label-success pull-right">{{$result['commonContent']['new_reviews']}} {{ trans('labels.new') }}</span>@endif
                 </a>
-              </li>
+              </li> --}}
             <?php } ?>
           </ul>
         </li>

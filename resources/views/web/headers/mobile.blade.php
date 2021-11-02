@@ -91,8 +91,7 @@
               @endif
 
               @if($result['commonContent']['settings']['sitename_logo']=='logo')
-            <img class="img-fluid" src="{{asset('images/media/2021/06/Ei2G621102.png')}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>">
-              {{-- <img class="img-fluid" src="{{asset('').$result['commonContent']['settings']['website_logo']}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>"> --}}
+              <img class="img-fluid" src="{{asset('').$result['commonContent']['settings']['website_logo']}}" alt="<?=stripslashes($result['commonContent']['settings']['website_name'])?>">
               @endif
            </a>
           </div>

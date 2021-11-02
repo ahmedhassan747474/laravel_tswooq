@@ -44,6 +44,10 @@ class Product extends Model
         return DB::table('users')->where('id',$this->admin_id)
                                             ->first()->shop_name;
     }
+    public function categories()
+    {
+        return $this->belongsToMany('App\Models\AppModels\Category','products_to_categories','products_id','categories_id','products_id','categories_id');
+    }
     public function descriptions()
     {
         $language_id= request()->language_id ?? 1 ;

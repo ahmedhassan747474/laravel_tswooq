@@ -1249,8 +1249,9 @@ class shopController extends Controller
         
         $package = package::findOrFail($request->package_id);
         $amount = $request->month == 12 ? $package->price * 12 - $package->discount : $package->price;
+      
         \App\Models\Web\PackgeRequest::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => auth()->guard('customer')->user()->id,
             'packge_id' => $package->id,
             'month' => $request->month,
         ]);

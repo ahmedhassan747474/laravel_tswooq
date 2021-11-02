@@ -233,15 +233,7 @@
                 </span>
               </div>
               
-              <span class="set_min_orders">
-                @if($result['detail']['product_data'][0]->products_min_order>0)
-                  @if($result['detail']['product_data'][0]->products_type == 0)
-                    <div class="pro-single-info" id="min_max_setting"><b>@lang('website.Min Order Limit:') :</b><a href="#">{{$result['detail']['product_data'][0]->products_min_order}}</a></div>
-                  @elseif($result['detail']['product_data'][0]->products_type == 1)
-                    <div class="pro-single-info" id="min_max_setting"></div>
-                  @endif
-                @endif
-              </span>
+              
               
           </div>
 
@@ -327,7 +319,7 @@
           <div class="pro-counter" @if(!empty($result['detail']['product_data'][0]->flash_start_date) and $result['detail']['product_data'][0]->server_time < $result['detail']['product_data'][0]->flash_start_date ) style="display: none" @endif>
               <div class="input-group item-quantity">                    
                   {{-- <input type="text" id="quantity1" name="quantity" class="form-control" value="10">                       --}}
-                  <input type="text" readonly name="quantity" class="form-control qty" value="@if(!empty($result['cart'])) {{$result['cart'][0]->customers_basket_quantity}} @else @if($result['detail']['product_data'][0]->products_min_order>0 and $result['detail']['product_data'][0]->defaultStock > $result['detail']['product_data'][0]->products_min_order) {{$result['detail']['product_data'][0]->products_min_order}} @else 1 @endif @endif" min="{{$result['detail']['product_data'][0]->products_min_order}}" max="{{$result['detail']['product_data'][0]->products_max_stock}}">              
+                  <input type="text" readonly name="quantity" class="form-control qty" value="1" min="1" max="{{$result['detail']['product_data'][0]->products_quantity}}">              
                   <span class="input-group-btn">
                       <button type="button" class="quantity-plus1 btn qtyplus">
                           <i class="fa fa-plus"></i>

@@ -7,18 +7,18 @@
     <!-- dir="rtl" -->
     <body class="animation-s<?php  echo $final_theme['transitions']; if(!empty(session('direction')) and session('direction')=='rtl') print ' bodyrtl';?> ">
       
-      <div class="se-pre-con" id="loader" style="display: block">
-        <div class="pre-loader">
-          <div class="la-line-scale">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <p>@lang('website.Loading')..</p>
-        </div>
+      <!--<div class="se-pre-con" id="loader" style="display: block">-->
+      <!--  <div class="pre-loader">-->
+      <!--    <div class="la-line-scale">-->
+      <!--      <div></div>-->
+      <!--      <div></div>-->
+      <!--      <div></div>-->
+      <!--      <div></div>-->
+      <!--    </div>-->
+      <!--    <p>@lang('website.Loading')..</p>-->
+      <!--  </div>-->
      
-      </div>
+      <!--</div>-->
 
       @if (count($errors) > 0)
           @if($errors->any())
