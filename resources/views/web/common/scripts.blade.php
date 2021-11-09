@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
 
-<script src="{!! asset('web/js/jquery.instagramFeed.min.js') !!}"></script>
+<!--<script src="{!! asset('web/js/jquery.instagramFeed.min.js') !!}"></script>-->
 @if(Request::path() == 'checkout')
 <script src="https://js.braintreegateway.com/js/braintree-2.32.1.min.js"></script>
 <script type="text/javascript">
@@ -1552,28 +1552,28 @@ jQuery(document).on('submit', '#updateMyPassword', function(e){
 
 <script type="application/javascript">
 
-	OneSignal.push(function() {
-		/* These examples are all valid */
-		OneSignal.getUserId(function(userId) {
-			console.log("OneSignal User ID:", userId);
+// 	OneSignal.push(function() {
+// 		/* These examples are all valid */
+// 		OneSignal.getUserId(function(userId) {
+// 			console.log("OneSignal User ID:", userId);
 
-			//ajax request
-			jQuery.ajax({
-				headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
-				url: '{{ URL::to("/setSession")}}',
-				type: "get",
-				data: '&device_id='+userId,
-				success: function (res) {},
-			});
+// 			//ajax request
+// 			jQuery.ajax({
+// 				headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
+// 				url: '{{ URL::to("/setSession")}}',
+// 				type: "get",
+// 				data: '&device_id='+userId,
+// 				success: function (res) {},
+// 			});
 
-			// (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
-		});
+// 			// (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
+// 		});
 					
-		OneSignal.getUserId().then(function(userId) {
-			//console.log("OneSignal User ID:", userId);
-			// (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
-		});
-	});
+// 		OneSignal.getUserId().then(function(userId) {
+// 			//console.log("OneSignal User ID:", userId);
+// 			// (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
+// 		});
+// 	});
 
 //header categories
 jQuery('.categories-list').on('click', function(e){     
@@ -1611,27 +1611,27 @@ function categoriesLoad(){
 
 jQuery( document ).ready( function () {
 	jQuery('#loader').hide();
-	 OneSignal.push(function () {
-	  OneSignal.registerForPushNotifications();
-	  OneSignal.on('subscriptionChange', function (isSubscribed) {
-	   if (isSubscribed) {
-		OneSignal.getUserId(function (userId) {
-		 device_id = userId;
-		 //ajax request
-		 jQuery.ajax({
-			 headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
-			url: '{{ URL::to("/subscribeNotification")}}',
-			type: "POST",
-			data: '&device_id='+device_id,
-			success: function (res) {},
-		});
+// 	 OneSignal.push(function () {
+// 	  OneSignal.registerForPushNotifications();
+// 	  OneSignal.on('subscriptionChange', function (isSubscribed) {
+// 	   if (isSubscribed) {
+// 		OneSignal.getUserId(function (userId) {
+// 		 device_id = userId;
+// 		 //ajax request
+// 		 jQuery.ajax({
+// 			 headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
+// 			url: '{{ URL::to("/subscribeNotification")}}',
+// 			type: "POST",
+// 			data: '&device_id='+device_id,
+// 			success: function (res) {},
+// 		});
 
-		 //$scope.oneSignalCookie();
-		});
-	   }
-	  });
+// 		 //$scope.oneSignalCookie();
+// 		});
+// 	   }
+// 	  });
 
-	 });
+// 	 });
 
 	//load google map
 @if(Request::path() == 'contact-us')

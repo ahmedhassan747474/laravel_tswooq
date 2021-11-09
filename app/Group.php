@@ -24,7 +24,7 @@ class Group extends Model
                             'barcode',
                             'admin_id',
                             'products_ordered',
-                            'products_ordered',
+                            'products_slug'
                         );
       
     }

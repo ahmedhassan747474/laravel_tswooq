@@ -92,7 +92,8 @@ class LikeCardController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        // dd($response);
+        return response()->json($response);
+        dd($response);
         // echo $response;
         $categories = json_decode($response);
         // return response()->json($response);
@@ -100,6 +101,7 @@ class LikeCardController extends Controller
 
         $result = array();
 
+        
         
         $result['categories'] = $categories;
         // dd($result['categories']->response);
@@ -121,7 +123,7 @@ class LikeCardController extends Controller
                 'password' => '24c15fa2d4b862880536374e53f1c4fe',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
-				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
+				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id??0,
                //  'ids[]' => '362'
             ),
             CURLOPT_HTTPHEADER => array(

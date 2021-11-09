@@ -17,11 +17,13 @@ use Mail;
 use Image;
 use Str;
 use App;
+use App\Models\Core\Setting;
 use App\Models\Core\User as CoreUser;
 use Illuminate\Support\Facades\File;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Config;
 use DB;
+use Exception;
 use Lang;
 use ZipArchive;
 
@@ -344,69 +346,113 @@ class UserController extends BaseController
         return response()->json($response);
     }
 
+    // public function forgetPassword(Request $request)
+    // {
+    //     if($request->header('Authorization'))   //=== Already login user
+    //     {
+    //         $user = $this->getAuthenticatedUser();
+
+    //         // $token = $request->bearerToken();
+
+    //         // $code = rand(1111, 9999);
+    //         // $code = 4444;
+
+    //         if($user)
+    //         {
+    //             // if($request->type == 1) {
+    //             //     // $type = '4';
+    //             //     // $sent_code = $this->otpCode($user, $type, $code);
+
+    //             //     return response()->json([
+    //             //         'message'           => trans('common.success_send_code'),
+    //             //         'data'              => ['verification_code' => (int)$sent_code->verification_code, 'code_type' => $sent_code->code_type],
+    //             //         'status_code'       => 200
+    //             //     ], 200);
+    //             // } else {
+
+    //                 if($user->email == null)
+    //                 {
+    //                     return response()->json(['message' => trans('common.no_email_for_account'), 'status_code' => 400], 400);
+    //                 }
+    //                 elseif($user->email != null && $user->email_activate == '0')
+    //                 {
+    //                     return response()->json(['message' => trans('common.email_not_verified'), 'status_code' => 400], 400);
+    //                 }
+    //                 else
+    //                 {
+    //                     $token = Password::getRepository()->create($user);
+
+    //                     Mail::send(['html' => 'email.forget_password'], ['token' => $token, 'email' => $user->email], function (Message $message) use ($user) {
+    //                         $message->subject(config('app.name') . ' Password Reset Link');
+    //                         $message->to($user->email);
+    //                     });
+
+    //                     return response()->json(['message' => trans('common.mail_is_sent'), 'status_code' => 200], 200);
+
+    //                     // $token = Password::getRepository()->create($user);
+
+    //                     // $from       = Setting::where('name', 'send_email')->pluck('value')->first();
+    //                     // $subject    = config('app.name') . ' Password Reset Link';
+    //                     // $to_email   = strtolower($user->email);
+    //                     // $data       = array('token' => $token, 'email' => $user->email, 'id' => md5($user->id));
+
+    //                     // Mail::send('email.forget_password', $data, function($message) use ($to_email, $subject, $from) {
+    //                     //     $message->to($to_email)->subject($subject);
+    //                     //     $message->from($from, config('app.name'));
+    //                     // });
+
+    //                     // $encrypted_email = $this->hideEmailAddress($user->email);
+
+    //                     // return response()->json([
+    //                     //     'message'       => trans('common.mail_is_sent_encrypt', ['value' => $encrypted_email]),
+    //                     //     'status_code'   => 200
+    //                     // ], 200);
+    //                 }
+    //             // }
+
+    //         }
+    //         else
+    //         {
+    //             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         return response()->json(['message' => trans('common.invalid_data'), 'status_code' => 400], 400);
+    //     }
+    // }
+
     public function forgetPassword(Request $request)
     {
-        if($request->header('Authorization'))   //=== Already login user
+        if($request->email)   //=== Already login user
         {
-            $user = $this->getAuthenticatedUser();
+            // $user = $this->getAuthenticatedUser();
 
             // $token = $request->bearerToken();
 
             // $code = rand(1111, 9999);
             // $code = 4444;
 
+            $user = User::where('email',$request->email)->first();
             if($user)
             {
-                // if($request->type == 1) {
-                //     // $type = '4';
-                //     // $sent_code = $this->otpCode($user, $type, $code);
-
-                //     return response()->json([
-                //         'message'           => trans('common.success_send_code'),
-                //         'data'              => ['verification_code' => (int)$sent_code->verification_code, 'code_type' => $sent_code->code_type],
-                //         'status_code'       => 200
-                //     ], 200);
-                // } else {
-
-                    if($user->email == null)
-                    {
-                        return response()->json(['message' => trans('common.no_email_for_account'), 'status_code' => 400], 400);
+                try {
+                    $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+                        $message->subject($this->getEmailSubject());
+                    });
+                    switch ($response) {
+                        case Password::RESET_LINK_SENT:
+                            return \Response::json(array("status" => 200, "message" => trans($response), "data" => array()));
+                        case Password::INVALID_USER:
+                            return \Response::json(array("status" => 400, "message" => trans($response), "data" => array()));
                     }
-                    elseif($user->email != null && $user->email_activate == '0')
-                    {
-                        return response()->json(['message' => trans('common.email_not_verified'), 'status_code' => 400], 400);
-                    }
-                    else
-                    {
-                        $token = Password::getRepository()->create($user);
+                } catch (\Swift_TransportException $ex) {
+                    $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+                } catch (Exception $ex) {
+                    $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+                }
 
-                        // Mail::send(['html' => 'email.forget_password'], ['token' => $token, 'email' => $user->email], function (Message $message) use ($user) {
-                        //     $message->subject(config('app.name') . ' Password Reset Link');
-                        //     $message->to($user->email);
-                        // });
-
-                        return response()->json(['message' => trans('common.mail_is_sent'), 'status_code' => 200], 200);
-
-                        // $token = Password::getRepository()->create($user);
-
-                        // $from       = Setting::where('name', 'send_email')->pluck('value')->first();
-                        // $subject    = config('app.name') . ' Password Reset Link';
-                        // $to_email   = strtolower($user->email);
-                        // $data       = array('token' => $token, 'email' => $user->email, 'id' => md5($user->id));
-
-                        // Mail::send('email.forget_password', $data, function($message) use ($to_email, $subject, $from) {
-                        //     $message->to($to_email)->subject($subject);
-                        //     $message->from($from, config('app.name'));
-                        // });
-
-                        // $encrypted_email = $this->hideEmailAddress($user->email);
-
-                        // return response()->json([
-                        //     'message'       => trans('common.mail_is_sent_encrypt', ['value' => $encrypted_email]),
-                        //     'status_code'   => 200
-                        // ], 200);
-                    }
-                // }
+                return \Response::json($arr);
 
             }
             else

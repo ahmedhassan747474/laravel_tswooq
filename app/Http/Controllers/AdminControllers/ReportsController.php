@@ -73,7 +73,7 @@ class ReportsController extends Controller
             if(auth()->user()->role_id != 1) {
                 $barcodes->where('admin_id', '=', auth()->user()->id);
             } 
-            $barcodes->orderBy('products_liked', 'DESC')
+            $barcodes= $barcodes->orderBy('products_liked', 'DESC')
             ->get();
 
         // $result['data'] = $products;

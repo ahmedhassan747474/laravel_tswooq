@@ -39,20 +39,20 @@
 @endif
  
 <!---- onesignal ------>
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-<script>
-var OneSignal = window.OneSignal || [];
-OneSignal.push(function() {
-	OneSignal.init({
-	appId: "{{$result['commonContent']['setting'][55]->value}}",
-	notifyButton: {
-		enable: true,
-	},
-	allowLocalhostAsSecureOrigin: true,
-	});
-});
+<!--<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>-->
+<!--<script>-->
+<!--var OneSignal = window.OneSignal || [];-->
+<!--OneSignal.push(function() {-->
+<!--	OneSignal.init({-->
+<!--	appId: "{{$result['commonContent']['setting'][55]->value}}",-->
+<!--	notifyButton: {-->
+<!--		enable: true,-->
+<!--	},-->
+<!--	allowLocalhostAsSecureOrigin: true,-->
+<!--	});-->
+<!--});-->
 
-</script>	
+<!--</script>	-->
 
 @if(!empty($result['commonContent']['settings']['before_head_tag']))
 	<?=stripslashes($result['commonContent']['settings']['before_head_tag'])?>

@@ -47,7 +47,7 @@
       <div class="product-hover d-none d-lg-block d-xl-block">
         <div class="icons">    
 
-            <a class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottom" title="@lang('website.Wishlist')">
+            <a class="icon active swipe-to-top is_liked" products_id="<?=$products->products_id?>" data-toggle="tooltip" data-placement="bottopm" title="@lang('website.Wishlist')">
               <i class="fa fa-heart"></i>
             </a>
 
@@ -95,7 +95,7 @@
           </a>
         </div>
       </div>
-      <img class="img-fluid" src="{{isset($products->image_path)? asset('').$products->image_path :asset('').$products->path}}" alt="{{$products->products_name}}">
+      <img class="img-fluid" src="{{isset($products->image_path)? asset('').$products->image_path :$products->products_image}}" alt="{{$products->products_name}}">
     </div>
     
     
@@ -107,7 +107,7 @@
             foreach($products->categories as $key=>$category){
                 $cat_name = $category->categories_name;
             }              
-                  $shop=DB::table('users')->where('id',$products->admin_id)->first()->shop_name;
+                  $shop=DB::table('users')->where('id',$products->admin_id)->first()->shop_name?? '';
             echo $shop;
           ?>         
           </span>

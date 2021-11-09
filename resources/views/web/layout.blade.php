@@ -7,18 +7,18 @@
     <!-- dir="rtl" -->
     <body class="animation-s<?php  echo $final_theme['transitions']; if(!empty(session('direction')) and session('direction')=='rtl') print ' bodyrtl';?> ">
       
-      <!--<div class="se-pre-con" id="loader" style="display: block">-->
-      <!--  <div class="pre-loader">-->
-      <!--    <div class="la-line-scale">-->
-      <!--      <div></div>-->
-      <!--      <div></div>-->
-      <!--      <div></div>-->
-      <!--      <div></div>-->
-      <!--    </div>-->
-      <!--    <p>@lang('website.Loading')..</p>-->
-      <!--  </div>-->
+      <div class="se-pre-con" id="loader" style="display: block">
+        <div class="pre-loader">
+          <div class="la-line-scale">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p>@lang('website.Loading')..</p>
+        </div>
      
-      <!--</div>-->
+      </div>
 
       @if (count($errors) > 0)
           @if($errors->any())
@@ -29,9 +29,9 @@
       <!-- Header Sections -->
 
         <!-- Top Offer -->
-        <div class="header-area">
-          <?php  echo $final_theme['top_offer']; ?>
-        </div>
+        <!--<div class="header-area">-->
+        <!--  <?php  echo $final_theme['top_offer']; ?>-->
+        <!--</div>-->
 
         
         <!-- End Top Offer -->
@@ -52,7 +52,7 @@
 
       <!-- Footer content -->
       <div class="notifications" id="notificationWishlist"></div>
-      <?php  echo $final_theme['footer']; ?>
+      @include('web.footers.footer1')
 
       <!-- End Footer content -->
       <?php  echo $final_theme['mobile_footer']; ?>

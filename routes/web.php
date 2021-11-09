@@ -15,6 +15,14 @@ else{
 }
 Route::get('/maintance','Web\IndexController@maintance');
 
+//reset link request routes...
+// Route::get('password/email', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.email');
+// Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+
+// // Password reset routes...
+// Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.request');
+// Route::post('password/reset', 'Auth\ResetPasswordController@postReset')->name('password.reset');
+
 Route::group(['namespace' => 'Web','middleware' => ['installer']], function () {
 Route::get('/login', 'CustomersController@login');
 Route::post('/process-login', 'CustomersController@processLogin');
@@ -147,3 +155,17 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 	});
 
 	Route::get('/test', 'Web\IndexController@test1');
+	
+	Auth::routes();
+
+Route::get('/password/success', function(){
+    $user = Auth::user();
+
+    if($user){
+        Auth::logout();
+        
+        return view('auth.success');
+    }
+
+    return view('auth.success');
+});

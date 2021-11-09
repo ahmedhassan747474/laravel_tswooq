@@ -133,7 +133,6 @@ Route::group(['namespace' => 'App'], function () {
 	| This section contains news data
 	| Such as:
 	| top news or category individually and detail of every news.
-
 	*/
 
 
@@ -198,7 +197,6 @@ Route::group(['namespace' => 'App'], function () {
 	|
 	| This section contains banners, banner history
 	|
-
 	*/
 
 	//get banners
@@ -214,7 +212,6 @@ Route::group(['namespace' => 'App'], function () {
 	|
 	| This section contains app  languages
 	|
-
 	*/
 	Route::get('/sitesetting', 'AppSettingController@sitesetting');
 
@@ -236,7 +233,6 @@ Route::group(['namespace' => 'App'], function () {
 	| This section contains news data
 	| Such as:
 	| top Page individually and detail of every Page.
-
 	*/
 
 	//getAllPages

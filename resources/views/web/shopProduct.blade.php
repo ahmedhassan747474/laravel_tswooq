@@ -13,7 +13,7 @@
                         <h5 class="card-title">{{$pro->products_slug}}</h5>
                         <h6>{{$pro->price_buy}}</h6>
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="{{route('packg.checkout',$pro->products_price)}}" class="btn btn-info text-white">شراء المنتج</a>
+                        
                     </div>
                 </div>
             </div>

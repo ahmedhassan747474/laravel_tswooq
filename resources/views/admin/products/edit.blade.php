@@ -220,66 +220,10 @@
 
                                         </div>
                                         <div class="row">
-                                            {{-- <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Min Order Limit') }}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        {!! Form::text('products_min_order', $result['product'][0]->products_min_order, array('class'=>'form-control', 'id'=>'products_min_order')) !!}
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.Min Order Limit Text') }}
-                                                        </span>
-                                                        <span class="help-block hidden">{{ trans('labels.Min Order Limit Text') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
-                                            {{-- <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Max Order Limit') }}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        {!! Form::text('products_max_stock', $result['product'][0]->products_max_stock, array('class'=>'form-control', 'id'=>'products_max_stock')) !!}
-                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.Max Order Limit Text') }}
-                                                        </span>
-                                                        <span class="help-block hidden">{{ trans('labels.Max Order Limit Text') }}</span>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
+                                            
                                         </div>
                                         <div class="row">
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsWeight') }}</label>-->
-                                            <!--        <div class="col-sm-10 col-md-4">-->
-                                            <!--            {!! Form::text('products_weight', $result['product'][0]->products_weight, array('class'=>'form-control', 'id'=>'products_weight')) !!}-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.RequiredTextForWeight') }}-->
-                                            <!--            </span>-->
-
-                                            <!--        </div>-->
-                                            <!--        <div class="col-sm-10 col-md-4" style="padding-left: 0;">-->
-                                            <!--            <select class="form-control" name="products_weight_unit">-->
-                                            <!--                @if($result['units']) !== null)-->
-                                            <!--                @foreach($result['units'] as $unit)-->
-                                            <!--                <option value="{{$unit->units_name}}" @if($result['product'][0]->products_weight_unit==$unit->units_name) selected @endif>{{$unit->units_name}}</option>-->
-                                            <!--                @endforeach-->
-                                            <!--                @endif-->
-                                            <!--            </select>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
-
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsModel') }}</label>-->
-                                            <!--        <div class="col-sm-10 col-md-8">-->
-                                            <!--            {!! Form::text('products_model', $result['product'][0]->products_model, array('class'=>'form-control', 'id'=>'products_model')) !!}-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.ProductsModelText') }}-->
-                                            <!--            </span>-->
-                                            <!--            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
+                                            
                                         </div>
 
                                         <div class="row">

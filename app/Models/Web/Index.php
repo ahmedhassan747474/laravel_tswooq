@@ -155,11 +155,11 @@ class Index extends Model
 
         $result = array();
         $result['currency'] = $currency;
-        $top_offers = DB::table('top_offers')
-            ->where('language_id', Session::get('language_id'))
-            ->first();
+        // $top_offers = DB::table('top_offers')
+        //     ->where('language_id', Session::get('language_id'))
+        //     ->first();
 
-        $result['top_offers'] = $top_offers;
+        // $result['top_offers'] = $top_offers;
 
         $items = DB::table('menus')
             ->leftJoin('menu_translation', 'menus.id', '=', 'menu_translation.menu_id')
@@ -196,36 +196,36 @@ class Index extends Model
         $result["menusRecursive"] = $this->menusRecursive();
         $result["menusRecursiveMobile"] = $this->menusRecursiveMobile();
         
-        $data = array();
-        $categories = DB::table('news_categories')
-            ->LeftJoin('news_categories_description', 'news_categories_description.categories_id', '=', 'news_categories.categories_id')
-            ->select('news_categories.categories_id as id',
-                'news_categories.categories_image as image',
-                'news_categories.news_categories_slug as slug',
-                'news_categories_description.categories_name as name'
-            )
-            ->where('news_categories_description.language_id', '=', Session::get('language_id'))->get();
+        // $data = array();
+        // $categories = DB::table('news_categories')
+        //     ->LeftJoin('news_categories_description', 'news_categories_description.categories_id', '=', 'news_categories.categories_id')
+        //     ->select('news_categories.categories_id as id',
+        //         'news_categories.categories_image as image',
+        //         'news_categories.news_categories_slug as slug',
+        //         'news_categories_description.categories_name as name'
+        //     )
+        //     ->where('news_categories_description.language_id', '=', Session::get('language_id'))->get();
 
-        if (count($categories) > 0) {
-            foreach ($categories as $categories_data) {
-                $categories_id = $categories_data->id;
-                $news = DB::table('news_categories')
-                    ->LeftJoin('news_to_news_categories', 'news_to_news_categories.categories_id', '=', 'news_categories.categories_id')
-                    ->LeftJoin('news', 'news.news_id', '=', 'news_to_news_categories.news_id')
-                    ->select('news_categories.categories_id', DB::raw('COUNT(DISTINCT news.news_id) as total_news'))
-                    ->where('news_categories.categories_id', '=', $categories_id)
-                    ->get();
+        // if (count($categories) > 0) {
+        //     foreach ($categories as $categories_data) {
+        //         $categories_id = $categories_data->id;
+        //         $news = DB::table('news_categories')
+        //             ->LeftJoin('news_to_news_categories', 'news_to_news_categories.categories_id', '=', 'news_categories.categories_id')
+        //             ->LeftJoin('news', 'news.news_id', '=', 'news_to_news_categories.news_id')
+        //             ->select('news_categories.categories_id', DB::raw('COUNT(DISTINCT news.news_id) as total_news'))
+        //             ->where('news_categories.categories_id', '=', $categories_id)
+        //             ->get();
 
-                $categories_data->total_news = $news[0]->total_news;
-                array_push($data, $categories_data);
-            }
-        }
-        $result['newsCategories'] = $data;
+        //         $categories_data->total_news = $news[0]->total_news;
+        //         array_push($data, $categories_data);
+        //     }
+        // }
+        // $result['newsCategories'] = $data;
 
-        $myVar = new News();
-        $data = array('page_number' => 0, 'type' => '', 'is_feature' => '1', 'limit' => 5, 'categories_id' => '', 'load_news' => 0);
-        $featuredNews = $myVar->getAllNews($data);
-        $result['featuredNews'] = $featuredNews;
+        // $myVar = new News();
+        // $data = array('page_number' => 0, 'type' => '', 'is_feature' => '1', 'limit' => 5, 'categories_id' => '', 'load_news' => 0);
+        // $featuredNews = $myVar->getAllNews($data);
+        // $result['featuredNews'] = $featuredNews;
         $data = array('type' => 'header');
         $cart = $this->cart($data);
         $result['cart'] = $cart;
@@ -268,24 +268,24 @@ class Index extends Model
             ->orderBy('pages_description.name', 'ASC')->get();
 
         //product categories
-        $result['categories'] = $this->categories();
-        $result['allcategories'] = $this->allcategories();
-        $result['brands'] = $this->brands();
+        // $result['categories'] = $this->categories();
+        // $result['allcategories'] = $this->allcategories();
+        // $result['brands'] = $this->brands();
 
-        $manufacturers = DB::table('manufacturers')
-            ->leftJoin('manufacturers_info', 'manufacturers_info.manufacturers_id', 'manufacturers.manufacturers_id')
-            ->LeftJoin('image_categories', function ($join) {
-                $join->on('image_categories.image_id', '=', 'manufacturers.manufacturer_image')
-                    ->where(function ($query) {
-                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
-                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
-                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
-                    });
-            })
-            ->select('manufacturers.*', 'manufacturers_info.*', 'image_categories.path as manufacturer_image')
-            ->get();
+        // $manufacturers = DB::table('manufacturers')
+        //     ->leftJoin('manufacturers_info', 'manufacturers_info.manufacturers_id', 'manufacturers.manufacturers_id')
+        //     ->LeftJoin('image_categories', function ($join) {
+        //         $join->on('image_categories.image_id', '=', 'manufacturers.manufacturer_image')
+        //             ->where(function ($query) {
+        //                 $query->where('image_categories.image_type', '=', 'THUMBNAIL')
+        //                     ->where('image_categories.image_type', '!=', 'THUMBNAIL')
+        //                     ->orWhere('image_categories.image_type', '=', 'ACTUAL');
+        //             });
+        //     })
+        //     ->select('manufacturers.*', 'manufacturers_info.*', 'image_categories.path as manufacturer_image')
+        //     ->get();
 
-        $result['manufacturers'] = $manufacturers;
+        // $result['manufacturers'] = $manufacturers;
 
         //liked_products
         $total_wishlist = 0;
@@ -298,15 +298,15 @@ class Index extends Model
 
         $result['total_wishlist'] = $total_wishlist;
 
-        $homepagebanners = DB::table('home_banners')
-            ->leftJoin('image_categories', 'home_banners.image', 'image_categories.image_id')
-            ->select('home_banners.*', 'image_categories.path as image_path')
-            ->where('language_id', Session::get('language_id'))
-            ->where('image_type', 'ACTUAL')
-            ->orderby('banner_name', 'ASC')
-            ->get();
+        // $homepagebanners = DB::table('home_banners')
+        //     ->leftJoin('image_categories', 'home_banners.image', 'image_categories.image_id')
+        //     ->select('home_banners.*', 'image_categories.path as image_path')
+        //     ->where('language_id', Session::get('language_id'))
+        //     ->where('image_type', 'ACTUAL')
+        //     ->orderby('banner_name', 'ASC')
+        //     ->get();
 
-        $result['homepagebanners'] = $homepagebanners;
+        // $result['homepagebanners'] = $homepagebanners;
         return $result;
     }
 
