@@ -19,6 +19,7 @@
         "intervention/image": "^2.5",
         "joeyrush/better-migrate-seed": "^0.3.0",
         "kyslik/column-sortable": "^6.0",
+        "laracon21/combinations": "^1.0",
         "laravel/framework": "^6.0",
         "laravel/helpers": "^1.1",
         "laravel/socialite": "^4.1",

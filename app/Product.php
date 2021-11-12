@@ -13,7 +13,7 @@ class Product extends Model {
         'purchase_price', 'unit', 'slug', 'colors', 'choice_options', 'variations', 'current_stock', 'thumbnail_img'
     ];
 
-    // protected $appends = ['shop_name','products_name','products_description'];
+    protected $appends = ['shop_name','products_name','products_description','products_attributes'];
 
     protected $hidden =[
         'colors',
@@ -67,49 +67,121 @@ class Product extends Model {
     //     return $this->belongsTo(Category::class);
     // }
 
+    public function groups()
+    {
+	    return $this->belongsToMany('App\Group','group_product','product_id','group_id','products_id','id');
+
+        // return $this->belongsToMany('App\Models\AppModels\Product','group_product','group_id','product_id','id','products_id');
+    }
+
     public function categories()
     {
         return $this->belongsToMany('App\Category','products_to_categories','products_id','categories_id','products_id','categories_id');
     }
 
-    // public function images()
-    // {
-    //     return $this->belongsToMany('App\ImageCategories','products_images','products_id','image','products_id','image_id');
-    // }
+    public function images()
+    {
+        return $this->belongsToMany('App\ImageCategories','products_images','products_id','image','products_id','image_id');
+    }
 
-    // public function getProductsImageAttribute($value)
-    // {
-    //     $imagepath= ImageCategories::where('image_id',$value)
-    //                                 ->where('image_type', '=', 'THUMBNAIL')
-    //                                 ->where('image_type', '!=', 'THUMBNAIL')
-    //                                 ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
-    //     return asset($imagepath);
-    // }
+    public function carts()
+    {
+        return $this->belongsToMany('App\Cart','cart_product','product_id','cart_id','products_id','cart_id');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany('App\Order','orders_products','products_id','orders_id','products_id','orders_id');
+    }
+
+    public function getProductsImageAttribute($value)
+    {
+        $imagepath= ImageCategories::where('image_id',$value)
+                                    ->where('image_type', '=', 'THUMBNAIL')
+                                    ->where('image_type', '!=', 'THUMBNAIL')
+                                    ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+        return asset($imagepath);
+    }
 
     public function getShopNameAttribute($value)
     {
-        $getName=  DB::table('users')->where('id', $this->admin_id)->first()->shop_name;
+        $getName=  DB::table('users')->where('id', $this->admin_id)->first()->shop_name??'';
      
         return $getName;
     }
 
-    // public function getProductsNameAttribute($value)
-    // {
-    //     $getName=  $this->descriptions[0]->products_name ?? $this->products_slug ;
+    public function getProductsNameAttribute($value)
+    {
+        $getName=  $this->descriptions[0]->products_name ?? $this->products_slug ;
      
-    //     return $getName;
-    // }
+        return $getName;
+    }
 
-    // public function getProductsDescriptionAttribute($value)
-    // {
-    //     $getName=  $this->descriptions[0]->products_name ?? '';
+    public function getProductsAttributesAttribute()
+    {
+        $results =[];
+        $stocks=ProductStock::where('product_id',$this->products_id);
 
-    //     return $getName;
-    // }
+            if(isset($stocks) && count($stocks->get())>0){
+                if(request()->minPrice && request()->maxPrice ){
+                    $stocks->whereBetween('price', [request()->minPrice, request()->maxPrice]);
+                }
 
-    // public function descriptions() {
-    //     return $this->hasMany(ProductDescription::class,'products_id','products_id');
-    // }
+                if(isset(request()->filters) && count(request()->filters) >0){
+                    foreach(request()->filters as $filter){
+                        $stocks->where('variant', 'LIKE','%'.$filter['value'].'%');
+                    }
+                }
+
+                $stocks=$stocks->get();
+                // dd($this->colors);
+                foreach($stocks as $index=>$stock){
+                    $results[$index]['stock_id']=$stock->id;
+                    foreach(explode('-', $stock->variant) as $i=>$variant){
+                        if($this->colors && $i==0){
+                            $results[$index]['color']=$variant;
+                            
+                        }else
+                        {
+
+                            $choice_options = json_decode($this->choice_options);
+                             if($choice_options){
+                                $attribute_name = DB::table('products_options_descriptions')->where('products_options_id',$choice_options[$i-1]->attribute_id)->where('language_id',request()->language_id ?? 1)->first()->options_name;
+                                $results[$index][$attribute_name]=$variant;
+                             }
+                        }
+
+                    }
+
+                    $results[$index]['price']=$stock->price;
+                    if($stock->image){
+                        $imagepath= ImageCategories::where('image_id',$stock->image)
+                                    ->where('image_type', '=', 'THUMBNAIL')
+                                    ->where('image_type', '!=', 'THUMBNAIL')
+                                    ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+         
+                        $results[$index]['image']=asset($imagepath);
+                    }
+
+                    $results[$index]['quantity']=$stock->qty;
+                    $results[$index]['SKU']=$stock->sku;
+
+                         
+                }
+            }
+            return $results;
+    }
+
+    public function getProductsDescriptionAttribute($value)
+    {
+        $getName=  $this->descriptions[0]->products_name ?? '';
+
+        return $getName;
+    }
+
+    public function descriptions() {
+        return $this->hasMany(ProductDescription::class,'products_id','products_id');
+    }
 
     public function brand() {
         return $this->belongsTo(Brand::class);
@@ -145,7 +217,7 @@ class Product extends Model {
 
     public function productsofgroup()
 	{
-	 return $this->belongsToMany('App\Group','group_product','product_id','group_id','products_id');
+	 return $this->belongsToMany('App\Group','group_product','product_id','group_id');
 	}
 
     // public function getAttributesAttribute($value)
@@ -167,7 +239,7 @@ class Product extends Model {
     //                     {
     //                         $choice_options = json_decode($this->choice_options);
                             
-    //                             $attribute_name = DB::table('products_options_descriptions')->where('products_options_id',$choice_options[$i-1]->attribute_id)->where('language_id',$request->language_id ?? 1)->first()->options_name;
+    //                             $attribute_name = DB::table('products_options_descriptions')->where('products_options_id',$choice_options[$i-1]->attribute_id)->where('language_id',request()->language_id ?? 1)->first()->options_name;
     //                             $results[$index][$attribute_name]=$variant;
                                 
     //                     }

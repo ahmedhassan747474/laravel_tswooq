@@ -203,6 +203,11 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     });
 
     Route::group(['prefix' => 'admin/products', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        
+        Route::post('/sku_combination', 'ProductController@sku_combination')->name('products.sku_combination');
+        Route::post('/sku_combination_edit', 'ProductController@sku_combination_edit')->name('products.sku_combination_edit');
+
+        
         Route::get('/display', 'ProductController@display')->middleware('view_product');
         Route::get('/add', 'ProductController@add')->middleware('add_product');
         Route::post('/add', 'ProductController@insert')->middleware('add_product');

@@ -19,9 +19,13 @@ Use Image;
 use Str;
 use App;
 use App\Http\Controllers\Web\AlertController;
+use App\Http\Resources\ProductCollection;
 use App\Models\AppModels\Orders;
 use Illuminate\Support\Facades\File;
 use App\Models\AppModels\Product;
+use App\Order;
+use App\Product as AppProduct;
+use App\Traits\ProductTrait;
 use Carbon;
 use DB;
 use Essam\TapPayment\Payment;
@@ -29,6 +33,7 @@ use Tap\TapPayment\Facade\TapPayment;
 
 class OrderController extends BaseController
 {
+    use ProductTrait;
     function __construct(UserTransformer $user_transformer)
     {
         config(['auth.defaults.guard' => 'api']);
@@ -39,30 +44,27 @@ class OrderController extends BaseController
     public function getcart(Request $request){
         $user = $this->getAuthenticatedUser();
         $language_id=1;
-        $type='';
+        
         $total_record=0;
-        $productItem=[];
-        $data = [];
+       
         if($user)
         {
+            $products=AppProduct::whereHas('carts',function($q) use($user){
+                $q->where('carts.user_id', $user->id);
+            })->with(['stocks','images'])->latest();
+       
+            $responseData = $this->productObject($request,$products);
+            return new ProductCollection($responseData);
+
             $getCart = DB::table('carts')->where('user_id', $user->id)->first();
 
-// dd($getCart);
             $products_cart=array();
             if($getCart){
-
                 $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
-                // if($productItem != null){
-                //     $products_cart[] = $productItem;
-                //     // array_push($products_cart,$productItem);
-                //     dd($productItem);
-                // }
-
+                
             }
 
-            // $getCart->products=$products_cart;
-            // dd($products_cart[0]->product_id);
-
+            
 
             foreach($productItem as $cart){
 
@@ -1799,6 +1801,8 @@ class OrderController extends BaseController
 
         if($user)
         {
+            $orders=Order::get();
+            dd($orders);
             $customers_id                   =  $user->id;
             $language_id                    =  $request->language_id;
             $requested_currency             =  'SAR';//$request->currency_code;

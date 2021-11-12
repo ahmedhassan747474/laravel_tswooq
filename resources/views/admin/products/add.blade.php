@@ -408,21 +408,6 @@
                                         @endif
 
                                         <div class="row">
-                                            @foreach($result['attributes'] as $attribute)
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">Select {{$attribute->options_name}}</label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control" name="attributes[]">
-                                                            <option value="">Select {{$attribute->options_name}}</option>
-                                                            @foreach($attribute->option_value as $item)
-                                                            <option value="{{ $item->products_options_values_id }}">{{ $item->options_values_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endforeach
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.BarCode') }}<span style="color:red;">*</span></label>
@@ -433,22 +418,117 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SelectParallel') }}<span style="color:red;">*</span></label>
-                                                    <div class="col-sm-10 col-md-8">
-                                                        <select class="form-control" name="product_parent_id">
-                                                            <option value="">{{ trans('labels.SelectParallel') }}</option>
-                                                            @foreach($result['products'] as $product)
-                                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                         
                                         <hr>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0 h6">{{__('Product Variation')}}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group row">
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control" value="{{__('Colors')}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <select class="form-control aiz-selectpicker" data-live-search="true" data-selected-text-format="count" name="colors[]" id="colors" multiple disabled>
+                                                            @foreach (\App\Color::orderBy('name', 'asc')->get() as $key => $color)
+                                                            <option  value="{{ $color->code }}" data-content="<span><span class='size-15px d-inline-block mr-2 rounded border' style='background:{{ $color->code }}'></span><span>{{ $color->name }}</span></span>"></option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <label class="aiz-switch aiz-switch-success mb-0">
+                                                            <input value="1" type="checkbox" name="colors_active">
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                        
+                                                <div class="form-group row">
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control" value="{{__('Attributes')}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <select name="choice_attributes[]" id="choice_attributes" class="form-control aiz-selectpicker" data-selected-text-format="count" data-live-search="true" multiple data-placeholder="{{ __('Choose Attributes') }}">
+                                                            {{-- @foreach (\App\Attribute::all() as $key => $attribute)
+                                                            <option value="{{ $attribute->id }}">{{ $attribute->getTranslation('name') }}</option>
+                                                            @endforeach --}}
+
+                                                            @foreach (DB::table('products_options_descriptions')->where('language_id',request()->session()->get('back_locale') == 'en' ? 1 : 2)->get() as $key => $attribute)
+                                                            <option value="{{ $attribute->products_options_id }}">{{ $attribute->options_name }}</option>
+                                                            @endforeach
+
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p>{{ __('Choose the attributes of this product and then input values of each attribute') }}</p>
+                                                    <br>
+                                                </div>
+                        
+                                                <div class="customer_choice_options" id="customer_choice_options">
+                        
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0 h6">{{trans('Product price + stock')}}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                {{-- <div class="form-group row">
+                                                    <label class="col-md-3 col-from-label">{{trans('Unit price')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('Unit price') }}" name="unit_price" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-md-3 col-from-label">{{trans('Purchase price')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('Purchase price') }}" name="purchase_price" class="form-control" required>
+                                                    </div>
+                                                </div> --}}
+                                                {{--
+                                                <div class="form-group row">
+                                                    <label class="col-md-3 col-from-label">{{trans('Tax')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('Tax') }}" name="tax" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <select class="form-control aiz-selectpicker" name="tax_type">
+                                                            <option value="amount">{{trans('Flat')}}</option>
+                                                            <option value="percent">{{trans('Percent')}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                --}}
+                                                {{-- <div class="form-group row">
+                                                    <label class="col-md-3 col-from-label">{{trans('Discount')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('Discount') }}" name="discount" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <select class="form-control aiz-selectpicker" name="discount_type">
+                                                            <option value="amount">{{trans('Flat')}}</option>
+                                                            <option value="percent">{{trans('Percent')}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row" id="quantity">
+                                                    <label class="col-md-3 col-from-label">{{trans('Quantity')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="0" step="1" placeholder="{{ trans('Quantity') }}" name="current_stock" class="form-control" required>
+                                                    </div>
+                                                </div> --}}
+                                                <br>
+                                                <div class="sku_combination" id="sku_combination">
+                        
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -547,4 +627,91 @@
 
     });
 </script>
+@endsection
+
+@section('script')
+
+<script type="text/javascript">
+    $("[name=shipping_type]").on("change", function (){
+        $(".product_wise_shipping_div").hide();
+        $(".flat_rate_shipping_div").hide();
+        if($(this).val() == 'product_wise'){
+            $(".product_wise_shipping_div").show();
+        }
+        if($(this).val() == 'flat_rate'){
+            $(".flat_rate_shipping_div").show();
+        }
+
+    });
+
+    function add_more_customer_choice_option(i, name){
+        $('#customer_choice_options').append('<div class="form-group row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="'+i+'"><input type="text" class="form-control" name="choice[]" value="'+name+'" placeholder="{{ trans('Choice Title') }}" readonly></div><div class="col-md-8"><input type="text" class="form-control aiz-tag-input" name="choice_options_'+i+'[]" placeholder="{{ trans('Enter choice values') }}" data-on-change="update_sku"></div></div>');
+
+    	AIZ.plugins.tagify();
+    }
+
+    AIZ.plugins.bootstrapSelect('refresh');
+	$('input[name="colors_active"]').on('change', function() {
+	    if(!$('input[name="colors_active"]').is(':checked')) {
+		$('#colors').prop('disabled', true);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            else{
+                $('#colors').prop('disabled', false);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            update_sku();
+	});
+
+	$('#colors').on('change', function() {
+	    update_sku();
+	});
+
+	$('input[name="unit_price"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	$('input[name="name"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	function delete_row(em){
+		$(em).closest('.form-group row').remove();
+		update_sku();
+	}
+
+    function delete_variant(em){
+		$(em).closest('.variant').remove();
+	}
+
+	function update_sku(){
+		$.ajax({
+		   type:"POST",
+		   url:'{{ route('products.sku_combination') }}',
+		   data:$('#choice_form').serialize(),
+		   success: function(data){
+               console.log(data);
+			   $('#sku_combination').html(data);
+    			AIZ.plugins.fooTable();
+			   if (data.length > 1) {
+				   $('#quantity').hide();
+			   }
+			   else {
+					$('#quantity').show();
+			   }
+		   }
+	   });
+	}
+
+	$('#choice_attributes').on('change', function() {
+		$('#customer_choice_options').html(null);
+		$.each($("#choice_attributes option:selected"), function(){
+            add_more_customer_choice_option($(this).val(), $(this).text());
+        });
+		update_sku();
+	});
+
+
+</script>
+
 @endsection
