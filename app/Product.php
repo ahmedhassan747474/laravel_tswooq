@@ -154,6 +154,11 @@ class Product extends Model {
                     }
 
                     $results[$index]['price']=$stock->price;
+                    $results[$index]['quantity']=$stock->qty;
+
+                    // $results[$index]['price_pos']=$stock->price_pos;
+                    // $results[$index]['quantity_pos']=$stock->qty;
+
                     if($stock->image){
                         $imagepath= ImageCategories::where('image_id',$stock->image)
                                     ->where('image_type', '=', 'THUMBNAIL')
@@ -163,7 +168,6 @@ class Product extends Model {
                         $results[$index]['image']=asset($imagepath);
                     }
 
-                    $results[$index]['quantity']=$stock->qty;
                     $results[$index]['SKU']=$stock->sku;
 
                          

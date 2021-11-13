@@ -39,7 +39,6 @@ class ProductController extends Controller
 
     public function reviews(Request $request)
     {
-        dd('kjkj');
         $title = array('pageTitle' => Lang::get("labels.reviews"));
         $result = array();
         $data = $this->reviews->paginator();

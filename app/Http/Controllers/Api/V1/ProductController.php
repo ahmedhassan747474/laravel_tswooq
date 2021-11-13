@@ -221,11 +221,7 @@ class ProductController extends BaseController
       
         $products = AppProduct::latest()
         ->with(['stocks','images'])->get();
-
-        return response()->json($products);
-       
-        $responseData = $this->productObject($request,$products);
-        return new ProductCollection($responseData);
+        return new ProductCollection($products);
     }
 
     //getallproducts
@@ -769,8 +765,37 @@ class ProductController extends BaseController
         $products = AppProduct::latest()
         ->with(['stocks','images']);
        
-        $responseData = $this->productObject($request,$products);
-        return new ProductCollection($responseData);
+        //filter data
+        if($request->search){
+            $products->whereHas('descriptions',function($query) use($request){
+               return $query->where('products_name','LIKE','%'.$request->search.'%')
+                      ->orWhere('products_description','LIKE','%'.$request->search.'%');
+            });
+            $products->orWhere('barcode','LIKE','%'.$request->search.'%');
+        }
+           
+        if($request->minPrice && $request->maxPrice ){
+            $products->whereHas('stocks',function($query) use($request){
+               return $query->whereBetween('price', [$request->minPrice, $request->maxPrice]);
+
+            });
+        }        
+        if(isset($request->filters) && count($request->filters) >0){
+            foreach($request->filters as $filter){
+                $products->whereHas('stocks',function($query) use($request,$filter){
+                    return $query->where('variant', 'LIKE','%'.$filter['value'].'%');
+                 });
+            }    
+        }
+
+        if($request->categories_id){
+            $products->whereHas('categories',function($query) use($request){
+               return $query->where('products_to_categories.categories_id',$request->categories_id);
+            });
+        }
+
+        // $responseData = $this->productObject($request,$products);
+        return new ProductCollection($products->paginate(10));
     }
     
 

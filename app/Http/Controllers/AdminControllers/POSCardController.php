@@ -52,7 +52,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -61,7 +61,10 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        
         curl_close($curl);
         $categories = json_decode($response);
 
@@ -92,7 +95,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -101,8 +104,10 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        curl_close($curl);
         $categories = json_decode($response);
 
         if (!empty($request->poscategory) and $request->poscategory != 'all' and empty($request->possubcategory)and $request->possubcategory == 'all') {
@@ -134,7 +139,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
 				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
@@ -171,7 +176,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -180,8 +185,10 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        curl_close($curl);
         $categories = json_decode($response);
 
         if (!empty($request->poscategory) and $request->poscategory != 'all' and empty($request->possubcategory)and $request->possubcategory == 'all') {
@@ -208,7 +215,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
 				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
@@ -243,6 +250,21 @@ class POSCardController extends Controller
     {
         // dd($request->all());
 
+        $subtotal=0;
+        if(Session::has('posCardCart')){
+            foreach (Session::get('posCardCart') as $key => $cartItem){
+                $subtotal += $cartItem['price']*$cartItem['quantity'];
+    
+            }
+            $subtotal +=$request->product_price*$request->quantity;
+    
+            if($subtotal > auth()->user()->like_limit){
+                return 'Please check your limit value';
+                // return redirect()->back()->with('message','Please check your limit value');
+            }
+        }
+        
+        
         $data = array();
         
         $tax = 0;
@@ -281,6 +303,21 @@ class POSCardController extends Controller
     //updated the quantity for a cart item
     public function updateQuantity(Request $request)
     {
+        $subtotal=0;
+        if(Session::has('posCardCart')){
+            foreach (Session::get('posCardCart') as $key => $cartItem){
+                $subtotal += $cartItem['price']*$cartItem['quantity'];
+    
+            }
+            $subtotal +=$request->product_price*$request->quantity;
+    
+            if($subtotal > auth()->user()->like_limit){
+                return 'Please check your limit value';
+                // return redirect()->back()->with('message','Please check your limit value');
+            }
+        }
+        
+        
         $cart = $request->session()->get('posCardCart', collect([]));
         $cart = $cart->map(function ($object, $key) use ($request) {
             if($key == $request->key){

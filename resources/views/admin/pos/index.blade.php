@@ -26,12 +26,12 @@
                                 <div class="card">
                                     <div class="card-header d-block">
                                         <div class="form-group">
-                                            <input class="form-control form-control-sm" type="text" name="keyword" placeholder="Search by Product Name" onkeyup="filterProducts()">
+                                            <input class="form-control form-control-sm" type="text" name="keyword" placeholder="{{ trans('labels.Search')}}" onkeyup="filterProducts()">
                                         </div>
                                         <div class="row gutters-5">
                                             <div class="col-md-6">
                                                 <select name="poscategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
-                                                    <option value="">All Categories</option>
+                                                    <option value="">{{ trans('labels.All').' '.trans('labels.Categories') }}</option>
                                                     @foreach ($results['categories'] as $key => $category)
                                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                     @endforeach
@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <select name="brand"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
-                                                    <option value="">All Brands</option>
+                                                    <option value="">{{ trans('labels.All').' '.trans('labels.Brands') }}</option>
                                                     @foreach ($results['brands'] as $key => $brand)
                                                         <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                                     @endforeach
@@ -61,20 +61,20 @@
                                 
                                     <div class="card mb-3">
                                         <div class="card-title">
-                                            <label> Customers Orders By QR</label>
+                                            <label> {{ trans('labels.customerQr') }}</label>
                                         </div>
                                         <button type="button" onclick="location.reload();" class="btn btn-icon btn-soft-dark ml-3"  >
-                                            <i class="fa fa-refresh"></i> Refresh
+                                            <i class="fa fa-refresh"></i> {{ trans('labels.Refresh') }}
                                         </button>
                                         <div class="card-body">
                                             <div class="d-flex">
                                                 <table class="table aiz-table mb-0 mar-no" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
-                                                            <th width="50%">customer</th>
-                                                            <th width="15%">products</th>
+                                                            <th width="50%">{{ trans('labels.CustomerName') }}</th>
+                                                            <th width="15%">{{ trans('labels.Products') }}</th>
                                                             
-                                                            <th class="text-right">add all</th>
+                                                            <th class="text-right">{{ trans('labels.Add') }}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -119,7 +119,7 @@
                                             <div class="d-flex">
                                                 <div class="flex-grow-1">
                                                     <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
-                                                        <option value="" selected disabled>Walk In Customer</option>
+                                                        <option value="" selected disabled>{{ trans('labels.walk') }}</option>
                                                         @foreach ($results['customers'] as $key => $customer)
                                                             @if ($customer->user)
                                                                 <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
@@ -140,16 +140,16 @@
                                             <div class="d-flex">
                                                     @csrf
                                                     <div class="flex-grow-1">
-                                                        <input type="text" required class="form-control" name="ProductName" placeholder="Product Name">
+                                                        <input type="text" required class="form-control" name="ProductName" placeholder="{{ trans('labels.productName')}}">
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <input type="number" required class="form-control" name="ProductQuantity" placeholder="Quantity">
+                                                        <input type="number" required class="form-control" name="ProductQuantity" placeholder="{{ trans('labels.Quantity')}}">
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <input type="number" class="form-control" name="tax" placeholder="Tax">
+                                                        <input type="number" class="form-control" name="tax" placeholder="{{ trans('labels.Tax')}}">
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <input type="number" required class="form-control" name="ProductPrice" placeholder="Price">
+                                                        <input type="number" required class="form-control" name="ProductPrice" placeholder="{{ trans('labels.Price')}}">
                                                     </div>
                                                     <button type="submit"  class="btn btn-icon btn-soft-dark ml-3"  >
                                                         <i class="fa fa-plus"></i>
@@ -164,11 +164,11 @@
                                             <table class="table aiz-table mb-0 mar-no" cellspacing="0" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th width="50%">Product</th>
-                                                        <th width="15%">QTY</th>
-                                                        <th>Price</th>
-                                                        <th>Subtotal</th>
-                                                        <th class="text-right">Remove</th>
+                                                        <th width="50%">{{ trans('labels.productName')}}</th>
+                                                        <th width="15%">{{ trans('labels.Qty')}}</th>
+                                                        <th>{{ trans('labels.Price')}}</th>
+                                                        <th>{{ trans('labels.Subtotal')}}</th>
+                                                        <th class="text-right">{{ trans('labels.delete')}}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -282,11 +282,11 @@
                                         <table class="table mb-0 mar-no" cellspacing="0" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center">Sub Total</th>
-                                                    <th class="text-center">Total Tax</th>
-                                                    <th class="text-center">Total Shipping</th>
-                                                    <th class="text-center">Discount</th>
-                                                    <th class="text-center">Total</th>
+                                                    <th class="text-center">{{ trans('labels.Subtotal')}}</th>
+                                                    <th class="text-center">{{ trans('labels.Tax')}}</th>
+                                                    <th class="text-center">{{ trans('labels.ShippingCost')}}</th>
+                                                    <th class="text-center">{{ trans('labels.Discount')}}</th>
+                                                    <th class="text-center">{{ trans('labels.Total')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -325,7 +325,7 @@
                                             </div> --}}
                                             <div class="dropdown dropup">
                                                 <button class="btn btn-outline-dark btn-styled dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    Discount
+                                                    {{ trans('labels.Discount')}}
                                                 </button>
                                                 <div class="dropdown-menu p-3 dropdown-menu-lg">
                                                     <div class="input-group">
@@ -338,8 +338,8 @@
                                             </div>
                                         </div>
                                         <div class="">
-                                            <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">Pay With Cash</button>
-                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">Pay With Visa</button>
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button>
                                         </div>
                                     </div>
                                 </div>

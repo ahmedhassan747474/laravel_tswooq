@@ -626,12 +626,14 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/deletedevice/', 'NotificationController@deletedevice')->middleware('view_notification');
     });
 
+    Route::get('/admin/orders/invoiceprint/{id}', 'AdminControllers\OrdersController@invoiceprint')->name('invoiceprint');
+
     Route::group(['prefix' => 'admin/orders', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'OrdersController@display')->middleware('view_order');
         Route::get('/vieworder/{id}', 'OrdersController@vieworder')->middleware('view_order');
         Route::post('/updateOrder', 'OrdersController@updateOrder')->middleware('edit_order');
         Route::post('/deleteOrder', 'OrdersController@deleteOrder')->middleware('edit_order');
-        Route::get('/invoiceprint/{id}', 'OrdersController@invoiceprint')->name('invoiceprint')->middleware('view_order');
+        // Route::get('/invoiceprint/{id}', 'OrdersController@invoiceprint')->name('invoiceprint')->middleware('view_order');
         Route::get('/orderstatus', 'SiteSettingController@orderstatus')->middleware('view_order');
         Route::get('/addorderstatus', 'SiteSettingController@addorderstatus')->middleware('edit_order');
         Route::post('/addNewOrderStatus', 'SiteSettingController@addNewOrderStatus')->middleware('edit_order');
@@ -642,6 +644,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     });
 
     Route::group(['prefix' => 'admin/orders_likecard', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/balance', 'OrdersLikeCardController@balance')->middleware('view_order');
         Route::get('/display', 'OrdersLikeCardController@display')->middleware('view_order');
         Route::get('/vieworder/{id}', 'OrdersLikeCardController@vieworder')->middleware('view_order');
         Route::post('/updateOrder', 'OrdersLikeCardController@updateOrder')->middleware('edit_order');

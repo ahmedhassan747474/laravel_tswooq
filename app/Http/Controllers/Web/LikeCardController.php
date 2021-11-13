@@ -79,7 +79,7 @@ class LikeCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
                 // 'ids[]' => '693'
@@ -88,12 +88,18 @@ class LikeCardController extends Controller
                 // "Content-Type: application/x-www-form-urlencoded"
             ),
         ));
-
-        $response = curl_exec($curl);
-
+        
+        
+        do{             
+            $response = curl_exec($curl);
+        }while(!$response);
+        
+        
         curl_close($curl);
-        return response()->json($response);
-        dd($response);
+        // return response()->json($response);
+        // $ip=$_SERVER['SERVER_ADDR'];
+        // dd($ip);
+        // dd($response);
         // echo $response;
         $categories = json_decode($response);
         // return response()->json($response);
@@ -120,10 +126,10 @@ class LikeCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
-				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id??0,
+				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
                //  'ids[]' => '362'
             ),
             CURLOPT_HTTPHEADER => array(
@@ -163,7 +169,7 @@ class LikeCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => '1',
 				    'categoryId' => '362',
@@ -174,7 +180,10 @@ class LikeCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);
 
         curl_close($curl);
         // dd($response);
@@ -198,7 +207,7 @@ class LikeCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => '1',
                 // 'ids[]' => '693'
@@ -208,7 +217,10 @@ class LikeCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);
 
         curl_close($curl);
         // dd($response);
@@ -232,7 +244,7 @@ class LikeCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => '1',
                 // 'ids[]' => '693'
@@ -243,7 +255,7 @@ class LikeCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
+        do{             $response = curl_exec($curl);         }while(!$response);
 
         curl_close($curl);
 

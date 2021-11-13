@@ -27,7 +27,7 @@ $allimage = $images->getimages();
           <div class="box-header">
             <h3 class="box-title">{{ trans('labels.addadmins') }} </h3>
           </div>
-<d
+
           <!-- /.box-header -->
           <div class="box-body">
             <div class="row">

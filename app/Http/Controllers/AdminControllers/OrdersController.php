@@ -210,10 +210,10 @@ class OrdersController extends Controller
         // dd($ordersData['orders_data']);
         //get function from other controller
 
-        $ordersData['currency'] = $this->myVarsetting->getSetting();
-        $result['commonContent'] = $this->Setting->commonContent();
+        // $ordersData['currency'] = $this->myVarsetting->getSetting();
+        // $result['commonContent'] = $this->Setting->commonContent();
 
-        return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData)->with('result', $result);
+        return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData);
 
     }
 

@@ -4,27 +4,15 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class OrderCollection extends ResourceCollection
+class CartCollection extends ResourceCollection
 {
     public function toArray($request)
     {
         return [
             'data' => $this->collection->map(function($data) {
                 return [
-                    "orders_id" => $data->orders_id,
-                    "user_id" => $data->customers_id,
-                    "total_tax" => $data->total_tax,
-                    "delivery_name" => $data->delivery_name,
-                    "delivery_street_address" => $data->delivery_street_address,
-                    "delivery_city" => $data->delivery_city,
-                    "payment_method" => $data->payment_method,
-                    "currency" => $data->currency,
-                    "order_price" => $data->order_price,
-                    "shipping_cost" => $data->shipping_cost,
-                    "orders_status" => $data->orders_status,
-                    "customer_comments" => $data->customer_comments,
-                    "admin_comments" => $data->admin_comments,
-                    
+                    "cart_id" => $data->cart_id,
+                    "user_id" => $data->user_id,
                     'products' => $this->products($data->products) 
                     
                 ];

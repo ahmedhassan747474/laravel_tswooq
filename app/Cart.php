@@ -19,7 +19,10 @@ class Cart extends Model {
     //     return asset($value);
     // }
 
-    
+    public function products()
+    {
+        return $this->belongsToMany(Product::class,'cart_product','cart_id','product_id','cart_id','products_id');
+    }
 
 
 }

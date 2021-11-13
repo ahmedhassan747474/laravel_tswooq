@@ -14,7 +14,11 @@ return [
     */
 
 	//links labels
+	'Pay with cashe' => 'Pay with cashe',
+	'Pay with visa' => 'Pay with visa',
 	'Location' => 'Location',
+	'balance' => 'Balance',
+	'customerQr'=>'Customers Orders By QR',
 	'PriceQuantty'  => 'Product quantity',
   'Active' => 'Active',
   'Disable' => 'Disable',

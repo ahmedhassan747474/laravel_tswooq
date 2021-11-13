@@ -1,16 +1,101 @@
-@extends('admin.layout')
+{{-- @extends('admin.layout') --}}
+@include('admin.common.meta')
+
 <style>
+/*@page { width: 79mm }  */
+/*@page {*/
+/*  size: 79mm;*/
+/*  margin: 0;*/
+   /*transform: scale(.7) !important;*/
+/*}*/
+/*@media print{ */
+	/* All styles for print should goes here */ 
+/*	.invoice{ */
+/*		width: 79mm; */
+/*		height: auto; */
+/*		margin: 50px auto; */
+/*	} */
+/*} */
+
+/*@media print {*/
+/*  @page {*/
+/*    width: 9.9cm;*/
+    /*height: 297mm;*/
+/*  }*/
+/*   ... the rest of the rules ... */
+/*}*/
 .wrapper.wrapper2{
 	display: block;
+	display: flex;
+    justify-content: center;
 }
 .wrapper{
 	display: none;
 }
+
+* {
+    font-size: 10px;
+    font-family: 'Times New Roman';
+}
+
+td,
+th,
+tr,
+table {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+}
+
+td.description,
+th.description {
+    width: 75px;
+    max-width: 75px;
+}
+
+td.quantity,
+th.quantity {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+td.price,
+th.price {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+.centered {
+    text-align: center;
+    align-content: center;
+}
+
+.ticket {
+    width: 79mm;
+    max-width: 79mm;
+}
+
+img {
+    max-width: inherit;
+    width: inherit;
+}
+
+@media print {
+    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+    }
+    .ticket{
+        height:auto;
+    }
+}
+
 </style>
 <body onload="window.print();">
 <div class="wrapper wrapper2">
   <!-- Main content -->
-  <section class="invoice" style="margin: 15px;">
+  <section class="ticket" style="margin: 15px;">
       <!-- title row -->
       <div class="col-xs-12">
       <div class="row">
@@ -42,7 +127,18 @@
         <!-- /.col -->
       </div>
       <!-- info row -->
-      <img src="{{ asset('/images/admin_logo/logo_print.jpeg') }}" height="100" width="150" class="float-right">
+      @php
+        if($data['orders_data'][0]->ordered_source == 3 && $data['orders_data'][0]->admin_id !=1){
+          $user=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
+          $name = $user->shop_name;
+          $src=asset('').'/'.$user->avatari->image_category->path??asset('/images/admin_logo/logo_print.jpeg');
+        }
+        else{
+          $src=asset('/images/admin_logo/logo_print.jpeg');
+        }
+      @endphp
+      <img src="{{ $src }}" height="60" width="50" style="width: 120px;" class="float-right">
+      <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
           {{ trans('labels.CustomerInfo') }}:
@@ -90,32 +186,32 @@
           <table class="table table-striped">
             <thead>
             <tr>
-              <th>{{ trans('labels.Qty') }}</th>
-              <th>{{ trans('labels.ProductName') }}</th>
-              <th>{{ trans('labels.ProductModal') }}</th>
-              <th>{{ trans('labels.Options') }}</th>
-              <th>{{ trans('labels.Price') }}</th>
+              <th class="quantity">{{ trans('labels.Qty') }}</th>
+              <th class="description">{{ trans('labels.ProductName') }}</th>
+              <!--<th>{{ trans('labels.ProductModal') }}</th>-->
+              <!--<th>{{ trans('labels.Options') }}</th>-->
+              <th class="price">{{ trans('labels.Price') }}</th>
             </tr>
             </thead>
             <tbody>
             <?php $total=0 ; $tax=0; ?>
             @foreach($data['orders_data'][0]->data as $products)
             <tr>
-                <td>{{  $products->products_quantity }}</td>
-                <td  width="30%">
+                <td class="quantity">{{  $products->products_quantity }}</td>
+                <td class="description" >
                     {{  $products->products_name }}<br>
-                </td>
-                <td>
-                    {{  $products->products_model }}
-                </td>
-                <td>
-                    @foreach($products->attribute as $attributes)
-                        <b>{{ $attributes->products_options }} :</b> {{ $attributes->products_options_values }} <br>
-                        {{-- <b>{{ trans('labels.Value') }}:</b> {{ $attributes->products_options_values }}<br> --}}
-                        {{-- <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br> --}}
+                </td class="price">
+                <!--<td>-->
+                <!--    {{  $products->products_model }}-->
+                <!--</td>-->
+                <!--<td>-->
+                <!--    @foreach($products->attribute as $attributes)-->
+                <!--        <b>{{ $attributes->products_options }} :</b> {{ $attributes->products_options_values }} <br>-->
+                <!--        {{-- <b>{{ trans('labels.Value') }}:</b> {{ $attributes->products_options_values }}<br> --}}-->
+                <!--        {{-- <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br> --}}-->
 
-                    @endforeach
-                </td>
+                <!--    @endforeach-->
+                <!--</td>-->
 
                 <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->products_price * $products->products_quantity }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
                 <?php $total = $total + $products->products_price * $products->products_quantity; $tax += $products->products_tax * $products->products_quantity?>
@@ -243,7 +339,7 @@
             </p>
         </div>
         <div class="col-xs-12 text-center" id="printThisBarcode" style="cursor:pointer;" >
-          {!! QrCode::size(120)->generate($data['orders_data'][0]->orders_id); !!}
+          {!! QrCode::size(120)->generate(URL::to('admin/orders/invoiceprint/'.$data['orders_data'][0]->orders_id)); !!}
         </div>
 
         <!-- /.col -->
@@ -257,3 +353,4 @@
 <!-- ./wrapper -->
 </body>
 
+@include('admin.common.scripts')

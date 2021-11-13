@@ -10,7 +10,7 @@ class Order extends Model {
     // protected $append = ['categories_image'];
     protected $table = 'orders';
 
-    protected $appends = ['shop_name','items'];
+    protected $appends = ['shop_name'];
     
     public function getShopNameAttribute()
     {
@@ -19,12 +19,8 @@ class Order extends Model {
         return $getName;
     }
 
-    public function getItemsAttribute()
+    public function products()
     {
-        $getName=  $this->descriptions[0]->products_name ?? $this->products_slug ;
-     
-        return $getName;
+       return $this->belongsToMany(Product::class,'orders_products','orders_id','products_id','orders_id','products_id');
     }
-
-
 }

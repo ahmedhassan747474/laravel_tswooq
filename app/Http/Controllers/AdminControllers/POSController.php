@@ -18,7 +18,7 @@ use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
 use Auth;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class POSController extends Controller
 {
@@ -32,10 +32,9 @@ class POSController extends Controller
     public function display()
     {
         $title = array('pageTitle' => Lang::get("labels.ListingCustomers"));
-        $language_id = '1';
         $result = array();
         $result['commonContent'] = $this->Setting->commonContent();
-        $language_id = '1';
+        $language_id = Session::get('language_id') ? Session::get('language_id') : '2';
         $categories = DB::table('categories')
             ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
             ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added',
@@ -233,7 +232,7 @@ class POSController extends Controller
 
     public function products($data)
     {
-        $language_id = 1;
+        $language_id = 2;
         if (empty($data['page_number']) or $data['page_number'] == 0) {
             $skip = $data['page_number'] . '0';
         } else {
