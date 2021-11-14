@@ -92,6 +92,14 @@ $allimage = $images->getimages();
                             <hr class="show_hide_shop_name">
                                 
                                 <div class="form-group show_hide_shop_name">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }}</label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('like_limit',  $result['admins'][0]->like_limit, array('class'=>'form-control', 'id'=>'like_limit')) !!}
+                                  <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                  {{ trans('labels.LikeCardLimitText') }}</span>
+                                  </div>
+                                </div>
+                                <div class="form-group show_hide_shop_name">
                                   <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SubscriptionFee') }} </label>
                                   <div class="col-sm-10 col-md-4">
                                     {!! Form::number('subscription_fee',  $result['admins'][0]->subscription_fee ?? '', array('class'=>'form-control', 'id'=>'subscription_fee')) !!}
@@ -144,14 +152,7 @@ $allimage = $images->getimages();
                                    {{ trans('labels.TelephoneText') }}</span>
                                   </div>
                                 </div>
-                                <div class="form-group">
-                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }}</label>
-                                  <div class="col-sm-10 col-md-4">
-                                    {!! Form::text('like_limit',  $result['admins'][0]->like_limit, array('class'=>'form-control', 'id'=>'like_limit')) !!}
-                                   <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                   {{ trans('labels.LikeCardLimitText') }}</span>
-                                  </div>
-                                </div>
+                                
                                 @if ($result['admins'][0]->role_id == 11)
                                 <div class="form-group show_hide_shop_name">
                                 @else

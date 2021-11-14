@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/getupdates', function(){
+    // $updates = DB::table('updates')->get();
+    return response()->json(['num'=>1, "ios"=>"sss", 'android'=>"sss"]);
+});
+
 Route::middleware('auth:api', 'cors')->get('/user', function (Request $request) {
     return $request->user();
 });

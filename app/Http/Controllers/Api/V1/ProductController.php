@@ -803,21 +803,40 @@ class ProductController extends BaseController
     {
         $products = AppProduct::latest()
             ->with(['stocks','images']);
-        $responseData = $this->productObject($request,$products);
-        return new ProductCollection($responseData);
+
+            if($request->categories_id){
+                $products->whereHas('categories',function($query) use($request){
+                   return $query->where('products_to_categories.categories_id',$request->categories_id);
+                });
+            }
+    
+            // $responseData = $this->productObject($request,$products);
+            return new ProductCollection($products->paginate(10));
     }
 
     public function getproductsbybrand(Request $request){
         $products = AppProduct::latest()
             ->with(['stocks','images']);
-        $responseData = $this->productObject($request,$products);
-        return new ProductCollection($responseData);
+
+        if($request->brand_id){
+            $products->whereHas('categories',function($query) use($request){
+               return $query->where('products_to_categories.categories_id',$request->brand_id);
+            });
+        }
+
+        // $responseData = $this->productObject($request,$products);
+        return new ProductCollection($products->paginate(10));
     }
     public function getproductbyid(Request $request){
         $products = AppProduct::latest()
         ->with(['stocks','images']);
-        $responseData = $this->productObject($request,$products);
-        return new ProductCollection($responseData);
+        
+        if($request->id){
+            $products->where('products_id',$request->id);
+        }
+
+        // $responseData = $this->productObject($request,$products);
+        return new ProductCollection($products->paginate(10));
     }
 
     

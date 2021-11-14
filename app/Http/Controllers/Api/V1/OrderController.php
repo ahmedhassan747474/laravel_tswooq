@@ -23,11 +23,13 @@ use App\Http\Controllers\Web\AlertController;
 use App\Http\Resources\CartCollection;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\ProductCollection;
+use App\ImageCategories;
 use App\Models\AppModels\Orders;
 use Illuminate\Support\Facades\File;
 use App\Models\AppModels\Product;
 use App\Order;
 use App\Product as AppProduct;
+use App\ProductStock;
 use App\Traits\ProductTrait;
 use Carbon;
 use DB;
@@ -66,6 +68,7 @@ class OrderController extends BaseController
         {
             $validator = Validator::make($request->all(), [
                 'product_id'            => 'required',
+                'stock_id'            => 'required',
                 'quantity'              => 'required',
             ]);
 
@@ -80,11 +83,13 @@ class OrderController extends BaseController
             if($getCart){
                 $insertCart = $getCart->cart_id;
 
-                $product =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->where('product_id', '=', $request->product_id)->first();
+                $product =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                    ->where('product_id', '=', $request->product_id)
+                                                    ->where('stock_id', '=', $request->stock_id)->first();
 
                 //if product already exist
                 if($product){
-                    DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->where('product_id', '=', $request->product_id)->update([
+                    $product->update([
                         'quantity'      => $product->quantity + 1,
                         'updated_at'    => now()
                     ]);
@@ -93,6 +98,7 @@ class OrderController extends BaseController
                     $insertCartProduct = DB::table('cart_product')->insert([
                         'cart_id'       => $insertCart,
                         'product_id'    => $request->product_id,
+                        'stock_id'      => $request->stock_id,
                         'quantity'      => $request->quantity,
                         'created_at'    => now(),
                         'updated_at'    => now()
@@ -109,6 +115,7 @@ class OrderController extends BaseController
                 $insertCartProduct = DB::table('cart_product')->insert([
                     'cart_id'       => $insertCart,
                     'product_id'    => $request->product_id,
+                    'stock_id'      => $request->stock_id,
                     'quantity'      => $request->quantity,
                     'created_at'    => now(),
                     'updated_at'    => now()
@@ -183,228 +190,98 @@ class OrderController extends BaseController
 
         if($user)
         {
-
             $getCart = DB::table('carts')->where('user_id', $user->id)->first();
+
+            $results=array();
+            $data=array();
 
             // dd($getCart);
             $products_cart=array();
             if($getCart){
 
                 $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
-                // if($productItem != null){
-                //     $products_cart[] = $productItem;
-                //     // array_push($products_cart,$productItem);
-                //     dd($productItem);
-                // }
 
+                foreach($productItem as $key=>$cart){
+
+                    // dd($products_cart);
+                    $product = Product::where('products_id',$cart->product_id)
+                                        ->with(['descriptions','images'])
+                                        ->whereHas('descriptions',function($q){
+                                            return $q->where('language_id', '=', 1);
+                                        })
+                                        ->where('products_status', '=', '1')->first();
+
+                    $results[$key]['product_data']=$product;
+                
+                    $stocks = ProductStock::where('id',$cart->stock_id)->where('product_id',$product->products_id)->get();
+                    if(isset($stocks) && !empty($stocks)){
+                        
+                        foreach($stocks as $index=>$stock){
+                            
+                            $results[$key]['attributes'][$index]['stock_id']=$stock->id;
+                            foreach(explode('-', $stock->variant) as $i=>$variant){
+                                if($product->colors && $i==0){
+                                    $results[$key]['attributes'][$index]['color']=$variant;
+                                    
+                                }else
+                                {
+                                    $choice_options = json_decode($product->choice_options);
+                                    
+                                        $attribute_name = DB::table('products_options_descriptions')->where('products_options_id',$choice_options[$i-1]->attribute_id)->where('language_id',$request->language_id ?? 1)->first()->options_name;
+                                        $results[$key]['attributes'][$index][$attribute_name]=$variant;
+                                      
+                                }
+
+                            }
+
+                            $results[$key]['attributes'][$index]['price']=$stock->price;
+                            if($stock->image){
+                                $imagepath= ImageCategories::where('image_id',$stock->image)
+                                            ->where('image_type', '=', 'THUMBNAIL')
+                                            ->where('image_type', '!=', 'THUMBNAIL')
+                                            ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+                
+                                $results[$key]['attributes'][$index]['image']=asset($imagepath);
+                            }
+
+                            $results[$key]['attributes'][$index]['quantity']=$stock->qty;
+                            $results[$key]['attributes'][$index]['SKU']=$stock->sku;
+                                
+                        }
+                    }
+                    $product->quantity_ordered = $cart->quantity;
+                    // dd($product);
+                    $data[] = $product;
+
+                }
             }
 
             // $getCart->products=$products_cart;
             // dd($products_cart[0]->product_id);
 
 
-            foreach($productItem as $cart){
-
-                // dd($products_cart);
-                $product = DB::table('products')
-                ->leftJoin('manufacturers', 'manufacturers.manufacturers_id', '=', 'products.manufacturers_id')
-                ->leftJoin('manufacturers_info', 'manufacturers.manufacturers_id', '=', 'manufacturers_info.manufacturers_id')
-                ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id');
-
-            $product->LeftJoin('image_categories', function ($join) {
-                $join->on('image_categories.image_id', '=', 'products.products_image')
-                    ->where(function ($query) {
-                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
-                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
-                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
-                    });
-            });
-
-            //get single products
-
-            $product->where('products.products_id', '=', $cart->product_id);
-
-
-            $product->where('products_description.language_id', '=', 1)
-                ->where('products.products_status', '=', '1');
-
-
-            //count
-
-            $product= $product->first();
-            $product->quantity_ordered=$cart->quantity;
-
-            //multiple images
-            $products_images = DB::table('products_images')
-            ->LeftJoin('image_categories', function ($join) {
-                $join->on('image_categories.image_id', '=', 'products_images.image')
-                    ->where(function ($query) {
-                        $query->where('image_categories.image_type', '=', 'THUMBNAIL')
-                            ->where('image_categories.image_type', '!=', 'THUMBNAIL')
-                            ->orWhere('image_categories.image_type', '=', 'ACTUAL');
-                    });
-            })
-            ->select('products_images.*', 'image_categories.path as image')
-            ->where('products_id', '=', $product->products_id)->orderBy('sort_order', 'ASC')->get();
-        // $products_data->images = $products_images;
-
-        // fetch all options add join from products_options table for option name
-                    $products_attribute = DB::table('products_attributes')->where('products_id', '=', $product->products_id)->groupBy('options_id')->get();
-                    if (count($products_attribute) > 0) {
-                        $index2 = 0;
-                        foreach ($products_attribute as $attribute_data) {
-                            $option_name = DB::table('products_options')
-                                ->leftJoin('products_options_descriptions', 'products_options_descriptions.products_options_id', '=', 'products_options.products_options_id')->select('products_options.products_options_id', 'products_options_descriptions.options_name as products_options_name', 'products_options_descriptions.language_id')->where('language_id', '=', $request->language_id)->where('products_options.products_options_id', '=', $attribute_data->options_id)->get();
-                            if (count($option_name) > 0) {
-                                $temp = array();
-                                $temp_option['id'] = $attribute_data->options_id;
-                                $temp_option['name'] = $option_name[0]->products_options_name;
-                                $attr[$index2]['option'] = $temp_option;
-
-                                // fetch all attributes add join from products_options_values table for option value name
-                                $attributes_value_query = DB::table('products_attributes')->where('products_id', '=', $product->products_id)->where('options_id', '=', $attribute_data->options_id)->get();
-                                foreach ($attributes_value_query as $products_option_value) {
-
-                                    //$option_value = DB::table('products_options_values')->leftJoin('products_options_values_descriptions','products_options_values_descriptions.products_options_values_id','=','products_options_values.products_options_values_id')->select('products_options_values.products_options_values_id', 'products_options_values_descriptions.options_values_name as products_options_values_name' )->where('products_options_values_descriptions.language_id','=', $language_id)->where('products_options_values.products_options_values_id','=', $products_option_value->options_values_id)->get();
-                                    $option_value = DB::table('products_options_values')->where('products_options_values_id', '=', $products_option_value->options_values_id)->get();
-
-                                    $attributes = DB::table('products_attributes')->where([['products_id', '=', $product->products_id], ['options_id', '=', $attribute_data->options_id], ['options_values_id', '=', $products_option_value->options_values_id]])->get();
-                                    $temp_i['products_attributes_id'] = $attributes[0]->products_attributes_id;
-                                    $temp_i['id'] = $products_option_value->options_values_id;
-
-                                    if (!empty($option_value[0]->products_options_values_name)) {
-                                        $temp_i['value'] = $option_value[0]->products_options_values_name;
-                                    } else {
-                                        $temp_i['value'] = '';
-                                    }
-
-                                    //check currency start
-                                    $current_price = $products_option_value->options_values_price;
-
-                                    $attribute_price = Product::convertprice($current_price, $request->currency_code);
-
-                                    //check currency end
-
-                                    //$temp_i['price'] = $products_option_value->options_values_price;
-                                    $temp_i['price'] = $attribute_price;
-                                    $temp_i['price_prefix'] = $products_option_value->price_prefix;
-                                    array_push($temp, $temp_i);
-
-                                }
-                                $attr[$index2]['values'] = $temp;
-                                $product->attributes = $attr;
-                                $index2++;
-                            }
-                        }
-                    } else {
-                        $product->attributes = array();
-                    }
-
-
-            // $listOfAttributes = array();
-            // $index3 = 0;
-
-            // // dd($getAllProductsParallel);
-            // $getAllAttributes = DB::table('products_attributes')
-            //     ->where('products_id', '=', $product->products_id)
-            //     // ->whereIn('products_id', $getAllProductsParallel)
-            //     ->select('options_id', 'options_values_id', 'products_id','options_values_price')
-            //     ->get();
-            // dd($getAllAttributes);
-
-            // foreach($getAllAttributes as $attribute){
-            //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $request->language_id)->first();
-            //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
-            //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $request->language_id)->first();
-            //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
-            //     $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
-
-
-            // }
-            // $listOfAttributes[$index3]['id'] = $product->products_id;
-            // $listOfAttributes[$index3]['price'] = $product->products_price;
-            // $listOfAttributes[$index3]['home_image'] =asset($product->products_image);
-            // $listOfAttributes[$index3]['images'] = $products_images;
-
-
-            // $index3++;
-            // $result['getAllAttributes'] = $getAllAttributes;
-
-            // $getParallel = DB::table('products')->where('product_parent_id', '=', $products_id)->select('products_id','products_price','products_image')->get();
-            // if($getParallel) {
-            //     foreach ($getParallel as $parallel) {
-            //         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id','options_values_price')->get();
-            //         foreach($getAllAttributesParallel as $attribute){
-            //             $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', $language_id)->first();
-            //             $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
-            //             $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', $language_id)->first();
-            //             $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
-            //             $listOfAttributes[$index3][$attribute_option_name] =  $attribute_option_value ;
-            //             // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
-            //             // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
-            //             // $listOfAttributes[$index3]['price'][] = $attribute->options_values_price;
-            //         }
-            //         $listOfAttributes[$index3]['id'] = $parallel->products_id;
-            //         $listOfAttributes[$index3]['price'] = $parallel->products_price;
-
-            //         // dd($parallel);
-            //         //multiple images
-            //         $products_images = array();
-            //         $products_images = DB::table('products_images')
-            //             ->LeftJoin('image_categories', function ($join) {
-            //                 $join->on('image_categories.image_id', '=', 'products_images.image')
-            //                     ->where(function ($query) {
-            //                         $query->where('image_categories.image_type', '=', 'THUMBNAIL')
-            //                             ->where('image_categories.image_type', '!=', 'THUMBNAIL')
-            //                             ->orWhere('image_categories.image_type', '=', 'ACTUAL');
-            //                     });
-            //             })
-            //             ->select('products_images.*', 'image_categories.path as image')
-            //             ->where('products_id', '=', $parallel->products_id)->orderBy('sort_order', 'ASC')->get();
-
-            //             // $products_data->images=$products_images;
-            //             $listOfAttributes[$index3]['images'] = $products_images;
-
-            //         $index3++;
-            //     }
-            // }
-            // dd($listOfAttributes);
-            // $product->attributes = $listOfAttributes;
-            // $result[$index]->images2 = $products_images;
-            // $index++;
-
-            // dd($product);
-            $data[] = $product;
-            // dd(data);
-        }
+    
 
         // dd($data);
-            foreach($data as $products){
-                $req = array();
-                // dd($products);
-                $req['products_id'] = $products->products_id;
-                $attr = array();
+            // foreach($data as $products){
+            //     $req = array();
 
-                // if (isset($products->attributes)) {
-                //     foreach ($products->attributes as $key => $value) {
-                //         $attr[$key] = $value['products_options_id'];
-                //     }
-                //     $req['attributes'] = $attr;
-                // }
+            //     $req['products_id'] = $products->products_id;
+            //     $attr = array();
 
-                $check = Product::getquantity($req);
-                $check = json_decode($check);
+            //     $check = Product::getquantity($req);
+            //     $check = json_decode($check);
 
-                // dd($check);
-                // if($products->quantity_ordered > $check->stock){
-                    if($products->quantity_ordered > $products->products_quantity){
-                    $responseData = array('success'=>'0', 'data'=>array(),'products_id' => $products->products_id, 'message'=>"Some Products are out of Stock.");
-                    // $orderResponse = json_encode($responseData);
-                    // return $orderResponse;
-                    return response()->json($responseData,400);
-                }
-            }
+            //     // dd($check);
+            //     if($products->quantity_ordered > $check->stock){
+            //         $responseData = array('success'=>'0', 'data'=>array(),'products_id' => $products->products_id, 'message'=>"Some Products are out of Stock.");
+            //         // $orderResponse = json_encode($responseData);
+            //         // return $orderResponse;
+            //         return response()->json($responseData,400);
+            //     }
+            // }
 
+            // dd($results);
             $guest_status   = 0;//$request->guest_status;
 
             if($guest_status == 1){
@@ -1062,63 +939,68 @@ class OrderController extends BaseController
 
                 //orders status history
                 $orders_history_id = DB::table('orders_status_history')->insertGetId(
-                    [	 'orders_id'  => $orders_id,
+                    [	'orders_id'  => $orders_id,
                         'orders_status_id' => $orders_status,
                         'date_added'  => $date_added,
                         'customer_notified' =>'1',
                         'comments'  =>  $comments
                     ]);
 
-                foreach($data as $products){
+                    // dd($data);
+                foreach($data as $ii=>$products){
                     //dd($products->products_price, $currency_code);
-                    $c_price = str_replace(',','',$products->products_price);
-                    $c_final_price = str_replace(',','',$products->products_price);
+                    $c_price = str_replace(',','',$results[$ii]['attributes']->price ?? $products->products_price);
+                    $c_final_price = str_replace(',','',$results[$ii]['attributes']->price ?? $products->products_price);
                     $price = Orders::converttodefaultprice($c_price, $currency_code);
                     $final_price = $c_final_price*$products->quantity_ordered;
                     $final_price = Orders::converttodefaultprice($final_price, $currency_code);
 
+                    // dd($products->descriptions[0]->products_name);
                     $orders_products_id = DB::table('orders_products')->insertGetId(
                     [
                         'orders_id' 		 => 	$orders_id,
                         'products_id' 	 	 =>		$products->products_id,
-                        'products_name'	 => 	$products->products_name,
+                        'products_name'	     => 	$products->descriptions[0]->products_name ??$products->products_slug,
                         'products_price'	 =>  	$price,
                         'final_price' 		 =>  	$final_price,
-                        'products_tax' 	 =>  	$products_tax,
+                        'products_tax' 	     =>  	$products_tax,
                         'products_quantity' =>  	$products->quantity_ordered,
                     ]);
 
-                    // $inventory_ref_id = DB::table('inventory')->insertGetId([
-                    //     'products_id'   		=>   $products->products_id,
-                    //     'reference_code'  		=>   '',
-                    //     'stock'  				=>   $products->quantity_ordered,
-                    //     'admin_id'  			=>   0,
-                    //     'added_date'	  		=>   time(),
-                    //     'purchase_price'  		=>   0,
-                    //     'stock_type'  			=>   'out',
-                    // ]);
+                    $inventory_ref_id = DB::table('inventory')->insertGetId([
+                        'products_id'   		=>   $products->products_id,
+                        'reference_code'  		=>   '',
+                        'stock'  				=>   $products->quantity_ordered,
+                        'admin_id'  			=>   0,
+                        'added_date'	  		=>   time(),
+                        'purchase_price'  		=>   0,
+                        'stock_type'  			=>   'out',
+                    ]);
 
-                    DB::table('products')->where('products_id',$products->products_id)->update(['products_quantity'=>$products->products_quantity - $products->quantity_ordered]);
+                    // dd($getCart);
 
-                    if(!empty($products->attributes)){
-                        foreach($products->attributes as $attribute){
-                            // dd($attribute);
-                            foreach($attribute['values'] as $value){
+                 
+                    if(!empty($results[$ii]['attributes']))
+                    {
+                        // dd($results['attributes']);
+
+                        foreach($results[$ii]['attributes'] as $attribute){
+                            // dd($attribute->stock_id);
                             DB::table('orders_products_attributes')->insert(
                             [
                                 'orders_id' => $orders_id,
                                 'products_id'  => $products->products_id,
-                                'orders_products_id'  => $orders_products_id,
-                                'products_options' =>$attribute['option']['name'],
-                                'products_options_values'  =>  $value['value'],
-                                'options_values_price'  =>  $value['price'],
-                                'price_prefix'  => $value['price_prefix']
+                                'stock_id'  => $attribute['stock_id'],
+                                // 'products_options' =>$attribute['option']['name'],
+                                // 'products_options_values'  =>  $value['value'],
+                                'options_values_price'  =>  $attribute['price'],
+                                // 'price_prefix'  => $value['price_prefix']
                             ]);
 
-                            $products_attributes = DB::table('products_attributes')->where([
-                                ['options_id', '=', $attribute['option']['id']],
-                                ['options_values_id', '=', $value['id']],
-                            ])->get();
+                            // $products_attributes = DB::table('products_attributes')->where([
+                            //     ['options_id', '=', $attribute['option']['id']],
+                            //     ['options_values_id', '=', $value['id']],
+                            // ])->get();
 
                             // DB::table('inventory_detail')->insert([
                             //     'inventory_ref_id'  =>   $inventory_ref_id,
@@ -1126,9 +1008,9 @@ class OrderController extends BaseController
                             //     'attribute_id'		=>   $products_attributes[0]->products_attributes_id,
                             // ]);
 
-                            }
                         }
                     }
+                    
 
                 }
 

@@ -84,7 +84,15 @@ $allimage = $images->getimages();
                             <hr class="show_hide_shop_name">
                             <h4 class="show_hide_shop_name">{{ trans('labels.Subscription Info') }} </h4>
                             <hr class="show_hide_shop_name">
-                                
+                                    
+                                <div class="form-group show_hide_shop_name">
+                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }} </label>
+                                  <div class="col-sm-10 col-md-4">
+                                    {!! Form::text('like_limit',  '', array('class'=>'form-control field-validate', 'id'=>'like_limit')) !!}
+                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.LikeCardLimitText') }}</span>
+                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                  </div>
+                                </div>
                                 <div class="form-group show_hide_shop_name">
                                   <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SubscriptionFee') }} </label>
                                   <div class="col-sm-10 col-md-4">
@@ -156,14 +164,7 @@ $allimage = $images->getimages();
                                       <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                     </div>
                                 </div>
-                                <div class="form-group ">
-                                  <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.LikeCardLimit') }} </label>
-                                  <div class="col-sm-10 col-md-4">
-                                    {!! Form::text('like_limit',  '', array('class'=>'form-control field-validate', 'id'=>'like_limit')) !!}
-                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.LikeCardLimitText') }}</span>
-                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                  </div>
-                                </div>
+                                
                                 <div class="form-group show_hide_shop_name" id="imageIcone">
                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
                                     <div class="col-sm-10 col-md-4">

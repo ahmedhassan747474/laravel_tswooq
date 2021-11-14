@@ -258,7 +258,8 @@ class POSCardController extends Controller
             }
             $subtotal +=$request->product_price*$request->quantity;
     
-            if($subtotal > auth()->user()->like_limit){
+            $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
+            if($subtotal > $userlimit){
                 return 'Please check your limit value';
                 // return redirect()->back()->with('message','Please check your limit value');
             }
@@ -311,7 +312,8 @@ class POSCardController extends Controller
             }
             $subtotal +=$request->product_price*$request->quantity;
     
-            if($subtotal > auth()->user()->like_limit){
+            $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
+            if($subtotal > $userlimit){
                 return 'Please check your limit value';
                 // return redirect()->back()->with('message','Please check your limit value');
             }
@@ -574,6 +576,16 @@ class POSCardController extends Controller
                     'order_id' => $orders_id,
                     // 'print_url' => route('invoiceprint')
                 );
+
+                $shop=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first();
+                $shop->update([
+                    'like_limit'=> $shop->like_limit - $order_price
+                ]);
+                DB::table('balance_history')->insert([
+                    'shop_id'=>$shop->id,
+                    'user_id'=>auth()->user()->id,
+                    'balance'=>$order_price,
+                ]);
                 return $responseData;
             }
             else {
