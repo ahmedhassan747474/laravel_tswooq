@@ -50,7 +50,7 @@ class Product extends Model
     }
     public function descriptions()
     {
-        $language_id= request()->language_id ?? 1 ;
+        $language_id= request()->language_id ?? 2 ;
         return $this->hasOne('App\Models\AppModels\ProductDescriptions','products_id','products_id')->where('language_id',$language_id)->select('products_id','products_name','products_description');
     }
 

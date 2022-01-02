@@ -527,6 +527,8 @@ class Setting extends Model
                    ->where('user_types_id',Auth()->user()->role_id)
                    ->first();
 
+                //    dd($roles);
+
         $result['roles'] = $roles;        
 
         $settings = DB::table('settings')->get();

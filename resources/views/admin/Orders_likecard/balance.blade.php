@@ -52,7 +52,7 @@
                                         <tr>
                                          
                                             <td>{{ auth()->user()->role_id ==1 ?  $balance->userId : auth()->user()->id }}</td>
-                                            <td>{{ auth()->user()->role_id ==1 ?  $balance->balance : auth()->user()->like_limit }}</td>
+                                            <td>{{ auth()->user()->role_id ==1 ?  $balance->balance : DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit }}</td>
                                             <td>{{ $balance->currency }}</td>
                                         </tr>
                                         </tbody>
@@ -99,8 +99,8 @@
                                         <tr>
                                             <th>{{ trans('labels.ID') }}</th>
                                             <th>{{ trans('labels.balance') }}</th>
-                                            <th>{{ trans('labels.user') }}</th>
-                                            <th>{{ trans('labels.date') }}</th>
+                                            <th>{{ trans('labels.UserName') }}</th>
+                                            <th>{{ trans('labels.Date') }}</th>
                                             
                                         </tr>
                                         </thead>
@@ -109,7 +109,7 @@
                                                 <tr>
                                                     <td>{{ $item->id }}</td>
                                                     <td>{{ $item->balance }}</td>
-                                                    <td>{{ DB::table('users')->where('id',$item->id)->first()->user_name ?? '' }}</td>
+                                                    <td>{{ DB::table('users')->where('id',$item->user_id)->first()->user_name}}</td>
                                                     <td>{{ $item->created_at }}</td>
                                                 
                                                 </tr>

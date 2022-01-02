@@ -26,7 +26,7 @@ class Categories extends Model
       $items = DB::table('categories')
           ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
           ->select('categories.categories_id', 'categories_description.categories_name', 'categories.parent_id')
-          ->where('language_id','=', 1)
+          ->where('language_id','=', 2)
         //   ->where('categories_status', '1')
           //->where('categories.categories_id','>', 0)
           ->get();
@@ -51,7 +51,7 @@ class Categories extends Model
       $items = DB::table('categories')
           ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
           ->select('categories.categories_id', 'categories_description.categories_name', 'categories.parent_id')
-          ->where('language_id','=', 1)
+          ->where('language_id','=', 2)
           ->where('categories.categories_id','!=', $data->id)
         //   ->where('categories_status', '1')
           //->where('categories.categories_id','>', 0)
@@ -108,7 +108,7 @@ class Categories extends Model
             'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath', 
             'categories.categories_status  as categories_status', 'parent_description.categories_name as parent_name')
          
-            ->where('categories_description.language_id', '1')
+            ->where('categories_description.language_id', '2')
 
             ->where('parent_id', '0')
             
@@ -155,7 +155,7 @@ class Categories extends Model
               'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath', 
               'categories.categories_status  as categories_status', 'parent_description.categories_name as parent_name')
            
-              ->where('categories_description.language_id', '1')
+              ->where('categories_description.language_id', '2')
   
               ->where('parent_id', '>', '0')
               
@@ -171,7 +171,7 @@ class Categories extends Model
           ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
           ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added', 'categories.updated_at as last_modified', 'categories_description.categories_name as name', 'categories.categories_slug as slug'
           , 'categories.parent_id')
-          ->where('categories_description.language_id','=', $language_id )
+          ->where('categories_description.language_id','=', 2 )
           ->where('parent_id','>', '0')
           ->where('categories_status', '1')
           ->get();
@@ -184,7 +184,7 @@ class Categories extends Model
             ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
             ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added', 'categories.updated_at as last_modified', 'categories_description.categories_name as name', 'categories.categories_slug as slug'
             , 'categories.parent_id')
-            ->where('categories_description.language_id','=', $language_id )
+            ->where('categories_description.language_id','=', 2 )
             ->where('parent_id', '0')
             ->where('categories_status', '1')
             ->get();
@@ -196,7 +196,7 @@ class Categories extends Model
         $listingCategories = DB::table('categories')
             ->leftJoin('categories_description','categories_description.categories_id', '=', 'categories.categories_id')
             ->select('categories.categories_id as id', 'categories.categories_image as image',  'categories.created_at as date_added', 'categories.updated_at as last_modified', 'categories_description.categories_name as name', 'categories.categories_slug as slug')
-            ->where('categories_description.language_id','=', $language_id )
+            ->where('categories_description.language_id','=', 2 )
             ->where('categories_status', '1')
             ->get();
   
@@ -218,7 +218,7 @@ class Categories extends Model
                         'categories.categories_icon as icon',  'categories.created_at as date_added',
                         'categories.updated_at as last_modified', 'categories_description.categories_name as name',
                         'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath','categories.categories_status  as categories_status')
-                        ->where('categories_description.language_id', '1')
+                        ->where('categories_description.language_id', '2')
                         ->where(function($query) {
                             $query->where('categoryTable.image_type', '=',  'THUMBNAIL')
                                 ->where('categoryTable.image_type','!=',   'THUMBNAIL')
@@ -256,8 +256,8 @@ class Categories extends Model
                   )
                   ->where('categories.parent_id', '0')
                   ->where('mainCategoryDesc.categories_name', 'LIKE', '%' . $param . '%')
-                  ->where('mainCategoryDesc.language_id', '1')
-                  ->where('categories_description.language_id', '1')
+                  ->where('mainCategoryDesc.language_id', '2')
+                  ->where('categories_description.language_id', '2')
                   ->groupby('categories.categories_id')
                   ->paginate(10);
               break;
@@ -282,8 +282,8 @@ class Categories extends Model
                       'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath'
                   )
                   ->where('categories.parent_id', '0')
-                  ->where('mainCategoryDesc.language_id', '1')
-                  ->where('categories_description.language_id', '1')
+                  ->where('mainCategoryDesc.language_id', '2')
+                  ->where('categories_description.language_id', '2')
                   ->groupby('categories.categories_id')
                   ->paginate(10);
               break;
@@ -306,7 +306,7 @@ class Categories extends Model
                           'categories.categories_icon as icon',  'categories.created_at as date_added',
                           'categories.updated_at as last_modified', 'categories_description.categories_name as name',
                           'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath','categories.categories_status  as categories_status')
-                          ->where('categories_description.language_id', '1')
+                          ->where('categories_description.language_id', '2')
                           ->where(function($query) {
                               $query->where('categoryTable.image_type', '=',  'THUMBNAIL')
                                   ->where('categoryTable.image_type','!=',   'THUMBNAIL')
@@ -344,8 +344,8 @@ class Categories extends Model
                     )
                     ->where('categories.parent_id', '>', '0')
                     ->where('mainCategoryDesc.categories_name', 'LIKE', '%' . $param . '%')
-                    ->where('mainCategoryDesc.language_id', '1')
-                    ->where('categories_description.language_id', '1')
+                    ->where('mainCategoryDesc.language_id', '2')
+                    ->where('categories_description.language_id', '2')
                     ->groupby('categories.categories_id')
                     ->paginate(10);
                 break;
@@ -370,8 +370,8 @@ class Categories extends Model
                         'categories_description.language_id','categoryTable.path as imgpath','iconTable.path as iconpath'
                     )
                     ->where('categories.parent_id', '>', '0')
-                    ->where('mainCategoryDesc.language_id', '1')
-                    ->where('categories_description.language_id', '1')
+                    ->where('mainCategoryDesc.language_id', '2')
+                    ->where('categories_description.language_id', '2')
                     ->groupby('categories.categories_id')
                     ->paginate(10);
                 break;

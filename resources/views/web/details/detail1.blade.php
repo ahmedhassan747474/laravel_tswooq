@@ -104,8 +104,9 @@
                 if(!empty($result['detail']['product_data'][0]->discount_price)){
                   $discount_price = $result['detail']['product_data'][0]->discount_price * session('currency_value');
                 }
-                $orignal_price = $result['detail']['product_data'][0]->products_price * session('currency_value');
-
+                // $orignal_price = $result['detail']['product_data'][0]->products_price * session('currency_value');
+                $orignal_price = $result['listOfAttributes'][0]['price'] * session('currency_value');
+                
                 if(!empty($result['detail']['product_data'][0]->discount_price)){
 
                 if(($orignal_price+0)>0){
@@ -142,7 +143,7 @@
             if(!empty($result['detail']['product_data'][0]->flash_price)){
               $flash_price = $result['detail']['product_data'][0]->flash_price * session('currency_value');
             }
-              $orignal_price = $result['detail']['product_data'][0]->products_price * session('currency_value');
+              $orignal_price = $result['listOfAttributes'][0]['price'] * session('currency_value');
 
 
              if(!empty($result['detail']['product_data'][0]->discount_price)){
@@ -247,7 +248,7 @@
                       <button class="connection text-capitalize button_checked_color" style="display: inline-block;padding: .2rem;
                       font-size: 1rem;border-radius: .2857142857rem;border: 3px solid #483A6F;color: #333;
                       min-width: 4.5rem;background-image: linear-gradient(180deg,#fff,#f2f2f2);font-weight: 400;" 
-                      href="#" data-unit_id="{{$attr['id']}}">
+                      href="#" data-unit_id="{{$attr['id']}}" data-stock_id="{{$attr['stock_id']}}">
                       @foreach ($attr['name'] as $item)
                           {{$item}}
                       @endforeach
@@ -256,7 +257,7 @@
                       <button class="connection text-capitalize button_checked_color" style="display: inline-block;padding: .2rem;
                       font-size: 1rem;border-radius: .2857142857rem;border: 1px solid #cdcdcd;color: #333;
                       min-width: 4.5rem;background-image: linear-gradient(180deg,#fff,#f2f2f2);font-weight: 400;" 
-                      href="#" data-unit_id="{{$attr['id']}}">
+                      href="#" data-unit_id="{{$attr['id']}}" data-stock_id="{{$attr['stock_id']}}">
                       @foreach ($attr['name'] as $item)
                         {{$item}}
                       @endforeach  
@@ -271,8 +272,8 @@
 
           <form name="attributes" id="add-Product-form" method="post" class="set_form_attr">
             <input type="hidden" name="products_id" value="{{$result['detail']['product_data'][0]->products_id}}">
-            <input type="hidden" name="fixed_products_price" id="fixed_products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['detail']['product_data'][0]->products_price+0}}@endif">
-            <input type="hidden" name="products_price" id="products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['detail']['product_data'][0]->products_price+0}}@endif">
+            <input type="hidden" name="fixed_products_price" id="fixed_products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['listOfAttributes'][0]['price']+0}}@endif">
+            <input type="hidden" name="products_price" id="products_price" value="@if(!empty($result['detail']['product_data'][0]->flash_price)) {{$result['detail']['product_data'][0]->flash_price+0}} @elseif(!empty($result['detail']['product_data'][0]->discount_price)){{$result['detail']['product_data'][0]->discount_price+0}}@else{{$result['listOfAttributes'][0]['price']+0}}@endif">
 
             <input type="hidden" name="checkout" id="checkout_url" value="@if(!empty(app('request')->input('checkout'))) {{ app('request')->input('checkout') }} @else false @endif" >
 
@@ -333,7 +334,7 @@
                 @if(!empty($result['detail']['product_data'][0]->flash_start_date) and $result['detail']['product_data'][0]->server_time < $result['detail']['product_data'][0]->flash_start_date )
                   @else
                     @if($result['detail']['product_data'][0]->products_type == 0)
-                        @if($result['detail']['product_data'][0]->defaultStock == 0) 
+                        @if($result['listOfAttributes'][0]['quantity'] == 0) 
                           <button class="btn btn-lg swipe-to-top  btn-danger " type="button">@lang('website.Out of Stock')</button>
                         @else
                             <button class="btn btn-secondary btn-lg swipe-to-top add-to-Cart"  type="button" products_id="{{$result['detail']['product_data'][0]->products_id}}">@lang('website.Add to Cart')</button>

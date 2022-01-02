@@ -37,10 +37,9 @@
                                         @endforeach
                                         @endif
 
-                                        {!! Form::open(array('url' =>'admin/products/add', 'method'=>'post', 'class' => 'form-horizontal form-validate', 'enctype'=>'multipart/form-data')) !!}
+                                        {!! Form::open(array('url' =>'admin/products/add', 'method'=>'post', 'class' => 'form-horizontal form-validate', 'id'=>'choice_form' , 'enctype'=>'multipart/form-data')) !!}
 
-                                        <div class="row">
-                                            <div class="col-xs-12 col-md-6">
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Manufacturers') }} </label>
                                                     <div class="col-sm-10 col-md-8">
@@ -53,8 +52,50 @@
                                                             {{ trans('labels.ChooseManufacturerText') }}.</span>
                                                     </div>
                                                 </div>
+                                            </div> --}}
+                                        
+                                            <div class="row">
+
+                                                    @foreach($result['languages'] as $key=>$languages)
+                                                        <div class="col-md-6">
+    
+                                                            <div style="margin-top: 15px;" class="tab-pane @if($key==0) active @endif" id="product_<?=$languages->languages_id?>">
+                                                                <div class="">
+                                                                    <div class="form-group">
+                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
+                                                                        <div class="col-sm-10 col-md-8">
+                                                                            <input type="text" name="products_name_<?=$languages->languages_id?>" class="form-control field-validate">
+                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                                {{ trans('labels.EnterProductNameIn') }} {{ $languages->name }} </span>
+                                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                                        </div>
+                                                                    </div>
+    
+                                                                    <div class="form-group external_link" style="display: none">
+                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $languages->name }})</label>
+                                                                        <div class="col-sm-10 col-md-8">
+                                                                            <input type="text" name="products_url_<?=$languages->languages_id?>" class="form-control products_url">
+                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                                {{ trans('labels.External URL Text') }} {{ $languages->name }} </span>
+                                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                                        </div>
+                                                                    </div>
+    
+                                                                    <div class="form-group">
+                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
+                                                                        <div class="col-sm-10 col-md-8">
+                                                                            <textarea id="editor<?=$languages->languages_id?>" name="products_description_<?=$languages->languages_id?>" class="form-control" rows="5"></textarea>
+                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                                {{ trans('labels.EnterProductDetailIn') }} {{ $languages->name }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    @endforeach
                                             </div>
-                                        </div>
+
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="form-group">
@@ -71,19 +112,19 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>-->
-                                            <!--        <div class="col-sm-10 col-md-8">-->
-                                            <!--            <select class="form-control" name="is_feature">-->
-                                            <!--                <option value="0">{{ trans('labels.No') }}</option>-->
-                                            <!--                <option value="1">{{ trans('labels.Yes') }}</option>-->
-                                            <!--            </select>-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.IsFeatureProuctsText') }}</span>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="is_feature">
+                                                            <option value="0">{{ trans('labels.No') }}</option>
+                                                            <option value="1">{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.IsFeatureProuctsText') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }} </label>
@@ -114,18 +155,22 @@
                                             </div>
 
                                             <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.PriceQuantty') }}<span style="color:red;">*</span></label>
+                                                <div class="form-group" id="tax-class">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>
                                                     <div class="col-sm-10 col-md-8">
-                                                        {!! Form::text('products_quantity', '', array('class'=>'form-control number-validate', 'id'=>'products_quantity')) !!}
+                                                        <select class="form-control field-validate" name="tax_class_id">
+                                                            <option selected>{{ trans('labels.SelectTaxClass') }}</option>
+                                                            @foreach ($result['taxClass'] as $taxClass)
+                                                            <option value="{{ $taxClass->tax_class_id }}">{{ $taxClass->tax_class_title }}</option>
+                                                            @endforeach
+                                                        </select>
                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.products_quantity') }}
+                                                            {{ trans('labels.ChooseTaxClassForProductText') }}
                                                         </span>
-                                                        <span class="help-block hidden">{{ trans('labels.products_quantity') }}</span>
+                                                        <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -145,53 +190,118 @@
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Show Product') }}<span style="color:red;">*</span></label>
                                                     <div class="col-sm-10 col-md-8">
                                                         <ul class="list-unstyled mb-0">
-                                                            <li class="d-inline-block mr-2">
-                                                                <fieldset>
-                                                                    <div class="vs-checkbox-con vs-checkbox-primary">
-                                                                        <input type="checkbox" name="is_show_web">
-                                                                        <span class="vs-checkbox">
-                                                                            <span class="vs-checkbox--check">
-                                                                                <i class="vs-icon feather icon-check"></i>
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_web == 1)
+                                                                <li class="d-inline-block mr-2">
+                                                                    <fieldset>
+                                                                        <div class="vs-checkbox-con vs-checkbox-primary">
+                                                                            <input type="checkbox" name="is_show_web">
+                                                                            <span class="vs-checkbox">
+                                                                                <span class="vs-checkbox--check">
+                                                                                    <i class="vs-icon feather icon-check"></i>
+                                                                                </span>
                                                                             </span>
-                                                                        </span>
-                                                                        <span class="">{{trans('labels.is_show_web')}}</span>
-                                                                    </div>
-                                                                </fieldset>
-                                                            </li>
-                                                            <li class="d-inline-block mr-2">
-                                                                <fieldset>
-                                                                    <div class="vs-checkbox-con vs-checkbox-success">
-                                                                        <input type="checkbox" name="is_show_app">
-                                                                        <span class="vs-checkbox">
-                                                                            <span class="vs-checkbox--check">
-                                                                                <i class="vs-icon feather icon-check"></i>
+                                                                            <span class="">{{trans('labels.is_show_web')}}</span>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </li>
+                                                            @endif
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_app == 1)
+                                                                <li class="d-inline-block mr-2">
+                                                                    <fieldset>
+                                                                        <div class="vs-checkbox-con vs-checkbox-success">
+                                                                            <input type="checkbox" name="is_show_app">
+                                                                            <span class="vs-checkbox">
+                                                                                <span class="vs-checkbox--check">
+                                                                                    <i class="vs-icon feather icon-check"></i>
+                                                                                </span>
                                                                             </span>
-                                                                        </span>
-                                                                        <span class="">{{trans('labels.is_show_app')}}</span>
-                                                                    </div>
-                                                                </fieldset>
-                                                            </li>
-                                                            <li class="d-inline-block mr-2">
-                                                                <fieldset>
-                                                                    <div class="vs-checkbox-con vs-checkbox-danger">
-                                                                        <input type="checkbox" name="is_show_admin">
-                                                                        <span class="vs-checkbox">
-                                                                            <span class="vs-checkbox--check">
-                                                                                <i class="vs-icon feather icon-check"></i>
+                                                                            <span class="">{{trans('labels.is_show_app')}}</span>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </li>
+                                                            @endif
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_admin == 1)
+                                                                <li class="d-inline-block mr-2">
+                                                                    <fieldset>
+                                                                        <div class="vs-checkbox-con vs-checkbox-danger">
+                                                                            <input type="checkbox" name="is_show_admin">
+                                                                            <span class="vs-checkbox">
+                                                                                <span class="vs-checkbox--check">
+                                                                                    <i class="vs-icon feather icon-check"></i>
+                                                                                </span>
                                                                             </span>
-                                                                        </span>
-                                                                        <span class="">{{trans('labels.is_show_admin')}}</span>
-                                                                    </div>
-                                                                </fieldset>
-                                                            </li>
+                                                                            <span class="">{{trans('labels.is_show_admin')}}</span>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </li>
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        
-                                      
+                                        {{-- <div class="row">
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Min Order Limit') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_min_order', '1', array('class'=>'form-control field-validate number-validate', 'id'=>'products_min_order')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Min Order Limit Text') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Min Order Limit Text') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Max Order Limit') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_max_stock', '', array('class'=>'form-control ', 'id'=>'products_max_stock')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Max Order Limit Text') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Max Order Limit Text') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                        {{-- <div class="row">
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsWeight') }}</label>
+                                                    <div class="col-sm-10 col-md-4">
+                                                        {!! Form::text('products_weight', '', array('class'=>'form-control', 'id'=>'products_weight')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.RequiredTextForWeight') }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-10 col-md-4" style="padding-left: 0;">
+                                                        <select class="form-control" name="products_weight_unit">
+                                                            @if($result['units'] !== null)
+                                                            @foreach($result['units'] as $unit)
+                                                            <option value="{{$unit->units_name}}">{{$unit->units_name}}</option>
+                                                            @endforeach
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsModel') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_model', '', array('class'=>'form-control', 'id'=>'products_model')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.ProductsModelText') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+
                                         <div class="row">
                                             @if (auth()->user()->role_id == 1)
                                             <div class="col-xs-12 col-md-6">
@@ -246,8 +356,9 @@
                                                         </div>
 
 
+                                                        {{-- field-validate --}}
                                                         <div id="imageselected">
-                                                          {!! Form::button( trans('labels.Add Image'), array('id'=>'newImage','class'=>"btn btn-primary field-validate", 'data-toggle'=>"modal", 'data-target'=>"#Modalmanufactured" )) !!}
+                                                          {!! Form::button( trans('labels.Add Image'), array('id'=>'newImage','class'=>"btn btn-primary ", 'data-toggle'=>"modal", 'data-target'=>"#Modalmanufactured" )) !!}
                                                           <br>
                                                           <div id="selectedthumbnail" class="selectedthumbnail col-md-5"> </div>
                                                           <div class="closimage">
@@ -263,151 +374,166 @@
                                                 </div>
                                             </div>
 
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.VideoEmbedCodeLink') }}</label>-->
-                                            <!--        <div class="col-sm-10 col-md-8">-->
-                                            <!--            {!! Form::textarea('products_video_link', '', array('class'=>'form-control', 'id'=>'products_video_link', 'rows'=>4)) !!}-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.VideoEmbedCodeLinkText') }}-->
-                                            <!--            </span>-->
-                                            <!--            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.VideoEmbedCodeLink') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::textarea('products_video_link', '', array('class'=>'form-control', 'id'=>'products_video_link', 'rows'=>4)) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.VideoEmbedCodeLinkText') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
                                         </div>
 
                                         <hr>
 
 
-                                        <!--<div class="row">-->
-                                        <!--    <div class="col-xs-12 col-md-6">-->
-                                        <!--        <div class="form-group flash-sale-link">-->
-                                        <!--            <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSale') }}</label>-->
-                                        <!--            <div class="col-sm-10 col-md-8">-->
-                                        <!--                <select class="form-control" onChange="showFlash();" name="isFlash" id="isFlash">-->
-                                        <!--                    <option value="no">{{ trans('labels.No') }}</option>-->
-                                        <!--                    <option value="yes">{{ trans('labels.Yes') }}</option>-->
-                                        <!--                </select>-->
-                                        <!--                <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                    {{ trans('labels.FlashSaleText') }}</span>-->
-                                        <!--            </div>-->
-                                        <!--        </div>-->
+                                        {{-- <div class="row">
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group flash-sale-link">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSale') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" onChange="showFlash();" name="isFlash" id="isFlash">
+                                                            <option value="no">{{ trans('labels.No') }}</option>
+                                                            <option value="yes">{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.FlashSaleText') }}</span>
+                                                    </div>
+                                                </div>
 
-                                        <!--        <div class="flash-container" style="display: none;">-->
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSalePrice') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-8">-->
-                                        <!--                    <input class="form-control" type="text" name="flash_sale_products_price" id="flash_sale_products_price" value="">-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.FlashSalePriceText') }}</span>-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.FlashSalePriceText') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
+                                                <div class="flash-container" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSalePrice') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control" type="text" name="flash_sale_products_price" id="flash_sale_products_price" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashSalePriceText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.FlashSalePriceText') }}</span>
+                                                        </div>
+                                                    </div>
 
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSaleDate') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-4">-->
-                                        <!--                    <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" readonly value="">-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.FlashSaleDateText') }}</span>-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--                <div class="col-sm-10 col-md-4 bootstrap-timepicker">-->
-                                        <!--                    <input type="text" class="form-control timepicker" name="flash_start_time" readonly id="flash_start_time" value="">-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSaleDate') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" readonly value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashSaleDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" name="flash_start_time" readonly id="flash_start_time" value="">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                    </div>
 
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashExpireDate') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-4">-->
-                                        <!--                    <input class="form-control datepicker" readonly type="text" readonly name="flash_expires_date" id="flash_expires_date" value="">-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.FlashExpireDateText') }}</span>-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--                <div class="col-sm-10 col-md-4 bootstrap-timepicker">-->
-                                        <!--                    <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="">-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashExpireDate') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" readonly name="flash_expires_date" id="flash_expires_date" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashExpireDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                    </div>
 
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>-->
-                                        <!--                <div class="col-sm-10 col-md-8">-->
-                                        <!--                    <select class="form-control" name="flash_status">-->
-                                        <!--                        <option value="1">{{ trans('labels.Active') }}</option>-->
-                                        <!--                        <option value="0">{{ trans('labels.Inactive') }}</option>-->
-                                        <!--                    </select>-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.ActiveFlashSaleProductText') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <select class="form-control" name="flash_status">
+                                                                <option value="1">{{ trans('labels.Active') }}</option>
+                                                                <option value="0">{{ trans('labels.Inactive') }}</option>
+                                                            </select>
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.ActiveFlashSaleProductText') }}</span>
+                                                        </div>
+                                                    </div>
 
-                                        <!--        </div>-->
-                                        <!--    </div>-->
+                                                </div>
+                                            </div>
 
-                                        <!--    <div class="col-xs-12 col-md-6">-->
-                                        <!--        <div class="form-group special-link">-->
-                                        <!--            <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Special') }}</label>-->
-                                        <!--            <div class="col-sm-10 col-md-8">-->
-                                        <!--                <select class="form-control" onChange="showSpecial();" name="isSpecial" id="isSpecial">-->
-                                        <!--                    <option value="no">{{ trans('labels.No') }}</option>-->
-                                        <!--                    <option value="yes">{{ trans('labels.Yes') }}</option>-->
-                                        <!--                </select>-->
-                                        <!--                <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                    {{ trans('labels.SpecialProductText') }}.</span>-->
-                                        <!--            </div>-->
-                                        <!--        </div>-->
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group special-link">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Special') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" onChange="showSpecial();" name="isSpecial" id="isSpecial">
+                                                            <option value="no">{{ trans('labels.No') }}</option>
+                                                            <option value="yes">{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.SpecialProductText') }}.</span>
+                                                    </div>
+                                                </div>
 
-                                        <!--        <div class="special-container" style="display: none;">-->
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SpecialPrice') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-8">-->
-                                        <!--                    <input class="form-control" type="text" name="specials_new_products_price" id="special-price" value="">-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.SpecialPriceTxt') }}.</span>-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.SpecialPriceNote') }}.</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ExpiryDate') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-8">-->
-                                        <!--                    <input class="form-control datepicker" readonly readonly type="text" name="expires_date" id="expiry-date" value="">-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.SpecialExpiryDateTxt') }}-->
-                                        <!--                    </span>-->
-                                        <!--                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
-                                        <!--            <div class="form-group">-->
-                                        <!--                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}<span style="color:red;">*</span></label>-->
-                                        <!--                <div class="col-sm-10 col-md-8">-->
-                                        <!--                    <select class="form-control" name="status">-->
-                                        <!--                        <option value="1">{{ trans('labels.Active') }}</option>-->
-                                        <!--                        <option value="0">{{ trans('labels.Inactive') }}</option>-->
-                                        <!--                    </select>-->
-                                        <!--                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                        <!--                        {{ trans('labels.ActiveSpecialProductText') }}.</span>-->
-                                        <!--                </div>-->
-                                        <!--            </div>-->
-                                        <!--        </div>-->
-                                        <!--    </div>-->
-                                        <!--</div>-->
+                                                <div class="special-container" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SpecialPrice') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control" type="text" name="specials_new_products_price" id="special-price" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.SpecialPriceTxt') }}.</span>
+                                                            <span class="help-block hidden">{{ trans('labels.SpecialPriceNote') }}.</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ExpiryDate') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control datepicker" readonly readonly type="text" name="expires_date" id="expiry-date" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.SpecialExpiryDateTxt') }}
+                                                            </span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}<span style="color:red;">*</span></label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <select class="form-control" name="status">
+                                                                <option value="1">{{ trans('labels.Active') }}</option>
+                                                                <option value="0">{{ trans('labels.Inactive') }}</option>
+                                                            </select>
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.ActiveSpecialProductText') }}.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
 
                                         <hr>
 
-                                        @if (session()->has('error'))
+                                        {{-- @if (session()->has('error'))
                                         <div class="alert alert-danger alert-dismissible show" role="alert">
                                             <strong>{{session()->get('error')}}</strong>
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        @endif
+                                        @endif --}}
 
                                         <div class="row">
+                                            {{-- @foreach($result['attributes'] as $attribute)
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">Select {{$attribute->options_name}}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="attributes[]">
+                                                            <option value="">Select {{$attribute->options_name}}</option>
+                                                            @foreach($attribute->option_value as $item)
+                                                            <option value="{{ $item->products_options_values_id }}">{{ $item->options_values_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach --}}
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.BarCode') }}<span style="color:red;">*</span></label>
@@ -418,7 +544,19 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SelectParallel') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="product_parent_id">
+                                                            <option value="">{{ trans('labels.SelectParallel') }}</option>
+                                                            @foreach($result['products'] as $product)
+                                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
                                         </div>
                                         
                                         <hr>
@@ -530,55 +668,6 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <div class="tabbable tabs-left">
-                                                    <ul class="nav nav-tabs">
-                                                        @foreach($result['languages'] as $key=>$languages)
-                                                        <li class="@if($key==0) active @endif"><a href="#product_<?=$languages->languages_id?>" data-toggle="tab"><?=$languages->name?><span style="color:red;">*</span></a></li>
-                                                        @endforeach
-                                                    </ul>
-                                                    <div class="tab-content">
-                                                        @foreach($result['languages'] as $key=>$languages)
-
-                                                        <div style="margin-top: 15px;" class="tab-pane @if($key==0) active @endif" id="product_<?=$languages->languages_id?>">
-                                                            <div class="">
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <input type="text" name="products_name_<?=$languages->languages_id?>" class="form-control field-validate">
-                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.EnterProductNameIn') }} {{ $languages->name }} </span>
-                                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group external_link" style="display: none">
-                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $languages->name }})</label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <input type="text" name="products_url_<?=$languages->languages_id?>" class="form-control products_url">
-                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.External URL Text') }} {{ $languages->name }} </span>
-                                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
-                                                                    <div class="col-sm-10 col-md-8">
-                                                                        <textarea id="editor<?=$languages->languages_id?>" name="products_description_<?=$languages->languages_id?>" class="form-control" rows="5"></textarea>
-                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                            {{ trans('labels.EnterProductDetailIn') }} {{ $languages->name }}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        @endforeach
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <!-- /.box-body -->
                                         <div class="box-footer text-center">
@@ -629,7 +718,19 @@
 </script>
 @endsection
 
+@push('styles_aiz')
+    <link rel="stylesheet" href="{{ asset('admin/css/vendors.css') }}">
+
+	<link rel="stylesheet" href="{{ asset('admin/css/aiz-core.css') }}">
+@endpush
+
+@push('scripts_aiz')
+<script src="{!! asset('admin/js/vendors.js') !!}" ></script>
+<script src="{!! asset('admin/js/aiz-core.js') !!}" ></script>
+@endpush
 @section('script')
+
+
 
 <script type="text/javascript">
     $("[name=shipping_type]").on("change", function (){
@@ -715,3 +816,4 @@
 </script>
 
 @endsection
+

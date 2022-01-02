@@ -111,6 +111,27 @@
                         </div>
                       </div>
 
+                      <div class="form-group">
+                        <label for="inputExperience" class="col-sm-2 control-label">{{ trans('labels.tax_number') }}</label>
+
+                        <div class="col-sm-10">
+                         {!! Form::text('tax_number', $tax_number, array('class'=>'form-control', 'id'=>'tax_number'))!!}
+                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                         {{ trans('labels.tax_numberText') }}</span>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Choose Invoice') }}</label>
+                        <div class="col-sm-10 col-md-4">
+                            <select class="form-control" name="invoice_type">
+                                <option {{ isset($invoice_type) &&$invoice_type==1 ?'selected':'' }} value="1">1</option>
+                                <option {{ isset($invoice_type) &&$invoice_type==2 ?'selected':'' }} value="2">2</option>
+                            </select>
+                          {{-- <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;margin-top: 0;">{{ trans('labels.Maintenance Text detail') }}</span> --}}
+                        </div>
+                      </div>
+
 
                       <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">

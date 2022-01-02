@@ -1,16 +1,16 @@
 <div class="panel-body card-body">
     <div class="aiz-pos-cart-list c-scrollbar c-scrollbar-light">
-        <table class="table table-bordered mb-0 mar-no" cellspacing="0" width="100%">
-            <thead>
+        <table class="table table_class table-bordered mb-0 mar-no" cellspacing="0" width="100%">
+            <thead class="thead_class">
                 <tr>
-                    <th width="50%">Product</th>
-                    <th width="15%">QTY</th>
-                    <th>Price</th>
-                    <th>Subtotal</th>
-                    <th class="text-right">Remove</th>
+                    <th >{{ trans('labels.productName')}}</th>
+                    <th >{{ trans('labels.Qty')}}</th>
+                    <th>{{ trans('labels.Price')}}</th>
+                    <th>{{ trans('labels.Subtotal')}}</th>
+                    <th class="text-right">{{ trans('labels.delete')}}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="tbody_class">
                 @php
                     $subtotal = 0;
                     $tax = 0;
@@ -31,6 +31,7 @@
                                 ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                                 ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id')
                                 ->where('products.products_id', $cartItem['id'])
+                                ->where('products_description.language_id', 2)
                                 ->first();
                             // dd($products);
                         @endphp
@@ -38,7 +39,7 @@
                             <td>
                                 <span class="media">
                                     <div class="media-left">
-                                        <img class="mr-3" height="60" src="{{asset(''). $products->path }}" >
+                                        <img class="mr-3" height="60" src="{{asset(''). $products->path??'' }}" >
                                     </div>
                                     <div class="media-body">
                                         {{ $products->products_name }} ({{ $cartItem['variant'] }})
@@ -121,11 +122,11 @@
     <table class="table mar-no" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <th class="text-center">Sub Total</th>
-                <th class="text-center">Total Tax</th>
-                <th class="text-center">Total Shipping</th>
-                <th class="text-center">Discount</th>
-                <th class="text-center">Total</th>
+                <th class="text-center">{{ trans('labels.Subtotal')}}</th>
+                <th class="text-center">{{ trans('labels.Tax')}}</th>
+                <th class="text-center">{{ trans('labels.ShippingCost')}}</th>
+                <th class="text-center">{{ trans('labels.Discount')}}</th>
+                <th class="text-center">{{ trans('labels.Total')}}</th>
             </tr>
         </thead>
         <tbody>

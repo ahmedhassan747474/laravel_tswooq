@@ -8,9 +8,10 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="Themescoder" content="">
-  <link rel="stylesheet" href="{{ asset('admin/css/vendors.css') }}">
+  @stack('styles_aiz')
+  {{-- <link rel="stylesheet" href="{{ asset('admin/css/vendors.css') }}"> --}}
 
-	<link rel="stylesheet" href="{{ asset('admin/css/aiz-core.css') }}">
+	{{-- <link rel="stylesheet" href="{{ asset('admin/css/aiz-core.css') }}"> --}}
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
 
   
@@ -27,7 +28,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
 
   <!-- Select2 -->
-  {{-- <link rel="stylesheet" href="{!! asset('admin/plugins/select2/select2.min.css') !!} "> --}}
+  <link rel="stylesheet" href="{!! asset('admin/plugins/select2/select2.min.css') !!} ">
 
     <!-- Bootstrap Color Picker -->
   <link rel="stylesheet" href="{!! asset('admin/plugins/colorpicker/bootstrap-colorpicker.min.css') !!} ">
@@ -55,8 +56,8 @@
 
   <!-- Ionicons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" media="all" rel="stylesheet" type="text/css" />
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+  @stack('styles')
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -100,12 +101,5 @@
   cursor: move;
 }
 
-.select2-container .select2-selection--multiple{
-  min-height: 150px;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice{
-  color: black;
-}
 </style>
 @yield('style')

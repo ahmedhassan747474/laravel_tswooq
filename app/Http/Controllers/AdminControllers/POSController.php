@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminControllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppModels\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,8 @@ use App\Models\Core\Languages;
 use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
+use App\Product as AppProduct;
+use App\ProductStock;
 use Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -218,8 +221,44 @@ class POSController extends Controller
             'categories_id' => $categories_id, 'search' => $search,
             'filters' => $filters, 'limit' => $limit, 'min_price' => $min_price, 'max_price' => $max_price);
 
-        $products = $this->products($data);
-        $result['products'] = $products;
+            $request->merge([
+                'language_id' => 2,
+            ]);
+        $product_id=Product::where('products_id',$search)->first()->products_id??0;
+        // $products = $this->products($data);
+        $products = Product::with('descriptions')->with('categories');
+        // $products=Product::get();
+        if(auth()->user()->role_id != 1) {
+            $products->where('admin_id', '=', auth()->user()->id);
+        } 
+        if (isset($search) and !empty($search)) {
+            $product_stock=ProductStock::where('sku',$search)->first();
+            $products->where(function($q) use($search){
+                $q->where('products_slug', 'like', '%' . $search . '%');
+                $q->orWhere('products_id', '=',  $search );
+                $q->orWhere('products.barcode', 'like', '%' . $search . '%');
+            
+            });
+            
+        }
+
+        // $products->whereHas('descriptions',function($q){
+        //     $q->where('descriptions.language_id',2);
+        // });
+
+        if (isset($categories_id) and !empty($categories_id)) {
+            $products->whereHas('categories',function($q) use($categories_id){
+                $q->where('categories.categories_id',$categories_id);
+            });
+            
+        }
+
+        
+
+        $result['products'] = $products->paginate(10);
+
+        $result['products_id'] = $product_id;
+        $result['product_stock'] = $product_stock??null;
 
         if ($limit > $result['products']['total_record']) {
             $result['limit'] = $result['products']['total_record'];
@@ -922,13 +961,15 @@ class POSController extends Controller
     }
 
     public function getVarinats(Request $request){
-        // $stocks = Product::find($request->id)->stocks;
-        // if(count($stocks) > 0){
-        //     return view('pos.variants', compact('stocks'));
-        // }
-        // else {
+        // return $request->id;
+        $stocks = AppProduct::where('products_id',$request->id)->first()->stocks;
+        // return $stocks;
+        if(count($stocks) > 0){
+            return view('admin.pos.variants', compact('stocks'));
+        }
+        else {
             return 0;
-        // }
+        }
     }
 
     public function addToPOS(Request $request)
@@ -936,7 +977,7 @@ class POSController extends Controller
         // dd($request->all());
         $products = DB::table('pos_standby')->where('customer_id',$request->customer_id_pos)->get();
         foreach($products as $item){
-            $product = DB::table('products')->where('products_id', $item->product_id)->first();
+            $product = AppProduct::where('products_id', $item->product_id)->first();
             // dd($product);
 
             $data = array();
@@ -944,10 +985,10 @@ class POSController extends Controller
             $tax = 0;
             $data['variant'] = $request->variant;
 
-            if($request->variant != null && $product->variant_product){
+            if($request->variant != null){
                 $product_stock = $product->stocks->where('variant', $request->variant)->first();
-                $price = $product_stock->price;
-                $quantity = $product_stock->qty;
+                $price = $product_stock->pos_price;
+                $quantity = $product_stock->pos_qty;
 
                 if($request['quantity'] > $quantity){
                     return 0;
@@ -972,13 +1013,13 @@ class POSController extends Controller
                     if($cartItem['id'] == $item->product_id){
                         if($cartItem['variant'] == $request->variant){
                             $foundInCart = true;
-                            $product = DB::table('products')->where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
+                            $product = AppProduct::where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
                             $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
                             $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
                             $current_stock = $current_stock_in - $current_stock_out;
-                            if($cartItem['variant'] != null && $product->variant_product){
+                            if($cartItem['variant'] != null ){
                                 $product_stock = $product->stocks->where('variant', $cartItem['variant'])->first();
-                                $quantity = $product_stock->qty;
+                                $quantity = $product_stock->pos_qty;
                                 if($quantity >= $item->quantity){
                                     if($item->quantity >= $product->min_qty){
                                         $cartItem['quantity'] = $item->quantity;
@@ -1014,17 +1055,17 @@ class POSController extends Controller
 
     public function addToCart(Request $request)
     {
-        $product = DB::table('products')->where('products_id', $request->product_id)->first();
+        $product = AppProduct::where('products_id', $request->product_id)->first();
 
         $data = array();
         $data['id'] = $product->products_id;
         $tax = 0;
         $data['variant'] = $request->variant;
 
-        if($request->variant != null && $product->variant_product){
+        if($request->variant != null ){
             $product_stock = $product->stocks->where('variant', $request->variant)->first();
-            $price = $product_stock->price;
-            $quantity = $product_stock->qty;
+            $price = $product_stock->pos_price;
+            $quantity = $product_stock->pos_qty;
 
             if($request['quantity'] > $quantity){
                 return 0;
@@ -1083,25 +1124,30 @@ class POSController extends Controller
                 if($cartItem['id'] == $request->product_id){
                     if($cartItem['variant'] == $request->variant){
                         $foundInCart = true;
-                        $product = DB::table('products')->where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
+                        $product = AppProduct::where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
                         $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
                         $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
                         $current_stock = $current_stock_in - $current_stock_out;
-                        if($cartItem['variant'] != null && $product->variant_product){
+                        if($cartItem['variant'] != null ){
+                            // if($cartItem['variant'] != null && $product->variant_product){
                             $product_stock = $product->stocks->where('variant', $cartItem['variant'])->first();
-                            $quantity = $product_stock->qty;
+                            $quantity = $product_stock->pos_qty;
                             if($quantity >= $request->quantity){
                                 if($request->quantity >= $product->min_qty){
-                                    $cartItem['quantity'] = $request->quantity;
+                                    $cartItem['quantity'] += $request->quantity;
                                 }
                             }
                         }
                         elseif ($current_stock >= $request->quantity) {
                             // if($request->quantity >= $product->min_qty){
-                                $cartItem['quantity'] = $request->quantity;
+                                $cartItem['quantity'] += $request->quantity;
                             // }
                         }
                     }
+                    else{
+                        $cartItem['quantity'] += $request->quantity;
+                    }
+                    
                 }
                 $cart->push($cartItem);
             }
@@ -1162,13 +1208,13 @@ class POSController extends Controller
         $cart = $cart->map(function ($object, $key) use ($request) {
             if($key == $request->key){
                 // $product = \App\Product::find($object['id']);
-                $product = DB::table('products')->where('products_id', $object['id'])->first();
+                $product = AppProduct::where('products_id', $object['id'])->first();
                 $current_stock_in = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'in')->sum('stock');
                 $current_stock_out = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'out')->sum('stock');
                 $current_stock = $current_stock_in - $current_stock_out;
-                if($object['variant'] != null && $product->variant_product){
+                if($object['variant'] != null ){
                     $product_stock = $product->stocks->where('variant', $object['variant'])->first();
-                    $quantity = $product_stock->qty;
+                    $quantity = $product_stock->pos_qty;
                     if($quantity >= $request->quantity){
                         if($request->quantity >= $product->min_qty){
                             $object['quantity'] = $request->quantity;
@@ -1578,6 +1624,11 @@ class POSController extends Controller
                 // 'bank_account_image' => $bank_account_image,
                 // 'bank_account_iban' => $bank_account_iban,
                 'admin_discount' => $request->discount,
+                'cache' => $request->cache,
+                'paied' => $request->paied??0,
+                'duration' => $request->duration??0,
+                'invoice_type' => $request->invoice_type??1,
+                'delivery_date' => $request->delivery_date??null,
                 'admin_id'  => auth()->user()->id
             ]);
 
@@ -1619,12 +1670,12 @@ class POSController extends Controller
 
                         if($product_variation != null){
                             // $product_stock = $product->stocks->where('variant', $product_variation)->first();
-                            // if($cartItem['quantity'] > $product_stock->qty){
+                            // if($cartItem['quantity'] > $product_stock->pos_qty){
                             //     $order->delete();
                             //     return 0;
                             // }
                             // else {
-                            //     $product_stock->qty -= $cartItem['quantity'];
+                            //     $product_stock->pos_qty -= $cartItem['quantity'];
                             //     $product_stock->save();
                             // }
                         }

@@ -187,6 +187,7 @@
                 <div class="tab-carousel-js">
                     @php
                     $counter++;
+                    
                     @endphp
                       @foreach($item->products as $key=>$products)
                       <div class="slick " >

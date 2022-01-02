@@ -42,6 +42,9 @@
                             {!! Form::hidden('user_types_id',  $result['user_types_id'], array('class'=>'form-control', 'id'=>'user_types_id')) !!}
                            <div class="row">
                             @foreach($result['data'] as $datas)
+                            @if($datas['link_name']=='')
+                            @continue
+                            @endif
                             <div class="col-md-6">
                             <hr>
                             <h4>{{ trans('labels.manage '.$datas['link_name']) }} </h4>

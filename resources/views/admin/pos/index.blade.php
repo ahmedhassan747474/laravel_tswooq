@@ -26,7 +26,7 @@
                                 <div class="card">
                                     <div class="card-header d-block">
                                         <div class="form-group">
-                                            <input class="form-control form-control-sm" type="text" name="keyword" placeholder="{{ trans('labels.Search')}}" onkeyup="filterProducts()">
+                                            <input class="form-control form-control-sm" type="text" autofocus name="keyword" id="search" placeholder="{{ trans('labels.Search')}}" onkeyup="filterProducts()">
                                         </div>
                                         <div class="row gutters-5">
                                             <div class="col-md-6">
@@ -71,8 +71,8 @@
                                                 <table class="table aiz-table mb-0 mar-no" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
-                                                            <th width="50%">{{ trans('labels.CustomerName') }}</th>
-                                                            <th width="15%">{{ trans('labels.Products') }}</th>
+                                                            <th >{{ trans('labels.CustomerName') }}</th>
+                                                            <th >{{ trans('labels.Products') }}</th>
                                                             
                                                             <th class="text-right">{{ trans('labels.Add') }}</th>
                                                         </tr>
@@ -161,17 +161,17 @@
                                 <div class="card mar-btm" id="cart-details">
                                     <div class="card-body">
                                         <div class="aiz-pos-cart-list c-scrollbar-light">
-                                            <table class="table aiz-table mb-0 mar-no" cellspacing="0" width="100%">
-                                                <thead>
+                                            <table class="table table_class aiz-table mb-0 mar-no" cellspacing="0" width="100%">
+                                                <thead class="thead_class">
                                                     <tr>
-                                                        <th width="50%">{{ trans('labels.productName')}}</th>
-                                                        <th width="15%">{{ trans('labels.Qty')}}</th>
+                                                        <th >{{ trans('labels.productName')}}</th>
+                                                        <th >{{ trans('labels.Qty')}}</th>
                                                         <th>{{ trans('labels.Price')}}</th>
                                                         <th>{{ trans('labels.Subtotal')}}</th>
                                                         <th class="text-right">{{ trans('labels.delete')}}</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody class="tbody_class">
                                                     @php
                                                         $subtotal = 0;
                                                         $tax = 0;
@@ -192,14 +192,16 @@
                                                                     ->leftJoin('products_description', 'products_description.products_id', '=', 'products.products_id')
                                                                     ->LeftJoin('image_categories', 'products.products_image', '=', 'image_categories.image_id')
                                                                     ->where('products.products_id', $cartItem['id'])
+                                                                    ->where('products_description.language_id', 2)
                                                                     ->first();
                                                                 // dd($products);
+                                                                // $products=\App\Models\AppModels\Product::with('descriptions')->with('categories')->where('products_id',$cartItem['id'])->first();
                                                             @endphp
                                                             <tr>
                                                                 <td>
                                                                     <span class="media">
                                                                         <div class="media-left">
-                                                                            <img class="mr-3" height="60" src="{{asset(''). $products->path }}" >
+                                                                            <img class="mr-3" height="60" src="{{asset(''). $products->path??'' }}" >
                                                                         </div>
                                                                         <div class="media-body">
                                                                             {{ $products->products_name }} ({{ $cartItem['variant'] }})
@@ -337,10 +339,87 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="">
-                                            <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
-                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button>
+                                        <div class="row" style="direction: rtl">
+                                            
+                                            <br>
+                                            {{-- <div class=" col-md-12" style="direction: ltr">
+                                                <div class="">
+                                                    <form class="" action="" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="d-flex">
+                                                            <div class="flex-grow-1">
+                                                                <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
+                                                                    <option value="" selected disabled>{{ trans('labels.walk') }}</option>
+                                                                    @foreach ($results['customers'] as $key => $customer)
+                                                                        @if ($customer->user)
+                                                                            <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#data_id" data-toggle="modal">
+                                                                <i class="fa fa-truck"></i>
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div> --}}
+
+                                            <div class="col-md-4">
+                                                <label>{{ trans('labels.Delivered Date') }}</label>
+                                                <input type="datetime-local" required class="form-control" name="delivery_date" >
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>{{ trans('labels.Time Duration') }}</label>
+                                                <input type="text" class="form-control" name="duration" >
+                                            </div>
+
+                                            @php
+                                                if(auth()->user()->role_id == 11){			
+                                                $shop = \App\User::find(auth()->user()->parent_admin_id);
+                                                }else{
+                                                $shop = \App\User::find(auth()->user()->id);
+                                                }
+                                                $invoice=$shop->invoice_type??1;
+                                            @endphp
+                                            {{-- <div class="col-md-6">
+                                                <label>{{ trans('labels.Choose Invoice') }}</label>
+                                                <select required class="form-control" name="invoice_type">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                </select>
+                                            </div> --}}
+                                            <input type="hidden" name="invoice_type" value="{{ $invoice }}">
+                                            <div class="col-md-4" style="direction: rtl">
+                                                <label>{{ trans('labels.Paied Price') }}</label>
+                                                <input type="text" class="form-control" name="paied" placeholder="المدفوع">
+                                            </div>
+                                            <div class="col-md-6" style="direction: rtl">
+                                                <br>
+                                                {{-- <br> --}}
+                                                <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button>
+                                                <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
+                                            </div>
+                                            <div class="col-md-6" style="direction: rtl">
+                                                <label>الجزأ المدفوع كاش فى حالة دفع بالفيزا</label>
+                                                <input type="text" class="form-control" name="cache" value="0" placeholder="المدفوع">
+                                            </div>
+                                            {{-- <div class="col-md-6">
+                                                <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
+                                                <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button>
+                                            </div> --}}
+                                            {{-- <div class="col-md-6">
+                                                <input type="datetime-local" required class="form-control" name="delivery_date" >
+                                            </div> --}}
+                                            {{-- <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button> --}}
                                         </div>
+
+                                        {{-- <div class="">
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm" data-toggle="modal">{{ trans('labels.Pay with cashe')}}</button>
+                                            <input type="text"" name="cache" value="0">
+                                            <button type="button" class="btn btn-primary" data-target="#order-confirm-visa" data-toggle="modal">{{ trans('labels.Pay with visa')}}</button>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -503,6 +582,7 @@
             $('#product-list').on('click','.product-card',function(){
                 var id = $(this).data('id');
                 $.get('{{ route('variants') }}', {id:id}, function(data){
+                    console.log(data);
                     if (data == 0) {
                         addToCart(id, null, 1);
                     }
@@ -524,15 +604,15 @@
             $.get('{{ route('pos.search_product') }}',{keyword:keyword, category:category, brand:brand}, function(data){
                 products = data;
                 $('#product-list').html(null);
-                // console.log(products.products.paginate);
+                // console.log(products.products);
                 setProductList(data);
             });
         }
 
         function loadMoreProduct(){
             // console.log(products);
-            if(products != null && products.products.paginate.next_page_url != null){
-                $.get(products.products.paginate.next_page_url,{}, function(data){
+            if(products != null && products.products.next_page_url != null){
+                $.get(products.products.next_page_url,{}, function(data){
                     products = data;
                     // console.log(products);
                     setProductList(data);
@@ -541,24 +621,35 @@
         }
 
         function setProductList(data){
-            for (var i = 0; i < data.products.paginate.data.length; i++) {
+            // console.log(data);
+            
+            for (var i = 0; i < data.products.data.length; i++) {
                 $('#product-list').append('<div class="col-md-4">' +
-                    '<div class="card bg-light c-pointer mb-2 product-card" data-id="'+data.products.paginate.data[i].products_id+'" >'+
-                        '<span class="absolute-top-left bg-dark text-white px-1">'+data.products.paginate.data[i].products_price +'</span>'+
-                        '<img src="{{asset('')}}'+ data.products.paginate.data[i].image_path +'" class="card-img-top img-fit h-100px mw-100 mx-auto" >'+
+                    '<div class="card bg-light c-pointer mb-2 product-card" data-id="'+data.products.data[i].products_id+'" >'+
+                        '<span class="absolute-top-left bg-dark text-white px-1">'+data.products.data[i].products_price +'</span>'+
+                        '<img src="'+ data.products.data[i].products_image +'" class="card-img-top img-fit h-100px mw-100 mx-auto" >'+
                         '<div class="card-body p-2">'+
-                            '<div class="text-truncate-2 small">'+ data.products.paginate.data[i].products_name +'</div>'+
+                            '<div class="text-truncate-2 small">'+ data.products.data[i].products_name +'</div>'+
                         '</div>'+
                     '</div>'+
                 '</div>');
             }
-            if (data.products.paginate.next_page_url != null) {
+            if (data.products.next_page_url != null) {
                 $('#load-more').find('.text-center').html('Load More');
             }
             else {
                 $('#load-more').find('.text-center').html('Nothing more found');
             }
             $('[data-toggle="tooltip"]').tooltip();
+            // console.log(data.product_stock.product_id);
+            if(data.products_id !=0){
+                addToCart(data.products_id,null,1);
+                document.getElementById('search').value='';
+            }
+            if(data.product_stock !=null){
+                addToCart(data.product_stock.product_id,data.product_stock.variant,1);
+                document.getElementById('search').value='';
+            }
         }
 
         function removeFromCart(key){
@@ -650,7 +741,13 @@
             var discount = $('input[name=discount]').val();
             var address = $('input[name=address_id]:checked').val();
             var total_price = $('input[name=total_price]').val();
+            var cache = $('input[name=cache]').val();
+            var paied = $('input[name=paied]').val();
+            var delivery_date = $('input[name=delivery_date]').val();
+            var duration = $('input[name=duration]').val();
+            var invoice_type = $('input[name=invoice_type]').val();
             var customer_id = $('input[name=customer_id]').val() != '' ? $('input[name=customer_id]').val() : $('select[name=customer]').val();
+
 
             $.post('{{ route('pos.order_place') }}',
             {
@@ -669,6 +766,11 @@
                 shipping:shipping,
                 discount:discount,
                 total_price:total_price,
+                cache:cache,
+                invoice_type:invoice_type,
+                duration:duration,
+                delivery_date:delivery_date,
+                paied:paied,
                 comment: comment,
                 customer_id: customer_id
             })
@@ -694,6 +796,24 @@
 
 @section('style')
 <style>
+ 
+.tbody_class {
+    display: block;
+    height: 200px;
+    overflow: auto;
+}
+.thead_class, .tbody_class tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;/* even columns width , fix width of table too*/
+}
+.thead_class {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+.table_class {
+    width: auto;
+}
+
     .d-flex {
         display: -ms-flexbox!important;
         display: flex!important;

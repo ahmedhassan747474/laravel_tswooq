@@ -480,13 +480,15 @@ jQuery(document).on('click', '.qtyminus', function(e){
 //add-to-Cart with custom options
 jQuery(document).on('click', '.connection', function(e){
 	var unit_id = $(this).data('unit_id');
-	console.log(unit_id);
+	var stock_id = $(this).data('stock_id');
+	alert('ggfg');
+	console.log(stock_id);
 	
 	jQuery.ajax({
 	 	url: '{{ URL::to("/getProductDetailsById")}}',
 	 	headers: {'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')},
 	 	type: "POST",
-		data: {'products_id' : unit_id},
+		data: {'products_id' : unit_id,''},
 	 	success: function (response) {
 			// console.log(response);
 			var html_images = '<div id="custCarousel" class="carousel slide" data-ride="carousel" align="center"><div class="carousel-inner">';

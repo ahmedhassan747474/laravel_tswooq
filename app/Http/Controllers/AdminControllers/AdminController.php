@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Exception;
 use App\Models\Core\Images;
+use App\Models\Core\User;
 use Validator;
 use Hash;
 use Auth;
@@ -550,7 +551,14 @@ class AdminController extends Controller
         $result['countries'] = $countries;
         $result['zones'] = $zones;
 		$result['commonContent'] = $this->Setting->commonContent();
-        return view("admin.admin.profile",$title)->with('result', $result)->with('allimage', $allimage);
+		if(auth()->user()->role_id == 11){			
+		$shop = User::find(auth()->user()->parent_admin_id);
+		}else{
+		$shop = User::find(auth()->user()->id);
+		}
+		$tax_number=$shop->tax_number??'';
+		$invoice_type=$shop->invoice_type??'';
+        return view("admin.admin.profile",$title)->with('result', $result)->with('tax_number', $tax_number)->with('invoice_type', $invoice_type)->with('allimage', $allimage);
     }
 
     public function update(Request $request){
@@ -579,6 +587,21 @@ class AdminController extends Controller
       }
 
        $update = $this->Admin->updaterecord($request);
+	   if($request->tax_number){
+		   if(auth()->user()->role_id == 11){
+				User::table('users')->find(auth()->user()->parent_admin_id)->update([
+			   'tax_number'=>$request->tax_number,
+			   'invoice_type'=>$request->invoice_type
+		   	]); 
+		   }else{
+			User::find(auth()->user()->id)->update([
+				'tax_number'=>$request->tax_number,
+				'invoice_type'=>$request->invoice_type
+
+				]);
+		   }
+		
+	   }
         $message = Lang::get("labels.ProfileUpdateMessage");
        return redirect()->back()->with(['success' => $message]);
      }
@@ -731,6 +754,10 @@ class AdminController extends Controller
 			$manufacturer_update = $roles[0]->manufacturer_update;
 			$manufacturer_delete = $roles[0]->manufacturer_delete;
 
+			$is_show_admin =$roles[0]->is_show_admin;
+			$is_show_app =$roles[0]->is_show_app;
+			$is_show_web =$roles[0]->is_show_web;
+
 			$categories_view   = $roles[0]->categories_view;
 			$categories_create = $roles[0]->categories_create;
 			$categories_update = $roles[0]->categories_update;
@@ -848,6 +875,10 @@ class AdminController extends Controller
 			$manufacturer_update = '0';
 			$manufacturer_delete = '0';
 
+			$is_show_admin ='0';
+			$is_show_app ='0';
+			$is_show_web ='0';
+
 			$categories_view = '0';
 			$categories_create = '0';
 			$categories_update = '0';
@@ -947,16 +978,28 @@ class AdminController extends Controller
 			$shop_view   	= '0';
 		}
 
+		// dd($roles);
 
 		$result2[0]['link_name'] = 'dashboard';
 		$result2[0]['permissions'] = array('0'=>array('name'=>'dashboard_view','value'=>$dashboard_view));
 
-		$result2[1]['link_name'] = 'manufacturer';
+		// $result2[1]['link_name'] = 'manufacturer';
+		// $result2[1]['permissions'] = array(
+		// 			'0'=>array('name'=>'manufacturer_view','value'=>$manufacturer_view),
+		// 			'1'=>array('name'=>'manufacturer_create','value'=>$manufacturer_create),
+		// 			'2'=>array('name'=>'manufacturer_update','value'=>$manufacturer_update),
+		// 			'3'=>array('name'=>'manufacturer_delete','value'=>$manufacturer_delete)
+		// 			);
+
+					
+		// $result2[1]['link_name'] = '';
+		// $result2[1]['permissions'] = [];
+
+		$result2[1]['link_name'] = 'show_product';
 		$result2[1]['permissions'] = array(
-					'0'=>array('name'=>'manufacturer_view','value'=>$manufacturer_view),
-					'1'=>array('name'=>'manufacturer_create','value'=>$manufacturer_create),
-					'2'=>array('name'=>'manufacturer_update','value'=>$manufacturer_update),
-					'3'=>array('name'=>'manufacturer_delete','value'=>$manufacturer_delete)
+					'0'=>array('name'=>'is_show_web','value'=>$is_show_web),
+					'1'=>array('name'=>'is_show_app','value'=>$is_show_app),
+					'2'=>array('name'=>'is_show_admin','value'=>$is_show_admin),
 					);
 
 		$result2[2]['link_name'] = 'categories';
@@ -1155,6 +1198,11 @@ class AdminController extends Controller
 						'manufacturer_create' => $request->manufacturer_create,
 						'manufacturer_update' => $request->manufacturer_update,
 						'manufacturer_delete' => $request->manufacturer_delete,
+
+						'is_show_web' => $request->is_show_web,
+						'is_show_app' => $request->is_show_app,
+						'is_show_admin' => $request->is_show_admin,
+
 
 						'view_media' => $request->media_view,
 						'add_media' => $request->media_create,

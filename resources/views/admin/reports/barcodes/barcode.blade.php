@@ -1,5 +1,15 @@
 @extends('admin.layout')
 
+@push('styles')
+{{-- <style>
+    svg{
+        width: 5cm !important;
+        height: 2.5cm !important;
+        
+    }
+</style> --}}
+    
+@endpush
 @section('content')
 <div class="content-wrapper">
 
@@ -31,7 +41,8 @@
                         <div class="col-md-4">
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> @lang('site.search')</button>
                         </div>
-                        <button class="btn  btn-primary print-btn col-md-2"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>
+                        <!--<button class="btn  btn-primary print-btn col-md-2"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>-->
+                        <button class="btn  btn-primary  col-md-2" id="downloa" onclick="downloadall(this,{{count($barcodes)}})"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>
 
                     </div>
                 </form>
@@ -42,17 +53,20 @@
                 @if($barcodes->count() > 0)
 
                             @foreach($barcodes as $index=>$barcode)
-                                    <div class="col-xs-3 text-center" id="printThisBarcode" style="cursor:pointer;" >
-                                        {!! QrCode::size(200)->generate($barcode->products_id); !!}
-                                            {{-- // echo '<img style="padding-top: 15px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode->barcode, $generator::TYPE_CODE_128)) . '"> '; --}}
-                                            <span style="display: block;" class="text-center">
+                                    <div class="col-md-12 col-xs-12" id="d{{$index}}" onclick="downloadth(this)" style="cursor:pointer;margin-bottom: 20px;margin-top: 0px;" >
+                                        {!! QrCode::size(70)->generate($barcode->products_id); !!}
+                                        {{-- <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->format('png')->generate($barcode->products_id)) !!} "> --}}
+
+
+                                            {{-- // echo '<img style="padding-top: 0px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode->barcode, $generator::TYPE_CODE_128)) . '"> '; --}}
+                                            <span style="display: inline-block;position: absolute;width: 39px;font-size: 12px;text-align: right;" class="column">
                                             {{-- Nada ---  --}}
-                                            {{$barcode->products_name}} ---
-                                            {{ trans('labels.SalePrice') }}: {{$barcode->products_price}} 
+                                            {{str_limit($barcode->products_name, $limit = 10, $end = '...') }} <br>
+                                            السعر: {{$barcode->products_price}} 
                                             </span>
                                             
                                     </div>
-                                     @if(($index+1) % 4 == 0) <div class="col-md-12"><hr></div>  @endif
+                                     <!--{{-- @if(($index+1) % 4 == 0) <div class="col-md-12"><hr></div>  @endif --}}-->
                             @endforeach
 
                 @else
@@ -72,6 +86,11 @@
 @endsection
 
 @push('scripts')
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+<script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
 
 <script>
      $(document).on('click', '.print-btn', function (e) {
@@ -95,6 +114,95 @@ for (let i = 0; i < 10; i++) {
 $(this).printThis();
 }); //end of print function
 
+
+
+function downloadth(th){
+    var id =th.id;
+    var element = $("#"+id); // global variable     
+			 var getCanvas; //global variable 
+			 html2canvas(element, {  
+               
+               allowTaint: false,
+                            taintTest: true,
+               onrendered: function (canvas) { 
+               getCanvas = canvas;
+               
+                                              return Canvas2Image.saveAsPNG(getCanvas);
+
+               var imgageData = getCanvas.toDataURL("image/png", 1);
+			 		//Now browser starts downloading it instead of just showing it                
+			 		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+			 		console.log(newData);
+			 		$("#"+id).attr("download", "Check.png").attr("href", newData); 
+               }      
+             }); 
+             
+			 //function sa() {     
+    //                         //  return Canvas2Image.saveAsPNG(getCanvas);
+
+			 //		var imgageData = getCanvas.toDataURL("image/png", 1);
+			 //		//Now browser starts downloading it instead of just showing it                
+			 //		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+			 //		console.log(newData);
+			 //		$("#"+id).attr("download", "Check.png").attr("href", newData);         
+			 //}   
+			 //sa();
+}
+
+function downloadall(th,len){
+    // var id =th.id;
+    // alert(len);
+    
+    for(let i=0 ; i<len ; i++){
+        var id = "d"+i;
+        var element = $("#"+id); // global variable     
+			 var getCanvas; //global variable 
+			 html2canvas(element, {  
+               
+               allowTaint: false,
+                            taintTest: true,
+               onrendered: function (canvas) { 
+               getCanvas = canvas;
+               
+                return Canvas2Image.saveAsPNG(getCanvas);
+
+               var imgageData = getCanvas.toDataURL("image/png", 1);
+			 		//Now browser starts downloading it instead of just showing it                
+			 		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+			 		console.log(newData);
+			 		$(th.id).attr("download", "Check.png").attr("href", newData); 
+               }      
+             });  
+    }
+   
+           
+}
+$(document).ready(function () {  
+			 var element = $("#print-area"); // global variable     
+			 var getCanvas; //global variable 
+			 html2canvas(element, {  
+               encodingOptions :1,
+               windowWidth:600,
+               windowWidth:400,
+               allowTaint: false,
+                            taintTest: true,
+               onrendered: function (canvas) { 
+               getCanvas = canvas;                
+               }      
+             }); 
+			 $("#download").on('click', function () {     
+                             return Canvas2Image.saveAsPNG(getCanvas);
+
+			 		var imgageData = getCanvas.toDataURL("image/png", 1);
+               console.log(imgageData);
+			 		//Now browser starts downloading it instead of just showing it                
+			 		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+			 		$("#download").attr("download", "Check.png").attr("href", newData);         
+			 });    
+		});
+            
 </script>
+
+
     
 @endpush

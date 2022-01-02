@@ -55,6 +55,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'like_card' => [
+            'driver' => 'local',
+            'root' => public_path('images/media/like_card'),
+            'url' => env('APP_URL').'/uploadimage',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

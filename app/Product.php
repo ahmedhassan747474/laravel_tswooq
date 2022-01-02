@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Product extends Model {
@@ -13,7 +14,7 @@ class Product extends Model {
         'purchase_price', 'unit', 'slug', 'colors', 'choice_options', 'variations', 'current_stock', 'thumbnail_img'
     ];
 
-    protected $appends = ['shop_name','products_name','products_description','products_attributes'];
+    protected $appends = ['shop_name','rating','products_name','products_description','products_attributes','products_like'];
 
     protected $hidden =[
         'colors',
@@ -63,6 +64,90 @@ class Product extends Model {
         return $this->hasMany(ProductTranslation::class);
     }
 
+    public function getRatingAttribute()
+    {
+        $reviews = DB::table('reviews')
+                                    ->join('users', 'users.id', '=', 'reviews.customers_id')
+                                    ->select('reviews.*', 'users.avatar as image')
+                                    ->where('products_id', $this->products_id)
+                                    ->where('reviews_status', '1')
+                                    ->get();
+
+                                $avarage_rate = 0;
+                                $total_user_rated = 0;
+
+                                if (count($reviews) > 0) {
+
+                                    $five_star = 0;
+                                    $five_count = 0;
+
+                                    $four_star = 0;
+                                    $four_count = 0;
+
+                                    $three_star = 0;
+                                    $three_count = 0;
+
+                                    $two_star = 0;
+                                    $two_count = 0;
+
+                                    $one_star = 0;
+                                    $one_count = 0;
+
+                                    foreach ($reviews as $review) {
+
+                                        //five star ratting
+                                        if ($review->reviews_rating == '5') {
+                                            $five_star += $review->reviews_rating;
+                                            $five_count++;
+                                        }
+
+                                        //four star ratting
+                                        if ($review->reviews_rating == '4') {
+                                            $four_star += $review->reviews_rating;
+                                            $four_count++;
+                                        }
+                                        //three star ratting
+                                        if ($review->reviews_rating == '3') {
+                                            $three_star += $review->reviews_rating;
+                                            $three_count++;
+                                        }
+                                        //two star ratting
+                                        if ($review->reviews_rating == '2') {
+                                            $two_star += $review->reviews_rating;
+                                            $two_count++;
+                                        }
+
+                                        //one star ratting
+                                        if ($review->reviews_rating == '1') {
+                                            $one_star += $review->reviews_rating;
+                                            $one_count++;
+                                        }
+
+                                    }
+
+                                    $five_ratio = round($five_count / count($reviews) * 100);
+                                    $four_ratio = round($four_count / count($reviews) * 100);
+                                    $three_ratio = round($three_count / count($reviews) * 100);
+                                    $two_ratio = round($two_count / count($reviews) * 100);
+                                    $one_ratio = round($one_count / count($reviews) * 100);
+
+                                    $avarage_rate = (5 * $five_star + 4 * $four_star + 3 * $three_star + 2 * $two_star + 1 * $one_star) / ($five_star + $four_star + $three_star + $two_star + $one_star);
+                                    $total_user_rated = count($reviews);
+                                    $reviewed_customers = $reviews;
+                                } else {
+                                    $reviewed_customers = array();
+                                    $avarage_rate = 0;
+                                    $total_user_rated = 0;
+
+                                    $five_ratio = 0;
+                                    $four_ratio = 0;
+                                    $three_ratio = 0;
+                                    $two_ratio = 0;
+                                    $one_ratio = 0;
+                                }
+
+                                return number_format($avarage_rate, 2);
+    }
     // public function category() {
     //     return $this->belongsTo(Category::class);
     // }
@@ -96,10 +181,14 @@ class Product extends Model {
 
     public function getProductsImageAttribute($value)
     {
-        $imagepath= ImageCategories::where('image_id',$value)
-                                    ->where('image_type', '=', 'THUMBNAIL')
+        // dd($value);
+        $imagepath= ImageCategories::where('image_id',$value)->where(function($q){
+            $q->where('image_type', '=', 'THUMBNAIL')
                                     ->where('image_type', '!=', 'THUMBNAIL')
-                                    ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+                                    ->orWhere('image_type', '=', 'ACTUAL');
+        })->first()->path ?? '';
+                                    
+        // dd($imagepath);
         return asset($imagepath);
     }
 
@@ -110,16 +199,31 @@ class Product extends Model {
         return $getName;
     }
 
-    public function getProductsNameAttribute($value)
+    public function getProductsNameAttribute()
     {
         $getName=  $this->descriptions[0]->products_name ?? $this->products_slug ;
      
         return $getName;
     }
 
+    public function getProductsLikeAttribute()
+    { 
+        if(Auth::check()){
+            $liked = DB::table('liked_products')->where('liked_customers_id', '=', auth()->user()->id)->where('liked_products_id', '=', $this->products_id)->first();
+            if($liked){
+                return 1;
+            }
+        }
+        return 0;
+    }
+
     public function getProductsAttributesAttribute()
     {
         $results =[];
+        $index =0;
+        $results[$index]['price'] = $this->products_price;           
+        $results[$index]['image'] = $this->products_image;           
+        $results[$index]['quantity'] = $this->products_quantity;           
         $stocks=ProductStock::where('product_id',$this->products_id);
 
             if(isset($stocks) && count($stocks->get())>0){
@@ -135,7 +239,8 @@ class Product extends Model {
 
                 $stocks=$stocks->get();
                 // dd($this->colors);
-                foreach($stocks as $index=>$stock){
+                foreach($stocks as $stock){
+                    $index++;
                     $results[$index]['stock_id']=$stock->id;
                     foreach(explode('-', $stock->variant) as $i=>$variant){
                         if($this->colors && $i==0){
@@ -161,9 +266,11 @@ class Product extends Model {
 
                     if($stock->image){
                         $imagepath= ImageCategories::where('image_id',$stock->image)
-                                    ->where('image_type', '=', 'THUMBNAIL')
-                                    ->where('image_type', '!=', 'THUMBNAIL')
-                                    ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+                                    ->where(function($q){
+										$q->where('image_type', '=', 'THUMBNAIL')
+																->where('image_type', '!=', 'THUMBNAIL')
+																->orWhere('image_type', '=', 'ACTUAL');
+									})->first()->path ?? '';
          
                         $results[$index]['image']=asset($imagepath);
                     }

@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Core\Order;
-
+// require __DIR__.'/../vendor/autoload.php';
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\Printer;
 class OrdersController extends Controller
 {
     //
@@ -213,10 +215,26 @@ class OrdersController extends Controller
         // $ordersData['currency'] = $this->myVarsetting->getSetting();
         // $result['commonContent'] = $this->Setting->commonContent();
 
-        return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData);
-
+        if($orders_data[0]->invoice_type ==2 ){
+            return view("admin.Orders.invoiceprint2", $title)->with('data', $ordersData);
+       }
+       
+       return view("admin.Orders.invoiceprint", $title)->with('data', $ordersData);
+    
     }
 
+    public function cutPaper()
+    {
+        $connector = new FilePrintConnector("php://stdout");
+        $printer = new Printer($connector);
+
+        $printer -> text("POS!\n");
+        $printer -> cut();
+
+        $printer -> close();
+        echo 'Paper printed and cut successfully';
+        // return redirect()->back();
+    }
     public function assignOrders(Request $request)
     {
         $orders = $this->Order->assignOrders($request);

@@ -7,6 +7,7 @@
         <ol class="breadcrumb">
             <li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
             <li class="active">{{ trans('labels.POS Like Card') }}</li>
+            <li class="active">اقصي قيمة مسموح بها للايك كارد هي : {{auth()->user()->like_limit}}</li>
         </ol>
     </section>
 

@@ -17,6 +17,7 @@ use App\Models\Core\Languages;
 use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
+use App\User as AppUser;
 use Auth;
 use Session;
 
@@ -363,6 +364,7 @@ class POSCardController extends Controller
     //order place
     public function order_store(Request $request)
     {
+        
         // dd($request->all());
         if(Session::has('posCardCart') && count(Session::get('posCardCart')) > 0){
             // $order = new Order;
@@ -374,6 +376,13 @@ class POSCardController extends Controller
             $city = '';
             $postal_code = '';
             $phone = '';
+
+            if($request->total_price > auth()->user()->like_limit){
+                return 0;
+            }
+            AppUser::find(auth()->user()->id)->update([
+                'like_limit'=> auth()->user()->like_limit-$request->total_price,
+            ]);
 
             if ($request->user_id == null) {
 
@@ -578,7 +587,7 @@ class POSCardController extends Controller
                 );
 
                 $shop=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first();
-                $shop->update([
+                DB::table('users')->where('id',auth()->user()->parent_admin_id)->update([
                     'like_limit'=> $shop->like_limit - $order_price
                 ]);
                 DB::table('balance_history')->insert([

@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Web\package;
+use App\Models\Web\PackgeRequest;
+use Illuminate\Support\Facades\DB;
+
 header('Content-Type: text/html; charset=utf-8');
 if(file_exists(storage_path('installed'))){
 	$check = DB::table('settings')->where('id', 94)->first();
@@ -169,3 +173,14 @@ Route::get('/password/success', function(){
 
     return view('auth.success');
 });
+
+Route::get('/payment/success/{id}', function($id){
+    PackgeRequest::find($id)->update(['payment_status'=>1]);
+    return view('web.success');
+})->name('payment_success');
+
+Route::get('order/payment/success/{id}/{cart_id}', function($id,$cart_id){
+    DB::table('orders')->where('orders_id',$id)->update(['payment_status'=>1]);
+	$deleteCart = DB::table('cart_product')->where('cart_id', '=', $cart_id)->delete();
+    return view('web.success');
+})->name('order_payment_success');

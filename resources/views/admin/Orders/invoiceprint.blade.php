@@ -2,28 +2,7 @@
 @include('admin.common.meta')
 
 <style>
-/*@page { width: 79mm }  */
-/*@page {*/
-/*  size: 79mm;*/
-/*  margin: 0;*/
-   /*transform: scale(.7) !important;*/
-/*}*/
-/*@media print{ */
-	/* All styles for print should goes here */ 
-/*	.invoice{ */
-/*		width: 79mm; */
-/*		height: auto; */
-/*		margin: 50px auto; */
-/*	} */
-/*} */
 
-/*@media print {*/
-/*  @page {*/
-/*    width: 9.9cm;*/
-    /*height: 297mm;*/
-/*  }*/
-/*   ... the rest of the rules ... */
-/*}*/
 .wrapper.wrapper2{
 	display: block;
 	display: flex;
@@ -81,8 +60,7 @@ img {
     width: inherit;
 }
 
-@media print {
-    .hidden-print,
+@media print {    .hidden-print,
     .hidden-print * {
         display: none !important;
     }
@@ -92,13 +70,14 @@ img {
 }
 
 </style>
-<body onload="window.print();">
+<body onload="self.print();" >
+  {{-- <body onload="self.print();" onafterprint="window.location.href = '/admin/orders/cutPaper';"> --}}
 <div class="wrapper wrapper2">
   <!-- Main content -->
   <section class="ticket" style="margin: 15px;">
       <!-- title row -->
       <div class="col-xs-12">
-      <div class="row">
+      <div class="row" style="position: relative;top: -25px;">
        @if(session()->has('message'))
       	<div class="alert alert-success alert-dismissible">
            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
@@ -113,14 +92,12 @@ img {
                 {{ session()->get('error') }}
             </div>
         @endif
-
-
        </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
           <h2 class="page-header" style="padding-bottom: 25px">
-            <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }}
+            {{-- <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }} --}}
             <small class="pull-right">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
           </h2>
         </div>
@@ -131,13 +108,13 @@ img {
         if($data['orders_data'][0]->ordered_source == 3 && $data['orders_data'][0]->admin_id !=1){
           $user=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
           $name = $user->shop_name;
-          $src=asset('').'/'.$user->avatari->image_category->path??asset('/images/admin_logo/logo_print.jpeg');
+          $src= isset($user->avatari->image_category) ? asset('').'/'.$user->avatari->image_category->path:asset('/images/admin_logo/logo_print.jpeg');
         }
         else{
           $src=asset('/images/admin_logo/logo_print.jpeg');
         }
       @endphp
-      <img src="{{ $src }}" height="60" width="50" style="width: 120px;" class="float-right">
+      <img src="{{ $src }}" height="60" width="50" style="width: 120px;position: relative;margin-top: -60px;" class="float-right">
       <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
@@ -188,6 +165,7 @@ img {
             <tr>
               <th class="quantity">{{ trans('labels.Qty') }}</th>
               <th class="description">{{ trans('labels.ProductName') }}</th>
+              {{-- <th class="description">{{ trans('labels.ProductAttributes') }}</th> --}}
               <!--<th>{{ trans('labels.ProductModal') }}</th>-->
               <!--<th>{{ trans('labels.Options') }}</th>-->
               <th class="price">{{ trans('labels.Price') }}</th>
@@ -201,6 +179,9 @@ img {
                 <td class="description" >
                     {{  $products->products_name }}<br>
                 </td class="price">
+                {{-- <td class="description" >
+                  {{  $products->products_attribute }}
+                </td> --}}
                 <!--<td>-->
                 <!--    {{  $products->products_model }}-->
                 <!--</td>-->
@@ -214,7 +195,7 @@ img {
                 <!--</td>-->
 
                 <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->products_price * $products->products_quantity }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-                <?php $total = $total + $products->products_price * $products->products_quantity; $tax += $products->products_tax * $products->products_quantity?>
+                <?php $total = $total + $products->products_price * $products->products_quantity; $tax += $products->products_tax ?>
             </tr>
             @endforeach
 
@@ -228,55 +209,27 @@ img {
 
       <div class="row">
         <!-- accepted payments column -->
-        <div class="col-xs-7">
-          <p class="lead" style="margin-bottom:10px">{{ trans('labels.PaymentMethods') }}:</p>
-          <p class="text-muted well well-sm no-shadow" style="text-transform:capitalize">
-           	{{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }}
-          </p>
-          @if(!empty($data['orders_data'][0]->coupon_code))
-              <p class="lead" style="margin-bottom:10px">{{ trans('labels.Coupons') }}:</p>
-                <table class="text-muted well well-sm no-shadow stripe-border table table-striped" style="text-align: center; ">
-                	<tr>
-                        <th style="text-align: center; ">{{ trans('labels.Code') }}</th>
-                        <th style="text-align: center; ">{{ trans('labels.Amount') }}</th>
-                    </tr>
-                	@foreach( json_decode($data['orders_data'][0]->coupon_code) as $couponData)
-                    	<tr>
-                        	<td>{{ $couponData->code}}</td>
-                            <td>{{ $couponData->amount}}
-
-                                @if($couponData->discount_type=='percent_product')
-                                    ({{ trans('labels.Percent') }})
-                                @elseif($couponData->discount_type=='percent')
-                                    ({{ trans('labels.Percent') }})
-                                @elseif($couponData->discount_type=='fixed_cart')
-                                    ({{ trans('labels.Fixed') }})
-                                @elseif($couponData->discount_type=='fixed_product')
-                                    ({{ trans('labels.Fixed') }})
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-				</table>
-          @endif
-
-          </p>
-
-          @if($data['orders_data'][0]->payment_method == 'Bank Account')
-          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account') }}:</p>
-          <p class="text-muted well well-sm no-shadow" style="text-transform:capitalize">
-            {{$data['orders_data'][0]->bank_account_iban}}
-          </p>
-
-          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account Image') }}:</p>
-          <img src="{{asset('images/bank_account/')}}/{{$data['orders_data'][0]->bank_account_image}}" width="400px">
-          @endif
-        </div>
+        
         <!-- /.col -->
-        <div class="col-xs-5">
+        <div class="col-xs-12">
           <!--<p class="lead"></p>-->
           <div class="table-responsive ">
             <table class="table order-table">
+
+              <tr>
+                <th>{{ trans('labels.PaymentMetods') }}:</th>
+                <td>
+                  {{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }}
+                </td>
+              </tr>
+
+              {{-- <tr>
+                <th>{{ trans('labels.Delivered Date') }}:</th>
+                <td>
+                  {{ str_replace('_',' ', $data['orders_data'][0]->delivery_date) }}
+                </td>
+              </tr> --}}
+
               <tr>
                 <th style="width:50%">{{ trans('labels.Subtotal') }}:</th>
                 <td>
@@ -286,7 +239,7 @@ img {
               <tr>
                 <th>{{ trans('labels.Tax') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                   {{-- @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif --}}
                   </td>
               </tr>
@@ -310,6 +263,20 @@ img {
                   @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->admin_discount }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
               </tr>
               @endif
+
+              <tr>
+                <th>{{ trans('labels.Paied Price') }}:</th>
+                <td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->paied }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
+              </tr>
+
+              <tr>
+                <th>{{ trans('labels.Remaining Price') }}:</th>
+                <td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->order_price - $data['orders_data'][0]->paied }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
+              </tr>
 
               <tr>
                 <th>{{ trans('labels.Total') }}:</th>
@@ -338,9 +305,68 @@ img {
             @endif
             </p>
         </div>
-        <div class="col-xs-12 text-center" id="printThisBarcode" style="cursor:pointer;" >
-          {!! QrCode::size(120)->generate(URL::to('admin/orders/invoiceprint/'.$data['orders_data'][0]->orders_id)); !!}
-        </div>
+       
+          @php
+                if(auth()->user()->role_id == 11){			
+                  $shop = App\Models\Core\User::find(auth()->user()->parent_admin_id);
+                }else{
+                  $shop = App\Models\Core\User::find(auth()->user()->id);
+                }
+                $tax_number=$shop->tax_number??'';
+                if(isset($shop->shop_name) && $shop->shop_name!=null){
+                    $shop_name=$shop->shop_name??$shop->first_name.' '.$shop->last_name;
+                }else if(isset($shop->first_name) && $shop->first_name!=null){
+                    $shop_name=$shop->first_name.' '.$shop->last_name;
+                }else {
+                  $shop_name='tswooq';
+                }
+              if(isset($tax_number) && $tax_number!='')
+              {
+                function __getLength($value) {
+                    return strlen($value);
+                }
+
+                function __toHex($value) {
+                    return pack("H*", sprintf("%02X", $value));
+                }
+
+                function __toString($__tag, $__value, $__length) {
+                    $value = (string) $__value;
+                    return __toHex($__tag) . __toHex($__length) . $value;
+                }
+
+                function __getTLV($dataToEncode) {
+                    $__TLVS = '';
+                    for ($i = 0; $i < count($dataToEncode); $i++) {
+                        $__tag = $dataToEncode[$i][0];
+                        $__value = $dataToEncode[$i][1];
+                        $__length = __getLength($__value);
+                        $__TLVS .= __toString($__tag, $__value, $__length);
+                    }
+
+                    return $__TLVS;
+                }
+
+                $dataToEncode = [
+                    [1, $shop_name],
+                    [2, $tax_number],
+                    [3, date('Y-m-d\TH:i:s\Z', strtotime($data['orders_data'][0]->date_purchased))],
+                    [4, $data['orders_data'][0]->order_price],
+                    [5, $data['orders_data'][0]->total_tax]
+                ];
+
+                $__TLV = __getTLV($dataToEncode);
+                $__QR = base64_encode($__TLV);
+                }
+          @endphp
+
+          @if ($__QR)
+            <div class="col-xs-12 text-center" id="printThisBarcode" style="cursor:pointer;margin-top: -13px;" >
+              {{-- {!! QrCode::size(100)->generate(URL::to('admin/orders/invoiceprint/'.$data['orders_data'][0]->orders_id)); !!} --}}
+              {!! QrCode::size(100)->generate($__QR); !!}
+            </div>
+          @endif
+        
 
         <!-- /.col -->
       </div>

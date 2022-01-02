@@ -12,10 +12,16 @@
 				{{trans('Variant Price')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('SKU')}}
+				{{trans('Barcode')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
 				{{trans('Quantity')}}
+			</td>
+			<td class="text-center" data-breakpoints="lg">
+				{{trans('POS_Price')}}
+			</td>
+			<td class="text-center" data-breakpoints="lg">
+				{{trans('POS_Quantity')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
 				{{trans('Photo')}}
@@ -56,13 +62,23 @@
 					<label for="" class="control-label">{{ $str }}</label>
 				</td>
 				<td>
-					<input type="number" lang="en" name="price_{{ $str }}" value="{{ $unit_price }}" min="0" step="0.01" class="form-control" required>
+					<input type="number" lang="en" name="price_{{ $str }}" value="{{ $unit_price }}" placeholder="App&Web Price" min="0" step="0.01" class="form-control" required>
 				</td>
 				<td>
 					<input type="text" name="sku_{{ $str }}" value="" class="form-control">
 				</td>
 				<td>
 					<input type="number" lang="en" name="qty_{{ $str }}" value="10" min="0" step="1" class="form-control" required>
+				</td>
+
+				<td>
+					<input type="number" lang="en" name="pos_price_{{ $str }}" value="{{ $unit_price }}" placeholder="POS Price" min="0" step="0.01" class="form-control" required>
+				</td>
+				{{-- <td>
+					<input type="text" name="sku_{{ $str }}" value="" class="form-control">
+				</td> --}}
+				<td>
+					<input type="number" lang="en" name="pos_qty_{{ $str }}" value="10" min="0" step="1" class="form-control" required>
 				</td>
 				{{-- <td>
 					<div class=" input-group " data-toggle="aizuploader" data-type="image">

@@ -6,11 +6,13 @@
 <!-- ./end of meta -->
 
 
+
 <body class=" hold-transition skin-blue sidebar-mini">
+    
 <!-- wrapper -->
 <div class="wrapper">
 
-    {{-- <div class="se-pre-con" id="loader" style="/* display: none; */">
+    <div class="se-pre-con" id="loader" style="/* display: none; */">
         <div class="pre-loader">
           <div class="la-line-scale">
             <div></div>
@@ -21,7 +23,7 @@
           <p>@lang('labels.Loading')..</p>
         </div>
      
-      </div> --}}
+    </div>
 
     <!-- header contains top navbar -->
 @include('admin.common.header')

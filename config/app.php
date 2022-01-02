@@ -193,6 +193,8 @@ return [
         Basel\Paytabs\PaytabsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,
+
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
 
     ],

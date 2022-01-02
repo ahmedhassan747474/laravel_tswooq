@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Web;
 
 //validator is builtin class in laravel
+
+use App\ImageCategories;
 use App\Models\Web\Currency;
 use App\Models\Web\Index;
 //for password encryption or hash protected
@@ -9,6 +11,7 @@ use App\Models\Web\Languages;
 
 //for authenitcate login data
 use App\Models\Web\Products;
+use App\ProductStock;
 use Auth;
 
 //for requesting a value
@@ -566,38 +569,95 @@ class ProductsController extends Controller
             //     $listOfAttributes[$attribute->products_id]['value'][] = $attribute_option_value;
             // }
             
-            foreach($getAllAttributes as $attribute){
-                $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
-                $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
-                $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
-                $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
-                $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
-                // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
-                // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
-            }
-            $listOfAttributes[$index3]['id'] = $products[0]->products_id;
-            $index3++;
+            // foreach($getAllAttributes as $attribute){
+            //     $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //     $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            //     $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //     $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            //     $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+            //     // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+            //     // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+            // }
+            // $listOfAttributes[$index3]['id'] = $products[0]->products_id;
+            // $index3++;
             // $result['getAllAttributes'] = $getAllAttributes;
 
-            $getParallel = DB::table('products')->where('product_parent_id', '=', $products[0]->products_id)->select('products_id')->get();
-            if($getParallel) {
-                foreach ($getParallel as $parallel) {
-                    $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id')->get();
-                    foreach($getAllAttributesParallel as $attribute){
-                        $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
-                        $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
-                        $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
-                        $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
-                        $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
-                        // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
-                        // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+            // $getParallel = DB::table('products')->where('product_parent_id', '=', $products[0]->products_id)->select('products_id')->get();
+            // if($getParallel) {
+            //     foreach ($getParallel as $parallel) {
+            //         $getAllAttributesParallel = DB::table('products_attributes')->where('products_id', '=', $parallel->products_id)->select('options_id', 'options_values_id', 'products_id')->get();
+            //         foreach($getAllAttributesParallel as $attribute){
+            //             $option_name = DB::table('products_options_descriptions')->where('products_options_id', '=', $attribute->options_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //             $attribute_option_name = $option_name != null ? $option_name->options_name : 'Not Exist';
+            //             $option_value = DB::table('products_options_values_descriptions')->where('products_options_values_id', '=', $attribute->options_values_id)->where('language_id', '=', Session::get('language_id'))->first();
+            //             $attribute_option_value = $option_value != null ? $option_value->options_values_name : 'Not Exist';
+            //             $listOfAttributes[$index3]['name'][] = $attribute_option_name . ' : ' . $attribute_option_value . ' | ';
+            //             // $listOfAttributes[$index3]['name'][] = $attribute_option_name;
+            //             // $listOfAttributes[$index3]['value'][] = $attribute_option_value;
+            //         }
+            //         $listOfAttributes[$index3]['id'] = $parallel->products_id;
+            //         $index3++;
+            //     }
+            // }
+
+            $stocks=ProductStock::where('product_id',$products[0]->products_id);
+
+            if(isset($stocks) && count($stocks->get())>0){
+                
+                $stocks=$stocks->get();
+                // dd($this->colors);
+                foreach($stocks as $index=>$stock){
+                    // $results[$index]['stock_id']=$stock->id;
+                    foreach(explode('-', $stock->variant) as $i=>$variant){
+                        if($products[0]->colors && $i==0){
+                            $results[$index]['color']=$variant;
+                            $listOfAttributes[$index3]['name'][] =   ' الللون: ' . $variant . ' | ';
+                            
+                        }else
+                        {
+
+                            $choice_options = json_decode($products[0]->choice_options);
+                             if($choice_options){
+                                $attribute_name = DB::table('products_options_descriptions')->where('products_options_id',$choice_options[$i-1]->attribute_id)->where('language_id',request()->language_id ?? 2)->first()->options_name;
+                                // $results[$index][$attribute_name]=$variant;
+                                $listOfAttributes[$index3]['name'][] = $attribute_name . ' : ' . $variant . ' | ';
+
+                             }
+                        }
+                        $listOfAttributes[$index3]['id'] = $products[0]->products_id;
+                        $listOfAttributes[$index3]['stock_id'] = $stock->id;
+                        $listOfAttributes[$index3]['price']=$stock->price;
+                        $listOfAttributes[$index3]['quantity']=$stock->qty;
+
+                        if($stock->image){
+                            $imagepath= ImageCategories::where('image_id',$stock->image)
+                                        ->where('image_type', '=', 'THUMBNAIL')
+                                        ->where('image_type', '!=', 'THUMBNAIL')
+                                        ->orWhere('image_type', '=', 'ACTUAL')->first()->path ?? '';
+             
+                            $listOfAttributes[$index3]['image']=asset($imagepath);
+                        }
+
+                        $index3++;
+
                     }
-                    $listOfAttributes[$index3]['id'] = $parallel->products_id;
-                    $index3++;
+
+                    
+
+                    // $results[$index]['price_pos']=$stock->price_pos;
+                    // $results[$index]['quantity_pos']=$stock->qty;
+
+                    
+
+                    // $results[$index]['SKU']=$stock->sku;
+
+                         
                 }
             }
+            
             // dd($listOfAttributes);
             $result['listOfAttributes'] = $listOfAttributes;
+            // dd($listOfAttributes);
         }else{
             $products = '';
             $result['detail']['product_data'] = '';

@@ -26,6 +26,7 @@ use DB;
 use Exception;
 use Lang;
 use ZipArchive;
+// header('Access-Control-Allow-Origin: *');
 
 class UserController extends BaseController
 {

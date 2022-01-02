@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Group;
+use App\LikeImage;
 use App\Models\AppModels\Product;
 use App\Models\Web\Currency;
 use App\Models\Web\Index;
@@ -19,6 +20,7 @@ use Lang;
 use View;
 use DB;
 use Cookie;
+use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
@@ -42,12 +44,26 @@ class IndexController extends Controller
 
     public function index()
     {
+        $url = "http://www.google.co.in/intl/en_com/images/srpr/logo1w.png";
+$contents = file_get_contents($url);
+$name = substr($url, strrpos($url, '/') + 1);
+// dd($contents);
+$img=Storage::disk('like_card')->put($name, $contents);
+if($img){
+    LikeImage::create([
+        'product_id'=>1,
+        'image'=>'images/media/like_card/'.$name
+    ]);
+}
+dd(asset('images/media/like_card/'.$name));
         //groups
         $language_id = request()->language_id ?? 1;
         $responseData=array();
         $result = array();
         $result2 = array();
         $groups = Group::with('products')->paginate(10);
+
+        // dd($groups);
         //  $groups = Group::with(['products' => function($query) { $query->limit(10); } ])->paginate(10);
         
         // dd($groups);

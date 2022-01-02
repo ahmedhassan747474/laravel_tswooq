@@ -35,7 +35,7 @@ Route::middleware('auth:api', 'cors')->get('/user', function (Request $request) 
 	|
 */
 
-Route::group(['namespace' => 'App'], function () {
+Route::group(['namespace' => 'App','middleware'=>'cors'], function () {
 
 	//Route::post('/uploadimage', 'AppSettingController@uploadimage');
 
@@ -272,7 +272,12 @@ Route::group(['namespace' => 'App'], function () {
 
 });
 
-Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
+Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1','middleware'=>'cors'], function(){
+
+		Route::get('getAllShops','shopController@getShops')->name('getShops');
+		Route::get('become_merchant_with_us','shopController@Become_merchant_with_us')->name('Become_a_merchant_with_us');
+		Route::post('checkout','shopController@checkout')->middleware('user');
+	
 
 	//database
     Route::get('backup', 'UserController@backup');
@@ -326,6 +331,7 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function(){
         Route::post('/getfavourites', 'ProductController@getproductsyfavourite');
 
 		//Cart
+		Route::post('/get_cart_like', 'OrderController@getcartlike');
 		Route::post('/get_cart', 'OrderController@getcart');
 		Route::post('/add_to_cart/', 'OrderController@addtocart');
 		Route::post('/edit_cart', 'OrderController@editcart');

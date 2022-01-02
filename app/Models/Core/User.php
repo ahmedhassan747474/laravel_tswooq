@@ -78,10 +78,10 @@ class User extends Authenticatable
           ->groupby('users.id')
           ->paginate(10);
           return $user;
-
     }
+
     public function products(){
-        return $this->hasMany('App\Models\Core\Products','admin_id');
+        return $this->hasMany('App\Product','admin_id');
     }
 
     public function avatari(){

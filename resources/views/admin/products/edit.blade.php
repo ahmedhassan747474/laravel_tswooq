@@ -42,11 +42,12 @@
                                         @endforeach
                                         @endif
 
-                                        {!! Form::open(array('url' =>'admin/products/update', 'method'=>'post', 'class' => 'form-horizontal form-validate', 'enctype'=>'multipart/form-data')) !!}
+                                        {!! Form::open(array('url' =>'admin/products/update', 'method'=>'post', 'class' => 'form-horizontal form-validate', 'id'=>'choice_form', 'enctype'=>'multipart/form-data')) !!}
                                         {!! Form::hidden('id', $result['product'][0]->products_id, array('class'=>'form-control', 'id'=>'id')) !!}
                                         <div class="row">
+                {{-- <input type="hidden" name="id" value="{{ $product->id }}"> --}}
                                             
-                                            <div class="col-xs-12 col-md-6">
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Manufacturers') }} </label>
                                                     <div class="col-sm-10 col-md-8">
@@ -63,7 +64,7 @@
                                                             {{ trans('labels.ChooseManufacturerText') }}.</span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -80,19 +81,19 @@
                                         </div>
                                         <hr>
                                         <div class="row">
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>-->
-                                            <!--        <div class="col-sm-10 col-md-8">-->
-                                            <!--            <select class="form-control" name="is_feature">-->
-                                            <!--                <option value="0" @if($result['product'][0]->is_feature==0) selected @endif>{{ trans('labels.No') }}</option>-->
-                                            <!--                <option value="1" @if($result['product'][0]->is_feature==1) selected @endif>{{ trans('labels.Yes') }}</option>-->
-                                            <!--            </select>-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.IsFeatureProuctsText') }}</span>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.IsFeature') }} </label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="is_feature">
+                                                            <option value="0" @if($result['product'][0]->is_feature==0) selected @endif>{{ trans('labels.No') }}</option>
+                                                            <option value="1" @if($result['product'][0]->is_feature==1) selected @endif>{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.IsFeatureProuctsText') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }} </label>
@@ -122,39 +123,26 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-12 col-md-6">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.PriceQuantty') }}</label>
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group" id="tax-class">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>
                                                     <div class="col-sm-10 col-md-8">
-                                                        {!! Form::text('products_quantity', $result['product'][0]->products_quantity, array('class'=>'form-control number-validate', 'id'=>'products_quantity')) !!}
+                                                        <select class="form-control field-validate" name="tax_class_id">
+                                                            <option selected> {{ trans('labels.SelectTaxClass') }}</option>
+                                                            @foreach ($result['taxClass'] as $taxClass)
+                                                            <option @if($result['product'][0]->products_tax_class_id == $taxClass->tax_class_id )
+                                                                selected
+                                                                @endif
+                                                                value="{{ $taxClass->tax_class_id }}">{{ $taxClass->tax_class_title }}</option>
+                                                            @endforeach
+                                                        </select>
                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                            {{ trans('labels.products_quantity') }}
+                                                            {{ trans('labels.ChooseTaxClassForProductText') }}
                                                         </span>
-                                                        <span class="help-block hidden">{{ trans('labels.products_quantity') }}</span>
+                                                        <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <!--<div class="col-xs-12 col-md-6">-->
-                                            <!--    <div class="form-group" id="tax-class">-->
-                                            <!--        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>-->
-                                            <!--        <div class="col-sm-10 col-md-8">-->
-                                            <!--            <select class="form-control field-validate" name="tax_class_id">-->
-                                            <!--                <option selected> {{ trans('labels.SelectTaxClass') }}</option>-->
-                                            <!--                @foreach ($result['taxClass'] as $taxClass)-->
-                                            <!--                <option @if($result['product'][0]->products_tax_class_id == $taxClass->tax_class_id )-->
-                                            <!--                    selected-->
-                                            <!--                    @endif-->
-                                            <!--                    value="{{ $taxClass->tax_class_id }}">{{ $taxClass->tax_class_title }}</option>-->
-                                            <!--                @endforeach-->
-                                            <!--            </select>-->
-                                            <!--            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">-->
-                                            <!--                {{ trans('labels.ChooseTaxClassForProductText') }}-->
-                                            <!--            </span>-->
-                                            <!--            <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--</div>-->
+                                            </div> --}}
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -174,6 +162,7 @@
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Show Product') }}<span style="color:red;">*</span></label>
                                                     <div class="col-sm-10 col-md-8">
                                                         <ul class="list-unstyled mb-0">
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_web == 1)
                                                             <li class="d-inline-block mr-2">
                                                                 <fieldset>
                                                                     <div class="vs-checkbox-con vs-checkbox-primary">
@@ -187,6 +176,8 @@
                                                                     </div>
                                                                 </fieldset>
                                                             </li>
+                                                            @endif
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_app == 1)
                                                             <li class="d-inline-block mr-2">
                                                                 <fieldset>
                                                                     <div class="vs-checkbox-con vs-checkbox-success">
@@ -200,6 +191,8 @@
                                                                     </div>
                                                                 </fieldset>
                                                             </li>
+                                                            @endif
+                                                            @if ($result['commonContent']['roles']!= null and $result['commonContent']['roles']->is_show_admin == 1)
                                                             <li class="d-inline-block mr-2">
                                                                 <fieldset>
                                                                     <div class="vs-checkbox-con vs-checkbox-danger">
@@ -213,22 +206,90 @@
                                                                     </div>
                                                                 </fieldset>
                                                             </li>
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
 
                                         </div>
-                                        <div class="row">
-                                            
-                                        </div>
-                                        <div class="row">
-                                            
-                                        </div>
+                                        {{-- <div class="row">
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Min Order Limit') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_min_order', $result['product'][0]->products_min_order, array('class'=>'form-control', 'id'=>'products_min_order')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Min Order Limit Text') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Min Order Limit Text') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Max Order Limit') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_max_stock', $result['product'][0]->products_max_stock, array('class'=>'form-control', 'id'=>'products_max_stock')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Max Order Limit Text') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Max Order Limit Text') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                        {{-- <div class="row">
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsWeight') }}</label>
+                                                    <div class="col-sm-10 col-md-4">
+                                                        {!! Form::text('products_weight', $result['product'][0]->products_weight, array('class'=>'form-control', 'id'=>'products_weight')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.RequiredTextForWeight') }}
+                                                        </span>
+
+                                                    </div>
+                                                    <div class="col-sm-10 col-md-4" style="padding-left: 0;">
+                                                        <select class="form-control" name="products_weight_unit">
+                                                            @if($result['units']) !== null)
+                                                            @foreach($result['units'] as $unit)
+                                                            <option value="{{$unit->units_name}}" @if($result['product'][0]->products_weight_unit==$unit->units_name) selected @endif>{{$unit->units_name}}</option>
+                                                            @endforeach
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductsModel') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('products_model', $result['product'][0]->products_model, array('class'=>'form-control', 'id'=>'products_model')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.ProductsModelText') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
 
                                         <div class="row">
 
-                                           
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.VideoEmbedCodeLink') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::textarea('products_video_link', $result['product'][0]->products_video_link, array('class'=>'form-control', 'id'=>'products_video_link', 'rows'=>4)) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.VideoEmbedCodeLinkText') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -325,7 +386,177 @@
 
                                         </div>
                                         <hr>
-                                                        <hr>
+                                        <div class="row">
+
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSale') }}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" onChange="showFlash()" name="isFlash" id="isFlash">
+                                                            <option value="no" @if($result['flashProduct'][0]->flash_status == 0)
+                                                                selected
+                                                                @endif>{{ trans('labels.No') }}</option>
+                                                            <option value="yes" @if($result['flashProduct'][0]->flash_status == 1)
+                                                                selected
+                                                                @endif>{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.FlashSaleText') }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flash-container" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSalePrice') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <input class="form-control" type="text" name="flash_sale_products_price" id="flash_sale_products_price" value="{{$result['flashProduct'][0]->flash_sale_products_price}}">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashSalePriceText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.FlashSalePriceText') }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashSaleDate') }}</label>
+                                                        @if($result['flashProduct'][0]->flash_status == 1)
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" value="{{date('d/m/Y', $result['flashProduct'][0]->flash_start_date) }}">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashSaleDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" readonly name="flash_start_time" id="flash_start_time"
+                                                              value="{{date('h:i:sA',  $result['flashProduct'][0]->flash_start_date ) }}">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        @else
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" name="flash_start_date" id="flash_start_date" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashSaleDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" readonly name="flash_start_time" id="flash_start_time" value="">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        @endif
+
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.FlashExpireDate') }}</label>
+                                                        @if($result['flashProduct'][0]->flash_status == 1)
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" name="flash_expires_date" id="flash_expires_date"
+                                                              value="{{ date('d/m/Y', $result['flashProduct'][0]->flash_expires_date )}}">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashExpireDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="{{ date('h:i:sA', $result['flashProduct'][0]->flash_expires_date ) }}">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        @else
+                                                        <div class="col-sm-10 col-md-4">
+                                                            <input class="form-control datepicker" readonly type="text" name="flash_expires_date" id="flash_expires_date" value="">
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.FlashExpireDateText') }}</span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        <div class="col-sm-10 col-md-4 bootstrap-timepicker">
+                                                            <input type="text" class="form-control timepicker" readonly name="flash_end_time" id="flash_end_time" value="">
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            <select class="form-control" name="flash_status">
+                                                                <option value="1">{{ trans('labels.Active') }}</option>
+                                                                <option value="0">{{ trans('labels.Inactive') }}</option>
+                                                            </select>
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.ActiveFlashSaleProductText') }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-md-6">
+
+                                                <div class="form-group  special-link">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Special') }} </label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" onChange="showSpecial()" name="isSpecial" id="isSpecial">
+                                                            <option @if($result['product'][0]->products_id != $result['specialProduct'][0]->products_id && $result['specialProduct'][0]->status == 0)
+                                                                selected
+                                                                @endif
+                                                                value="no">{{ trans('labels.No') }}</option>
+                                                            <option @if($result['product'][0]->products_id == $result['specialProduct'][0]->products_id && $result['specialProduct'][0]->status == 1)
+                                                                selected
+                                                                @endif
+                                                                value="yes">{{ trans('labels.Yes') }}</option>
+                                                        </select>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;"> {{ trans('labels.SpecialProductText') }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="special-container" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SpecialPrice') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            {!! Form::text('specials_new_products_price', $result['specialProduct'][0]->specials_new_products_price, array('class'=>'form-control', 'id'=>'special-price')) !!}
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.SpecialPriceTxt') }}.</span>
+                                                            <span class="help-block hidden">{{ trans('labels.SpecialPriceNote') }}.</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ExpiryDate') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                            @if(!empty($result['specialProduct'][0]->status) and $result['specialProduct'][0]->status == 1)
+                                                            {!! Form::text('expires_date', date('d/m/Y', $result['specialProduct'][0]->expires_date), array('class'=>'form-control datepicker', 'id'=>'expiry-date', 'readonly'=>'readonly'))
+                                                            !!}
+                                                            @else
+                                                            {!! Form::text('expires_date', '', array('class'=>'form-control datepicker', 'id'=>'expiry-date', 'readonly'=>'readonly')) !!}
+                                                            @endif
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.SpecialExpiryDateTxt') }}
+                                                            </span>
+                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }}</label>
+                                                        <div class="col-sm-10 col-md-8">
+                                                          <select class="form-control" name="status">
+                                                            <option
+                                                             @if($result['specialProduct'][0]->status == 1 )
+                                                               selected
+                                                             @endif
+                                                             value="1">{{ trans('labels.Active') }}
+                                                             </option>
+                                                            <option
+                                                             @if($result['specialProduct'][0]->status == 0 )
+                                                               selected
+                                                             @endif
+                                                             value="0">{{ trans('labels.Inactive') }}</option>
+                                                          </select>
+                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                {{ trans('labels.ActiveSpecialProductText') }}.</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr>
 
                                         @if (session()->has('error'))
                                         <div class="alert alert-danger alert-dismissible show" role="alert">
@@ -337,7 +568,21 @@
                                         @endif
 
                                         <div class="row">
-                                          
+                                            {{-- @foreach($result['attributes'] as $attribute)
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">Select {{$attribute->options_name}}</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="attributes[]">
+                                                            <option value="">Select {{$attribute->options_name}}</option>
+                                                            @foreach (DB::table('products_options_descriptions')->where('language_id',request()->session()->get('back_locale') == 'en' ? 1 : 2)->get() as $key => $attribute)
+                                                            <option value="{{ $attribute->products_options_id }}">{{ $attribute->options_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @endforeach --}}
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.BarCode') }}<span style="color:red;">*</span></label>
@@ -348,7 +593,19 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.SelectParallel') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <select class="form-control" name="product_parent_id">
+                                                            <option value="">{{ trans('labels.SelectParallel') }}</option>
+                                                            @foreach($result['products'] as $product)
+                                                            <option value="{{ $product->id }}" {{$result['product'][0]->product_parent_id == $product->id ? 'selected' : ''}}>{{ $product->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
                                         </div>
                                         
                                         <hr>
@@ -367,14 +624,14 @@
                                                             <option
                                                                 value="{{ $color->code }}"
                                                                 data-content="<span><span class='size-15px d-inline-block mr-2 rounded border' style='background:{{ $color->code }}'></span><span>{{ $color->name }}</span></span>"
-                                                                <?php if (in_array($color->code, json_decode($result['product'][0]->colors))) echo 'selected' ?>
+                                                                <?php if (isset($result['product'][0]->colors) &&in_array($color->code, json_decode($result['product'][0]->colors))) echo 'selected' ?>
                                                                 ></option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-1">
                                                         <label class="aiz-switch aiz-switch-success mb-0">
-                                                            <input value="1" type="checkbox" name="colors_active" <?php if (count(json_decode($result['product'][0]->colors)) > 0) echo "checked"; ?> >
+                                                            <input value="1" type="checkbox" name="colors_active" <?php if (isset($result['product'][0]->colors) && count(json_decode($result['product'][0]->colors)) > 0) echo "checked"; ?> >
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -399,7 +656,7 @@
                                                 </div>
                         
                                                 <div class="customer_choice_options" id="customer_choice_options">
-                                                    @foreach (json_decode($result['product'][0]->choice_options) as $key => $choice_option)
+                                                    @foreach (json_decode($result['product'][0]->choice_options)??[] as $key => $choice_option)
                                                     <div class="form-group row">
                                                         <div class="col-lg-3">
                                                             <input type="hidden" name="choice_no[]" value="{{ $choice_option->attribute_id }}">
@@ -531,9 +788,20 @@
 </script>
 @endsection
 
+@push('styles_aiz')
+    <link rel="stylesheet" href="{{ asset('admin/css/vendors.css') }}">
+
+	<link rel="stylesheet" href="{{ asset('admin/css/aiz-core.css') }}">
+@endpush
+
+@push('scripts_aiz')
+    <script src="{!! asset('admin/js/vendors.js') !!}" ></script>
+    <script src="{!! asset('admin/js/aiz-core.js') !!}" ></script>
+@endpush
+
 @section('script')
 
-<script type="text/javascript">
+{{-- <script type="text/javascript">
     $(document).ready(function (){
         show_hide_shipping_div();
     });
@@ -648,6 +916,244 @@
 		update_sku();
 	});
 
-</script>
+</script> --}}
 
+{{-- <script type="text/javascript">
+    $("[name=shipping_type]").on("change", function (){
+        $(".product_wise_shipping_div").hide();
+        $(".flat_rate_shipping_div").hide();
+        if($(this).val() == 'product_wise'){
+            $(".product_wise_shipping_div").show();
+        }
+        if($(this).val() == 'flat_rate'){
+            $(".flat_rate_shipping_div").show();
+        }
+
+    });
+
+    function add_more_customer_choice_option(i, name){
+        $('#customer_choice_options').append('<div class="form-group row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="'+i+'"><input type="text" class="form-control" name="choice[]" value="'+name+'" placeholder="{{ trans('Choice Title') }}" readonly></div><div class="col-md-8"><input type="text" class="form-control aiz-tag-input" name="choice_options_'+i+'[]" placeholder="{{ trans('Enter choice values') }}" data-on-change="update_sku"></div></div>');
+
+    	AIZ.plugins.tagify();
+    }
+
+    AIZ.plugins.bootstrapSelect('refresh');
+	$('input[name="colors_active"]').on('change', function() {
+	    if(!$('input[name="colors_active"]').is(':checked')) {
+		$('#colors').prop('disabled', true);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            else{
+                $('#colors').prop('disabled', false);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            update_sku();
+	});
+
+	$('#colors').on('change', function() {
+	    update_sku();
+	});
+
+	$('input[name="unit_price"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	$('input[name="name"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	function delete_row(em){
+		$(em).closest('.form-group row').remove();
+		update_sku();
+	}
+
+    function delete_variant(em){
+		$(em).closest('.variant').remove();
+	}
+
+	function update_sku(){
+        $.ajax({
+           type:"POST",
+           url:'{{ route('products.sku_combination_edit') }}',
+           data:$('#choice_form').serialize(),
+           success: function(data){
+               console.log(data);
+                $('#sku_combination').html(data);
+                AIZ.uploader.previewGenerate();
+                AIZ.plugins.fooTable();
+                if (data.length > 1) {
+                    $('#quantity').hide();
+                }
+                else {
+                    $('#quantity').show();
+                }
+           }
+        });
+    }
+
+
+	AIZ.plugins.tagify();
+
+	$(document).ready(function(){
+		update_sku();
+
+		$('.remove-files').on('click', function(){
+            $(this).parents(".col-md-4").remove();
+        });
+	});
+
+	$('#choice_attributes').on('change', function() {
+		$.each($("#choice_attributes option:selected"), function(j, attribute){
+			flag = false;
+			$('input[name="choice_no[]"]').each(function(i, choice_no) {
+				if($(attribute).val() == $(choice_no).val()){
+					flag = true;
+				}
+			});
+            if(!flag){
+				add_more_customer_choice_option($(attribute).val(), $(attribute).text());
+			}
+        });
+
+		var str = @php echo $result['product'][0]->attributes @endphp;
+
+		$.each(str, function(index, value){
+			flag = false;
+			$.each($("#choice_attributes option:selected"), function(j, attribute){
+				if(value == $(attribute).val()){
+					flag = true;
+				}
+			});
+            if(!flag){
+				$('input[name="choice_no[]"][value="'+value+'"]').parent().parent().remove();
+			}
+		});
+
+		update_sku();
+	});
+
+
+</script> --}}
+
+<script type="text/javascript">
+    $("[name=shipping_type]").on("change", function (){
+        $(".product_wise_shipping_div").hide();
+        $(".flat_rate_shipping_div").hide();
+        if($(this).val() == 'product_wise'){
+            $(".product_wise_shipping_div").show();
+        }
+        if($(this).val() == 'flat_rate'){
+            $(".flat_rate_shipping_div").show();
+        }
+
+    });
+
+    function add_more_customer_choice_option(i, name){
+        $('#customer_choice_options').append('<div class="form-group row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="'+i+'"><input type="text" class="form-control" name="choice[]" value="'+name+'" placeholder="{{ trans('Choice Title') }}" readonly></div><div class="col-md-8"><input type="text" class="form-control aiz-tag-input" name="choice_options_'+i+'[]" placeholder="{{ trans('Enter choice values') }}" data-on-change="update_sku"></div></div>');
+
+    	AIZ.plugins.tagify();
+    }
+
+    AIZ.plugins.bootstrapSelect('refresh');
+	$('input[name="colors_active"]').on('change', function() {
+	    if(!$('input[name="colors_active"]').is(':checked')) {
+		$('#colors').prop('disabled', true);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            else{
+                $('#colors').prop('disabled', false);
+                AIZ.plugins.bootstrapSelect('refresh');
+            }
+            update_sku();
+	});
+
+	$('#colors').on('change', function() {
+	    update_sku();
+	});
+
+	$('input[name="unit_price"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	$('input[name="name"]').on('keyup', function() {
+	    update_sku();
+	});
+
+	function delete_row(em){
+		$(em).closest('.form-group row').remove();
+		update_sku();
+	}
+
+    function delete_variant(em){
+		$(em).closest('.variant').remove();
+	}
+
+	function update_sku(){
+        $.ajax({
+           type:"POST",
+           url:'{{ route('products.sku_combination_edit') }}',
+           data:$('#choice_form').serialize(),
+           success: function(data){
+               console.log(data);
+                $('#sku_combination').html(data);
+                AIZ.uploader.previewGenerate();
+                AIZ.plugins.fooTable();
+                if (data.length > 1) {
+                    $('#quantity').hide();
+                }
+                else {
+                    $('#quantity').show();
+                }
+           }
+        });
+    }
+
+	// $('#choice_attributes').on('change', function() {
+	// 	$('#customer_choice_options').html(null);
+	// 	$.each($("#choice_attributes option:selected"), function(){
+    //         add_more_customer_choice_option($(this).val(), $(this).text());
+    //     });
+	// 	update_sku();
+	// });
+
+	AIZ.plugins.tagify();
+
+    $(document).ready(function(){
+		update_sku();
+
+		$('.remove-files').on('click', function(){
+            $(this).parents(".col-md-4").remove();
+        });
+	});
+    $('#choice_attributes').on('change', function() {
+		$.each($("#choice_attributes option:selected"), function(j, attribute){
+			flag = false;
+			$('input[name="choice_no[]"]').each(function(i, choice_no) {
+				if($(attribute).val() == $(choice_no).val()){
+					flag = true;
+				}
+			});
+            if(!flag){
+				add_more_customer_choice_option($(attribute).val(), $(attribute).text());
+			}
+        });
+
+		var str = @php echo $result['product'][0]->attributes @endphp;
+
+		$.each(str, function(index, value){
+			flag = false;
+			$.each($("#choice_attributes option:selected"), function(j, attribute){
+				if(value == $(attribute).val()){
+					flag = true;
+				}
+			});
+            if(!flag){
+				$('input[name="choice_no[]"][value="'+value+'"]').parent().parent().remove();
+			}
+		});
+
+		update_sku();
+	});
+
+</script>
 @endsection

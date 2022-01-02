@@ -294,8 +294,20 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     Route::group(['prefix' => 'admin/reviews', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'ProductController@reviews')->middleware('view_reviews');
         Route::get('/edit/{id}/{status}', 'ProductController@editreviews')->middleware('edit_reviews');
-
     });
+
+    Route::group(['prefix' => 'admin/expenses', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
+        Route::get('/display', 'ExpensesController@display');
+        Route::get('/add', 'ExpensesController@add');
+        Route::post('/add', 'ExpensesController@insert');
+        Route::get('/edit/{id}', 'ExpensesController@edit');
+        Route::post('/update', 'ExpensesController@update');
+        Route::post('/delete', 'ExpensesController@delete');
+
+        Route::get('/delete_get', 'ExpensesController@delete_get');
+        Route::get('/filter', 'ExpensesController@filter');
+    });
+
     //customers
     Route::group(['prefix' => 'admin/customers', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'CustomersController@display')->middleware('view_customer');
@@ -627,6 +639,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
     });
 
     Route::get('/admin/orders/invoiceprint/{id}', 'AdminControllers\OrdersController@invoiceprint')->name('invoiceprint');
+    Route::get('/admin/orders/cutPaper', 'AdminControllers\OrdersController@cutPaper')->name('cutPaper');
 
     Route::group(['prefix' => 'admin/orders', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'OrdersController@display')->middleware('view_order');

@@ -17,7 +17,7 @@ use App\Product as AppProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
-use Combinations;
+use Laracon21\Combinations\Combinations;
 
 use Validator;
 class ProductController extends Controller
@@ -82,7 +82,7 @@ class ProductController extends Controller
 
     public function display(Request $request)
     {
-        $language_id = '1';
+        $language_id = '2';
         $categories_id = $request->categories_id;
         $product = $request->product;
         $title = array('pageTitle' => Lang::get("labels.Products"));
@@ -123,7 +123,7 @@ class ProductController extends Controller
     public function add(Request $request)
     {
         $title = array('pageTitle' => Lang::get("labels.AddProduct"));
-        $language_id = '1';
+        $language_id = '2';
         $allimage = $this->images->getimages();
         $result = array();
         $categories = $this->category->recursivecategories($request);
@@ -330,18 +330,18 @@ class ProductController extends Controller
 
         // if(isset($request->categories) and count){            
             $countAttr = 0;
-            if(count($request['attributes']) > 0) {
-                foreach($request['attributes'] as $attr){
-                    if($attr != null){
-                        $countAttr += 1;
-                    }
-                }
-            }
+            // if(count($request['attributes']) > 0) {
+            //     foreach($request['attributes'] as $attr){
+            //         if($attr != null){
+            //             $countAttr += 1;
+            //         }
+            //     }
+            // }
 
-            if($countAttr == 0) {
-                $error = trans('labels.You Must Choose at least one in Attributes');
-                return redirect()->back()->withInput($request->all())->with('error', $error);
-            }
+            // if($countAttr == 0) {
+            //     $error = trans('labels.You Must Choose at least one in Attributes');
+            //     return redirect()->back()->withInput($request->all())->with('error', $error);
+            // }
         
             $language_id = '1';
             $products_id = $this->products->insert($request);

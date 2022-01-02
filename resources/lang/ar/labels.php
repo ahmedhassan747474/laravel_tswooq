@@ -13,9 +13,23 @@ return [
     |
     */
 
+	//expensess
+	'AddExpense'=>'اضف مصروف',
+	'AddNEWExpense'=>'اضف مصروف جديد',
+	'ListingAllExpenses'=>'قائمة بكل المصروفات',
+	'Expenses'=>'المصروفات',
+	'link_expenses'=>'المصروفات',
+	'group'=>'مجموعة',
+	'Search term'=>'بحث',
+	'POS Like Card'=>'نقاط البيع للايك كارد',
+	'link_orders_likecard'=>'الطلبات للايك كارد',
+	'tax_number'=>'الرقم الضريبى',
+	'tax_numberText'=>'من فضلك ادخل الرقم الضريبي الخاص بالشركه لعرض الباركود فى الفاتورة',
 	//links labels
 	'Location' => 'الموقع',
 	'balance' => 'الرصيد',
+	'balanceHistory' => 'تاريخ الرصيد',
+	'cache' => 'كاش',
   'Active' => 'نشط',
   'packges'			=> 'الباقات',
   'packge_name' => 'اسم الباقة',
@@ -790,7 +804,7 @@ return [
 	'ChooseStatus' => 'إختر الحالة',
 	'Comments' => 'تعليقات',
 	'CommentsOrderText' => 'ترتيب التعليق',
-	'Submit' => 'سلم',
+	'Submit' => 'حفظ',
 	'OrderHistory' => 'تاريخ الطلب',
 	'ShippingMethods' => 'طرق الشحن',
 	'UPSShipping' => 'شحن عن طريق يوبى أس',
@@ -2520,6 +2534,12 @@ return [
 	'is_show_web'				=> 'الموقع',
 	'is_show_app'				=> 'التطبيق',
 	'is_show_admin'				=> 'لوحه التحكم',
+	
+	'manage show_product'			=> 'ادارة عرض المنتج عند اضافته',
+	'manage is_show_web'				=> 'الموقع',
+	'manage is_show_app'				=> 'التطبيق',
+	'manage is_show_admin'				=> 'لوحه التحكم',
+
 	'manage Suppliers'			=> 'ادارة الموردين',
 	'manage supplier_view'		=> 'مشاهدة الموردين',
 	'manage supplier_create'	=> 'انشاء المورد',

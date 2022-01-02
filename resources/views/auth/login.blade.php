@@ -1,5 +1,5 @@
 @extends('web.layout')
 @section('content')
-@php $r =   'auth.logins.login' . $final_theme['login']; @endphp
+@php $r =   'auth.logins.login1'; @endphp
 @include($r)
 @endsection

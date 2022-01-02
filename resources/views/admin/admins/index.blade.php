@@ -79,7 +79,16 @@
                </td>
                <td>
                 @if(isset($admin->shopImg)) 
-                  <img src='{{$admin->shopImg??''}}'>
+                @php
+                // dd($admin);
+                  $imagepath= \App\ImageCategories::where('image_id',$admin->avatar)->where(function($q){
+                      $q->where('image_type', '=', 'THUMBNAIL')
+                                              ->where('image_type', '!=', 'THUMBNAIL')
+                                              ->orWhere('image_type', '=', 'ACTUAL');
+                  })->first()->path ??'';
+                //  echo asset($imagepath);
+                @endphp
+                  <img style="width: 121px;height: 106px;" src='{{asset($imagepath)??''}}'>
                 @else 
                 shop Img not found
                 @endif

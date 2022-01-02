@@ -21,12 +21,14 @@ use App;
 use App\Cart;
 use App\Http\Controllers\Web\AlertController;
 use App\Http\Resources\CartCollection;
+use App\Http\Resources\CartLikeCollection;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\ProductCollection;
 use App\ImageCategories;
 use App\Models\AppModels\Orders;
 use Illuminate\Support\Facades\File;
 use App\Models\AppModels\Product;
+use App\Models\Web\Order as WebOrder;
 use App\Order;
 use App\Product as AppProduct;
 use App\ProductStock;
@@ -52,7 +54,38 @@ class OrderController extends BaseController
         if($user)
         {
             $carts = Cart::where('user_id',$user->id)->with('products')->get();
+            if(count($carts)==0 || count($carts[0]->products) == 0){
+                return response()->json(['data'=>[],'status'=>200],200);
+            }
             return new CartCollection($carts);
+            
+        }
+        else
+        {
+            return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
+        }
+    }
+
+    public function getcartlike(Request $request){
+        $user = $this->getAuthenticatedUser();
+          
+        if($user)
+        {
+            $carts = Cart::where('user_id',$user->id)->first();
+            if($carts){
+                $products=DB::table('cart_product')
+                        ->where('cart_id', '=', $carts->cart_id)
+                        ->where('type', '=', 2)->get();
+                if(count($products)>0){
+                    return new CartLikeCollection($products);
+                }
+                else{
+                    return response()->json(['message'=>'cart is empty','data'=>[]],200);
+                }
+            }else{
+                return response()->json(['message'=>'cart is empty','data'=>[]],200);
+            }
+            
             
         }
         else
@@ -68,7 +101,6 @@ class OrderController extends BaseController
         {
             $validator = Validator::make($request->all(), [
                 'product_id'            => 'required',
-                'stock_id'            => 'required',
                 'quantity'              => 'required',
             ]);
 
@@ -78,18 +110,81 @@ class OrderController extends BaseController
             }
 
             $getCart = DB::table('carts')->where('user_id', $user->id)->first();
+            if($request->type ==2){
+                if($getCart){
 
+                
+                    $insertCart = $getCart->cart_id;
+    
+                    $product =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                        ->where('product_id', '=', $request->product_id)
+                                                        ->where('type', '=', $request->type)->first();
+    
+                    $productUpdate =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                        ->where('product_id', '=', $request->product_id)
+                                                        ->where('type', '=', $request->type);
+    
+                    //if product already exist
+                    if($product){
+                        $productUpdate->update([
+                            'quantity'      => $product->quantity + 1,
+                            'updated_at'    => now()
+                        ]);
+                    }else
+                    {
+                        $insertCartProduct = DB::table('cart_product')->insert([
+                            'cart_id'       => $insertCart,
+                            'product_id'    => $request->product_id,
+                            'product_name'      => $request->product_name,
+                            'product_image'      => $request->product_image,
+                            'price'      => $request->price,
+                            'quantity'      => $request->quantity,
+                            'type'      => $request->type,
+                            'created_at'    => now(),
+                            'updated_at'    => now()
+                        ]);
+                    }
+                }
+                else
+                {
+                    $insertCart = DB::table('carts')->insertGetId([
+                        'user_id'       => $user->id,
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ]);
+                    $insertCartProduct = DB::table('cart_product')->insert([
+                        'cart_id'       => $insertCart,
+                        'product_id'    => $request->product_id,
+                        'product_name'      => $request->product_name,
+                        'product_image'      => $request->product_image,
+                        'price'      => $request->price,
+                        'quantity'      => $request->quantity,
+                        'type'      => $request->type,
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ]);
+                }
+    
+    
+                return response()->json(['message' => trans('common.success_insert'), 'status_code' => 200], 200);
+            }
             // dd($getCart);
             if($getCart){
+
+                
                 $insertCart = $getCart->cart_id;
 
                 $product =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
                                                     ->where('product_id', '=', $request->product_id)
                                                     ->where('stock_id', '=', $request->stock_id)->first();
 
+                $productUpdate =DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                    ->where('product_id', '=', $request->product_id)
+                                                    ->where('stock_id', '=', $request->stock_id);
+
                 //if product already exist
                 if($product){
-                    $product->update([
+                    $productUpdate->update([
                         'quantity'      => $product->quantity + 1,
                         'updated_at'    => now()
                     ]);
@@ -194,17 +289,21 @@ class OrderController extends BaseController
 
             $results=array();
             $data=array();
-
+            $likeItems=null;
             // dd($getCart);
             $products_cart=array();
             if($getCart){
 
-                $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->get();
+                $likeItems = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                        ->where('type', '=', 2)->get();
+
+                $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
+                                                        ->where('type', '=', 1)->get();
 
                 foreach($productItem as $key=>$cart){
 
                     // dd($products_cart);
-                    $product = Product::where('products_id',$cart->product_id)
+                    $product = AppProduct::where('products_id',$cart->product_id)
                                         ->with(['descriptions','images'])
                                         ->whereHas('descriptions',function($q){
                                             return $q->where('language_id', '=', 1);
@@ -256,32 +355,6 @@ class OrderController extends BaseController
                 }
             }
 
-            // $getCart->products=$products_cart;
-            // dd($products_cart[0]->product_id);
-
-
-    
-
-        // dd($data);
-            // foreach($data as $products){
-            //     $req = array();
-
-            //     $req['products_id'] = $products->products_id;
-            //     $attr = array();
-
-            //     $check = Product::getquantity($req);
-            //     $check = json_decode($check);
-
-            //     // dd($check);
-            //     if($products->quantity_ordered > $check->stock){
-            //         $responseData = array('success'=>'0', 'data'=>array(),'products_id' => $products->products_id, 'message'=>"Some Products are out of Stock.");
-            //         // $orderResponse = json_encode($responseData);
-            //         // return $orderResponse;
-            //         return response()->json($responseData,400);
-            //     }
-            // }
-
-            // dd($results);
             $guest_status   = 0;//$request->guest_status;
 
             if($guest_status == 1){
@@ -564,7 +637,8 @@ class OrderController extends BaseController
 
             }else if ($payment_method == 'tap') {
                 $paymentMethodName = 'tap';
-                $payments_setting = Orders::payments_setting_for_tap();
+                $or = new WebOrder();
+                $payments_setting = $or->payments_setting_for_tap();
                 // dd(session()->all());
                 // dd($request->all());
                 // $arrayToSend = [
@@ -637,117 +711,124 @@ class OrderController extends BaseController
                 // get token from app
                 // $token = $request->token;
 
-                $customer = \Stripe\Customer::create(array(
-                    'email' => $email,
-                    'source' => $token,
-                ));
+                // $customer = \Stripe\Customer::create(array(
+                //     'email' => $email,
+                //     'source' => $token,
+                // ));
 
-                $charge = \Stripe\Charge::create(array(
-                    'customer' => $customer->id,
-                    'amount' => 100 * $order_price,
-                    'currency' => 'usd',
-                ));
+                // $charge = \Stripe\Charge::create(array(
+                //     'customer' => $customer->id,
+                //     'amount' => 100 * $order_price,
+                //     'currency' => 'usd',
+                // ));
 
-                $fullnameBilling = $billing_firstname . ' ' . $billing_lastname;
-                $amountPay = 100 * $order_price;
-                $secret_api_Key = "pk_test_fILmzM42k3xrQT1UdEVWjK0X";
-                $TapPay = new Payment(['secret_api_Key'=> $secret_api_Key]);//pk_test_fILmzM42k3xrQT1UdEVWjK0X
+                // $fullnameBilling = $billing_firstname . ' ' . $billing_lastname;
+                // $amountPay = 100 * $order_price;
+                // $secret_api_Key = "pk_test_fILmzM42k3xrQT1UdEVWjK0X";
+                // $TapPay = new Payment(['secret_api_Key'=> $secret_api_Key]);//pk_test_fILmzM42k3xrQT1UdEVWjK0X
 
-                $TapPay->card([
-                    'number' => '5123450000000008',
-                    'exp_month' => 05,
-                    'exp_year' => 21,
-                    'cvc' => 100,
-                ]);
+                // $TapPay->card([
+                //     'number' => '5123450000000008',
+                //     'exp_month' => 05,
+                //     'exp_year' => 21,
+                //     'cvc' => 100,
+                // ]);
 
-                dd($TapPay);
+                // dd($TapPay);
 
                 try {
-                    $TapPay->charge([
-                        'amount' => $amountPay,
+                $TapPay = new Payment(['secret_api_Key'=> 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ']);
+
+                $redirect = false; // return response as json , you can use it form mobile web view application
+
+                $re= $TapPay->charge([
+                        'amount' => $request->price,
                         'currency' => 'SAR',
                         'threeDSecure' => 'true',
                         'description' => 'test description',
                         'statement_descriptor' => 'sample',
                         'customer' => [
-                            'first_name' => $fullnameBilling,
-                            'email' => $email,
+                        'first_name' => $user->first_name,
+                        'email' => $user->email,
+                        ],
+                        'source' => [
+                        'id' => 'src_card'
                         ],
                         'post' => [
-                            'url' => null
+                        'url' => null
                         ],
                         'redirect' => [
-                            'url' => null
+                        'url' => route('payment_success',$req->id)
                         ]
-                    ]);
+                ],$redirect);
+                
 
-                    dd($TapPay);
+                    // $order_information = array(
+                    //     'paid' => 'true',
+                    //     'transaction_id' => $TapPay->getId(),
+                    //     'type' => $TapPay->outcome->type,
+                    //     'balance_transaction' => $TapPay->balance_transaction,
+                    //     'status' => $TapPay->status,
+                    //     'currency' => $TapPay->currency,
+                    //     'amount' => $TapPay->amount,
+                    //     'created' => date('d M,Y', $TapPay->created),
+                    //     'dispute' => $TapPay->dispute,
+                    //     'customer' => $TapPay->customer,
+                    //     'address_zip' => $TapPay->source->address_zip,
+                    //     'seller_message' => $TapPay->outcome->seller_message,
+                    //     'network_status' => $TapPay->outcome->network_status,
+                    //     'expirationMonth' => $TapPay->outcome->type,
+                    // );
 
-                    $order_information = array(
-                        'paid' => 'true',
-                        'transaction_id' => $TapPay->getId(),
-                        'type' => $TapPay->outcome->type,
-                        'balance_transaction' => $TapPay->balance_transaction,
-                        'status' => $TapPay->status,
-                        'currency' => $TapPay->currency,
-                        'amount' => $TapPay->amount,
-                        'created' => date('d M,Y', $TapPay->created),
-                        'dispute' => $TapPay->dispute,
-                        'customer' => $TapPay->customer,
-                        'address_zip' => $TapPay->source->address_zip,
-                        'seller_message' => $TapPay->outcome->seller_message,
-                        'network_status' => $TapPay->outcome->network_status,
-                        'expirationMonth' => $TapPay->outcome->type,
-                    );
-
+                    dd($re);
                     $payment_status = "success";
                 } catch( \Exception $exception ) {
                     $payment_status = "failed";
                 }
 
-                $payment = TapPayment::createCharge();
-                    $payment->setCustomerName($fullnameBilling);
-                    $payment->setCustomerPhone("20", $billing_phone);
-                    $payment->setDescription("Some description");
-                    $payment->setAmount($amountPay);
-                    $payment->setCurrency("SAR");
-                    $payment->setSource("src_all");
-                    $payment->setRedirectUrl("https://example.com");
-                    // $payment->setPostUrl("https://example.com"); // if you are using post request to handle payment updates
-                    // $payment->setMetaData(['package' => json_encode($package)]); // if you want to send metadata
-                    $invoice = $payment->pay();
+                // $payment = TapPayment::createCharge();
+                //     $payment->setCustomerName($fullnameBilling);
+                //     $payment->setCustomerPhone("20", $billing_phone);
+                //     $payment->setDescription("Some description");
+                //     $payment->setAmount($amountPay);
+                //     $payment->setCurrency("SAR");
+                //     $payment->setSource("src_all");
+                //     $payment->setRedirectUrl("https://example.com");
+                //     // $payment->setPostUrl("https://example.com"); // if you are using post request to handle payment updates
+                //     // $payment->setMetaData(['package' => json_encode($package)]); // if you want to send metadata
+                //     $invoice = $payment->pay();
 
-                    // dd($invoice);
+                //     // dd($invoice);
 
-                try {
+                // try {
 
 
-                    if($payment->isSuccess()) {
-                        $order_information = array(
-                            'paid' => 'true',
-                            'transaction_id' => $invoice->getId(),
-                            'type' => $invoice->outcome->type,
-                            'balance_transaction' => $charge->balance_transaction,
-                            'status' => $invoice->status,
-                            'currency' => $invoice->currency,
-                            'amount' => $invoice->amount,
-                            'created' => date('d M,Y', $invoice->created),
-                            'dispute' => $invoice->dispute,
-                            'customer' => $invoice->customer,
-                            'address_zip' => $invoice->source->address_zip,
-                            'seller_message' => $invoice->outcome->seller_message,
-                            'network_status' => $invoice->outcome->network_status,
-                            'expirationMonth' => $invoice->outcome->type,
-                        );
+                //     if($payment->isSuccess()) {
+                //         $order_information = array(
+                //             'paid' => 'true',
+                //             'transaction_id' => $invoice->getId(),
+                //             'type' => $invoice->outcome->type,
+                //             'balance_transaction' => $charge->balance_transaction,
+                //             'status' => $invoice->status,
+                //             'currency' => $invoice->currency,
+                //             'amount' => $invoice->amount,
+                //             'created' => date('d M,Y', $invoice->created),
+                //             'dispute' => $invoice->dispute,
+                //             'customer' => $invoice->customer,
+                //             'address_zip' => $invoice->source->address_zip,
+                //             'seller_message' => $invoice->outcome->seller_message,
+                //             'network_status' => $invoice->outcome->network_status,
+                //             'expirationMonth' => $invoice->outcome->type,
+                //         );
 
-                        $payment_status = "success";
-                    } else {
-                        $payment_status = "failed";
-                    }
+                //         $payment_status = "success";
+                //     } else {
+                //         $payment_status = "failed";
+                //     }
 
-                } catch( \Exception $exception ) {
-                    $payment_status = "failed";
-                }
+                // } catch( \Exception $exception ) {
+                //     $payment_status = "failed";
+                // }
             } else if ($payment_method == 'bank_account') {
                 $paymentMethodName = 'Bank Account';
                 $payments_setting = $this->payments_setting_for_bank_account();
@@ -763,6 +844,10 @@ class OrderController extends BaseController
 
                 $bank_account_iban = $request->bank_account_iban;
                 $payment_status = 'success';
+            }
+            else if($payment_method == 'new_tap'){
+                $paymentMethodName='tap';
+                $payment_status='success';
             }
 
             //check if order is verified
@@ -1013,6 +1098,22 @@ class OrderController extends BaseController
                     
 
                 }
+                if($likeItems){
+                    foreach($likeItems as $products){
+                        $orders_products_id = DB::table('orders_products')->insertGetId(
+                            [
+                                'orders_id' 		 => 	$orders_id,
+                                'products_id' 	 	 =>		$products->product_id,
+                                'products_image' 	 	 =>		$products->product_image,
+                                'products_name'	     => 	$products->product_name ??'no Name',
+                                'products_price'	 =>  	$products->price,
+                                'final_price' 		 =>  	$products->price * $products->quantity,
+                                'products_tax' 	     =>  	0,
+                                'type' 	     =>  	2, // like 
+                                'products_quantity' =>  	$products->quantity,
+                            ]);
+                    }
+                }
 
                 $responseData = array('success'=>'1', 'data'=>array(), 'customer_id' => $customers_id,'message'=>"Order has been placed successfully.");
 
@@ -1087,6 +1188,37 @@ class OrderController extends BaseController
 
             // return $orderResponse;
 
+            
+
+            if($payment_method == 'new_tap'){
+                $TapPay = new Payment(['secret_api_Key'=> 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ']);
+
+                $redirect = false; // return response as json , you can use it form mobile web view application
+
+                $re= $TapPay->charge([
+                        'amount' => $order_price,
+                        'currency' => 'SAR',
+                        'threeDSecure' => 'true',
+                        'description' => 'test description',
+                        'statement_descriptor' => 'sample',
+                        'customer' => [
+                        'first_name' => $user->first_name,
+                        'email' => $user->email,
+                        ],
+                        'source' => [
+                        'id' => 'src_card'
+                        ],
+                        'post' => [
+                        'url' => null
+                        ],
+                        'redirect' => [
+                        'url' => route('order_payment_success',['id'=>$orders_id,'cart_id'=>$getCart->cart_id])
+                        ]
+                ],$redirect);
+
+                return response()->json($re);
+
+            }
             if($getCart){
                 $deleteCart = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)->delete();
             }
@@ -1322,7 +1454,7 @@ class OrderController extends BaseController
 
         if($user)
         {
-            $orders=Order::where('customers_id',$user->id)->with('products')->get();
+            $orders=Order::where('customers_id',$user->id)->with('products')->orderBy('orders_id', 'desc')->get();
             return new OrderCollection($orders);
             
         }

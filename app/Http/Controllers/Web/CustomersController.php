@@ -55,6 +55,7 @@ class CustomersController extends Controller
 
     public function login(Request $request)
     {
+        dd('fgfgfg');
         $result = array();
         if (auth()->guard('customer')->check()) {
             return redirect('/');
@@ -77,6 +78,7 @@ class CustomersController extends Controller
             $title = array('pageTitle' => Lang::get("website.Login"));
             $final_theme = $this->theme->theme();
 
+            dd($result);
             $result['commonContent'] = $this->index->commonContent();
             return view("auth.login", ['title' => $title, 'final_theme' => $final_theme])->with('result', $result);
         }

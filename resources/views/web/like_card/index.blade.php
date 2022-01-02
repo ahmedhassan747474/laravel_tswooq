@@ -12,7 +12,7 @@
     
     
     <section class="content-header">
-        <span style="font-size: 22px;"> Limit Value </span> : <span style="color: red;font-size: 15px;font-weight: 600;">{{ auth()->user()->role_id != 1 ? auth()->user()->like_limit : 'Un limited'}}</span>
+        <span style="font-size: 22px;"> Limit Value </span> : <span style="color: red;font-size: 15px;font-weight: 600;">{{ auth()->user()->role_id != 1 ? DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit : 'Un limited'}}</span>
         
     </section>
     

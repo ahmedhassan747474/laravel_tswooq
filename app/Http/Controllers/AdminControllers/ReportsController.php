@@ -64,7 +64,7 @@ class ReportsController extends Controller
 
         $barcodes = DB::table('products')
             ->join('products_description', 'products_description.products_id', '=', 'products.products_id')
-            ->where('products_description.language_id', '=', '1')
+            ->where('products_description.language_id', '=', '2')
             ->when($request->search, function ($q) use ($request) {
 
                 return $q->where('products_name','LIKE', '%' . $request->search . '%')
@@ -74,7 +74,7 @@ class ReportsController extends Controller
                 $barcodes->where('admin_id', '=', auth()->user()->id);
             } 
             $barcodes= $barcodes->orderBy('products_liked', 'DESC')
-            ->get();
+            ->paginate(10);
 
         // $result['data'] = $products;
 

@@ -1,10 +1,12 @@
 
 <script src="{!! asset('admin/plugins/jQuery/jQuery-2.2.0.min.js') !!}"></script>
 <script src="{!! asset('admin/bootstrap/js/bootstrap.min.js') !!}"></script>
-{{-- <script src="{!! asset('admin/plugins/select2/select2.full.min.js') !!}"></script> --}}
+<script src="{!! asset('admin/plugins/select2/select2.full.min.js') !!}"></script>
 
-<script src="{!! asset('admin/js/vendors.js') !!}" ></script>
-<script src="{!! asset('admin/js/aiz-core.js') !!}" ></script>
+@stack('scripts_aiz')
+
+{{-- <script src="{!! asset('admin/js/vendors.js') !!}" ></script> --}}
+{{-- <script src="{!! asset('admin/js/aiz-core.js') !!}" ></script> --}}
 
 <!-- InputMask -->
 <script src="{!! asset('admin/plugins/input-mask/jquery.inputmask.js') !!}"></script>
@@ -38,6 +40,7 @@
 
 {{--<!-- Jqurey Print_this -->--}}
 <script src="{{ asset('admin/js/printThis.js') }}"></script>
+<script src="{{ asset('admin/js/html2pdf.js') }}"></script>
 
 
 <script src="{{url('admin/js/clipboard.min.js')}}"></script>
@@ -60,13 +63,9 @@
 
 <script src="{!! asset('admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') !!}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script type="text/javascript">
 
-$(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
-});
+
 
 $(function() {
 $("img").click(function() {
@@ -319,7 +318,7 @@ $.ajaxSetup({
 $(function () {
 
 	//Initialize Select2 Elements
-	// $(".select2").select2();
+	$(".select2").select2();
 	// $(".select3").select2();
 
 	//Datemask dd/mm/yyyy
@@ -2939,4 +2938,86 @@ function myFunction() {
 
 </script>
 
+<script language="VBScript">
+	// THIS VB SCRIP REMOVES THE PRINT DIALOG BOX AND PRINTS TO YOUR DEFAULT PRINTER
+	Sub window_onunload()
+	On Error Resume Next
+	Set WB = nothing
+	On Error Goto 0
+	End Sub
+	
+	Sub Print()
+	OLECMDID_PRINT = 6
+	OLECMDEXECOPT_DONTPROMPTUSER = 2
+	OLECMDEXECOPT_PROMPTUSER = 1
+	
+	
+	On Error Resume Next
+	
+	If DA Then
+	call WB.ExecWB(OLECMDID_PRINT, OLECMDEXECOPT_DONTPROMPTUSER,1)
+	
+	Else
+	call WB.IOleCommandTarget.Exec(OLECMDID_PRINT ,OLECMDEXECOPT_DONTPROMPTUSER,"","","")
+	
+	End If
+	
+	If Err.Number <> 0 Then
+	If DA Then 
+	Alert("Nothing Printed :" & err.number & " : " & err.description)
+	Else
+	HandleError()
+	End if
+	End If
+	On Error Goto 0
+	End Sub
+	
+	If DA Then
+	wbvers="8856F961-340A-11D0-A96B-00C04FD705A2"
+	Else
+	wbvers="EAB22AC3-30C1-11CF-A7EB-0000C05BAE0B"
+	End If
+	
+	document.write "<object ID=""WB"" WIDTH=0 HEIGHT=0 CLASSID=""CLSID:"
+	document.write wbvers & """> </object>"
+
+	if (navigator.appName == "Microsoft Internet Explorer")
+{
+var PrintCommand = '<object id="PrintCommandObject" width="0" height="0<br" mode="hold" />CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2">';
+document.body.insertAdjacentHTML('beforeEnd', PrintCommand);
+PrintCommandObject.ExecWB(6, -1); PrintCommandObject.outerHTML = "";
+}
+else {
+window.print();
+}
+	</script>
+
+<script type=“text/javascript”>
+	var okToPrint=false;
+	
+	function isIE()
+	{
+	return (navigator.appName.toUpperCase() == ‘MICROSOFT INTERNET EXPLORER’);
+	}
+	
+	function doPrint()
+	
+	{ window.printFrame.location.href=“http://www.mysite.com/somepage.html 28”;
+	okToPrint=true;
+	}
+	
+	function printIt()
+	{if (okToPrint)
+	{ if ( isIE() )
+	{ document.printFrame.focus();
+	document.printFrame.print();
+	}
+	else
+	{ window.frames[‘printFrame’].focus();
+	window.frames[‘printFrame’].print();
+	}
+	}
+	}
+	
+	</script>
 @yield('script')
