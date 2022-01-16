@@ -139,7 +139,9 @@
 				<div class="file-preview"></div> --}}
 
 				<div class="col-xs-12 col-md-6 ">
-					<div class="form-group">
+					<input type="file" name="img_{{ $str }}" class="form-control">
+
+					{{-- <div class="form-group">
 						<label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>
 						<div class="col-sm-10 col-md-8">
 							<!-- Modal -->
@@ -187,7 +189,7 @@
 							<span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.UploadProductImageText') }}</span>
 
 						</div>
-					</div>
+					</div> --}}
 				</div>
 			</td>
 			{{-- <td>

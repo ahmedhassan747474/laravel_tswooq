@@ -97,11 +97,17 @@ class ExpensesController extends Controller
         ]);
 
 
-         if($request->image_id !== null){
-                $uploadImage = $request->image_id;
-              }else{
-                  $uploadImage = '1372';
-              }
+        $Images = new Images();
+        $setting = new Setting();
+
+        if($request->file !== null){
+            $upload = new MediaController($Images,$setting);
+    
+            $uploadImage=$upload->fileUpload($request);
+            //   $uploadImage = $request->image_id;
+        }else{
+            $uploadImage = '1372';
+        }
 
               if(auth()->user()->role_id == 11){			
                 $shop = User::find(auth()->user()->parent_admin_id);
@@ -113,7 +119,7 @@ class ExpensesController extends Controller
             $expense->name=$request->name;
             $expense->value=$request->value;
             $expense->date=$request->date;
-            $expense->image=$request->uploadImage;
+            $expense->image=$uploadImage;
             $expense->shop_id=$shop->id;
             $expense->save();
             // $expense->date=$request->;
@@ -219,46 +225,25 @@ class ExpensesController extends Controller
         $language_id  =   '1';
         $user_id				  =	$request->expenses_id;
 
-        $expenseData = array();
-        $message = array();
-        $errorMessage = array();
 
-        //get function from other controller
-        if($request->image_id!==null){
-            $expenses_picture = $request->image_id;
-        }	else{
-            $expenses_picture = $request->oldImage;
-        }
+        $Images = new Images();
+        $setting = new Setting();
 
-        if($request->image_id){
-            $uploadImage = $request->image_id;
-            $uploadImage = DB::table('image_categories')->where('image_id',$uploadImage)->select('path')->first();
-            $expenses_picture = $uploadImage->path;
-        }	else{
-            $expenses_picture = $request->oldImage;
-        }
-
-        $user_data = array(
-            'gender'   		 	=>   $request->gender,
-            'first_name'		=>   $request->first_name,
-            'last_name'		 	=>   $request->last_name,
-            'dob'	 			 	  =>	 $request->dob,
-            'phone'	 	      =>	 $request->phone,
-            'status'		    =>   $request->status,
-            'avatar'	 		  =>	 $expenses_picture,
-            'updated_at'    => date('Y-m-d H:i:s'),
-        );
-        $expense_data = array(
-          'expenses_newsletter'   		 	=>   0,
-          'updated_at'    => date('Y-m-d H:i:s'),
-        );
-
-        if($request->changePassword == 'yes'){
-            $user_data['password'] = Hash::make($request->password);
-        }
-
-        $this->Expenses->updaterecord($expense_data,$user_id,$user_data);
-        return redirect('admin/expenses/address/display/'.$user_id);
+       
+              
+            $expense = Expenses::find($user_id);
+            $expense->name=$request->name;
+            $expense->value=$request->value;
+            $expense->date=$request->date;
+            if($request->file !== null){
+              $upload = new MediaController($Images,$setting);
+      
+              $uploadImage=$upload->fileUpload($request);
+              $expense->image=$uploadImage;
+              //   $uploadImage = $request->image_id;
+          }
+            $expense->save();
+            return redirect('admin/expenses/display')->with('update', 'Expense has been Updated successfully!');
         
     }
 

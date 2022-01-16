@@ -1,13 +1,17 @@
 @extends('admin.layout')
 
 @push('styles')
-{{-- <style>
-    svg{
+<style>
+    /* svg{
         width: 5cm !important;
         height: 2.5cm !important;
         
+    } */
+
+    #loader{
+        display: none;
     }
-</style> --}}
+</style>
     
 @endpush
 @section('content')
@@ -137,16 +141,6 @@ function downloadth(th){
                }      
              }); 
              
-			 //function sa() {     
-    //                         //  return Canvas2Image.saveAsPNG(getCanvas);
-
-			 //		var imgageData = getCanvas.toDataURL("image/png", 1);
-			 //		//Now browser starts downloading it instead of just showing it                
-			 //		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
-			 //		console.log(newData);
-			 //		$("#"+id).attr("download", "Check.png").attr("href", newData);         
-			 //}   
-			 //sa();
 }
 
 function downloadall(th,len){

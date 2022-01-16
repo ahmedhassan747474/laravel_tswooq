@@ -19,6 +19,7 @@ use App\Models\AppModels\Product;
 use App\Product as AppProduct;
 use Carbon;
 use DB;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class ProductController extends BaseController
 {
@@ -246,7 +247,10 @@ class ProductController extends BaseController
     }
     public function get_all_groups(Request $request)
     { 
-        $groups = Group::with('products')->get();
+
+        $ids=FacadesDB::table('users')->where('role_id',1)->pluck('id');
+        // dd($ids);
+        $groups = Group::whereIn('vendor_id',$ids)->with('products')->get();
         return new GroupCollection($groups);   
     }
     // likeproduct

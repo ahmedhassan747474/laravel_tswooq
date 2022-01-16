@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App\Http\Controllers\AdminControllers\AlertController;
+use App\Http\Controllers\AdminControllers\MediaController;
 use App\Product;
 use App\ProductStock;
 use Illuminate\Support\Facades\Lang;
@@ -312,8 +313,13 @@ class Products extends Model
             $expiryDate = str_replace('/', '-', $request->expires_date);
             $expiryDateFormate = strtotime($expiryDate);
         
-            if($request->image_id !== null){
-              $uploadImage = $request->image_id;
+            $Images = new Images();
+
+            if($request->file !== null){
+                $upload = new MediaController($Images,$setting);
+        
+                $uploadImage=$upload->fileUpload($request);
+                //   $uploadImage = $request->image_id;
             }else{
                 $uploadImage = '1372';
             }
@@ -442,7 +448,18 @@ class Products extends Model
                     $product_stock->sku = $request['sku_'.str_replace('.', '_', $str)];
                     $product_stock->qty = $request['qty_'.str_replace('.', '_', $str)];
                     $product_stock->pos_qty = $request['pos_qty_'.str_replace('.', '_', $str)];
-                    $product_stock->image = $request['img_'.str_replace('.', '_', $str)];
+
+                    $Images = new Images();
+                    if($request['img_'.str_replace('.', '_', $str)] !== null){
+                        $upload = new MediaController($Images,$setting);
+            
+                        $uploadImage=$upload->imgUpload($request['img_'.str_replace('.', '_', $str)]);
+                    }
+                    else{
+                        $uploadImage = '1372';
+                    }
+                    $product_stock->image = $uploadImage;
+                    // $product_stock->image = $request['img_'.str_replace('.', '_', $str)];
                     $product_stock->save();
                 }
             }
@@ -802,8 +819,12 @@ class Products extends Model
                   }else{
                       $slug = $request->slug;
                   }
-                  if($request->image_id !== null){
-                      $uploadImage = $request->image_id;
+
+                  $Images = new Images();
+                  if($request->file !== null){
+                    $upload = new MediaController($Images,$setting);
+            
+                    $uploadImage=$upload->fileUpload($request);
                   }else{
                       $uploadImage = $request->oldImage;
                   }
@@ -931,7 +952,19 @@ class Products extends Model
                     $product_stock->sku = $request['sku_'.str_replace('.', '_', $str)];
                     $product_stock->qty = $request['qty_'.str_replace('.', '_', $str)];
                     $product_stock->pos_qty = $request['pos_qty_'.str_replace('.', '_', $str)];
-                    $product_stock->image = $request['img_'.str_replace('.', '_', $str)];
+                    $Images = new Images();
+                    if($request['img_'.str_replace('.', '_', $str)] !== null){
+                        $upload = new MediaController($Images,$setting);
+            
+                        $uploadImage=$upload->imgUpload($request['img_'.str_replace('.', '_', $str)]);
+                        $product_stock->image = $uploadImage;
+                    
+                    }
+                    // else{
+                    //     $uploadImage = '1372';
+                    // }
+                    // $product_stock->image = $uploadImage;
+                    // $product_stock->image = $request['img_'.str_replace('.', '_', $str)];
                     $product_stock->save();
                 }
             }

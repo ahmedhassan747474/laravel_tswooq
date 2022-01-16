@@ -78,8 +78,16 @@
                                                   <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                                 </div>
                                               </div>
+
+                                              <div class="form-group">
+                                                <label for="date" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }} </label>
+                                                <div class="col-sm-10 col-md-4">
+                                                <input type="file" name="file" class="form-control">
+
+                                                </div>
+                                              </div>
                                              
-                                              <div class="col-xs-12 col-md-6 ">
+                                              {{-- <div class="col-xs-12 col-md-6 ">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>
                                                     <div class="col-sm-10 col-md-8">
@@ -112,7 +120,6 @@
                                                         </div>
 
 
-                                                        {{-- field-validate --}}
                                                         <div id="imageselected">
                                                           {!! Form::button( trans('labels.Add Image'), array('id'=>'newImage','class'=>"btn btn-primary ", 'data-toggle'=>"modal", 'data-target'=>"#Modalmanufactured" )) !!}
                                                           <br>
@@ -128,7 +135,8 @@
 
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
+
 
                                           
                                               <div class="box-footer text-center">

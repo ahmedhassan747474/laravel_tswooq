@@ -64,12 +64,18 @@
 						$groups=App\Group::where('vendor_id',auth()->user()->id)->where('name_en','LIKE','%'.$req.'%' )->orWhere('name_ar','LIKE','%'.$req.'%' )->latest()->paginate(12);	
 					}
 					else{
-						$groups=App\Group::where('vendor_id',auth()->user()->id)->latest()->paginate(12);
+						if(auth()->user()->role_id==1){
+							$ids=DB::table('users')->where('role_id',1)->pluck('id');
+							// dd($ids);
+							$groups=App\Group::whereIn('vendor_id',$ids)->latest()->paginate(12);
+						}else{
+							$groups=App\Group::where('vendor_id',auth()->user()->id)->latest()->paginate(12);
+						}
 					}
 					@endphp
 					<div class="table-responsive">
 						<div class="card-action-filter">
-							<form>
+							<form> 
 							<input type="text" class="form-control" name="query" required>
 							</form>
 							<form id="basicform1" method="post" action="{{ route('admin.group.destroy') }}">

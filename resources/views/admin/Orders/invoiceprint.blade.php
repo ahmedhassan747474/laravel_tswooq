@@ -307,6 +307,7 @@ img {
         </div>
        
           @php
+          $__QR=null;
                 if(auth()->user()->role_id == 11){			
                   $shop = App\Models\Core\User::find(auth()->user()->parent_admin_id);
                 }else{

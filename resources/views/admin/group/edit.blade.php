@@ -37,11 +37,11 @@
 					<h4 class="mb-20">{{ __('Edit Group') }}</h4>
 					<div class="row">
 						<div class="col-lg-12">
-							<div class="alert alert-danger none errorarea">
+							{{-- <div class="alert alert-danger none errorarea">
 								<ul id="errors">
 	
 								</ul>
-							</div>
+							</div> --}}
 							<form method="post" id="basicform" class="custom-form" action="{{ route('admin.group.update',$info->id) }}">
 								@csrf
 								@method('PUT')
@@ -80,7 +80,7 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('admin/js/form.js') }}"></script>
+{{-- <script src="{{ asset('admin/js/form.js') }}"></script> --}}
 <script>
 	"use strict";	
 	function success(res){

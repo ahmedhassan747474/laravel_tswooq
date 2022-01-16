@@ -66,6 +66,51 @@
                                                 </div>
                                             </div> --}}
                                         </div>
+
+                                        <div class="row">
+
+                                            @php
+                                            $j = 0;
+                                            @endphp
+                                            @foreach($result['description'] as $key=>$description_data)
+                                            <div style="margin-top: 15px;" class="col-md-6" id="product_<?=$description_data['languages_id']?>">
+                                                @php
+                                                $j++;
+                                                @endphp
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }} ({{ $description_data['language_name'] }})</label>
+                                                    <div class="col-sm-10 col-md-4">
+                                                        <input type="text" name="products_name_<?=$description_data['languages_id']?>" class="form-control field-validate" value='{{$description_data['products_name']}}'>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.EnterProductNameIn') }} {{ $description_data['language_name'] }} </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group external_link" style="display: none">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $description_data['language_name'] }})</label>
+                                                    <div class="col-sm-10 col-md-4">
+                                                        <input type="text" name="products_url_<?=$description_data['languages_id']?>" class="form-control products_url" value='{{$description_data['products_url']}}'>
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.External URL Text') }} ({{ $description_data['language_name'] }}) </span>
+                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }} ({{ $description_data['language_name'] }})</label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        <textarea id="edito<?=$description_data['languages_id']?>" name="products_description_<?=$description_data['languages_id']?>" class="form-control"
+                                                          rows="5">{{stripslashes($description_data['products_description'])}}</textarea>
+
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.EnterProductDetailIn') }} {{ $description_data['language_name'] }}</span> </div>
+                                                </div>
+
+                                            </div>
+                                            @endforeach
+                                    </div>
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="form-group">
@@ -327,7 +372,7 @@
                                             <input type="hidden" name="admin_id" value="{{auth()->user()->parent_admin_id}}">
                                             @endif
 
-                                            <div class="col-xs-12 col-md-6">
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }} </label>
                                                     <div class="col-sm-10 col-md-4">
@@ -382,8 +427,13 @@
                                                         <img src="{{asset($result['product'][0]->path)}}" alt="" width=" 100px">
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
+                                            <div class="col-xs-12 col-md-6">
+                                                <label for="file" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
+                                                <input type="file" name="file" class="form-control">
+                                            </div>
+                                            
                                         </div>
                                         <hr>
                                         <div class="row">

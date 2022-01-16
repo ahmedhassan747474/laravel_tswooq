@@ -54,47 +54,47 @@
                                                 </div>
                                             </div> --}}
                                         
-                                            <div class="row">
+                                        <div class="row">
 
-                                                    @foreach($result['languages'] as $key=>$languages)
-                                                        <div class="col-md-6">
-    
-                                                            <div style="margin-top: 15px;" class="tab-pane @if($key==0) active @endif" id="product_<?=$languages->languages_id?>">
-                                                                <div class="">
-                                                                    <div class="form-group">
-                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
-                                                                        <div class="col-sm-10 col-md-8">
-                                                                            <input type="text" name="products_name_<?=$languages->languages_id?>" class="form-control field-validate">
-                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                                {{ trans('labels.EnterProductNameIn') }} {{ $languages->name }} </span>
-                                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                                        </div>
+                                                @foreach($result['languages'] as $key=>$languages)
+                                                    <div class="col-md-6">
+
+                                                        <div style="margin-top: 15px;" class="tab-pane @if($key==0) active @endif" id="product_<?=$languages->languages_id?>">
+                                                            <div class="">
+                                                                <div class="form-group">
+                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
+                                                                    <div class="col-sm-10 col-md-8">
+                                                                        <input type="text" name="products_name_<?=$languages->languages_id?>" class="form-control field-validate">
+                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                            {{ trans('labels.EnterProductNameIn') }} {{ $languages->name }} </span>
+                                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                                                     </div>
-    
-                                                                    <div class="form-group external_link" style="display: none">
-                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $languages->name }})</label>
-                                                                        <div class="col-sm-10 col-md-8">
-                                                                            <input type="text" name="products_url_<?=$languages->languages_id?>" class="form-control products_url">
-                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                                {{ trans('labels.External URL Text') }} {{ $languages->name }} </span>
-                                                                            <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                                        </div>
+                                                                </div>
+
+                                                                <div class="form-group external_link" style="display: none">
+                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $languages->name }})</label>
+                                                                    <div class="col-sm-10 col-md-8">
+                                                                        <input type="text" name="products_url_<?=$languages->languages_id?>" class="form-control products_url">
+                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                            {{ trans('labels.External URL Text') }} {{ $languages->name }} </span>
+                                                                        <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                                                     </div>
-    
-                                                                    <div class="form-group">
-                                                                        <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
-                                                                        <div class="col-sm-10 col-md-8">
-                                                                            <textarea id="editor<?=$languages->languages_id?>" name="products_description_<?=$languages->languages_id?>" class="form-control" rows="5"></textarea>
-                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                                {{ trans('labels.EnterProductDetailIn') }} {{ $languages->name }}</span>
-                                                                        </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }}<span style="color:red;">*</span> ({{ $languages->name }})</label>
+                                                                    <div class="col-sm-10 col-md-8">
+                                                                        <textarea id="edito<?=$languages->languages_id?>" name="products_description_<?=$languages->languages_id?>" class="form-control" rows="5"></textarea>
+                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                            {{ trans('labels.EnterProductDetailIn') }} {{ $languages->name }}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
 
-                                                    @endforeach
-                                            </div>
+                                                @endforeach
+                                        </div>
 
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -323,7 +323,7 @@
                                             <input type="hidden" name="admin_id" value="{{auth()->user()->parent_admin_id}}">
                                             @endif
 
-                                            <div class="col-xs-12 col-md-6 ">
+                                            {{-- <div class="col-xs-12 col-md-6 ">
                                                 <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>
                                                     <div class="col-sm-10 col-md-8">
@@ -356,7 +356,6 @@
                                                         </div>
 
 
-                                                        {{-- field-validate --}}
                                                         <div id="imageselected">
                                                           {!! Form::button( trans('labels.Add Image'), array('id'=>'newImage','class'=>"btn btn-primary ", 'data-toggle'=>"modal", 'data-target'=>"#Modalmanufactured" )) !!}
                                                           <br>
@@ -372,6 +371,11 @@
 
                                                     </div>
                                                 </div>
+                                            </div> --}}
+
+                                            <div class="col-xs-12 col-md-6">
+                                                <label for="file" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
+                                                <input type="file" name="file" class="form-control">
                                             </div>
 
                                             {{-- <div class="col-xs-12 col-md-6">

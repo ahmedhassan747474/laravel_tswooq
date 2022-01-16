@@ -65,6 +65,66 @@ class MediaController extends Controller
         return view('admin.media.addimages')->with('images', $images)->with('result', $result);
     }
 
+    public function imgUpload($imgrequest)
+    {
+
+        // Creating a new time instance, we'll use it to name our file and declare the path
+        $time = Carbon::now();
+        // Requesting the file from the form
+        $image = $imgrequest;
+        $extensions = Setting::imageType();
+        if ($imgrequest and in_array($imgrequest->extension(), $extensions)) {
+
+            // getting size
+            $size = getimagesize($image);
+            list($width, $height, $type, $attr) = $size;
+            // Getting the extension of the file
+            $extension = $image->getClientOriginalExtension();
+            // Creating the directory, for example, if the date = 18/10/2017, the directory will be 2017/10/
+            $directory = date_format($time, 'Y') . '/' . date_format($time, 'm');
+            // Creating the file name: random string followed by the day, random number and the hour
+            $filename = str_random(5) . date_format($time, 'd') . rand(1, 9) . date_format($time, 'h') . "." . $extension;
+            // This is our upload main function, storing the image in the storage that named 'public'
+            $upload_success = $image->storeAs($directory, $filename, 'public');
+
+            //store DB
+            $Path = 'images/media/' . $directory . '/' . $filename;
+            $Images = new Images();
+            $imagedata = $Images->imagedata($filename, $Path, $width, $height);
+
+            // dd($imagedata);
+            $AllImagesSettingData = $Images->AllimagesHeightWidth();
+
+            switch (true) {
+                case ($width >= $AllImagesSettingData[5]->value || $height >= $AllImagesSettingData[4]->value):
+                    $tuhmbnail = $this->storeThumbnial($Path, $filename, $directory, $filename);
+                    $mediumimage = $this->storeMedium($Path, $filename, $directory, $filename);
+                    $largeimage = $this->storeLarge($Path, $filename, $directory, $filename);
+                    break;
+                case ($width >= $AllImagesSettingData[3]->value || $height >= $AllImagesSettingData[2]->value):
+                    $tuhmbnail = $this->storeThumbnial($Path, $filename, $directory, $filename);
+                    $mediumimage = $this->storeMedium($Path, $filename, $directory, $filename);
+                    //                $storeLargeImage = $Images->Largerecord($filename,$Path,$width,$height);
+                    break;
+                case ($width >= $AllImagesSettingData[0]->value || $height >= $AllImagesSettingData[1]->value):
+                    $tuhmbnail = $this->storeThumbnial($Path, $filename, $directory, $filename);
+                    //                $storeLargeImage = $Images->Largerecord($filename,$Path,$width,$height);
+                    //                $storeMediumImage = $Images->Mediumrecord($filename,$Path,$width,$height);
+
+                    break;
+                    //            default:
+                    //                $tuhmbnail = $this->storeThumbnial($Path,$filename,$directory,$filename);
+                    //                $storeLargeImage = $Images->Largerecord($filename,$Path,$width,$height);
+                    //                $storeMediumImage = $Images->Mediumrecord($filename,$Path,$width,$height);
+            }
+
+            return $imagedata;
+        } else {
+            return "Invalid Image";
+        }
+
+    }
+
     public function fileUpload(Request $request)
     {
 
@@ -92,6 +152,7 @@ class MediaController extends Controller
             $Images = new Images();
             $imagedata = $Images->imagedata($filename, $Path, $width, $height);
 
+            // dd($imagedata);
             $AllImagesSettingData = $Images->AllimagesHeightWidth();
 
             switch (true) {
@@ -117,6 +178,7 @@ class MediaController extends Controller
                     //                $storeMediumImage = $Images->Mediumrecord($filename,$Path,$width,$height);
             }
 
+            return $imagedata;
         } else {
             return "Invalid Image";
         }
@@ -192,7 +254,7 @@ class MediaController extends Controller
             'height' => $Large_values[0]->value,
 
             'grayscale' => false));
-//        $upload_success = $thumbnailImage->save($directory, $filename, 'public');
+       //        $upload_success = $thumbnailImage->save($directory, $filename, 'public');
         $namelarge = $thumbnailImage->save($destinationPath . 'large' . time() . $filename);
 
         $Path = 'images/media/' . $directory . '/' . 'large' . time() . $filename;
