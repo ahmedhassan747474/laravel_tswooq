@@ -13,6 +13,19 @@ return [
     |
     */
 
+	'Variant' => 'Variant',
+	'Variant Price' => 'Variant Price',
+	'Barcode' => 'Barcode',
+	'POS_Price' => 'POS Price',
+	'POS_Quantity' => 'POS_Quantity',
+	'App&Web Price' => 'App&Web Price',
+	'POS Price' => 'POS Price',
+	'Product price + stock' => 'Product price + stock',
+	'Product Variation' => 'Product Variation',
+	'Colors' => 'Colors',
+	'Choose the attributes of this product and then input values of each attribute' => 'Choose the attributes of this product and then input values of each attribute',
+	'Enter choice values' => 'Enter choice values',
+	
 	//links labels
 	'Pay with cashe' => 'Pay with cashe',
 	'Pay with visa' => 'Pay with visa',

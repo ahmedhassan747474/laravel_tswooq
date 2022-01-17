@@ -979,7 +979,9 @@ class POSController extends Controller
         foreach($products as $item){
             $product = AppProduct::where('products_id', $item->product_id)->first();
             // dd($product);
-
+            if(!$product){
+                continue;
+            }
             $data = array();
             $data['id'] = $product->products_id;
             $tax = 0;

@@ -83,24 +83,26 @@ class CustomersController extends Controller
         $errorMessage = array();
 
         //check email already exists
-        $existEmail = $this->Customers->email($request);
+        // $existEmail = $this->Customers->email($request);
         $this->validate($request, [
             'customers_firstname' => 'required',
             'customers_lastname' => 'required',
             'customers_telephone' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
+            // 'email' => 'required|email',
+            // 'password' => 'required',
             'isActive' => 'required',
         ]);
 
-
-        if (count($existEmail)> 0 ) {
-            $messages = Lang::get("labels.Email address already exist");
-            return Redirect::back()->withErrors($messages)->withInput($request->all());
-        } else {
-            $customers_id = $this->Customers->insert($request);
+        $customers_id = $this->Customers->insert($request);
             return redirect('admin/customers/address/display/' . $customers_id)->with('update', 'Customer has been created successfully!');
-        }
+
+        // if (count($existEmail)> 0 ) {
+        //     $messages = Lang::get("labels.Email address already exist");
+        //     return Redirect::back()->withErrors($messages)->withInput($request->all());
+        // } else {
+        //     $customers_id = $this->Customers->insert($request);
+        //     return redirect('admin/customers/address/display/' . $customers_id)->with('update', 'Customer has been created successfully!');
+        // }
     }
 
     public function diplayaddress(Request $request){

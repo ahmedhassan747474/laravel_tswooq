@@ -3,25 +3,25 @@
 	<thead>
 		<tr>
 			<td class="text-center">
-				{{trans('Variant')}}
+				{{trans('labels.Variant')}}
 			</td>
 			<td class="text-center">
-				{{trans('Variant Price')}}
+				{{trans('labels.Variant Price')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('Barcode')}}
+				{{trans('labels.Barcode')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('Quantity')}}
+				{{trans('labels.Quantity')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('POS_Price')}}
+				{{trans('labels.POS_Price')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('POS_Quantity')}}
+				{{trans('labels.POS_Quantity')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('Photo')}}
+				{{ trans('labels.Image') }}
 			</td>
 			<td></td>
 		</tr>
@@ -139,7 +139,8 @@
 				<div class="file-preview"></div> --}}
 
 				<div class="col-xs-12 col-md-6 ">
-					<input type="file" name="img_{{ $str }}" class="form-control">
+					<input type="file" name="img_{{ $str }}" class="form-control" onchange="readURL(this);" />
+					<img id="img_{{ $str }}" src="#" alt="" />
 
 					{{-- <div class="form-group">
 						<label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>

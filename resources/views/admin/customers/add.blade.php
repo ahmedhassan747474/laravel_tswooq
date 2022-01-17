@@ -87,7 +87,7 @@
                                                                           </div>
                                                                         </div> -->
                                                                         <hr>
-                                                                        <div class="form-group">
+                                                                        {{-- <div class="form-group">
                                                                           <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.EmailAddress') }} </label>
                                                                           <div class="col-sm-10 col-md-4">
                                                                             {!! Form::text('email',  '', array('class'=>'form-control email-validate', 'id'=>'email')) !!}
@@ -104,7 +104,7 @@
                                                                            {{ trans('labels.PasswordText') }}</span>
                                                                             <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
                                                                           </div>
-                                                                        </div>
+                                                                        </div> --}}
                                                                         <div class="form-group">
                                                                           <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Status') }} </label>
                                                                           <div class="col-sm-10 col-md-4">

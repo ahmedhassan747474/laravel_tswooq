@@ -73,7 +73,7 @@ class MediaController extends Controller
         // Requesting the file from the form
         $image = $imgrequest;
         $extensions = Setting::imageType();
-        if ($imgrequest and in_array($imgrequest->extension(), $extensions)) {
+        if ($imgrequest and in_array($image->getClientOriginalExtension(), $extensions)) {
 
             // getting size
             $size = getimagesize($image);
@@ -120,7 +120,7 @@ class MediaController extends Controller
 
             return $imagedata;
         } else {
-            return "Invalid Image";
+            return 0;
         }
 
     }
@@ -133,7 +133,11 @@ class MediaController extends Controller
         // Requesting the file from the form
         $image = $request->file('file');
         $extensions = Setting::imageType();
-        if ($request->hasFile('file') and in_array($request->file->extension(), $extensions)) {
+        // dd($extensions);
+
+        if ($request->hasFile('file') and in_array($image->getClientOriginalExtension(), $extensions)) {
+
+            // dd($image->getClientOriginalExtension());
 
             // getting size
             $size = getimagesize($image);
@@ -180,7 +184,7 @@ class MediaController extends Controller
 
             return $imagedata;
         } else {
-            return "Invalid Image";
+            return 0;
         }
 
     }

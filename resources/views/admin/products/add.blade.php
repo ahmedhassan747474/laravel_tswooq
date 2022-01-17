@@ -375,7 +375,8 @@
 
                                             <div class="col-xs-12 col-md-6">
                                                 <label for="file" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
-                                                <input type="file" name="file" class="form-control">
+                                                <input type="file" name="file" class="form-control" onchange="readURL(this);" />
+                                                <img id="blah" src="#" alt="your image" />
                                             </div>
 
                                             {{-- <div class="col-xs-12 col-md-6">
@@ -566,12 +567,12 @@
                                         <hr>
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0 h6">{{__('Product Variation')}}</h5>
+                                                <h5 class="mb-0 h6">{{__('labels.Product Variation')}}</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div class="form-group row">
                                                     <div class="col-md-3">
-                                                        <input type="text" class="form-control" value="{{__('Colors')}}" disabled>
+                                                        <input type="text" class="form-control" value="{{__('labels.Colors')}}" disabled>
                                                     </div>
                                                     <div class="col-md-8">
                                                         <select class="form-control aiz-selectpicker" data-live-search="true" data-selected-text-format="count" name="colors[]" id="colors" multiple disabled>
@@ -590,10 +591,10 @@
                         
                                                 <div class="form-group row">
                                                     <div class="col-md-3">
-                                                        <input type="text" class="form-control" value="{{__('Attributes')}}" disabled>
+                                                        <input type="text" class="form-control" value="{{__('labels.attributes')}}" disabled>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <select name="choice_attributes[]" id="choice_attributes" class="form-control aiz-selectpicker" data-selected-text-format="count" data-live-search="true" multiple data-placeholder="{{ __('Choose Attributes') }}">
+                                                        <select name="choice_attributes[]" id="choice_attributes" class="form-control aiz-selectpicker" data-selected-text-format="count" data-live-search="true" multiple data-placeholder="{{ __('labels.Choose Attributes') }}">
                                                             {{-- @foreach (\App\Attribute::all() as $key => $attribute)
                                                             <option value="{{ $attribute->id }}">{{ $attribute->getTranslation('name') }}</option>
                                                             @endforeach --}}
@@ -606,7 +607,7 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <p>{{ __('Choose the attributes of this product and then input values of each attribute') }}</p>
+                                                    <p>{{ __('labels.Choose the attributes of this product and then input values of each attribute') }}</p>
                                                     <br>
                                                 </div>
                         
@@ -618,7 +619,7 @@
 
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0 h6">{{trans('Product price + stock')}}</h5>
+                                                <h5 class="mb-0 h6">{{trans('labels.Product price + stock')}}</h5>
                                             </div>
                                             <div class="card-body">
                                                 {{-- <div class="form-group row">
@@ -703,8 +704,24 @@
     </section>
     <!-- /.content -->
 </div>
+
 <script src="{!! asset('admin/plugins/jQuery/jQuery-2.2.0.min.js') !!}"></script>
 <script type="text/javascript">
+        // function readURL(input) {
+        //     if (input.files && input.files[0]) {
+        //         var reader = new FileReader();
+
+        //         reader.onload = function (e) {
+        //             $('#'+$(input).next().attr("id"))
+        //                 .attr('src', e.target.result)
+        //                 .width(150)
+        //                 .height(200);
+        //         };
+
+        //         reader.readAsDataURL(input.files[0]);
+        //     }
+        // }
+
     $(function() {
 
         //for multiple languages
@@ -750,7 +767,7 @@
     });
 
     function add_more_customer_choice_option(i, name){
-        $('#customer_choice_options').append('<div class="form-group row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="'+i+'"><input type="text" class="form-control" name="choice[]" value="'+name+'" placeholder="{{ trans('Choice Title') }}" readonly></div><div class="col-md-8"><input type="text" class="form-control aiz-tag-input" name="choice_options_'+i+'[]" placeholder="{{ trans('Enter choice values') }}" data-on-change="update_sku"></div></div>');
+        $('#customer_choice_options').append('<div class="form-group row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="'+i+'"><input type="text" class="form-control" name="choice[]" value="'+name+'" placeholder="{{ trans('Choice Title') }}" readonly></div><div class="col-md-8"><input type="text" class="form-control aiz-tag-input" name="choice_options_'+i+'[]" placeholder="{{ trans('labels.Enter choice values') }}" data-on-change="update_sku"></div></div>');
 
     	AIZ.plugins.tagify();
     }

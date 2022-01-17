@@ -82,7 +82,8 @@
                                               <div class="form-group">
                                                 <label for="date" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }} </label>
                                                 <div class="col-sm-10 col-md-4">
-                                                <input type="file" name="file" class="form-control">
+                                                <input type="file" name="file" class="form-control" onchange="readURL(this);" />
+                                                <img id="blah" src="#" alt="" />
 
                                                 </div>
                                               </div>

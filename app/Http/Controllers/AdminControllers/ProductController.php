@@ -293,6 +293,13 @@ class ProductController extends Controller
 
     public function update(Request $request)
     {
+        $image = $request->file('file');
+        $extensions = Setting::imageType();
+        // dd($extensions);
+        if ($request->hasFile('file') and !in_array($image->getClientOriginalExtension(), $extensions)) {
+            return redirect()->back()->withErrors(['نوع الصورة غير صحيح'])->withInput();
+
+        }
         $result = $this->products->updaterecord($request);
         $products_id = $request->id;
         if ($request->products_type == 1) {
@@ -318,6 +325,7 @@ class ProductController extends Controller
 				),
 			array(
 					'categories'    => 'required',
+                    'file' => 'image|mimes:jpg,png,jpeg,gif,svg',
                     // 'attributes'    => 'required|array|min:1',
                     // 'attributes.*'  => 'required'
 				)
@@ -328,6 +336,13 @@ class ProductController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput();
 		}else{
 
+            $image = $request->file('file');
+            $extensions = Setting::imageType();
+            // dd($extensions);
+            if ($request->hasFile('file') and !in_array($image->getClientOriginalExtension(), $extensions)) {
+                return redirect()->back()->withErrors(['نوع الصورة غير صحيح'])->withInput();
+    
+            }
         // if(isset($request->categories) and count){            
             $countAttr = 0;
             // if(count($request['attributes']) > 0) {

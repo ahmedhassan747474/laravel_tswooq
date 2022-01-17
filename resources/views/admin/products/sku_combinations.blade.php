@@ -6,22 +6,22 @@
 	<thead>
 		<tr>
 			<td class="text-center">
-				{{trans('Variant')}}
+				{{trans('labels.Variant')}}
 			</td>
 			<td class="text-center">
-				{{trans('Variant Price')}}
+				{{trans('labels.Variant Price')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('Barcode')}}
+				{{trans('labels.Barcode')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('Quantity')}}
+				{{trans('labels.Quantity')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('POS_Price')}}
+				{{trans('labels.POS_Price')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
-				{{trans('POS_Quantity')}}
+				{{trans('labels.POS_Quantity')}}
 			</td>
 			<td class="text-center" data-breakpoints="lg">
 				{{ trans('labels.Image') }}
@@ -62,7 +62,7 @@
 					<label for="" class="control-label">{{ $str }}</label>
 				</td>
 				<td>
-					<input type="number" lang="en" name="price_{{ $str }}" value="{{ $unit_price }}" placeholder="App&Web Price" min="0" step="0.01" class="form-control" required>
+					<input type="number" lang="en" name="price_{{ $str }}" value="{{ $unit_price }}" placeholder="{{ trans('labels.App&Web Price') }}" min="0" step="0.01" class="form-control" required>
 				</td>
 				<td>
 					<input type="text" name="sku_{{ $str }}" value="" class="form-control">
@@ -72,7 +72,7 @@
 				</td>
 
 				<td>
-					<input type="number" lang="en" name="pos_price_{{ $str }}" value="{{ $unit_price }}" placeholder="POS Price" min="0" step="0.01" class="form-control" required>
+					<input type="number" lang="en" name="pos_price_{{ $str }}" value="{{ $unit_price }}" placeholder="{{ trans('labels.POS Price') }}" min="0" step="0.01" class="form-control" required>
 				</td>
 				{{-- <td>
 					<input type="text" name="sku_{{ $str }}" value="" class="form-control">
@@ -93,7 +93,8 @@
 				<td>
 					<div class="col-xs-12 col-md-6 ">
 							{{-- <label for="img_{{ $str }}" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label> --}}
-							<input type="file" name="img_{{ $str }}" class="form-control">
+							<input type="file" name="img_{{ $str }}" class="form-control" onchange="readURL(this);" />
+							<img id="img_{{ $str }}" src="#" alt="" />
 						{{-- <div class="form-group">
 							<label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}<span style="color:red;">*</span></label>
 							<div class="col-sm-10 col-md-8">

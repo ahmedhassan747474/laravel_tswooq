@@ -587,7 +587,7 @@ class AdminController extends Controller
       }
 
        $update = $this->Admin->updaterecord($request);
-	   if($request->tax_number){
+	   if($request->tax_number || $request->invoice_type){
 		   if(auth()->user()->role_id == 11){
 				User::find(auth()->user()->parent_admin_id)->update([
 			   'tax_number'=>$request->tax_number,

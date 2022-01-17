@@ -431,12 +431,13 @@
 
                                             <div class="col-xs-12 col-md-6">
                                                 <label for="file" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Image') }}</label>
-                                                <input type="file" name="file" class="form-control">
+                                                <input type="file" name="file" class="form-control" onchange="readURL(this);" />
+                                                <img id="blah" src="#" alt="your image" />
                                             </div>
                                             
                                         </div>
                                         <hr>
-                                        <div class="row">
+                                        {{-- <div class="row">
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -604,7 +605,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr>
 
@@ -661,12 +662,12 @@
                                         <hr>
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0 h6">{{trans('Product Variation')}}</h5>
+                                                <h5 class="mb-0 h6">{{trans('labels.Product Variation')}}</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div class="form-group row">
                                                     <div class="col-lg-3">
-                                                        <input type="text" class="form-control" value="{{trans('Colors')}}" disabled>
+                                                        <input type="text" class="form-control" value="{{trans('labels.Colors')}}" disabled>
                                                     </div>
                                                     <div class="col-lg-8">
                                                         <select class="form-control aiz-selectpicker" data-live-search="true" data-selected-text-format="count" name="colors[]" id="colors" multiple>
@@ -689,10 +690,10 @@
                         
                                                 <div class="form-group row">
                                                     <div class="col-lg-3">
-                                                        <input type="text" class="form-control" value="{{trans('Attributes')}}" disabled>
+                                                        <input type="text" class="form-control" value="{{trans('labels.attributes')}}" disabled>
                                                     </div>
                                                     <div class="col-lg-8">
-                                                        <select name="choice_attributes[]" id="choice_attributes" data-selected-text-format="count" data-live-search="true" class="form-control aiz-selectpicker" multiple data-placeholder="{{ trans('Choose Attributes') }}">
+                                                        <select name="choice_attributes[]" id="choice_attributes" data-selected-text-format="count" data-live-search="true" class="form-control aiz-selectpicker" multiple data-placeholder="{{ trans('labels.Choose Attributes') }}">
                                                             @foreach (DB::table('products_options_descriptions')->where('language_id',request()->session()->get('back_locale') == 'en' ? 1 : 2)->get() as $key => $attribute)
                                                             <option value="{{ $attribute->products_options_id }}">{{ $attribute->options_name }}</option>
                                                             @endforeach
@@ -701,7 +702,7 @@
                                                 </div>
                         
                                                 <div class="">
-                                                    <p>{{ trans('Choose the attributes of this product and then input values of each attribute') }}</p>
+                                                    <p>{{ trans('labels.Choose the attributes of this product and then input values of each attribute') }}</p>
                                                     <br>
                                                 </div>
                         
@@ -710,10 +711,10 @@
                                                     <div class="form-group row">
                                                         <div class="col-lg-3">
                                                             <input type="hidden" name="choice_no[]" value="{{ $choice_option->attribute_id }}">
-                                                            <input type="text" class="form-control" name="choice[]" value="{{ \App\Attribute::find($choice_option->attribute_id)->getTranslation('name') }}" placeholder="{{ trans('Choice Title') }}" disabled>
+                                                            <input type="text" class="form-control" name="choice[]" value="{{ \App\Attribute::find($choice_option->attribute_id)->getTranslation('name') }}" placeholder="{{ trans('labels.Choice Title') }}" disabled>
                                                         </div>
                                                         <div class="col-lg-8">
-                                                            <input type="text" class="form-control aiz-tag-input" name="choice_options_{{ $choice_option->attribute_id }}[]" placeholder="{{ trans('Enter choice values') }}" value="{{ implode(',', $choice_option->values) }}" data-on-change="update_sku">
+                                                            <input type="text" class="form-control aiz-tag-input" name="choice_options_{{ $choice_option->attribute_id }}[]" placeholder="{{ trans('labels.Enter choice values') }}" value="{{ implode(',', $choice_option->values) }}" data-on-change="update_sku">
                                                         </div>
                                                     </div>
                                                     @endforeach
@@ -722,7 +723,7 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0 h6">{{trans('Product price + stock')}}</h5>
+                                                <h5 class="mb-0 h6">{{trans('labels.Product price + stock')}}</h5>
                                             </div>
                                             <div class="card-body">
                                                 
@@ -734,66 +735,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <div class="tabbable tabs-left">
-                                                    <ul class="nav nav-tabs">
-                                                        @php
-                                                        $i = 0;
-                                                        @endphp
-                                                        @foreach($result['languages'] as $key=>$languages)
-                                                        <li class="@if($i==0) active @endif"><a href="#product_<?=$languages->languages_id?>" data-toggle="tab"><?=$languages->name?></a></li>
-                                                        @php
-                                                        $i++;
-                                                        @endphp
-                                                        @endforeach
-                                                    </ul>
-                                                    <div class="tab-content">
-                                                        @php
-                                                        $j = 0;
-                                                        @endphp
-                                                        @foreach($result['description'] as $key=>$description_data)
-                                                        <div style="margin-top: 15px;" class="tab-pane @if($j==0) active @endif" id="product_<?=$description_data['languages_id']?>">
-                                                            @php
-                                                            $j++;
-                                                            @endphp
-                                                            <div class="form-group">
-                                                                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.ProductName') }} ({{ $description_data['language_name'] }})</label>
-                                                                <div class="col-sm-10 col-md-4">
-                                                                    <input type="text" name="products_name_<?=$description_data['languages_id']?>" class="form-control field-validate" value='{{$description_data['products_name']}}'>
-                                                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                        {{ trans('labels.EnterProductNameIn') }} {{ $description_data['language_name'] }} </span>
-                                                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="form-group external_link" style="display: none">
-                                                                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.External URL') }} ({{ $description_data['language_name'] }})</label>
-                                                                <div class="col-sm-10 col-md-4">
-                                                                    <input type="text" name="products_url_<?=$description_data['languages_id']?>" class="form-control products_url" value='{{$description_data['products_url']}}'>
-                                                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                        {{ trans('labels.External URL Text') }} ({{ $description_data['language_name'] }}) </span>
-                                                                    <span class="help-block hidden">{{ trans('labels.textRequiredFieldMessage') }}</span>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="form-group">
-                                                                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Description') }} ({{ $description_data['language_name'] }})</label>
-                                                                <div class="col-sm-10 col-md-8">
-                                                                    <textarea id="editor<?=$description_data['languages_id']?>" name="products_description_<?=$description_data['languages_id']?>" class="form-control"
-                                                                      rows="5">{{stripslashes($description_data['products_description'])}}</textarea>
-
-                                                                    <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
-                                                                        {{ trans('labels.EnterProductDetailIn') }} {{ $description_data['language_name'] }}</span> </div>
-                                                            </div>
-
-                                                        </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                      
                                         <!-- /.box-body -->
                                         <div class="box-footer text-center">
                                             <button type="submit" class="btn btn-primary pull-right" id="normal-btn">{{ trans('labels.Save_And_Continue') }} <i class="fa fa-angle-right 2x"></i></button>

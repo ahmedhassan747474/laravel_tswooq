@@ -218,7 +218,8 @@ img {
               <tr>
                 <th style="text-align: right;">{{ trans('labels.PaymentMetods') }}:</th>
                 <td>
-                  {{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }}
+                  {{ $data['orders_data'][0]->payment_method == 'visa' ?'فيزا':'كاش' }}
+                  {{-- {{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }} --}}
                 </td>
               </tr>
 
@@ -289,24 +290,56 @@ img {
           </div>
 
         </div>
-        {{-- <div class="col-xs-12" style="direction: rtl">
+        <div class="col-xs-12" style="direction: rtl">
         	<p class="lead" style="margin-bottom:10px;text-align: right;">{{ trans('labels.Notes') }}:</p>
-        	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
+        	<p class="" style="text-transform:capitalize;">
                 {{$data['orders_data'][0]->comments}}
             </p>
-        </div> --}}
+        </div>
         <hr>
-        <div class="col-md-12" style="direction: rtl">
+        <div class="row invoice-info" style="direction: rtl;text-align: justify;line-height: normal;font-weight: 800;">
+          <div class="col-md-12" style="direction: rtl">
+            <h4 style="display: flex;justify-content: center;"> </h4>
+          </div>
+          <div class="col-md-8">
+            <p></p>
+            <p></p>
+          </div>
+          <div class="col-md-12">
+           
+          </div>
+          <!-- /.col -->
+        </div>
+
+        <div class="row">
+          <div class="col-md-12" style="direction: rtl">
         	<h4 style="display: flex;justify-content: center;">والله ولى التوفيق</h4>
         </div>
 
-        <div class="col-md-6" style="direction: rtl">
+        <table style="border: 1px solid #e3363600 !important;">
+          <tr>
+            <td style="padding-left: 150px;border-top: 1px solid #e3363600 !important;">توقيع الطرف الأول</td>
+            {{-- <td></td> --}}
+            {{-- <td>.</td> --}}
+            <td style="    border-top: 1px solid #e3363600 !important;">توقيع الطرف الثانى</td>
+          </tr>
+          <tr>
+            <td style="    border-top: 1px solid #e3363600 !important;">.....................</td>
+            {{-- <td></td> --}}
+            {{-- <td>.</td> --}}
+            <td style="    border-top: 1px solid #e3363600 !important;">...................</td>
+          </tr>
+        </table>
+
+        {{-- <div class="col-md-6" style="direction: rtl">
         	<p style="display: flex;justify-content: center;">توقيع الطرف الأول<br>....................................<p>
         </div>
 
         <div class="col-md-6" style="direction: rtl">
-        	<p style="display: flex;justify-content: center;">توقيع الطرف الثانى<br>...................................<p>
+        	<p style="">توقيع الطرف الثانى<br>...................................<p>
+        </div> --}}
         </div>
+        
         <br>
         {{-- <div class="col-xs-12">
         	<p class="lead" style="margin-bottom:10px" style="text-align: right;">{{ trans('labels.Orderinformation') }}:</p>

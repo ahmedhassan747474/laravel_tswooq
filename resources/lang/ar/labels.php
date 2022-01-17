@@ -13,6 +13,18 @@ return [
     |
     */
 
+	'Variant' => 'الخاصية',
+	'Variant Price' => 'بيانات الخاصية',
+	'Barcode' => 'الباركود',
+	'POS_Price' => 'سعر نقاط البيع',
+	'POS_Quantity' => 'كمية نقاط البيع',
+	'App&Web Price' => 'سعر الموقع والتطبيق',
+	'POS Price' => 'سعر نقاط البيع',
+	'Product price + stock' => 'تفاصيل المخزن',
+	'Product Variation' => 'خاصية المنتج',
+	'Colors' => 'الالوان',
+	'Choose the attributes of this product and then input values of each attribute' => 'اختر صفات هذا المنتج ثم قم بادخال بيانات هذه الصفات',
+	'Enter choice values' => 'ادخل القيم',
 	//expensess
 	'AddExpense'=>'اضف مصروف',
 	'AddNEWExpense'=>'اضف مصروف جديد',

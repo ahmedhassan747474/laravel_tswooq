@@ -319,6 +319,7 @@ class Products extends Model
                 $upload = new MediaController($Images,$setting);
         
                 $uploadImage=$upload->fileUpload($request);
+                
                 //   $uploadImage = $request->image_id;
             }else{
                 $uploadImage = '1372';
