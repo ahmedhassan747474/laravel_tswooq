@@ -24,10 +24,10 @@
 </div> -->
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="customer">Customer</label>
+        <label class="col-sm-2 control-label" for="customer">العميل</label>
         <div class="col-sm-10">
-            <select name="customer" id="customer" class="form-control demo-select2 select3" data-placeholder="Select Customer" style="width: 100%;">
-                <option value="">Select Customer</option>
+            <select name="customer" id="customer" class="form-control demo-select2 select3" data-placeholder="اختر العميل" style="width: 100%;">
+                <option value="">اختر عميل</option>
                 @foreach (\DB::table('users')->where('role_id', '2')->get() as $key => $customer)
                     <option value="{{ $customer->id }}">{{ $customer->first_name . ' ' . $customer->last_name }}</option>
                 @endforeach
@@ -37,15 +37,15 @@
 </div>
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="address">Address</label>
+        <label class="col-sm-2 control-label" for="address">العنوان</label>
         <div class="col-sm-10">
-            <textarea placeholder="Address" id="address" name="address" class="form-control" required></textarea>
+            <textarea placeholder="العنوان" id="address" name="address" class="form-control" required></textarea>
         </div>
     </div>
 </div>
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="email">Country</label>
+        <label class="col-sm-2 control-label" for="email">الدولة</label>
         <div class="col-sm-10">
             <select name="country" id="country" class="form-control demo-select2" required data-placeholder="Select country">
                 @foreach (\DB::table('countries')->get() as $key => $country)
@@ -57,17 +57,17 @@
 </div>
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="city">City</label>
+        <label class="col-sm-2 control-label" for="city">المدينة</label>
         <div class="col-sm-10">
-            <input type="text" placeholder="City" id="city" name="city" class="form-control" required>
+            <input type="text" placeholder="المدينة" id="city" name="city" class="form-control" required>
         </div>
     </div>
 </div>
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="postal_code">Postal code</label>
+        <label class="col-sm-2 control-label" for="postal_code">الرقم البريدى</label>
         <div class="col-sm-10">
-            <input type="number" min="0" placeholder="Postal code" id="postal_code" name="postal_code" class="form-control" required>
+            <input type="number" min="0" placeholder="الرقم البريدى" id="postal_code" name="postal_code" class="form-control" required>
         </div>
     </div>
 </div>
@@ -81,9 +81,9 @@
 </div> -->
 <div class="form-group">
     <div class=" row">
-        <label class="col-sm-2 control-label" for="comment">Comment</label>
+        <label class="col-sm-2 control-label" for="comment">الملاحظات</label>
         <div class="col-sm-10">
-            <textarea placeholder="Comment" id="comment" name="comment" class="form-control" required></textarea>
+            <textarea placeholder="ملاحظات العميل" id="comment" name="comment" class="form-control" required></textarea>
         </div>
     </div>
 </div>

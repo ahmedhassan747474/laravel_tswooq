@@ -566,20 +566,20 @@ class AdminController extends Controller
         array(
           'first_name' => $request->first_name,
           'last_name' => $request->last_name,
-          'address' => $request->address,
-          'phone' => $request->phone,
-          'city' => $request->city,
-          'country' => $request->first_name,
-          'zip' => $request->zip
+        //   'address' => $request->address,
+        //   'phone' => $request->phone,
+        //   'city' => $request->city,
+        //   'country' => $request->first_name,
+        //   'zip' => $request->zip
           ),
         array(
           'first_name' => 'required',
           'last_name' => 'required',
-          'address' => 'required',
-          'phone' => 'required',
-          'city' => 'required',
-          'country' => 'required',
-          'zip' => 'required'
+        //   'address' => 'required',
+        //   'phone' => 'required',
+        //   'city' => 'required',
+        //   'country' => 'required',
+        //   'zip' => 'required'
           )
       );
       if($validator->fails()){

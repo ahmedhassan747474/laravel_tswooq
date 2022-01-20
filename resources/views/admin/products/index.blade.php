@@ -85,9 +85,10 @@
                                             <th>{{ trans('labels.Image') }}</th>
                                             <th>{{ trans('labels.Category') }}</th>
                                             <th>{{  trans('labels.Name') }}</th>
-                                            <th>الكمية</th>
+                                            <th>كمية الموقع والتطبيق</th>
+                                            <th>{{ trans('labels.POS_Quantity') }}</th>
                                             <th>{{ trans('labels.Additional info') }}</th>
-                                            <th>{{  trans('labels.ModifiedDate')}}</th>
+                                            {{-- <th>{{  trans('labels.ModifiedDate')}}</th> --}}
                                             <th></th>
                                         </tr>
                                         </thead>
@@ -108,12 +109,19 @@
                                                     <td>
                                                         {{ $product->products_name }} @if(!empty($product->products_model)) ( {{ $product->products_model }} ) @endif
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         {{ $product->products_quantity }}
-                                                    </td>
+                                                    </td> --}}
                                                     <td>
-                                                        {{ $product->first_name }} {{ $product->last_name }}
+                                                        {{ $product->stocks->sum('qty')??0 }}
                                                     </td>
+
+                                                    <td>
+                                                        {{ $product->stocks->sum('pos_qty')??0 }}
+                                                    </td>
+                                                    {{-- <td>
+                                                        {{ $product->first_name }} {{ $product->last_name }}
+                                                    </td> --}}
                                                     <td>
                                                        
                                                         @if(!empty($product->manufacturers_name))
@@ -122,14 +130,17 @@
                                                         <strong>{{ trans('labels.Price') }}: </strong>   
                                                         @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $product->products_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                                                         <br>
+                                                        {{-- <strong>{{ trans('labels.POS Price') }}: </strong>   
+                                                        @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $product->stocks[0]->pos_price?? $product->products_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                                                        <br> --}}
                                                         @if($product->admin_id != null)
                                                         @php
                                                             $getName = DB::table('users')->where('id', $product->admin_id)->first();
                                                         @endphp
                                                         <strong>{{ trans('labels.ShopName') }}: </strong> {{$getName != null ? $getName->shop_name : 'Not Exist'}} <br>
                                                         @endif
-                                                        <strong>{{ trans('labels.Weight') }}: </strong>  {{ $product->products_weight }}{{ $product->products_weight_unit }}<br>
-                                                        <strong>{{ trans('labels.Viewed') }}: </strong>  {{ $product->products_viewed }}<br>
+                                                        {{-- <strong>{{ trans('labels.Weight') }}: </strong>  {{ $product->products_weight }}{{ $product->products_weight_unit }}<br> --}}
+                                                        {{-- <strong>{{ trans('labels.Viewed') }}: </strong>  {{ $product->products_viewed }}<br> --}}
                                                         @if(!empty($product->specials_id))
                                                             <strong class="badge bg-light-blue">{{ trans('labels.Special Product') }}</strong><br>
                                                             <strong>{{ trans('labels.SpecialPrice') }}: </strong>  {{ $product->specials_products_price }}<br>
@@ -140,9 +151,9 @@
                                                             @endif
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         {{ $product->productupdate }}
-                                                    </td>
+                                                    </td> --}}
 
                                                     <td>
                                                       <a class="btn btn-primary" style="width: 100%; margin-bottom: 5px;" href="{{url('admin/products/edit')}}/{{ $product->products_id }}">{{ trans('labels.EditProduct') }}</a>

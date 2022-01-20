@@ -438,7 +438,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-zoom" role="document">
                 <div class="modal-content">
                     <div class="modal-header bord-btm">
-                        <h4 class="modal-title h6">Shipping Address</h4>
+                        <h4 class="modal-title h6">عنوان الشحن</h4>
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body" id="shipping_address">
@@ -446,8 +446,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-styled btn-base-3" data-dismiss="modal" id="close-button">Close</button>
-                        <button type="button" class="btn btn-primary btn-styled btn-base-1" data-dismiss="modal">Confirm</button>
+                        <button type="button" class="btn btn-styled btn-base-3" data-dismiss="modal" id="close-button">اغلاق</button>
+                        <button type="button" class="btn btn-primary btn-styled btn-base-1" data-dismiss="modal">تأكيد</button>
                     </div>
                 </div>
             </div>
@@ -467,7 +467,7 @@
                             <input type="hidden" name="customer_id" id="set_customer_id" value="{{ Session::get('customerData')->id ?? '' }}">
                             <div class="form-group">
                                 <div class=" row">
-                                    <label class="col-sm-2 control-label" for="address">Address</label>
+                                    <label class="col-sm-2 control-label" for="address">العنوان</label>
                                     <div class="col-sm-10">
                                         <textarea placeholder="Address" id="address" name="address" class="form-control" required></textarea>
                                     </div>

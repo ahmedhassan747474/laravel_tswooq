@@ -4,6 +4,7 @@ namespace App\Models\AppModels;
 
 use App\Http\Controllers\Admin\AdminSiteSettingController;
 use App\Http\Controllers\App\AppSettingController;
+use App\ProductStock;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -54,6 +55,10 @@ class Product extends Model
         return $this->hasOne('App\Models\AppModels\ProductDescriptions','products_id','products_id')->where('language_id',$language_id)->select('products_id','products_name','products_description');
     }
 
+    public function stocks() {
+        return $this->hasMany(ProductStock::class,'product_id','products_id');
+    }
+    
     public function getProductsImageAttribute($value)
     {
         $image= DB::table('image_categories')->where('image_id',$value)
