@@ -17,7 +17,6 @@ public $sortable =['id','name'];
         return $this->hasOne('App\Models\Web\Products','products_image');
     }
     public function image_category(){
-
         return $this->hasOne('App\Image_category','image_id');
     }
 

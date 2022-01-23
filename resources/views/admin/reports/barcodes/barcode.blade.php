@@ -1,17 +1,13 @@
 @extends('admin.layout')
 
 @push('styles')
-<style>
-    /* svg{
+{{-- <style>
+    svg{
         width: 5cm !important;
         height: 2.5cm !important;
         
-    } */
-
-    #loader{
-        display: none;
     }
-</style>
+</style> --}}
     
 @endpush
 @section('content')
@@ -45,8 +41,9 @@
                         <div class="col-md-4">
                             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> @lang('site.search')</button>
                         </div>
-                        <!--<button class="btn  btn-primary print-btn col-md-2"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>-->
-                        <button class="btn  btn-primary  col-md-2" id="downloa" onclick="downloadall(this,{{count($barcodes)}})"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>
+                        <button class="btn  btn-primary print-btn col-md-2"> <i class="fa fa-print"> {{ trans('labels.Print') }} </i> </button>
+                        <button class="btn  btn-primary  col-md-2" id="downloa" onclick="downloadall(this,{{count($barcodes)}})"> <i class="fa fa-print"> تحميل </i> </button>
+                        <!--<button class="btn  btn-primary  col-md-2" id="downloa" onclick="downloadall(this,{{count($barcodes)}})"> <i class="fa fa-print"> تحميل </i> </button>-->
 
                     </div>
                 </form>
@@ -57,17 +54,20 @@
                 @if($barcodes->count() > 0)
 
                             @foreach($barcodes as $index=>$barcode)
-                                    <div class="col-md-12 col-xs-12" id="d{{$index}}" onclick="downloadth(this)" style="cursor:pointer;margin-bottom: 20px;margin-top: 0px;" >
-                                        {!! QrCode::size(70)->generate($barcode->products_id); !!}
-                                        {{-- <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->format('png')->generate($barcode->products_id)) !!} "> --}}
+                                    <div class="col-md-12 col-xs-12"  style="cursor:pointer;margin-bottom: 0px;margin-top: 0px;" >
+                                        <div id="d{{$index}}" onclick="downloadth(this)" style="background-color: #ffffff;width: 380px;height: 200px;padding:20px; border: 2px solid powderblue;">
+                                        {{-- {!! QrCode::size(140)->generate($barcode->products_id); !!} --}}
+                                        <img src="data:image/png;base64, {!! base64_encode(QrCode::size(130)->format('png')->generate($barcode->products_id)) !!} ">
 
 
                                             {{-- // echo '<img style="padding-top: 0px"  src="data:image/png;base64,' . base64_encode($generator->getBarcode($barcode->barcode, $generator::TYPE_CODE_128)) . '"> '; --}}
-                                            <span style="display: inline-block;position: absolute;width: 39px;font-size: 12px;text-align: right;" class="column">
+                                            <span style="display: inline-block;position: absolute;width: 140px;font-size: 24px;text-align: right;font-weight: 900;" class="column">
                                             {{-- Nada ---  --}}
-                                            {{str_limit($barcode->products_name, $limit = 10, $end = '...') }} <br>
-                                            السعر: {{$barcode->products_price}} 
-                                            </span>
+                                            {{str_limit($barcode->products_name, $limit = 40, $end = '...') }} <br>
+                                            السعر: {{$barcode->products_price}} ريال
+                                            </span>    
+                                        </div>
+                                        
                                             
                                     </div>
                                      <!--{{-- @if(($index+1) % 4 == 0) <div class="col-md-12"><hr></div>  @endif --}}-->
@@ -91,7 +91,7 @@
 
 @push('scripts')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 
 <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
@@ -141,7 +141,19 @@ function downloadth(th){
                }      
              }); 
              
+			 //function sa() {     
+    //                         //  return Canvas2Image.saveAsPNG(getCanvas);
+
+			 //		var imgageData = getCanvas.toDataURL("image/png", 1);
+			 //		//Now browser starts downloading it instead of just showing it                
+			 //		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+			 //		console.log(newData);
+			 //		$("#"+id).attr("download", "Check.png").attr("href", newData);         
+			 //}   
+			 //sa();
 }
+
+    var urlsss = [];
 
 function downloadall(th,len){
     // var id =th.id;
@@ -163,13 +175,51 @@ function downloadall(th,len){
                var imgageData = getCanvas.toDataURL("image/png", 1);
 			 		//Now browser starts downloading it instead of just showing it                
 			 		var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
-			 		console.log(newData);
+			 //		console.log(newData);
+			 		
+
+//  window.open(newData,'Image','width=600px,height=800px,resizable=1');
+//                     let div = document.createElement('div');
+//                     div.id = 'content';
+//                     div.innerHTML = '<input type="text" class="urls" value="'+newData+'">';
+//                     document.body.appendChild(div);
+    
+			 //		alert(urls[i]);
 			 		$(th.id).attr("download", "Check.png").attr("href", newData); 
+			 
+			             // alert(urls[0]);
+
                }      
              });  
     }
    
-           
+  
+   zipd();        
+}
+
+function zipd(){
+     var links=document.getElementsByClassName('urls');
+   alert(links[0].value);
+   var zip = new JSZip();
+var count = 0;
+var zipFilename = "zipFilename.zip";
+
+urls.forEach(function(url){
+  var filename = "filename";
+  // loading a file and add it in a zip file
+  JSZipUtils.getBinaryContent(url, function (err, data) {
+     if(err) {
+        throw err; // or handle the error
+     }
+     zip.file(filename, data, {binary:true});
+     count++;
+     if (count == urls.length) {
+       zip.generateAsync({type:'blob'}).then(function(content) {
+          saveAs(content, zipFilename);
+       });
+    }
+  });
+});
 }
 $(document).ready(function () {  
 			 var element = $("#print-area"); // global variable     

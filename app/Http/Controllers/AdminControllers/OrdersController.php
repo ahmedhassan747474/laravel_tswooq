@@ -83,7 +83,16 @@ class OrdersController extends Controller
         //get function from other controller
         $setting = $this->myVarsetting->getSetting();
 
-        if ($old_orders_status == $orders_status) {
+        if($request->paied){
+            DB::table('orders')
+            ->where('orders_id', $orders_id)
+            ->update([
+                    'paied'=>DB::raw('paied + '.$request->paied)
+                ]);
+            return redirect()->back()->with('message', Lang::get("labels.OrderStatusChangedMessage"));
+        }
+
+        if ($old_orders_status == $orders_status && $request->paied==0) {
             return redirect()->back()->with('error', Lang::get("labels.StatusChangeError"));
         } else {
             //update order

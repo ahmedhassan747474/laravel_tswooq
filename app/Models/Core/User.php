@@ -64,6 +64,7 @@ class User extends Authenticatable
         ]);
     }
     public static function getCustomers(){
+
       $user = User::sortable(['id'=>'ASC'])
           ->LeftJoin('user_to_address', 'user_to_address.user_id' ,'=', 'users.id')
           ->LeftJoin('address_book','address_book.address_book_id','=', 'user_to_address.address_book_id')
@@ -75,8 +76,16 @@ class User extends Authenticatable
           'address_book.entry_street_address as entry_street_address', 'address_book.entry_suburb as entry_suburb',
           'address_book.entry_postcode as entry_postcode', 'address_book.entry_city as entry_city',
           'address_book.entry_state as entry_state', 'countries.*', 'zones.*')
-          ->groupby('users.id')
-          ->paginate(10);
+          ->groupby('users.id');
+
+          if(auth()->user()->role_id == 11) {
+            $user->where('admin_id', '=', auth()->user()->id);
+            }
+            else if(auth()->user()->role_id != 11 && auth()->user()->role_id != 1 ) {
+                $user->where('admin_id', '=', auth()->user()->parent_admin_id);
+            } 
+            
+          $user=$user->paginate(10);
           return $user;
     }
 

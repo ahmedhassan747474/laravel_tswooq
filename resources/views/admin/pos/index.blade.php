@@ -17,6 +17,7 @@
         <!-- /.row -->
 
         <div class="row">
+        
             <div class="col-md-12">
                 <div class="container-fluid">
                     {{-- <form class="" action="" method="POST" enctype="multipart/form-data">
@@ -146,7 +147,7 @@
                                                         <input type="number" required class="form-control" name="ProductQuantity" placeholder="{{ trans('labels.Quantity')}}">
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <input type="number" class="form-control" name="tax" placeholder="{{ trans('labels.Tax')}}">
+                                                        <input type="number" class="form-control" name="tax" placeholder="{{ trans('labels.Tax')}}%">
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <input type="number" required class="form-control" name="ProductPrice" placeholder="{{ trans('labels.Price')}}">
@@ -778,8 +779,10 @@
                 if(data.data == 1){
                     // AIZ.plugins.notify('success', '{{ trans('labels.Order Completed Successfully.') }}');
                     swal("success!", "{{ trans('labels.Order Completed Successfully.') }}", "success");
-                    // location.reload();
-                    window.location.href = data.print_url;
+                    window.open(data.print_url, '_blank');
+                    location.reload();
+                
+                    // window.location.href = data.print_url;
                 } else if(data.status == 2) {
                     swal("", data.message, "error");
                 } else{

@@ -70,8 +70,11 @@ class ReportsController extends Controller
                 return $q->where('products_name','LIKE', '%' . $request->search . '%')
                     ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
             });
-            if(auth()->user()->role_id != 1) {
+            if(auth()->user()->role_id == 11) {
                 $barcodes->where('admin_id', '=', auth()->user()->id);
+            }
+            else if(auth()->user()->role_id != 11 && auth()->user()->role_id != 1 ) {
+                $barcodes->where('admin_id', '=', auth()->user()->parent_admin_id);
             } 
             $barcodes= $barcodes->orderBy('products_liked', 'DESC')
             ->paginate(10);

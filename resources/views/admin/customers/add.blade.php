@@ -79,6 +79,25 @@
                                                                            {{ trans('labels.TelephoneText') }}</span>
                                                                           </div>
                                                                         </div>
+                                                                        @if (auth()->user()->role_id == 1)
+                                                                        {{-- <div class="col-xs-12 col-md-6"> --}}
+                                                                            <div class="form-group">
+                                                                                <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Shop') }}</label>
+                                                                                <div class="col-sm-10 col-md-4">
+                                                                                    <select class="form-control field-validate" name="admin_id">
+                                                                                        <option value="">{{ trans('labels.SelectShop') }}</option>
+                                                                                        @foreach( DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get() as $shop)
+                                                                                        <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        {{-- </div> --}}
+                                                                        @elseif(auth()->user()->role_id == 11)
+                                                                        <input type="hidden" name="admin_id" value="{{auth()->user()->id}}">
+                                                                        @else
+                                                                        <input type="hidden" name="admin_id" value="{{auth()->user()->parent_admin_id}}">
+                                                                        @endif
                                                                         <!-- <div class="form-group">
                                                                           <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Fax') }}</label>
                                                                           <div class="col-sm-10 col-md-4">

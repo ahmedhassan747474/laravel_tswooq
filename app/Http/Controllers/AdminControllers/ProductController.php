@@ -92,13 +92,15 @@ class ProductController extends Controller
 
         $products = Product::with('descriptions')->with('categories');
 
-        if(auth()->user()->role_id != 1) {
+        if(auth()->user()->role_id == 11) {
             $products->where('admin_id', '=', auth()->user()->id);
+        }
+        else if(auth()->user()->role_id != 11 && auth()->user()->role_id != 1 ) {
+            $products->where('admin_id', '=', auth()->user()->parent_admin_id);
         } 
         if (isset($_REQUEST['product']) and !empty($_REQUEST['product'])) {
             $products->where('products_slug', 'like', '%' . $_REQUEST['product'] . '%');
-            $products->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');
-            
+            $products->orWhere('products.barcode', 'like', '%' . $_REQUEST['product'] . '%');            
         }
 
         if (isset($_REQUEST['categories_id']) and !empty($_REQUEST['categories_id'])) {

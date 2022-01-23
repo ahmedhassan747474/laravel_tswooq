@@ -218,6 +218,7 @@ class CustomersController extends Controller
             'gender'   		 	=>   $request->gender,
             'first_name'		=>   $request->first_name,
             'last_name'		 	=>   $request->last_name,
+            'admin_id'          => $request->admin_id,
             'dob'	 			 	  =>	 $request->dob,
             'phone'	 	      =>	 $request->phone,
             'status'		    =>   $request->status,

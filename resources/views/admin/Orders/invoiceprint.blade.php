@@ -106,9 +106,12 @@ img {
       <!-- info row -->
       @php
         if($data['orders_data'][0]->ordered_source == 3 && $data['orders_data'][0]->admin_id !=1){
-          $user=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
+          $auth=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
+          $user=\App\Models\Core\User::find($auth->parent_admin_id);
           $name = $user->shop_name;
           $src= isset($user->avatari->image_category) ? asset('').'/'.$user->avatari->image_category->path:asset('/images/admin_logo/logo_print.jpeg');
+          // dd($user->shop_name);
+        
         }
         else{
           $src=asset('/images/admin_logo/logo_print.jpeg');
@@ -117,41 +120,34 @@ img {
       <img src="{{ $src }}" height="60" width="50" style="width: 120px;position: relative;margin-top: -60px;" class="float-right">
       <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info">
-        <div class="col-sm-4 invoice-col">
-          {{ trans('labels.CustomerInfo') }}:
-          <address>
+        <div class="col-sm-12 invoice-col" style="text-align: right">
+          @if (isset($data['orders_data'][0]->customers_name) && $data['orders_data'][0]->customers_name)
+          {{ trans('labels.CustomerName') }}: <strong>{{ $data['orders_data'][0]->customers_name }}</strong>
+          </br>
+          @endif
+
+          @if (isset($data['orders_data'][0]->customers_street_address) && $data['orders_data'][0]->customers_street_address)
+          {{ trans('labels.StreetAddress') }}: <strong>{{ $data['orders_data'][0]->customers_street_address }}</strong>
+          </br>
+          @endif
+
+          @if (isset($data['orders_data'][0]->customers_telephone) && $data['orders_data'][0]->customers_telephone)
+          {{ trans('labels.Telephone') }}: <strong>{{ $data['orders_data'][0]->customers_telephone }}</strong>
+          </br>
+          @endif
+          
+          {{-- @if (isset($data['orders_data'][0]->email) && $data['orders_data'][0]->email)
+          {{ trans('labels.Email') }}: <strong>{{ $data['orders_data'][0]->email }}</strong>
+          </br>
+          @endif --}}
+          {{-- <address>
 
             <strong>{{ $data['orders_data'][0]->customers_name }}</strong><br>
             {{ $data['orders_data'][0]->customers_street_address }} <br>
             {{ $data['orders_data'][0]->customers_city }}, {{ $data['orders_data'][0]->customers_state }} {{ $data['orders_data'][0]->customers_postcode }}, {{ $data['orders_data'][0]->customers_country }}<br>
             {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->customers_telephone }}<br>
             {{ trans('labels.Email') }}: {{ $data['orders_data'][0]->email }}
-          </address>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-          {{ trans('labels.ShippingInfo') }}
-          <address>
-            <strong>{{ $data['orders_data'][0]->delivery_name }}</strong><br>
-            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->delivery_phone }}<br>
-            {{ $data['orders_data'][0]->delivery_street_address }} <br>
-            {{ $data['orders_data'][0]->delivery_city }}, {{ $data['orders_data'][0]->delivery_state }} {{ $data['orders_data'][0]->delivery_postcode }}, {{ $data['orders_data'][0]->delivery_country }}<br>
-           <strong> {{ trans('labels.ShippingMethod') }}:</strong> {{ $data['orders_data'][0]->shipping_method }} <br>
-           <strong> {{ trans('labels.ShippingCost') }}:</strong> @if(!empty($data['orders_data'][0]->shipping_cost))
-
-           @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-            @else --- @endif <br>
-          </address>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-         {{ trans('labels.BillingInfo') }}
-          <address>
-            <strong>{{ $data['orders_data'][0]->billing_name }}</strong><br>
-            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->billing_phone }}<br>
-            {{ $data['orders_data'][0]->billing_street_address }} <br>
-            {{ $data['orders_data'][0]->billing_city }}, {{ $data['orders_data'][0]->billing_state }} {{ $data['orders_data'][0]->billing_postcode }}, {{ $data['orders_data'][0]->billing_country }}<br>
-          </address>
+          </address> --}}
         </div>
         <!-- /.col -->
       </div>

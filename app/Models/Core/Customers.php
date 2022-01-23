@@ -94,6 +94,7 @@ class Customers extends Model
             'phone' => $request->customers_telephone,
             'password' => Hash::make($request->password),
             'status' => $request->isActive,
+            'admin_id'   => $request->admin_id,
             'avatar' => $uploadImage,
             'created_at' => date('Y-m-d H:i:s'),
             'role_id'    => '2'

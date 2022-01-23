@@ -204,6 +204,19 @@
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Tax') }}%<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('tax', $result['product'][0]->tax, array('class'=>'form-control number-validate', 'id'=>'tax')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Tax') }}%
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Tax') }}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Show Product') }}<span style="color:red;">*</span></label>
                                                     <div class="col-sm-10 col-md-8">
                                                         <ul class="list-unstyled mb-0">

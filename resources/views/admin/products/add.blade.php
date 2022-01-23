@@ -153,8 +153,33 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Tax') }}%<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('tax', '', array('class'=>'form-control number-validate', 'id'=>'tax')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Tax') }}%
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Tax') }}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Quantity') }}<span style="color:red;">*</span></label>
+                                                    <div class="col-sm-10 col-md-8">
+                                                        {!! Form::text('quantity', '', array('class'=>'form-control number-validate', 'id'=>'quantity')) !!}
+                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                            {{ trans('labels.Quantity') }}
+                                                        </span>
+                                                        <span class="help-block hidden">{{ trans('labels.Quantity') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+
+                                            {{-- <div class="col-xs-12 col-md-6">
                                                 <div class="form-group" id="tax-class">
                                                     <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.TaxClass') }} </label>
                                                     <div class="col-sm-10 col-md-8">
@@ -170,7 +195,7 @@
                                                         <span class="help-block hidden">{{ trans('labels.SelectProductTaxClass') }}</span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-xs-12 col-md-6">
                                                 <div class="form-group">
@@ -659,14 +684,14 @@
                                                             <option value="percent">{{trans('Percent')}}</option>
                                                         </select>
                                                     </div>
-                                                </div>
-                                                <div class="form-group row" id="quantity">
+                                                </div> --}}
+                                                {{-- <div class="form-group row" id="quantity">
                                                     <label class="col-md-3 col-from-label">{{trans('Quantity')}} <span class="text-danger">*</span></label>
                                                     <div class="col-md-6">
                                                         <input type="number" lang="en" min="0" value="0" step="1" placeholder="{{ trans('Quantity') }}" name="current_stock" class="form-control" required>
                                                     </div>
-                                                </div> --}}
-                                                <br>
+                                                </div>
+                                                <br> --}}
                                                 <div class="sku_combination" id="sku_combination">
                         
                                                 </div>

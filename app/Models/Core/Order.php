@@ -185,7 +185,7 @@ class Order extends Model
     }
 
     public function orderStatuses(){
-        $language_id = 1;
+        $language_id = 2;
         $status = DB::table('orders_status')
                 ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
                 ->where('orders_status_description.language_id', '=', $language_id)->where('role_id', '<=', 2)->get();
@@ -200,6 +200,13 @@ class Order extends Model
         $comments = $request->comments;
         $orders_id = $request->orders_id;
 
+        // DB::table('orders')
+        //             ->where('orders_id', $orders_id)
+        //             ->update([
+        //                     'paied'=>DB::raw('paied + '.$request->paied)
+        //                 ]);
+
+
         $status = DB::table('orders_status')->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
             ->where('orders_status_description.language_id', '=', 1)->where('role_id', '<=', 2)->where('orders_status_description.orders_status_id', '=', $orders_status)->get();
 
@@ -210,6 +217,7 @@ class Order extends Model
             ->orderby('orders_to_delivery_boy.created_at', 'DESC')
             ->first();
 
+            // if($request->stat)
         //orders status history
         $orders_history_id = DB::table('orders_status_history')->insertGetId(
             ['orders_id' => $orders_id,

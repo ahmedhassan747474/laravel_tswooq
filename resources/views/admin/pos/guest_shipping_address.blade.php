@@ -22,13 +22,17 @@
         </div>
     </div>
 </div> -->
+@php
+$customer = new \App\Models\Core\Customers();
+// dd($customer->paginator());
+@endphp
 <div class="form-group">
     <div class=" row">
         <label class="col-sm-2 control-label" for="customer">العميل</label>
         <div class="col-sm-10">
             <select name="customer" id="customer" class="form-control demo-select2 select3" data-placeholder="اختر العميل" style="width: 100%;">
                 <option value="">اختر عميل</option>
-                @foreach (\DB::table('users')->where('role_id', '2')->get() as $key => $customer)
+                @foreach ($customer->paginator() as $key => $customer)
                     <option value="{{ $customer->id }}">{{ $customer->first_name . ' ' . $customer->last_name }}</option>
                 @endforeach
             </select>

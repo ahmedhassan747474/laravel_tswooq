@@ -228,8 +228,11 @@ class POSController extends Controller
         // $products = $this->products($data);
         $products = Product::with('descriptions')->with('categories');
         // $products=Product::get();
-        if(auth()->user()->role_id != 1) {
+        if(auth()->user()->role_id == 11) {
             $products->where('admin_id', '=', auth()->user()->id);
+        }
+        else if(auth()->user()->role_id != 11 && auth()->user()->role_id != 1 ) {
+            $products->where('admin_id', '=', auth()->user()->parent_admin_id);
         } 
         if (isset($search) and !empty($search)) {
             $product_stock=ProductStock::where('sku',$search)->first();
@@ -990,6 +993,7 @@ class POSController extends Controller
             if($request->variant != null){
                 $product_stock = $product->stocks->where('variant', $request->variant)->first();
                 $price = $product_stock->pos_price;
+                $tax = ($product->tax/100)*$product_stock->pos_price  ;
                 $quantity = $product_stock->pos_qty;
 
                 if($request['quantity'] > $quantity){
@@ -998,13 +1002,13 @@ class POSController extends Controller
             }
             else{
                 $price = $product->products_price;
+                $tax = ($product->tax/100)*$product->products_price  ;
             }
 
-            $tax = 0;
 
             $data['quantity'] = $item->quantity;
             $data['price'] = $price;
-            $data['tax'] = 0;
+            $data['tax'] = $tax;
             $data['shipping'] = 0;//$product->shipping_cost;
 
             if($request->session()->has('posCart')){
@@ -1067,6 +1071,8 @@ class POSController extends Controller
         if($request->variant != null ){
             $product_stock = $product->stocks->where('variant', $request->variant)->first();
             $price = $product_stock->pos_price;
+            $tax = ($product->tax/100)*$product_stock->pos_price  ;
+
             $quantity = $product_stock->pos_qty;
 
             if($request['quantity'] > $quantity){
@@ -1075,6 +1081,8 @@ class POSController extends Controller
         }
         else{
             $price = $product->products_price;
+            $tax = ($product->tax/100)*$product->products_price  ;
+
         }
 
         //discount calculation based on flash deal and regular discount
@@ -1110,12 +1118,10 @@ class POSController extends Controller
         // elseif($product->tax_type == 'amount'){
         //     $tax = $product->tax;
         // }
-
-        $tax = 0;
-
+        
         $data['quantity'] = $request->quantity;
         $data['price'] = $price;
-        $data['tax'] = 0;
+        $data['tax'] = $tax;
         $data['shipping'] = 0;//$product->shipping_cost;
 
         if($request->session()->has('posCart')){
@@ -1172,7 +1178,9 @@ class POSController extends Controller
         // dd('ddfdf');
         $data = array();
         $data['id'] = 0;
-        $tax = $request->tax ? $request->tax : 0 ;
+        // $taxValue = ($request->tax/100)*$request->ProductPrice;
+
+        $tax = $request->tax ? ($request->tax/100)*$request->ProductPrice  : 0 ;
 
 
         $data['quantity'] = $request->ProductQuantity;
@@ -1448,6 +1456,12 @@ class POSController extends Controller
             if(Session::has('posCart') && count(Session::get('posCart')) > 0)
             {
                 foreach (Session::get('posCart') as $key => $cartItem){
+                    $taxes_rate += $cartItem['tax']*$cartItem['quantity'];
+                }
+            }
+            if(Session::has('posCartNew') && count(Session::get('posCartNew')) > 0)
+            {
+                foreach (Session::get('posCartNew') as $key => $cartItem){
                     $taxes_rate += $cartItem['tax']*$cartItem['quantity'];
                 }
             }
