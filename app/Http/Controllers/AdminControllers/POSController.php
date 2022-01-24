@@ -18,6 +18,7 @@ use App\Models\Core\Languages;
 use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
+use App\Order;
 use App\Product as AppProduct;
 use App\ProductStock;
 use Auth;
@@ -59,7 +60,7 @@ class POSController extends Controller
             ->get();
         // $categories = Categories::where('parent_id', 0)->get();
         // $brands = Categories::where('parent_id', '!=', 0)->get();
-        $customers = User::all();
+        $customers = User::getCustomers();
         $countries = DB::table('countries')->select('countries_id as id', 'countries_name as name')->get();
         $results = array();
         $results['categories'] = $categories;
@@ -1208,7 +1209,7 @@ class POSController extends Controller
             $request->session()->put('posCartNew', $cart);
         }
 
-        return redirect()->back();
+        return view('admin.pos.cart');
     }
 
     //updated the quantity for a cart item
@@ -1684,19 +1685,22 @@ class POSController extends Controller
 
                         $total_tax += $cartItem['tax']*$cartItem['quantity'];
 
+                        $order=Order::where('orders_id',$orders_id);
                         if($product_variation != null){
-                            // $product_stock = $product->stocks->where('variant', $product_variation)->first();
-                            // if($cartItem['quantity'] > $product_stock->pos_qty){
-                            //     $order->delete();
-                            //     return 0;
-                            // }
-                            // else {
-                            //     $product_stock->pos_qty -= $cartItem['quantity'];
-                            //     $product_stock->save();
-                            // }
+                            $product_stock = ProductStock::where('variant', $product_variation)->where('product_id',$cartItem['id'])->first();
+                            if($cartItem['quantity'] > $product_stock->pos_qty){
+                                $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");
+                                return response()->json($responseData);
+                            }
+                            else {
+                                $product_stock->pos_qty -= $cartItem['quantity'];
+                                $product_stock->save();
+                                // return $product_stock;
+                            }
                         }
                         else {
                             if ($cartItem['quantity'] > $current_stock) {
+
                                 // $order->delete();
                                 // return 0;
                                 $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");

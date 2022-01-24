@@ -350,6 +350,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
         Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
 
+        Route::get('/shops/changeStatus', 'AdminController@changeStatus');
+        Route::get('/shops', 'AdminController@shops')->middleware('view_shop');
         Route::get('/shopsalesreport', 'ReportsController@shopsalesreport')->middleware('view_shop');
         Route::get('/shopemployereport', 'ReportsController@shopemployereport')->middleware('view_shop');
         Route::get('/getEmployee', 'ReportsController@getEmployee')->middleware('view_shop');

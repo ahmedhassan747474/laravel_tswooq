@@ -3,7 +3,7 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-	  <h1> {{ trans('labels.shippingrates') }} <small>{{ trans('labels.shippingrates') }}...</small> </h1>
+	  <h1> {{ trans('labels.group') }} <small>...</small> </h1>
 	  {{-- <ol class="breadcrumb">
 		<li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
 		<li class="active"> {{ trans('labels.shippingrates') }}</li>
@@ -39,17 +39,17 @@
 						@csrf
 						<div class="custom-form">
 							<div class="form-group">
-								<label for="name_en">{{ __('Name') }} ({{ __('English') }}) </label>
-								<input type="text" name="name_en" class="form-control" id="name_en" placeholder="{{ __('Group Name English') }}">
+								<label for="name_en">{{ __('labels.Name') }} ({{ __('labels.English') }}) </label>
+								<input type="text" name="name_en" class="form-control" id="name_en" placeholder="{{ __('labels.Name') }}">
 							</div>
 	
 							<div class="form-group">
-								<label for="name_ar">{{ __('Name') }} ({{ __('Arabic') }}) </label>
-								<input type="text" name="name_ar" class="form-control" id="name_ar" placeholder="{{ __('Group Name Arabic') }}">
+								<label for="name_ar">{{ __('labels.Name') }} ({{ __('labels.Arabic') }}) </label>
+								<input type="text" name="name_ar" class="form-control" id="name_ar" placeholder="{{ __('labels.Name') }}">
 							</div>
 	
 							<div class="form-group mt-20">
-								<button class="btn btn-primary col-12" type="submit">{{ __('Add New Group') }}</button>
+								<button class="btn btn-primary col-12" type="submit">{{ __('labels.Submit') }}</button>
 							</div>
 						</div>
 					</form>
@@ -84,12 +84,12 @@
 									<div class="single-filter">
 										<div class="form-group">
 											<select class="form-control" name="method">
-												<option value="delete">{{ __('Delete Permanently') }}</option>
+												<option value="delete">{{ __('labels.delete') }}</option>
 											</select>
 										</div>
 									</div>
 									<div class="single-filter">
-										<button type="submit" class="btn btn-primary">{{ __('Apply') }}</button>
+										<button type="submit" class="btn btn-primary">{{ __('labels.Apply') }}</button>
 									</div>
 								</div>
 							</div>
@@ -102,7 +102,7 @@
 												<label class="custom-control-label" for="checkAll"></label>
 											</div>
 										</th>
-										<th class="am-title">{{ __('Title') }}</th>
+										<th class="am-title">{{ __('labels.Title') }}</th>
 	
 									</tr>
 								</thead>
@@ -116,10 +116,10 @@
 											</div>
 										</th>
 										<td>
-											{{ $group->name_en }}
+											{{ $group->name_ar }}
 											<div class="hover">
-												<a href="{{ route('admin.group.edit',$group->id) }}">{{ __('Edit') }}</a>
-												<a href="{{ route('admin.group.product.edit',$group->id) }}">{{ __('Products') }}</a>
+												<a href="{{ route('admin.group.edit',$group->id) }}">{{ __('labels.Edit') }}</a>
+												<a href="{{ route('admin.group.product.edit',$group->id) }}">{{ __('labels.Products') }}</a>
 	
 											</div>
 										</td>
@@ -136,7 +136,7 @@
 											<label class="custom-control-label" for="checkAll"></label>
 										</div>
 									</th>
-									<th class="am-title">{{ __('Title') }}</th>
+									<th class="am-title">{{ __('labels.Title') }}</th>
 								</tr>
 							</tfoot>
 						</table>

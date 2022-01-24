@@ -117,7 +117,7 @@ class OrdersController extends Controller
     {
 
         $title = array('pageTitle' => Lang::get("labels.ViewOrder"));
-        $language_id = '1';
+        $language_id = 2;
         $orders_id = $request->id;
 
         $message = array();
@@ -142,6 +142,7 @@ class OrdersController extends Controller
                 ->where('orders_products.orders_id', '=', $orders_id)->get();
 
 
+                // dd($orders_products);
             $i = 0;
             $total_price = 0;
             $total_tax = 0;
@@ -159,6 +160,12 @@ class OrdersController extends Controller
                     ->where('products_id', '=', $orders_products_data->orders_products_id)
                     ->where('categories_description.language_id', '=', $language_id)->get();
 
+                    $products_name=DB::table('products_description')
+                                    ->where('products_id', '=', $orders_products_data->products_id)
+                                    ->where('language_id', '=', $language_id)
+                                    ->select('products_name')->first();
+                                    // dd($products_name);
+                $orders_products_data->products_name = $products_name->products_name;
                 $orders_products_data->categories = $categories;
 
                 $product_attribute = DB::table('orders_products_attributes')
@@ -169,6 +176,7 @@ class OrdersController extends Controller
                     ->get();
 
                 $orders_products_data->attribute = $product_attribute;
+                // dd($orders_products_data);
                 $product[$i] = $orders_products_data;
                 $total_price = $total_price + $orders_products[$i]->final_price;
 

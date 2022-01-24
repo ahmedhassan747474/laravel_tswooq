@@ -106,6 +106,7 @@
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
+            <li class="{{ Request::is('admin/shops') ? 'active' : '' }}"><a href="{{ URL::to('admin/shops')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.shops') }}</a></li>
             <li class="{{ Request::is('admin/shopsalesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/shopsalesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
             <li class="{{ Request::is('admin/shopemployereport') ? 'active' : '' }}"><a href="{{ URL::to('admin/shopemployereport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Employee') }}</a></li>
           </ul>

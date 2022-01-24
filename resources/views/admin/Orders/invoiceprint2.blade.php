@@ -116,9 +116,17 @@ img {
       <!-- info row -->
       @php
         if($data['orders_data'][0]->ordered_source == 3 && $data['orders_data'][0]->admin_id !=1){
-          $user=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
+          $auth=\App\Models\Core\User::find($data['orders_data'][0]->admin_id );
+          if($auth->role_id == 11){			
+                  $user = App\Models\Core\User::find($auth->parent_admin_id);
+                }else{
+                  $user = App\Models\Core\User::find($auth->id);
+                }
+          // $user=\App\Models\Core\User::find($auth->parent_admin_id);
           $name = $user->shop_name;
           $src= isset($user->avatari->image_category) ? asset('').'/'.$user->avatari->image_category->path:asset('/images/admin_logo/logo_print.jpeg');
+          // dd($user->shop_name);
+        
         }
         else{
           $src=asset('/images/admin_logo/logo_print.jpeg');
@@ -288,6 +296,8 @@ img {
 
               
             </table>
+            <p>السعر شامل الضريبة</p>
+
           </div>
 
         </div>
@@ -312,7 +322,7 @@ img {
           <!-- /.col -->
         </div>
 
-        <div class="row">
+        {{-- <div class="row">
           <div class="col-md-12" style="direction: rtl">
         	<h4 style="display: flex;justify-content: center;">والله ولى التوفيق</h4>
         </div>
@@ -320,17 +330,15 @@ img {
         <table style="border: 1px solid #e3363600 !important;">
           <tr>
             <td style="padding-left: 150px;border-top: 1px solid #e3363600 !important;">توقيع الطرف الأول</td>
-            {{-- <td></td> --}}
-            {{-- <td>.</td> --}}
+            
             <td style="    border-top: 1px solid #e3363600 !important;">توقيع الطرف الثانى</td>
           </tr>
           <tr>
             <td style="    border-top: 1px solid #e3363600 !important;">.....................</td>
-            {{-- <td></td> --}}
-            {{-- <td>.</td> --}}
+            
             <td style="    border-top: 1px solid #e3363600 !important;">...................</td>
           </tr>
-        </table>
+        </table> --}}
 
         {{-- <div class="col-md-6" style="direction: rtl">
         	<p style="display: flex;justify-content: center;">توقيع الطرف الأول<br>....................................<p>

@@ -115,6 +115,9 @@
                             <div class="col-lg-7">
                                 <div class="card mb-3">
                                     <div class="card-body">
+                                        @php
+                                            // dd($results['customers']);
+                                        @endphp
                                         <form class="" action="" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="d-flex">
@@ -122,9 +125,9 @@
                                                     <select name="user_id" class="form-control form-control-sm aiz-selectpicker pos-customer" data-live-search="true" onchange="getShippingAddress()">
                                                         <option value="" selected disabled>{{ trans('labels.walk') }}</option>
                                                         @foreach ($results['customers'] as $key => $customer)
-                                                            @if ($customer->user)
-                                                                <option value="{{ $customer->user->id }}" data-contact="{{ $customer->user->email }}">{{ $customer->user->name }}</option>
-                                                            @endif
+                                                            {{-- @if ($customer->user) --}}
+                                                                <option value="{{ $customer->id }}" data-contact="{{ $customer->email }}">{{ $customer->first_name .' '. $customer->last_name}}</option>
+                                                            {{-- @endif --}}
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -135,13 +138,13 @@
                                         </form>
                                     </div>
                                 </div>
-                                <form method="POST" id="addNewForm" action="{{ route('pos.addToCartNew') }}">
+                                {{-- <form method="POST" id="addNewForm" action="{{ route('pos.addToCartNew') }}"> --}}
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <div class="d-flex">
-                                                    @csrf
+                                                    {{-- @csrf --}}
                                                     <div class="flex-grow-1">
-                                                        <input type="text" required class="form-control" name="ProductName" placeholder="{{ trans('labels.productName')}}">
+                                                        <input type="text" required class="form-control" id="ProductName" name="ProductName" placeholder="{{ trans('labels.productName')}}">
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <input type="number" required class="form-control" name="ProductQuantity" placeholder="{{ trans('labels.Quantity')}}">
@@ -152,13 +155,13 @@
                                                     <div class="flex-grow-1">
                                                         <input type="number" required class="form-control" name="ProductPrice" placeholder="{{ trans('labels.Price')}}">
                                                     </div>
-                                                    <button type="submit"  class="btn btn-icon btn-soft-dark ml-3"  >
+                                                    <button type="submit" onclick="addToCartNew()"  class="btn btn-icon btn-soft-dark ml-3"  >
                                                         <i class="fa fa-plus"></i>
                                                     </a>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                {{-- </form> --}}
                                 <div class="card mar-btm" id="cart-details">
                                     <div class="card-body">
                                         <div class="aiz-pos-cart-list c-scrollbar-light">
@@ -670,6 +673,17 @@
 
         function addToCart(product_id, variant, quantity){
             $.post('{{ route('pos.addToCart') }}',{_token:'{{ csrf_token() }}', product_id:product_id, variant:variant, quantity, quantity}, function(data){
+                $('#cart-details').html(data);
+                $('#product-variation').modal('hide');
+            });
+        }
+
+        function addToCartNew(){
+            var ProductName = $('input[name=ProductName]').val();
+            var ProductPrice = $('input[name=ProductPrice]').val();
+            var ProductQuantity = $('input[name=ProductQuantity]').val();
+            var tax = $('input[name=tax]').val();
+            $.post('{{ route('pos.addToCartNew') }}',{_token:'{{ csrf_token() }}', ProductName, ProductPrice, ProductQuantity, tax}, function(data){
                 $('#cart-details').html(data);
                 $('#product-variation').modal('hide');
             });

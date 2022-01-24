@@ -844,7 +844,7 @@ class UserController extends BaseController
 
     public function get_vendors()
     {
-        $vendors = CoreUser::where('role_id', '=', 11)->select('id','shop_name as name','avatar')->get();
+        $vendors = CoreUser::where('role_id', '=', 11)->where('status_show',1)->select('id','shop_name as name','avatar')->get();
         
         return response()->json(['data'=>$vendors]);
     }

@@ -48,6 +48,7 @@
                                             <th>{{ trans('labels.OrderTotal') }}</th>
                                             <th>{{ trans('labels.DatePurchased') }}</th>
                                             <th>{{ trans('labels.DatePurchased') }}</th>
+                                            <th>{{ trans('labels.Shop Name') }} </th>
                                             <th>{{ trans('labels.Status') }} </th>
                                             <th>{{ trans('labels.deliveryboy status') }} </th>
                                             <th>{{ trans('labels.Action') }}</th>
@@ -56,6 +57,12 @@
                                         <tbody>
                                         @if(count($listingOrders['orders'])>0)
                                             @foreach ($listingOrders['orders'] as $key=>$orderData)
+                                                @php
+                                                    $auth=\App\Models\Core\User::find($orderData->admin_id );
+                                                    if($auth)
+                                                    $user=\App\Models\Core\User::find($auth->parent_admin_id);
+                                                    $name = $user->shop_name??'';
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $orderData->orders_id }}</td>
                                                     <td>{{ $orderData->customers_name != null ? $orderData->customers_name: '---------------' }}</td>
@@ -83,6 +90,9 @@
                                                         @endif
                                                         {{ $orderData->orders_status }}
                                                             </span>
+                                                    </td>
+                                                    <td>
+                                                        {{ $name }}
                                                     </td>
                                                     <td>
                                                         @if($orderData->deliveryboy_orders_status != '')

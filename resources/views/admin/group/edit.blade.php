@@ -5,7 +5,7 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-	  <h1> {{ trans('labels.shippingrates') }} <small>{{ trans('labels.shippingrates') }}...</small> </h1>
+	  <h1> {{ trans('labels.group') }} <small>...</small> </h1>
 	  {{-- <ol class="breadcrumb">
 		<li><a href="{{ URL::to('admin/dashboard/this_month')}}"><i class="fa fa-dashboard"></i> {{ trans('labels.breadcrumb_dashboard') }}</a></li>
 		<li class="active"> {{ trans('labels.shippingrates') }}</li>
@@ -34,7 +34,7 @@
 		<div class="col-md-12">
 			<div class="card">
 				<div class="card-body">
-					<h4 class="mb-20">{{ __('Edit Group') }}</h4>
+					<h4 class="mb-20">{{ __('labels.Edit') }}</h4>
 					<div class="row">
 						<div class="col-lg-12">
 							{{-- <div class="alert alert-danger none errorarea">
@@ -47,16 +47,16 @@
 								@method('PUT')
 								<div class="custom-form">
 									<div class="form-group">
-										<label for="name_en">{{ __('Group Name') }} ({{ __('English') }})</label>
+										<label for="name_en">{{ __('labels.Name') }} ({{ __('labels.English') }})</label>
 										<input type="text" name="name_en" id="name_en" class="form-control input-rounded" placeholder="{{ __('Enter Group Name English') }}" required value="{{ $info->name_en }}">
 									</div>
 	
 									<div class="form-group">
-										<label for="name_ar">{{ __('Group Name') }} ({{ __('Arabic') }})</label>
+										<label for="name_ar">{{ __('labels.Name') }} ({{ __('labels.Arabic') }})</label>
 										<input type="text" name="name_ar" id="name_ar" class="form-control input-rounded" placeholder="{{ __('Enter Group Name English') }}" required value="{{ $info->name_ar }}">
 									</div>
 	
-									<button class="btn btn-success col-12 mt-15">{{ __('Update') }}</button>
+									<button class="btn btn-success col-12 mt-15">{{ __('labels.Update') }}</button>
 								</div>
 							</form>
 						</div>

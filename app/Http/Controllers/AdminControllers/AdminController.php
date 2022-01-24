@@ -361,6 +361,40 @@ class AdminController extends Controller
 
 	}
 
+	public function changeStatus(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $user->status_show = $request->status_show;
+        $user->save();
+  
+        return response()->json(['success'=>'تم تغيير حالة الظهور بنجاح']);
+    }
+
+	public function shops(Request $request){
+
+		$title = array('pageTitle' => Lang::get("labels.ListingCustomers"));
+		$language_id            				=   '1';
+
+		$result = array();
+		$message = array();
+		$errorMessage = array();
+
+		$admins = DB::table('users')
+			->leftJoin('user_types','user_types.user_types_id','=','users.role_id')
+			->select('users.*','user_types.*')
+			->where('users.role_id','=','11')
+			->paginate(10);
+
+
+		$result['message'] = $message;
+		$result['errorMessage'] = $errorMessage;
+		$result['admins'] = $admins;
+		$result['commonContent'] = $this->Setting->commonContent();
+
+		return view("admin.shops.index",$title)->with('result', $result);
+
+	}
+
 	//add admins
 	public function addadmins(Request $request){
 

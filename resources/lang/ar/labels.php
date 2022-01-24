@@ -13,6 +13,8 @@ return [
     |
     */
 
+	'status_show'=>'حالة الظهور',
+	'groupstoreMessage'=>'تم حفظ المجموعه بنجاح',
 	'Variant' => 'الخاصية',
 	'Variant Price' => 'بيانات الخاصية',
 	'Barcode' => 'الباركود',

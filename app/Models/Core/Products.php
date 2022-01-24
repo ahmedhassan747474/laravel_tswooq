@@ -822,13 +822,17 @@ class Products extends Model
                       $slug = $request->slug;
                   }
 
+                $product = Product::where('products_id',$products_id)->first();
+
+
                   $Images = new Images();
                   if($request->file !== null){
                     $upload = new MediaController($Images,$setting);
             
                     $uploadImage=$upload->fileUpload($request);
-                  }else{
-                      $uploadImage = $request->oldImage;
+                    Product::where('products_id',$products_id)->update([
+                        'products_image'=>$uploadImage
+                    ]);
                   }
         
                   
@@ -875,7 +879,6 @@ class Products extends Model
                 $choice_options = json_encode($choice_options, JSON_UNESCAPED_UNICODE);
         
                   DB::table('products')->where('products_id', '=', $products_id)->update([
-                        'products_image' => $uploadImage,
                         'manufacturers_id' => $request->manufacturers_id,
                         'products_quantity' => 0,
                         'tax' => $request->tax,
