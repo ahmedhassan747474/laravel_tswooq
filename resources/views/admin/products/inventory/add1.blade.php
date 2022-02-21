@@ -101,7 +101,17 @@
                                                                         <p id="current_stocks" style="width:100%">0</p><br>
 
                                                                     </div>
-                                                                </div>                                                                
+                                                                </div> 
+                                                                
+                                                                <div class="form-group">
+                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">
+                                                                        {{ trans('labels.Current POS Stock') }}
+                                                                    </label>
+                                                                    <div class="col-sm-10 col-md-8">
+                                                                        <p id="current_pos_stocks" style="width:100%">0</p><br>
+
+                                                                    </div>
+                                                                </div> 
 
                                                                 <div class="form-group">
                                                                     <label for="name" class="col-sm-2 col-md-4 control-label">
@@ -133,6 +143,15 @@
                                                                         <input id="stock" type="text" name="stock" value="" class="form-control stock-validate">
                                                                         <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
                                                                             {{ trans('labels.Enter Stock Text') }}</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Enter POS Stock') }}<span style="color:red;">*</span></label>
+                                                                    <div class="col-sm-10 col-md-8">
+                                                                        <input id="pos_stock" type="text" name="pos_stock" value="" class="form-control stock-validate">
+                                                                        <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">
+                                                                            {{ trans('labels.Enter POS Stock Text') }}</span>
                                                                     </div>
                                                                 </div>
 
@@ -293,6 +312,7 @@
                                                             <th>{{ trans('labels.Product') }}</th>
                                                             <th>{{ trans('labels.stocktype') }}</th>
                                                             <th>{{ trans('labels.Stock') }}</th>
+                                                            <th>{{ trans('labels.Pos Stock') }}</th>
                                                             <th>{{ trans('labels.Purchase Price') }}</th>
                                                             <th>{{ trans('labels.Status') }}</th>
                                                             <th></th>
@@ -351,7 +371,7 @@
                                                             <div class="form-group">
                                                                 <label for="name" class="col-sm-2 col-md-4 control-label">{{ trans('labels.Invoices') }}<span style="color:red;">*</span> </label>
                                                                 <div class="col-sm-10 col-md-8">
-                                                                    <select class="form-control field-validate get_invoices" name="invoice_id" required>
+                                                                    <select class="form-control field-valida get_invoices" name="invoice_id" >
                                                                         <option value="">{{ trans('labels.Choose Invoice') }}</option>
                                                                         
                                                                     </select>
@@ -426,6 +446,7 @@
         var product = document.getElementById('product');
         var stock_type = document.getElementById('stock_type');
         var stock = document.getElementById('stock');
+        var pos_stock = document.getElementById('pos_stock');
         var purchase_price = document.getElementById('purchase_price');
       div += '<tr class="row_id_'+i+'">';
       div += '<input type="hidden" name="products_id[]" value="'+product.value+'">';
@@ -442,6 +463,10 @@
 
         div += '<td>';
           div += '<input type="text" name="stock[]" value="'+stock.value+'" class="form-control stock-validate">';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="pos_stock[]" value="'+pos_stock.value+'" class="form-control stock-validate">';
         div += '</td>';
 
         div += '<td>';
@@ -468,6 +493,7 @@
         var product = document.getElementById('product');
         var stock_type = document.getElementById('stock_type');
         var stock = document.getElementById('stock');
+        var pos_stock = document.getElementById('pos_stock');
         var purchase_price = document.getElementById('purchase_price');
       div += '<tr class="row_id_'+i+'">';
       div += '<input type="hidden" name="products_id[]" value="'+product.value+'">';
@@ -484,6 +510,10 @@
 
         div += '<td>';
           div += '<input type="text" name="stock[]" value="'+stock.value+'" class="form-control stock-validate">';
+        div += '</td>';
+
+        div += '<td>';
+          div += '<input type="text" name="pos_stock[]" value="'+pos_stock.value+'" class="form-control stock-validate">';
         div += '</td>';
 
         div += '<td>';

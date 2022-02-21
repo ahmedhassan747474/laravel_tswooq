@@ -13,6 +13,10 @@ return [
     |
     */
 
+	'Current POS Stock'=>'مخزون نقاط البيع الحالى',
+	'Pos Stock'=>'مخزون نقاط البيع',
+	'Enter POS Stock'=>'مخزون نقاط البيع',
+	'Enter POS Stock Text'=>'من فضلك ادخل المخزون الخاص بنقاط البيع',
 	'status_show'=>'حالة الظهور',
 	'groupstoreMessage'=>'تم حفظ المجموعه بنجاح',
 	'Variant' => 'الخاصية',
@@ -1475,8 +1479,8 @@ return [
 	'Inventory'=>'المخزون',
 	'listingInventoryStock'=>'سرد جميع مخزون المخزون',
 	'Select Option values Text'=>'الرجاء تحديد سمة واحدة على الأقل من المنتجات لإضافة مخزون.',
-	'Current Stock'=>'المخزون الحالي',
-	'Enter Stock'=>'أدخل المخزون',
+	'Current Stock'=>'المخزون الحالي للموقع والتطبيق',
+	'Enter Stock'=>'أدخل المخزون للموقع والتطبيق',
 	'Enter Stock Text'=>'الرجاء إدخال المخزون في الأرقام.',
 	'Reference'=>'مرجع',
 	'Reference Text'=>'الرجاء إدخال المرجع إذا كان لديك.',
@@ -1566,7 +1570,7 @@ return [
 	'manage website_setting'=>'إدارة إعداد موقع الويب',
 	'Roles has been added successfully'=>'تم إضافة الأدوار بنجاح!',
 	'manage language'=>'إدارة اللغة',
-	'Stock'=>'المخزون',
+	'Stock'=>'المخزون للموقع والتطبيق',
 	'Stock is not added yet'=>'لم يتم إضافة المخزون بعد!',
 	'AddedBy'=>'أضيفت من قبل',
 	'manage profile'=>'إدارة الملف الشخصي',

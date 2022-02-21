@@ -370,7 +370,8 @@ class Products extends Model
             $products_id = DB::table('products')->insertGetId([
                 'products_image' => $uploadImage,
                 'manufacturers_id' => $request->manufacturers_id,
-                'products_quantity' => 0,
+                'products_quantity' => $request->quantity,
+                'pos_quantity' => $request->pos_quantity,
                 'tax' => $request->tax,
                 'choice_options' => $choice_options,
                 'attributes' => $attributes,
@@ -470,8 +471,8 @@ class Products extends Model
                 $product_stock->product_id = $products_id;
                 $product_stock->price = $request->products_price;
                 $product_stock->pos_price = $request->products_price;
-                $product_stock->qty = 10;
-                $product_stock->pos_qty = 10;
+                $product_stock->qty = $request->quantity;
+                $product_stock->pos_qty = $request->pos_quantity;
                 $product_stock->save();
             }
             //combinations end
@@ -880,7 +881,8 @@ class Products extends Model
         
                   DB::table('products')->where('products_id', '=', $products_id)->update([
                         'manufacturers_id' => $request->manufacturers_id,
-                        'products_quantity' => 0,
+                        'products_quantity' => $request->quantity,
+                        'pos_quantity' => $request->pos_quantity,
                         'tax' => $request->tax,
                         'choice_options' => $choice_options,
                         'attributes' => $attributes,
@@ -979,8 +981,8 @@ class Products extends Model
                 $product_stock->product_id = $products_id;
                 $product_stock->price = $request->products_price;
                 $product_stock->pos_price = $request->products_price;
-                $product_stock->qty = 10;
-                $product_stock->pos_qty = 10;
+                $product_stock->qty = $request->quantity;
+                $product_stock->pos_qty = $request->pos_quantity;
                 $product_stock->save();
             }
             //combinations end
@@ -1332,14 +1334,16 @@ class Products extends Model
     $result2 = array();
     $index = 0;
     $stocks = 0;
+    $pos_stocks = 0;
     $min_level = 0;
     $max_level = 0;
     $purchase_price  = 0;
     if($result['products'][0]->products_type!=1){
 
-      $stocksin = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'in')->sum('stock');
-      $stockOut = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'out')->sum('stock');
-      $stocks = $stocksin - $stockOut;
+      $stocksin = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'in');
+      $stockOut = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'out');
+      $stocks = $stocksin->sum('stock') - $stockOut->sum('stock');
+      $pos_stocks = $stocksin->sum('pos_stock') - $stockOut->sum('pos_stock');
 
           $manageLevel = DB::table('manage_min_max')->where('products_id', $result['products'][0]->products_id)->get();
         if(count($manageLevel)>0){
@@ -1351,6 +1355,7 @@ class Products extends Model
 
     $result['purchase_price'] = $purchase_price;
     $result['stocks'] = $stocks;
+    $result['pos_stocks'] = $pos_stocks;
     $result['min_level'] = $min_level;
     $result['max_level'] = $max_level;
     $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->get();
@@ -1452,15 +1457,17 @@ class Products extends Model
     $result2 = array();
     $index = 0;
     $stocks = 0;
+    $pos_stocks = 0;
     $min_level = 0;
     $max_level = 0;
     $purchase_price = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->sum('purchase_price');
 
     if($result['products'][0]->products_type!=1){
 
-      $stocksin = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'in')->sum('stock');
-      $stockOut = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'out')->sum('stock');
-      $stocks = $stocksin - $stockOut;
+        $stocksin = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'in');
+        $stockOut = DB::table('inventory')->where('products_id', $result['products'][0]->products_id)->where('stock_type', 'out');
+        $stocks = $stocksin->sum('stock') - $stockOut->sum('stock');
+        $pos_stocks = $stocksin->sum('pos_stock') - $stockOut->sum('pos_stock');
 
         $manageLevel = DB::table('manage_min_max')->where('products_id', $result['products'][0]->products_id)->get();
         if(count($manageLevel)>0){
@@ -1472,6 +1479,7 @@ class Products extends Model
 
     $result['purchase_price'] = $purchase_price;
     $result['stocks'] = $stocks;
+    $result['pos_stocks'] = $pos_stocks;
     $result['min_level'] = $min_level;
     $result['max_level'] = $max_level;
     $products_attribute = DB::table('products_attributes')->where('products_id', '=', $products_id)->get();
@@ -1718,6 +1726,7 @@ class Products extends Model
         'products_id' => $products_id,
         'reference_code' => $request->reference_code,
         'stock' => $request->stock[$key],
+        'pos_stock' => $request->pos_stock[$key],
         'admin_id' => auth()->user()->id,
         'created_at' => $date_added,
         'purchase_price' => $request->purchase_price[$key],
@@ -1756,6 +1765,7 @@ class Products extends Model
                 'admin_id'          => auth()->user()->id,
                 'supplier_main_id'  => $mainSupplier->supplier_main_id,
                 'stock'             => $request->stock[$key],
+                'pos_stock'             => $request->pos_stock[$key],
                 'price'             => $request->purchase_price[$key],
                 'date_added'        => $date_added,
                 'created_at'        => $date_added,
@@ -1785,6 +1795,7 @@ class Products extends Model
             'admin_id'          => auth()->user()->id,
             'supplier_main_id'  => $createmainSupplier,
             'stock'             => $request->stock[$key],
+            'pos_stock'             => $request->pos_stock[$key],
             'price'             => $request->purchase_price[$key],
             'date_added'        => $date_added,
             'created_at'        => $date_added,
@@ -2471,6 +2482,7 @@ class Products extends Model
     $inventory = DB::table('inventory')->where('products_id', $products_id)->where('stock_type', 'in')->get();
     $reference_ids =array();
     $stockIn = 0;
+    $stockPosIn = 0;
     $purchasePrice = 0;
     foreach($inventory as $inventory){
         $totalAttribute = DB::table('inventory_detail')->where('inventory_detail.inventory_ref_id', '=', $inventory->inventory_ref_id)->get();
@@ -2493,6 +2505,7 @@ class Products extends Model
 
             $inventory_ref_id = $individualStock[0]->inventory_ref_id;
             $stockIn += $individualStock[0]->stock;
+            $stockPosIn += $individualStock[0]->pos_stock;
             $purchasePrice += $individualStock[0]->purchase_price;
 
         }
@@ -2516,6 +2529,7 @@ class Products extends Model
     $options_values = "'" . implode ( "','", $options_values ) . "'";
     $orders_products = DB::table('orders_products')->where('products_id', $products_id)->get();
     $stockOut = 0;
+    $stockPosOut = 0;
     foreach($orders_products as $orders_product){
         $totalAttribute = DB::table('orders_products_attributes')->where('orders_products_id', '=', $orders_product->orders_products_id)->get();
         $totalAttributes = count($totalAttribute);
@@ -2524,15 +2538,21 @@ class Products extends Model
         }elseif($postAttributes<$totalAttributes or $postAttributes==$totalAttributes){
             $count = $totalAttributes;
         }
-        $products = DB::select("select orders_products.* from `orders_products` left join `orders_products_attributes` on `orders_products_attributes`.`orders_products_id` = `orders_products`.`orders_products_id` where `orders_products`.`products_id`='".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and (select count(*) from `orders_products_attributes` where `orders_products_attributes`.`products_id` = '".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and `orders_products_attributes`.`orders_products_id`= '".$orders_product->orders_products_id."') = ".$count." and `orders_products`.`orders_products_id` = '".$orders_product->orders_products_id."' group by `orders_products_attributes`.`orders_products_id`");
+        $products_type =3; // pos =3
+        $products = DB::select("select orders_products.* from `orders_products` left join `orders_products_attributes` on `orders_products_attributes`.`orders_products_id` = `orders_products`.`orders_products_id` left join `orders` on `orders`.`orders_id` = `orders_products`.`orders_id` where `orders`.`products_id`!='".$products_type."' and `orders_products`.`products_id`='".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and (select count(*) from `orders_products_attributes` where `orders_products_attributes`.`products_id` = '".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and `orders_products_attributes`.`orders_products_id`= '".$orders_product->orders_products_id."') = ".$count." and `orders_products`.`orders_products_id` = '".$orders_product->orders_products_id."' group by `orders_products_attributes`.`orders_products_id`");
         if(count($products)>0){
             $stockOut += $products[0]->products_quantity;
+        }
+        $productsPos = DB::select("select orders_products.* from `orders_products` left join `orders_products_attributes` on `orders_products_attributes`.`orders_products_id` = `orders_products`.`orders_products_id` left join `orders` on `orders`.`orders_id` = `orders_products`.`orders_id` where `orders`.`products_id`='".$products_type."' and `orders_products`.`products_id`='".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and (select count(*) from `orders_products_attributes` where `orders_products_attributes`.`products_id` = '".$products_id."' and `orders_products_attributes`.`products_options` in (".$options_names.") and `orders_products_attributes`.`products_options_values` in (".$options_values.") and `orders_products_attributes`.`orders_products_id`= '".$orders_product->orders_products_id."') = ".$count." and `orders_products`.`orders_products_id` = '".$orders_product->orders_products_id."' group by `orders_products_attributes`.`orders_products_id`");
+        if(count($productsPos)>0){
+            $stockPosOut += $productsPos[0]->products_quantity;
         }
     }
 
     $result = array();
     $result['purchasePrice'] = $purchasePrice;
     $result['remainingStock'] = $stockIn - $stockOut;
+    $result['remainingPosStock'] = $stockPosIn - $stockPosOut;
 
     if(!empty($inventory_ref_id)){
         $inventory_ref_id = $inventory_ref_id;

@@ -125,6 +125,11 @@ img {
       <img src="{{ $src }}" height="60" width="50" style="width: 120px;position: relative;margin-top: -60px;" class="float-right">
       <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info">
+        <div class="col-md-12" style="direction: rtl">
+        	<h4 style="display: flex;justify-content: center;">فاتورة ضريبة مبسطة</h4>
+        </div>
+
+
         <div class="col-sm-12 invoice-col" style="text-align: right">
           @if (isset($user->shop_name))
           {{ trans('labels.Shop Name') }}: <strong>{{ $name }}</strong>

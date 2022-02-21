@@ -310,7 +310,7 @@ class Order extends Model
 
                 ]);
                 //dd($product_detail);
-                if ($product_detail->products_type == 1) {
+                if (isset($product_detail->products_type) && $product_detail->products_type == 1) {
                     $product_attribute = DB::table('orders_products_attributes')
                         ->where([
                             ['orders_products_id', '=', $products_data->orders_products_id],
@@ -521,7 +521,7 @@ class Order extends Model
 
             ]);
             //dd($product_detail);
-            if ($product_detail->products_type == 1) {
+            if (isset($product_detail->products_type) && $product_detail->products_type == 1) {
                 $product_attribute = DB::table('orders_products_attributes')
                     ->where([
                         ['orders_products_id', '=', $products_data->orders_products_id],

@@ -565,6 +565,7 @@ $(document).on('click', '.currentstock', function(e){
 			$("#loader").hide();
 			console.log(res);
 			$('#current_stocks').html(res.remainingStock);
+			$('#current_pos_stocks').html(res.remainingPosStock);
 			//console.log(res.remainingStock);
 			var min_level = 0;
 			var max_level = 0;
@@ -2435,6 +2436,7 @@ $(document).on('change','.product-type', function(){
 		url: '{{ URL::to("admin/products/inventory/ajax_min_max")}}'+'/'+product_id,
 		type: "GET",
 		success: function (res) {
+			console.log(res);
 		//console.log(res.products[0].products_type);
 		if(res.products[0].products_type=='0'){
 			$('#inventory_ref_id').val('0');
@@ -2443,6 +2445,7 @@ $(document).on('change','.product-type', function(){
 		}
 
 		$('#current_stocks').html(res.stocks);
+		$('#current_pos_stocks').html(res.pos_stocks);
 		$('#total_purchases').html(res.purchase_price);
 
 		if(res.length != ''){

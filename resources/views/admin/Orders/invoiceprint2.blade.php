@@ -106,10 +106,11 @@ img {
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <h2 class="page-header" style="padding-bottom: 25px">
-            <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }}
-            <small class="pull-right" style="text-align: right;">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
-          </h2>
+          <h5 class="page-header" style="padding-bottom: 25px">
+            <i class="fa fa-globe"></i> 
+            <small class="pull-right" style="text-align: right;">{{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }}</small>
+            <br><small class="pull-right" style="text-align: right;">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
+          </h5>
         </div>
         <!-- /.col -->
       </div>
@@ -135,6 +136,10 @@ img {
       <img src="{{ $src }}" height="60" width="50" style="width: 120px;position: relative;margin-top: -60px;" class="float-right">
       <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info" style="direction: rtl;text-align: justify;line-height: normal;font-weight: 800;">
+        
+        <div class="col-md-12" style="direction: rtl">
+        	<h4 style="display: flex;justify-content: center;">فاتورة ضريبة مبسطة</h4>
+        </div>
         <div class="col-md-12" style="direction: rtl">
         	<h4 style="display: flex;justify-content: center;"> عقد اتفاق</h4>
         </div>

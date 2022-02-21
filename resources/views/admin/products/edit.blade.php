@@ -739,8 +739,18 @@
                                                 <h5 class="mb-0 h6">{{trans('labels.Product price + stock')}}</h5>
                                             </div>
                                             <div class="card-body">
-                                                
-                        
+                                                <div class="form-group row" id="quantity">
+                                                    <label class="col-md-3 col-from-label">{{trans('labels.Quantity')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="{{ $result['product'][0]->products_quantity !=0 ? $result['product'][0]->products_quantity : 0}}" step="1" placeholder="{{ trans('labels.Quantity') }}" name="quantity" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row" id="pos_quantity">
+                                                    <label class="col-md-3 col-from-label">{{trans('labels.POS_Quantity')}} <span class="text-danger">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input type="number" lang="en" min="0" value="{{ $result['product'][0]->pos_quantity !=0 ? $result['product'][0]->pos_quantity : 0}}" step="1" placeholder="{{ trans('labels.POS_Quantity') }}" name="pos_quantity" class="form-control" required>
+                                                    </div>
+                                                </div>
                                                 <br>
                                                 <div class="sku_combination" id="sku_combination">
                         

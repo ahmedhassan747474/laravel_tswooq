@@ -638,8 +638,8 @@ class POSController extends Controller
         $product_array = array();
         $inventories = DB::table('inventory')->get();
         foreach($inventories as $inventory){
-            $current_stock_in = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'in')->sum('stock');
-            $current_stock_out = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'out')->sum('stock');
+            $current_stock_in = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'in')->sum('pos_stock');
+            $current_stock_out = DB::table('inventory')->where('products_id', $inventory->products_id)->where('stock_type', 'out')->sum('pos_stock');
             $current_stock = $current_stock_in - $current_stock_out;
             if($current_stock > 0) {
                 $product_array[] = $inventory->products_id;
@@ -861,8 +861,8 @@ class POSController extends Controller
                 $stocks = 0;
                 $stockOut = 0;
                 if ($products_data->products_type == '0') {
-                    $stocks = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'in')->sum('stock');
-                    $stockOut = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'out')->sum('stock');
+                    $stocks = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'in')->sum('pos_stock');
+                    $stockOut = DB::table('inventory')->where('products_id', $products_data->products_id)->where('stock_type', 'out')->sum('pos_stock');
                 }
 
                 $result[$index]->defaultStock = $stocks - $stockOut;
@@ -1021,8 +1021,8 @@ class POSController extends Controller
                         if($cartItem['variant'] == $request->variant){
                             $foundInCart = true;
                             $product = AppProduct::where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
-                            $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
-                            $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                            $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('pos_stock');
+                            $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('pos_stock');
                             $current_stock = $current_stock_in - $current_stock_out;
                             if($cartItem['variant'] != null ){
                                 $product_stock = $product->stocks->where('variant', $cartItem['variant'])->first();
@@ -1134,8 +1134,8 @@ class POSController extends Controller
                     if($cartItem['variant'] == $request->variant){
                         $foundInCart = true;
                         $product = AppProduct::where('products_id', $cartItem['id'])->first();//\App\Product::find($cartItem['id']);
-                        $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
-                        $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                        $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('pos_stock');
+                        $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('pos_stock');
                         $current_stock = $current_stock_in - $current_stock_out;
                         if($cartItem['variant'] != null ){
                             // if($cartItem['variant'] != null && $product->variant_product){
@@ -1220,8 +1220,8 @@ class POSController extends Controller
             if($key == $request->key){
                 // $product = \App\Product::find($object['id']);
                 $product = AppProduct::where('products_id', $object['id'])->first();
-                $current_stock_in = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'in')->sum('stock');
-                $current_stock_out = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                $current_stock_in = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'in')->sum('pos_stock');
+                $current_stock_out = DB::table('inventory')->where('products_id', $object['id'])->Where('stock_type', '=', 'out')->sum('pos_stock');
                 $current_stock = $current_stock_in - $current_stock_out;
                 if($object['variant'] != null ){
                     $product_stock = $product->stocks->where('variant', $object['variant'])->first();
@@ -1674,8 +1674,8 @@ class POSController extends Controller
                             ->where('products.products_id', $cartItem['id'])
                             ->where('language_id', 1)
                             ->first();
-                        $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('stock');
-                        $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('stock');
+                        $current_stock_in = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'in')->sum('pos_stock');
+                        $current_stock_out = DB::table('inventory')->where('products_id', $cartItem['id'])->Where('stock_type', '=', 'out')->sum('pos_stock');
                         $current_stock = $current_stock_in - $current_stock_out;
 
                         $subtotal += $cartItem['price']*$cartItem['quantity'];
@@ -1726,7 +1726,8 @@ class POSController extends Controller
                         $inventory_ref_id = DB::table('inventory')->insertGetId([
                             'products_id' => $cartItem['id'],
                             'reference_code' => '',
-                            'stock' => $cartItem['quantity'],
+                            'stock' => 0,
+                            'pos_stock' => $cartItem['quantity'],
                             'admin_id' => 0,
                             'added_date' => time(),
                             'purchase_price' => 0,
@@ -1794,7 +1795,8 @@ class POSController extends Controller
                         $inventory_ref_id = DB::table('inventory')->insertGetId([
                             'products_id' => $cartItem['id'],
                             'reference_code' => '',
-                            'stock' => $cartItem['quantity'],
+                            'stock' => 0,
+                            'pos_stock' => $cartItem['quantity'],
                             'admin_id' => 0,
                             'added_date' => time(),
                             'purchase_price' => 0,

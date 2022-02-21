@@ -291,7 +291,12 @@ class Product extends Model {
     }
 
     public function descriptions() {
-        return $this->hasMany(ProductDescription::class,'products_id','products_id');
+        $description= $this->hasMany(ProductDescription::class,'products_id','products_id');
+
+        if(request()->language_id){
+            $description->where('language_id',request()->language_id);
+        }
+        return $description;
     }
 
     public function brand() {
