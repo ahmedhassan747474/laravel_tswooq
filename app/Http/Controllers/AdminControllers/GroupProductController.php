@@ -55,7 +55,8 @@ class GroupProductController extends Controller
 
         $info=Group::find($id);
         
-        $items = Product::get();
+        $items = Product::with('descriptions')->get();
+
         foreach($items as $item) {
             $checkProduct = GroupProduct::where('group_id', $id)->where('product_id', $item->products_id)->count();
             if($checkProduct){

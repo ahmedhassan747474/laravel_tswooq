@@ -194,6 +194,8 @@
             <li class="{{ Request::is('admin/products-report') ? 'active' : '' }} "><a href="{{ URL::to('admin/products-report')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.link_all_products') }}</a></li>
             <li class="{{ Request::is('admin/products-barcode') ? 'active' : '' }} "><a href="{{ URL::to('admin/products-barcode')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.barcode') }}</a></li>
             <li class="{{ Request::is('admin/inventoryreport') ? 'active' : '' }} "><a href="{{ URL::to('admin/inventoryreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Inventory Report') }}</a></li>
+            <li class="{{ Request::is('admin/orders_likecard/display') ? 'active' : '' }} "><a href="{{ URL::to('admin/orders_likecard/display')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.LikeCard Report') }}</a></li>
+            <li class="{{ Request::is('admin/orders_likecard/balance') ? 'active' : '' }} "><a href="{{ URL::to('admin/orders_likecard/balance')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.LikeCard Balance') }}</a></li>
             @endif
 
             @if ($result['commonContent']['roles']->supplier_view == 1)

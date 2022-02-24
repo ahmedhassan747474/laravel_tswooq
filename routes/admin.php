@@ -70,6 +70,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         
         Route::group(['prefix' => 'suppliers'], function () {
             Route::get('/display', 'SuppliersController@display')->middleware('view_supplier');
+            Route::post('/delete', 'SuppliersController@delete')->middleware('delete_supplier');
             Route::get('/add', 'SuppliersController@add')->middleware('add_supplier');
             Route::post('/add', 'SuppliersController@insert')->middleware('add_supplier');
             Route::post('/update', 'SuppliersController@update')->middleware('edit_supplier');

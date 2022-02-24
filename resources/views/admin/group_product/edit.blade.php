@@ -46,10 +46,14 @@
 								@method('PUT')
 								<div class="custom-form">
 									<div class="form-group">
+										{{-- @php
+											dd($items[0]->descriptions);
+											@endphp --}}
 										<label for="exampleFormControlSelect1">{{ __('Select Products') }}</label>
 										<select class="form-control js-example-basic-multiple" name="items[]" id="exampleFormControlSelect1" multiple="multiple" style="width:100%">
 											@foreach($items as $item)
-											  <option value="{{$item->products_id}}" {{$item->is_selected == 1 ? 'selected' : ''}}>({{$item->products_slug ? $item->products_slug : 'Not Exist'}} ) - {{$item->rest_name}}</option>
+											
+											  <option value="{{$item->products_id}}" {{$item->is_selected == 1 ? 'selected' : ''}}>({{$item->products_slug ? $item->products_slug : 'Not Exist'}} ) - {{ $item->descriptions[0]->products_name??'' }} - {{$item->rest_name}}</option>
 											  @endforeach
 										</select>
 										

@@ -13,6 +13,8 @@ return [
     |
     */
 
+	'LikeCard Report'=>'تقارير مبيعات اللايك كارد',
+	'LikeCard Balance'=>'تقارير رصيد اللايك كارد',
 	'Current POS Stock'=>'مخزون نقاط البيع الحالى',
 	'Pos Stock'=>'مخزون نقاط البيع',
 	'Enter POS Stock'=>'مخزون نقاط البيع',

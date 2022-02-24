@@ -382,6 +382,7 @@ class Reports extends Model
         // dd($orderTotals);
         $total_price_buy = 0;
         $total_price_win = 0;
+        $total_price=0;
         foreach($orders as $order) {
             $price_buy = 0;
             // dd($order);
@@ -415,6 +416,7 @@ class Reports extends Model
                 // ->where(DB::raw("DATE(date_purchased) = '".$dateTime."'"))
             $getOrdersByDate = $getOrdersByDatePrimary->get();
             foreach($getOrdersByDate as $getOrderByDate) {
+                // dd($getOrderByDate);
                 $orderProducts = DB::table('orders_products')
                     ->where('orders_id', '=', $getOrderByDate->orders_id)
                     // ->whereDate('date_purchased', $order->date_purchased)
@@ -422,9 +424,8 @@ class Reports extends Model
                 // dd($orderProducts);
                 foreach($orderProducts as $orderProduct){
                     $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
-                    // dd($product);
                     if($product){
-                        $price_buy += $product->price_buy;
+                        $price_buy += $product->price_buy * $orderProduct->products_quantity;
                     }
                 }
             }
@@ -433,14 +434,15 @@ class Reports extends Model
             $order->total_price_win = $order->total_price - $price_buy;
             $total_price_buy += $price_buy;
             $total_price_win += $order->total_price - $price_buy;
+            $total_price+=$order->total_price;
         }
 
         // dd($orders);
 
-        $total_orders_price = DB::table('orders')
-                    ->sum('order_price');
+        // $total_orders_price = DB::table('orders')
+        //             ->sum('order_price');
 
-        $result = array('orders' => $orders, 'total_price' => $total_orders_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
+        $result = array('orders' => $orders, 'total_price' => $total_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
         // dd($result);
         return $result;
     }

@@ -246,6 +246,8 @@ class ReportsController extends Controller
         $title = array('pageTitle' => Lang::get("labels.Sales Report"));
 
         $result['reports'] = $this->reports->salesreport($request);
+        // dd( $result['reports']);
+        
         $result['price'] = $this->reports->customersReportTotal($request);
 
         $result['customers'] = $this->Customers->getter();

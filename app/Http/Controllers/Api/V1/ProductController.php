@@ -221,7 +221,7 @@ class ProductController extends BaseController
     //getallproducts
     public function getallproducts(Request $request){
       
-        $products = AppProduct::latest()
+        $products = AppProduct::where('is_show_web',1)->latest()
         ->with(['stocks','images'])->get();
         return new ProductCollection($products);
     }
@@ -230,7 +230,7 @@ class ProductController extends BaseController
     public function get_all_group_products(Request $request){
         $group_id = $request->group_id;
         if ($group_id){
-            $products=AppProduct::whereHas('groups',function($q) use($group_id){
+            $products=AppProduct::where('is_show_web',1)->whereHas('groups',function($q) use($group_id){
                 $q->where('group_id',$group_id);
             })->with(['stocks','images'])->latest();
     
@@ -312,7 +312,7 @@ class ProductController extends BaseController
 
     public function getfilterproducts(Request $request)
     {
-        $products = AppProduct::latest()
+        $products = AppProduct::where('is_show_web',1)->latest()
         ->with(['stocks','images']);
        
         //filter data
@@ -351,7 +351,7 @@ class ProductController extends BaseController
 
     public function getproductsbycategory(Request $request)
     {
-        $products = AppProduct::latest()
+        $products = AppProduct::where('is_show_web',1)->latest()
             ->with(['stocks','images']);
 
             if($request->categories_id){
@@ -365,7 +365,7 @@ class ProductController extends BaseController
     }
 
     public function getproductsbybrand(Request $request){
-        $products = AppProduct::latest()
+        $products = AppProduct::where('is_show_web',1)->latest()
             ->with(['stocks','images']);
 
         if($request->brand_id){
@@ -378,7 +378,7 @@ class ProductController extends BaseController
         return new ProductCollection($products->paginate(10));
     }
     public function getproductbyid(Request $request){
-        $products = AppProduct::latest()
+        $products = AppProduct::where('is_show_web',1)->latest()
         ->with(['stocks','images']);
         
         if($request->id){

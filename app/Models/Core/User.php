@@ -85,7 +85,7 @@ class User extends Authenticatable
                 $user->where('admin_id', '=', auth()->user()->parent_admin_id);
             } 
             
-          $user=$user->get();
+          $user=$user->paginate(10);
           return $user;
     }
 

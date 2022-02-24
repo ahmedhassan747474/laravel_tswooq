@@ -291,12 +291,18 @@ class Product extends Model {
     }
 
     public function descriptions() {
+        // dd(app('request')->header('language_id'));
+        $language_id= request()->header('language_id') ?? 2 ;
         $description= $this->hasMany(ProductDescription::class,'products_id','products_id');
 
-        if(request()->language_id){
-            $description->where('language_id',request()->language_id);
-        }
+        // if(request()->language_id){
+            $description->where('language_id',$language_id);
+        // }
         return $description;
+        // dd(request()->header('language_id'));
+        // $language_id= request()->header('language_id') ?? 2 ;
+        // // dd($language_id);
+        // return $this->hasOne('App\Models\AppModels\ProductDescriptions','products_id','products_id')->where('language_id',$language_id)->select('products_id','products_name','products_description');
     }
 
     public function brand() {
