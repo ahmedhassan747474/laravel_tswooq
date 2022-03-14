@@ -206,7 +206,9 @@
                                     </div>
                                   </div>
                                 <div class="col-xs-12 col-md-6 text-right">
-                                    {{$results['products']->links()}}
+                                    {{-- {{$results['products']->links()}} --}}
+                                    {!! $results['products']->appends(Request::except('page'))->render() !!}
+
                                 </div>
                               </div>
                         </div>

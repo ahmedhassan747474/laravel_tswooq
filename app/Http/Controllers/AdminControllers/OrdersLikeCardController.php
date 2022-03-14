@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminControllers;
 use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App\Http\Controllers\Controller;
 use App\Models\Core\Setting;
+use App\Models\Core\OrderProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
@@ -13,6 +14,18 @@ use Illuminate\Support\Facades\Session;
 
 class OrdersLikeCardController extends Controller
 {
+    function decryptSerial($encrypted_txt){    
+      $secret_key = 't-3zafRa';    
+      $secret_iv = 'St@cE4eZ';
+      $encrypt_method = 'AES-256-CBC';                
+      $key = hash('sha256', $secret_key);        
+    
+      //iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning          
+      $iv = substr(hash('sha256', $secret_iv), 0, 16);        
+    
+      return openssl_decrypt(base64_decode($encrypted_txt), $encrypt_method, $key, 0, $iv);        
+    }
+
     //
     public function __construct( Setting $setting, OrderLikeCard $order )
     {
@@ -70,12 +83,21 @@ class OrdersLikeCardController extends Controller
 
     public function display()
     {
+   
+     
         $title = array('pageTitle' => Lang::get("labels.ListingOrders"));        
 
         $message = array();
         $errorMessage = array();        
         
-        $ordersData['orders'] = $this->Order->paginator();
+        if(auth()->user()->role_id == 1){
+             $ordersData['orders'] =OrderLikeCard::orderby('id','DESC')->paginate(20); 
+        }
+        else{
+            
+        $ordersData['orders'] =OrderLikeCard::where('customers_id',auth()->user()->id)->orderby('id','DESC')->paginate(20);
+        }
+
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
         $ordersData['currency'] = $this->myVarsetting->getSetting(); 
@@ -84,9 +106,25 @@ class OrdersLikeCardController extends Controller
     }
 
     //view order detail
-    public function vieworder(Request $request)
-    {
-
+    public function vieworder($id,Request $request)
+    { 
+        $order=OrderProduct::find($id);
+     
+        if($order->orderCard!=null){
+            
+            
+            if($order->orderCard->order_like_card_id !=null){
+                $order_details=deatailsOrder($order->orderCard->order_like_card_id);
+            }
+            else{
+                $order_details='';
+            }
+        }
+        else{
+          $order_details='';
+  
+        }
+    
         $title = array('pageTitle' => Lang::get("labels.ViewOrder"));
         $message = array();
         $errorMessage = array();
@@ -96,9 +134,11 @@ class OrdersLikeCardController extends Controller
 
         // current order status
         $orders_status_history = $this->Order->currentOrderStatus($request);  
+        
 
         //all statuses 
-        $orders_status = $this->Order->orderStatuses();  
+        $orders_status = $this->Order->orderStatuses(); 
+           
         
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
@@ -110,8 +150,27 @@ class OrdersLikeCardController extends Controller
         $result['commonContent'] = $this->Setting->commonContent();
 
         //dd($ordersData);
+        $data=array();
+        // dd($order);
+        $order_details=deatailsOrder($order->orderCard->order_like_card_id);
+        $orderNumber = $order_details->orderNumber??0000;
+        
+        $serials = $order_details->serials[0]??0000;
+        
+        $serialNumber = $serials->serialNumber??0000;
+        
+        $serialCode = $this->decryptSerial($serials->serialCode)??0000;
+        
+        // dd($serialCode);
+        
+        $data['orderNumber'] = $order_details->orderNumber??0000;
+        
+        $data['serialNumber'] = $serials->serialNumber??0000;
+        
+        $data['serialCode'] = $this->decryptSerial($serials->serialCode)??0000;
 
-        return view("admin.Orders_likecard.vieworder", $title)->with('data', $ordersData)->with('result', $result);
+         return view("admin.Orders_likecard.vieworder",compact('data','order_details','title','ordersData','result','order'));
+  
     }
 
     //update order
@@ -236,6 +295,40 @@ class OrdersLikeCardController extends Controller
 
         return view("admin.Orders_likecard.invoiceprint", $title)->with('data', $ordersData)->with('result', $result);
 
+    }
+    
+    public function invoiceprintnew(Request $request)
+    {
+        // $data = \App\Models\Core\OrderLikeCard::whereId($request->id)->first()->detail($request);
+        $data = OrderProduct::find($request->id)->orderCard->detail($request);
+        // dd($data);
+        $data['orders_data'][0]['orders_id'] = $request->id;
+        
+        $data['orders_data'][0]['shipping_method'] = '';
+
+        $result['commonContent'] = $this->Setting->commonContent();
+
+        $order=OrderProduct::find($request->id);
+        $order_details=deatailsOrder($order->orderCard->order_like_card_id);
+        $result['order_details'] = $order_details;
+        
+        // dd($order_details);
+        $orderNumber = $order_details->orderNumber??0000;
+        
+        $serials = $order_details->serials[0]??0000;
+        
+        $serialNumber = $serials->serialNumber??0000;
+        
+        $serialCode = $this->decryptSerial($serials->serialCode)??0000;
+        
+        $data['orderNumber'] = $order_details->orderNumber??0000;
+        
+        $data['serialNumber'] = $serials->serialNumber??0000;
+        
+        $data['serialCode'] = $this->decryptSerial($serials->serialCode)??0000;
+
+
+        return view("admin.Orders_likecard.invoiceprint")->with('data', $data)->with('result', $result);
     }
 
     public function assignOrders(Request $request)

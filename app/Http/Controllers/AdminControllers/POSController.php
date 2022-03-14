@@ -998,7 +998,6 @@ class POSController extends Controller
 
     public function addToPOS(Request $request)
     {
-        // dd($request->all());
         $products = DB::table('pos_standby')->where('customer_id',$request->customer_id_pos)->get();
         foreach($products as $item){
             $product = AppProduct::where('products_id', $item->product_id)->first();
@@ -1082,7 +1081,10 @@ class POSController extends Controller
 
     public function addToCart(Request $request)
     {
+        
         $product = AppProduct::where('products_id', $request->product_id)->first();
+        
+        if($product->stocks->sum('pos_qty') == 0) { return "المنتج غير متوفر حاليا"; }
 
         $data = array();
         $data['id'] = $product->products_id;
@@ -1095,6 +1097,7 @@ class POSController extends Controller
             $tax = ($product->tax/100)*$product_stock->pos_price  ;
 
             $quantity = $product_stock->pos_qty;
+            
 
             if($request['quantity'] > $quantity){
                 return 0;
@@ -1346,6 +1349,7 @@ class POSController extends Controller
     //order place
     public function order_store(Request $request)
     {
+         $request['customer_id']=$request->user_id;
         // return $request->all();
         if(Session::has('posCart') && count(Session::get('posCart')) > 0 || Session::has('posCartNew') && count(Session::get('posCartNew')) > 0 ){
             // $order = new Order;
@@ -1363,6 +1367,7 @@ class POSController extends Controller
                 $email = $request->email;
                 if($email != null) {
                     $check = DB::table('users')->where('role_id', 2)->where('email', $email)->first();
+                    
                     if ($check == null) {
                         $customers_id = DB::table('users')
                             ->insertGetId([
@@ -1407,24 +1412,26 @@ class POSController extends Controller
                 }
             }
             else {
-                $order->user_id = $request->user_id;
+                //$order->user_id = $request->user_id;
                 $user           = User::findOrFail($request->user_id);
-                $name   = $user->name;
+                $first_name=$user->first_name;
+                $last_name=$user->last_name;
                 $email  = $user->email;
+                $phone  = $user->phone;
 
-                if($request->shipping_address != null){
+                /*if($request->shipping_address != null){
                     $address_data   = Address::findOrFail($request->shipping_address);
                     $address        = $address_data->address;
                     $country        = $address_data->country;
                     $city           = $address_data->city;
                     $postal_code    = $address_data->postal_code;
                     $phone          = $address_data->phone;
-                }
+                }*/
             }
 
             $delivery_firstname = $first_name;
             $delivery_lastname = $last_name;
-            $delivery_street_address = $shipping_address;
+            $delivery_street_address = $shipping_address??$request->shipping_address;
             $delivery_suburb = '';
             $delivery_city = $city;
             $delivery_postcode = $postal_code;
@@ -1436,7 +1443,7 @@ class POSController extends Controller
 
             $billing_firstname = $first_name;
             $billing_lastname = $last_name;
-            $billing_street_address = $shipping_address;
+            $billing_street_address = $shipping_address??$request->shipping_address;
             $billing_suburb = '';
             $billing_city = $city;
             $billing_postcode = $postal_code;
@@ -1592,6 +1599,7 @@ class POSController extends Controller
             // }
 
             if ($request->customer_id) {
+    
                 $get_detail_customer = DB::table('users')->where('id', $request->customer_id)->first();
                 if ($get_detail_customer) {
                     $customers_name         = $get_detail_customer->first_name . ' ' . $get_detail_customer->last_name;
@@ -1599,12 +1607,12 @@ class POSController extends Controller
                 }
             }else
             {
-                $customers_name = 'بدون اسم';
-                $customers_telephone = 'بدون هاتف';
+                $customers_name = '';
+                $customers_telephone = '';
             }
 
             $orders_id = DB::table('orders')->insertGetId([
-                'customers_id' => $customers_id,
+                'customers_id' => $customers_id??$request->customer_id,
                 'customers_name' => $customers_name,
                 'customers_street_address' => $delivery_street_address,
                 'customers_suburb' => $delivery_suburb,
@@ -1719,9 +1727,9 @@ class POSController extends Controller
                             }
                         }
                         else {
-                            if ($cartItem['quantity'] > $current_stock) {
-
-                                // $order->delete();
+                            //if ($cartItem['quantity'] > $current_stock) {
+                              if(ProductStock::whereId($product->id)->sum('pos_qty') == 0) {    
+                                
                                 // return 0;
                                 $responseData = array('status' => 2, 'message' => "Sorry, ".$product->products_name." is out of stock");
                                 return response()->json($responseData);
@@ -1759,7 +1767,7 @@ class POSController extends Controller
                         //     DB::table('customers_basket')->where('session_id', Session::getId())->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
 
                         // } else {
-                            DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
+                            DB::table('customers_basket')->where('customers_id', $customers_id??$request->customer_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
                         // }
 
                         // if (!empty($products->attributes) and count($products->attributes)>0) {
@@ -1826,7 +1834,7 @@ class POSController extends Controller
 
 
                         // } else {
-                            DB::table('customers_basket')->where('customers_id', $customers_id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
+                            DB::table('customers_basket')->where('customers_id', auth()->user()->id)->where('products_id', $cartItem['id'])->update(['is_order' => '1']);
                         // }
 
 

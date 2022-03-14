@@ -195,7 +195,6 @@ class ReportsController extends Controller
 
     public function shopsalesreportPrint(Request $request)
     {
-
         $title = array('pageTitle' => Lang::get("labels.Sales Report"));
 
         $result['reports'] = $this->reports->shopsalesreport($request);
@@ -263,9 +262,15 @@ class ReportsController extends Controller
 
     public function shopsalesreport(Request $request)
     {
+        
+
         $title = array('pageTitle' => Lang::get("labels.Sales Report"));
 
         $result['reports'] = $this->reports->shopsalesreport($request);
+  
+       $total = $result['reports']['orders']->pluck('total_price')->toarray();
+       $total_sum= array_sum($total);
+    
         $result['price'] = $this->reports->customersReportTotal($request);
 
         $result['customers'] = $this->Customers->getter();
@@ -276,12 +281,15 @@ class ReportsController extends Controller
         $result['setting'] = $myVar->getSetting();
         $result['commonContent'] = $myVar->Setting->commonContent();
         $result['shops'] = DB::table('users')->where('role_id', '=', 11)->select('id', 'shop_name as name')->get();
-
-        return view("admin.reports.shopsalesreport", $title)->with('result', $result);
+        // return $result ;
+      
+        return view('admin.reports.shopsalesreport',compact('title','total_sum','result'));
+        // return view("admin.reports.shopsalesreport", compact('total','title'))->with('result', $result);
     }
 
     public function shopemployereport(Request $request)
     {
+     
         $title = array('pageTitle' => Lang::get("labels.Sales Report"));
 
         $result['reports'] = $this->reports->shopemployereport($request);

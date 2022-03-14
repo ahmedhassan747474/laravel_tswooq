@@ -8,16 +8,28 @@ use App\Http\Controllers\AdminControllers\AlertController;
 class Order extends Model
 {
     public function paginator(){
-
-        $language_id = '1';
-        $data = DB::table('orders')
+     if(auth()->user()->role_id !=1){
+            $data = DB::table('orders')
             ->join('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
             ->join('products', 'products.products_id', '=', 'orders_products.products_id')
             ->orderBy('orders.orders_id', 'DESC');
+         
+     }
+     else{
+          $data = DB::table('orders')
+            
+            ->orderBy('orders.orders_id', 'DESC');
+     }
+        $language_id = '1';
+     
             // ->where('customers_id', '!=', '');
 
         if(auth()->user()->role_id == 11) {
+              $data = DB::table('orders')
+            
+            ->orderBy('orders.orders_id', 'DESC');
             $data->where('orders.admin_id', '=', auth()->user()->id);
+           // dd($data); to do
         } elseif(auth()->user()->role_id == 12) {
             $data->where('orders.admin_id', '=', auth()->user()->parent_admin_id);
         }

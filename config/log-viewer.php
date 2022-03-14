@@ -9,7 +9,7 @@ return [
      | -----------------------------------------------------------------
      */
 
-    'storage-path'  => storage_path('logs'),
+    'storage-path'  => '/home/tswooq/public_html/storage/logs',
 
     /* -----------------------------------------------------------------
      |  Log files pattern

@@ -349,7 +349,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/couponreport-print', 'ReportsController@couponReportPrint')->middleware('report');
 
 
-        Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
+   
 
         Route::get('/shops/changeStatus', 'AdminController@changeStatus');
         Route::get('/shops', 'AdminController@shops')->middleware('view_shop');
@@ -641,7 +641,7 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::post('/deletedevice/', 'NotificationController@deletedevice')->middleware('view_notification');
     });
 
-    Route::get('/admin/orders/invoiceprint/{id}', 'AdminControllers\OrdersController@invoiceprint')->name('invoiceprint');
+    Route::get('/admin/orders/invoiceprint/{id?}', 'AdminControllers\OrdersController@invoiceprint')->name('invoiceprint');
     Route::get('/admin/orders/cutPaper', 'AdminControllers\OrdersController@cutPaper')->name('cutPaper');
 
     Route::group(['prefix' => 'admin/orders', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
@@ -665,7 +665,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
         Route::get('/vieworder/{id}', 'OrdersLikeCardController@vieworder')->middleware('view_order');
         Route::post('/updateOrder', 'OrdersLikeCardController@updateOrder')->middleware('edit_order');
         Route::post('/deleteOrder', 'OrdersLikeCardController@deleteOrder')->middleware('edit_order');
-        Route::get('/invoiceprint/{id}', 'OrdersLikeCardController@invoiceprint')->name('invoiceprint_likecard')->middleware('view_order');
+        //Route::get('/invoiceprint/{id}', 'OrdersLikeCardController@invoiceprint')->name('invoiceprint_likecard')->middleware('view_order');
+        Route::get('/invoiceprint/{id}', 'OrdersLikeCardController@invoiceprintnew')->name('invoiceprint_likecard')->middleware('view_order');
     });
 
     Route::group(['prefix' => 'admin/banners', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {

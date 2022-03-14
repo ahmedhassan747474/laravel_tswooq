@@ -34,6 +34,7 @@ th.description {
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
     border-top: 1px solid #f4f4f4;
     padding: 5px !important;
+        font-weight: bolder;
 }
 td.quantity,
 th.quantity {
@@ -232,7 +233,7 @@ img {
               <tr>
                 <th style="text-align: right;">{{ trans('labels.PaymentMetods') }}:</th>
                 <td>
-                  {{ $data['orders_data'][0]->payment_method == 'visa' ?'فيزا':'كاش' }}
+                  {{ lcfirst($data['orders_data'][0]->payment_method) == 'visa' ?'فيزا':'كاش' }}
                   {{-- {{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }} --}}
                 </td>
               </tr>
@@ -301,17 +302,19 @@ img {
 
               
             </table>
-            <p>السعر شامل الضريبة</p>
+            <p style="font-weight: bolder;text-align: center;font-size: 15px;">السعر شامل الضريبة</p>
 
           </div>
 
         </div>
+        @if($data['orders_data'][0]->comments)
         <div class="col-xs-12" style="direction: rtl">
         	<p class="lead" style="margin-bottom:10px;text-align: right;">{{ trans('labels.Notes') }}:</p>
         	<p class="" style="text-transform:capitalize;">
                 {{$data['orders_data'][0]->comments}}
             </p>
         </div>
+        @endif
         <hr>
         <div class="row invoice-info" style="direction: rtl;text-align: justify;line-height: normal;font-weight: 800;">
           <div class="col-md-12" style="direction: rtl">
@@ -327,10 +330,9 @@ img {
           <!-- /.col -->
         </div>
 
+        
         {{-- <div class="row">
-          <div class="col-md-12" style="direction: rtl">
-        	<h4 style="display: flex;justify-content: center;">والله ولى التوفيق</h4>
-        </div>
+          
 
         <table style="border: 1px solid #e3363600 !important;">
           <tr>
@@ -432,6 +434,15 @@ img {
         <!-- /.col -->
       </div>
       <!-- /.row -->
+      <div class="row">
+            <div class="col-md-12" style="direction: rtl">
+                <b>
+        	    <h4 style="display: flex;justify-content: center;font-weight: bolder;font-size: 27px;">
+        	        نتشرف بزيارتكم
+        	        </h4>
+        	        </b>
+            </div>
+        </div>
 
 
     </section>

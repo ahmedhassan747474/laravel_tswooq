@@ -25,12 +25,15 @@ class OrdersController extends Controller
     //add listingOrders
     public function display()
     {
+     
         $title = array('pageTitle' => Lang::get("labels.ListingOrders"));
 
         $message = array();
         $errorMessage = array();
 
         $ordersData['orders'] = $this->Order->paginator();
+        //dd($ordersData['orders']);
+
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
         $ordersData['currency'] = $this->myVarsetting->getSetting();
@@ -65,7 +68,7 @@ class OrdersController extends Controller
         $ordersData['currency'] = $this->myVarsetting->getSetting();
         $result['commonContent'] = $this->Setting->commonContent();
 
-        //dd($ordersData);
+        //dd($ordersData['orders_data'][0]);
 
         return view("admin.Orders.vieworder", $title)->with('data', $ordersData)->with('result', $result);
     }

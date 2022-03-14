@@ -32,12 +32,12 @@
                             <div class="col-lg-6">
                                 <div class="card">
                                     <div class="card-header d-block">
-                                        <div class="form-group">
+                                        {{-- <div class="form-group">
                                             <input class="form-control form-control-sm" type="text" name="keyword" placeholder="Search by Product Name" onkeyup="filterProducts()">
-                                        </div>
+                                        </div> --}}
                                         <div class="row gutters-5">
                                             <div class="col-md-4">
-                                                <select name="poscategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
+                                                <select name="poscategory" id="poscategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
                                                     <option value="">All Categories</option>
                                                     @if($results['categories']->response == 1)
                                                     @foreach ($results['categories']->data as $category)
@@ -47,8 +47,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <select name="possubcategory"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
-                                                    <option value="">All Sub Categories</option>
+                                                <select name="possubcategory" id="possubcategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
+                                                    <option value="all">All Sub Categories</option>
                                                     @if($results['categories']->response == 1)
                                                     @foreach ($results['categories']->data as $category)
                                                     @if(count($category->childs))
@@ -62,7 +62,7 @@
                                             </div>
 
                                             <div class="col-md-4">
-                                                <select name="possubofsubcategory"  class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
+                                                <select name="possubofsubcategory" id="possubofsubcategory" class="form-control form-control-sm aiz-selectpicker" data-live-search="true" onchange="filterProducts()">
                                                     <option value="all">All Sub of Sub Categories</option>
                                                     @if($results['categories']->response == 1)
                                                     @foreach ($results['categories']->data as $category)
@@ -392,8 +392,20 @@
                 products = data;
                 
                 $('#product-list').html(null);
-                // console.log(products.products.paginate);
-                setProductList(data);
+                console.log(products);
+                $('#possubcategory').html(null);
+                $('#possubofsubcategory').html(null);
+
+                $('#possubcategory').append('<option value="all">All</option>');
+                $('#possubofsubcategory').append('<option value="all">All</option>');
+
+                for (var i = 0; i < data.subcategories.length; i++) {
+                    $('#possubcategory').append('<option value="'+ data.subcategories[i].id +'">'+data.subcategories[i].categoryName+'</option>');
+                }
+                for (var i = 0; i < data.subsubcategories.length; i++) {
+                    $('#possubofsubcategory').append('<option value="'+ data.subsubcategories[i].id +'">'+data.subsubcategories[i].categoryName+'</option>');
+                }
+                setProductList(data.products);
             });
         }
 
@@ -530,6 +542,7 @@
                 if(data.data == 1){
                     // AIZ.plugins.notify('success', '{{ trans('labels.Order Completed Successfully.') }}');
                     swal("success!", "{{ trans('labels.Order Completed Successfully.') }}", "success");
+                    window.open(data.print_url, '_blank');
                     location.reload();
                     // window.location.href = data.print_url;
                 } else if(data.status == 2) {

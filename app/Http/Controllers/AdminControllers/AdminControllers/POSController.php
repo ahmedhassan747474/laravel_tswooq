@@ -945,7 +945,9 @@ class POSController extends Controller
             $product_stock = $product->stocks->where('variant', $request->variant)->first();
             $price = $product_stock->price;
             $quantity = $product_stock->qty;
-
+        
+            dd($request->all());
+    
             if($request['quantity'] > $quantity){
                 return 0;
             }

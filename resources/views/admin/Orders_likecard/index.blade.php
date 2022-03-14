@@ -50,17 +50,25 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                            
                                         @if(count($listingOrders['orders'])>0)
                                             @foreach ($listingOrders['orders'] as $key=>$orderData)
                                                 <tr>
-                                                    <td>{{ $orderData->order_like_card_id }}</td>
-                                                    <td>{{ $orderData->customers_name != null ? $orderData->customers_name: '---------------' }}</td>
+                                                    <?php 
+                                                       $image= App\Models\Core\OrderProduct::where('order_like_card_id',$orderData->id)->first();
+                                                       $id=App\Models\Core\OrderProduct::where('order_like_card_id',$orderData->id)->first()->id??0;
+                                                        $order_details=deatailsOrder($orderData->order_like_card_id??0);
+                                                    ?>
+                                                    <td>{{ $id }}</td>
+
+                                                    <td <img src="{{$image}}">
+                                      
                                                     <td>
                                                         
-                                                        @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $orderData->order_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+                                                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $order_details->orderFinalTotal??0 }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
                                                     <td>{{ date('d/m/Y', strtotime($orderData->date_purchased)) }}</td>
                                                     <td>
-                                                        <a data-toggle="tooltip" data-placement="bottom" title="View Order" href="vieworder/{{ $orderData->order_like_card_id }}" class="badge bg-light-blue"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                        <a data-toggle="tooltip" data-placement="bottom" title="View Order" href="vieworder/{{ $id }}" class="badge bg-light-blue"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
                                                         <a data-toggle="tooltip" data-placement="bottom" title="Delete Order" id="deleteOrdersId" orders_id ="{{ $orderData->order_like_card_id }}" class="badge bg-red"><i class="fa fa-trash" aria-hidden="true"></i></a>
 

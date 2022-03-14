@@ -390,7 +390,6 @@ class AdminController extends Controller
 		$result['errorMessage'] = $errorMessage;
 		$result['admins'] = $admins;
 		$result['commonContent'] = $this->Setting->commonContent();
-
 		return view("admin.shops.index",$title)->with('result', $result);
 
 	}
@@ -477,7 +476,7 @@ class AdminController extends Controller
 	}
   //editadmin
 	public function editadmin(Request $request){
-
+  
 		$title = array('pageTitle' => Lang::get("labels.EditAdmin"));
 		$myid        	 =   $request->id;
 
@@ -521,6 +520,20 @@ class AdminController extends Controller
   //update admin
 	public function updateadmin(Request $request){
 
+	    $user=DB::table('users')->where('email',$request->email)->first();
+        $rules = [
+        'email'  =>  'required|unique:users,email,'.$user->id
+
+
+      ];
+
+      $messages = [
+        'email.required' => 'email is required',
+        'email.unique' => 'email is exist'
+      ];
+ 
+      $this->validate($request, $rules, $messages);
+      
 		//get function from other controller
 		$myVar = new SiteSettingController();
 		$extensions = $myVar->imageType();
@@ -530,11 +543,10 @@ class AdminController extends Controller
 		$errorMessage = array();
 
 		//check email already exists
-		$existEmail = DB::table('users')->where([['email','=',$request->email],['id','!=',$myid]])->get();
-		if(count($existEmail)>0){
-			$errorMessage = Lang::get("labels.Email address already exist");
-			return redirect()->back()->with('errorMessage', $errorMessage);
-		}else{
+// 		$existEmail = DB::table('users')->where('id','!=',$request->myid)->get();
+// 		return $existEmail;
+		
+	
 
 			if ($request->image_id !== null) {
                 $uploadImage = $request->image_id;
@@ -556,7 +568,6 @@ class AdminController extends Controller
 				'end_date'	 		    =>   $request->end_date,
 				'role_id'	 				=>	 $request->adminType,
                 'parent_admin_id'			=>   $request->admin_id,
-				'like_limit'			=>   $request->like_limit,
                 'shop_name'					=>   $request->shop_name
 			);
 
@@ -565,13 +576,16 @@ class AdminController extends Controller
 			}
 
 			$customers_id = DB::table('users')->where('id', '=', $myid)->update($admin_data);
-
-
+			
+            $customers_id->like_limit=$request->like_limit;
+            $customers_id->save();
+       
+        
 			$message = Lang::get("labels.Admin has been updated successfully");
 			return redirect()->back()->with('message', $message);
-		}
-
 	}
+
+	
 
    public function profile(Request $request){
 

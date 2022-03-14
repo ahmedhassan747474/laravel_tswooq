@@ -17,6 +17,8 @@ use App\Models\Core\Languages;
 use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
+use App\Models\Core\OrderProduct;
+use App\Models\Core\OrderLikeCard;
 use App\User as AppUser;
 use Auth;
 use Session;
@@ -32,6 +34,7 @@ class POSCardController extends Controller
 
     public function display()
     {
+   
         $title = array('pageTitle' => Lang::get("labels.ListingCustomers"));
         $language_id = '1';
         $result = array();
@@ -110,7 +113,20 @@ class POSCardController extends Controller
             
         }while(!$response);        curl_close($curl);
         $categories = json_decode($response);
-
+        $subcategories=array();
+        $subsubcategories=array();
+        foreach ($categories->data as $category){
+            if(count($category->childs) && $category->id ==$request->poscategory){
+                foreach($category->childs as $child){
+                    $subcategories[]=$child;
+                    if(count($child->childs) && $child->id ==$request->possubcategory){
+                        foreach($child->childs as $subchild){
+                            $subsubcategories[]=$subchild; 
+                        }
+                    }
+                }
+            }
+        }
         if (!empty($request->poscategory) and $request->poscategory != 'all' and empty($request->possubcategory)and $request->possubcategory == 'all') {
             $category_id = $request->poscategory;
         } elseif (!empty($request->possubcategory)and $request->possubcategory != 'all') {
@@ -156,7 +172,18 @@ class POSCardController extends Controller
 
         $response2 = json_decode($response2);
 
-        return response()->json($response2);
+        $filtered = $response2;
+        // if($request->keyword){
+        //     $collection = collect($response2->json()['data']);
+
+        // $filtered = $collection->where('productName','like','%'.$request->keyword.'%');
+        // }
+        
+        return response()->json(['products'=>$filtered, 
+        'categories'=>$categories,
+        'subcategories'=>$subcategories,
+        'subsubcategories'=>$subsubcategories
+    ]);
     }
 
     public function products($data)
@@ -249,7 +276,7 @@ class POSCardController extends Controller
 
     public function addToCart(Request $request)
     {
-        // dd($request->all());
+       
 
         $subtotal=0;
         if(Session::has('posCardCart')){
@@ -258,11 +285,20 @@ class POSCardController extends Controller
     
             }
             $subtotal +=$request->product_price*$request->quantity;
-    
-            $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
-            if($subtotal > $userlimit){
-                return 'Please check your limit value';
-                // return redirect()->back()->with('message','Please check your limit value');
+            
+            $user=auth()->user()->parent_admin_id;
+            // dd($subtotal,$user);
+         
+            if($user !=null ){
+                $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
+                if($subtotal > $userlimit){
+                    return 'Please check your limit value';
+                    // return redirect()->back()->with('message','Please check your limit value');
+                }
+            }
+            else{
+               return 'Please check your limit value';
+
             }
         }
         
@@ -278,7 +314,7 @@ class POSCardController extends Controller
         $data['price'] = $request->product_price;
         $data['image'] = $request->product_image;
         $data['currency'] = $request->product_currency;
-        $data['quantity'] = $request->quantity;
+        $data['quantity'] = $request->quantity??1;
         $data['tax'] = $tax;
 
         if($request->session()->has('posCardCart')){
@@ -287,6 +323,9 @@ class POSCardController extends Controller
 
             foreach ($request->session()->get('posCardCart') as $key => $cartItem){
                 $cart->push($cartItem);
+                if($cartItem['id']==$request->product_id){
+                    $foundInCart=true;
+                }
             }
 
             if (!$foundInCart) {
@@ -298,7 +337,9 @@ class POSCardController extends Controller
             $cart = collect([$data]);
             $request->session()->put('posCardCart', $cart);
         }
-
+        
+        
+      
         return view('admin.pos_card.cart');
     }
 
@@ -365,8 +406,8 @@ class POSCardController extends Controller
     public function order_store(Request $request)
     {
         
-        // dd($request->all());
         if(Session::has('posCardCart') && count(Session::get('posCardCart')) > 0){
+            
             // $order = new Order;
             $first_name = '';
             $last_name = '';
@@ -376,7 +417,34 @@ class POSCardController extends Controller
             $city = '';
             $postal_code = '';
             $phone = '';
+               
+              foreach (Session::get('posCardCart') as $key => $cartItem){
 
+                  $order_like_card=1;
+                  $order_like_card=createOrders($cartItem['id']);
+                
+                $orders_id=OrderLikeCard::create([
+                    // 'order_like_card_id'=>$order_like_card,
+                         'order_like_card_id'=>$order_like_card->orderId,
+
+                    'customers_id'=>auth()->user()->id,
+                ]);
+
+                  $order_products=OrderProduct::create([
+                      
+                      'product_name'=>$order_like_card->productName,
+                      'final_price'=>$order_like_card->orderPrice,
+                      'product_image'=>$order_like_card->productImage,
+                    'order_like_card_id'=>$orders_id->id,
+                    //   'product_name'=>$order_like_card,
+                    //   'final_price'=>$order_like_card,
+                    //   'product_image'=>$order_like_card,
+                      ]);
+     
+            }
+            
+        //   $order_products->update(['order_like_card_id'=>$orders_id->id]);
+          
             if($request->total_price > auth()->user()->like_limit){
                 return 0;
             }
@@ -481,9 +549,13 @@ class POSCardController extends Controller
             $order_information = array();
 
             $taxes_rate = 0;
+            
             foreach (Session::get('posCardCart') as $key => $cartItem){
                 $taxes_rate += $cartItem['tax']*$cartItem['quantity'];
+                
+                
             }
+
             $tax_rate = $taxes_rate;
             $order_price = $request->total_price;
 
@@ -510,41 +582,41 @@ class POSCardController extends Controller
                 $customers_name = null;
             }
             
-            $orders_id = DB::table('order_like_card')->insertGetId([
-                'customers_id' => $customers_id,
-                'customers_name' => $customers_name,
-                'customers_street_address' => $delivery_street_address,
-                'customers_suburb' => $delivery_suburb,
-                'customers_city' => $delivery_city,
-                'customers_postcode' => $delivery_postcode,
-                'customers_state' => $delivery_state,
-                'customers_country' => $delivery_country,
-                //'customers_telephone' => $customers_telephone,
-                'email' => $email,
-                'delivery_name' => $customers_name,
-                'delivery_street_address' => $delivery_street_address,
-                'delivery_suburb' => $delivery_suburb,
-                'delivery_city' => $delivery_city,
-                'delivery_postcode' => $delivery_postcode,
-                'delivery_state' => $delivery_state,
-                'delivery_country' => $delivery_country,
-                'billing_name' => $customers_name,
-                'billing_street_address' => $billing_street_address,
-                'billing_suburb' => $billing_suburb,
-                'billing_city' => $billing_city,
-                'billing_postcode' => $billing_postcode,
-                'billing_state' => $billing_state,
-                'billing_country' => $billing_country,
-                'payment_method' => $payment_method_name,
-                'last_modified' => $last_modified,
-                'date_purchased' => $date_purchased,
-                'order_price' => $order_price,
-                'currency' => $currency,
-                'total_tax' => $tax_rate,
-                'delivery_phone' => $delivery_phone,
-                'billing_phone' => $billing_phone,
-                'admin_id'  => auth()->user()->id
-            ]);
+            // $orders_id = DB::table('order_like_card')->insertGetId([
+            //     'customers_id' => $customers_id,
+            //     'customers_name' => $customers_name,
+            //     'customers_street_address' => $delivery_street_address,
+            //     'customers_suburb' => $delivery_suburb,
+            //     'customers_city' => $delivery_city,
+            //     'customers_postcode' => $delivery_postcode,
+            //     'customers_state' => $delivery_state,
+            //     'customers_country' => $delivery_country,
+            //     //'customers_telephone' => $customers_telephone,
+            //     'email' => $email,
+            //     'delivery_name' => $customers_name,
+            //     'delivery_street_address' => $delivery_street_address,
+            //     'delivery_suburb' => $delivery_suburb,
+            //     'delivery_city' => $delivery_city,
+            //     'delivery_postcode' => $delivery_postcode,
+            //     'delivery_state' => $delivery_state,
+            //     'delivery_country' => $delivery_country,
+            //     'billing_name' => $customers_name,
+            //     'billing_street_address' => $billing_street_address,
+            //     'billing_suburb' => $billing_suburb,
+            //     'billing_city' => $billing_city,
+            //     'billing_postcode' => $billing_postcode,
+            //     'billing_state' => $billing_state,
+            //     'billing_country' => $billing_country,
+            //     'payment_method' => $payment_method_name,
+            //     'last_modified' => $last_modified,
+            //     'date_purchased' => $date_purchased,
+            //     'order_price' => $order_price,
+            //     'currency' => $currency,
+            //     'total_tax' => $tax_rate,
+            //     'delivery_phone' => $delivery_phone,
+            //     'billing_phone' => $billing_phone,
+            //     'admin_id'  => auth()->user()->id
+            // ]);
 
             if($orders_id) {
                 $subtotal = 0;
@@ -559,18 +631,18 @@ class POSCardController extends Controller
 
                     $total_tax += $cartItem['tax']*$cartItem['quantity'];
 
-                    $orders_products_id = DB::table('order_like_card_product')->insertGetId([
-                        'order_like_card_id' => $orders_id,
-                        'product_id' => $cartItem['id'],
-                        'product_name' => $cartItem['name'],
-                        'product_price' => $cartItem['price'],
-                        'product_currency' => $cartItem['currency'],
-                        'product_image' => $cartItem['image'],
-                        'final_price' => $subtotal + $total_tax,
-                        'products_tax' => $products_tax,
-                        'product_quantity' => $cartItem['quantity'],
-                        'created_at' => $date_purchased
-                    ]);
+                    // $orders_products_id = DB::table('order_like_card_product')->insertGetId([
+                    //     'order_like_card_id' => $orders_id,
+                    //     'product_id' => $cartItem['id'],
+                    //     'product_name' => $cartItem['name'],
+                    //     'product_price' => $cartItem['price'],
+                    //     'product_currency' => $cartItem['currency'],
+                    //     'product_image' => $cartItem['image'],
+                    //     'final_price' => $subtotal + $total_tax,
+                    //     'products_tax' => $products_tax,
+                    //     'product_quantity' => $cartItem['quantity'],
+                    //     'created_at' => $date_purchased
+                    // ]);
                 }
 
                 $request->session()->put('order_id', $orders_id);
@@ -578,12 +650,13 @@ class POSCardController extends Controller
                 Session::forget('pos_shipping_info');
                 Session::forget('posCardCart');
     
+                $id=OrderProduct::latest()->first()->id;
                 $responseData = array(
                     'success' => '1', 
                     'data' => 1, 
                     'message' => "Order has been placed successfully.",
                     'order_id' => $orders_id,
-                    // 'print_url' => route('invoiceprint')
+                    'print_url' => route('invoiceprint_likecard', $id)
                 );
 
                 $shop=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first();

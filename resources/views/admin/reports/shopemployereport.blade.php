@@ -86,7 +86,7 @@
               <div class="col-xs-12"> 
 
               <div class="box-tools pull-right" style="text-align: right;">
-                <h2 style="margin-top: 0;"><small>{{trans('labels.Total Sale Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['price']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
+                <h2 style="margin-top: 0;"><small>{{trans('labels.Total Sale Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
                 <h2 style="margin-top: 0;"><small>{{trans('labels.Total Buy Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price_buy']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
                 <h2 style="margin-top: 0;"><small>{{trans('labels.Total Win Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price_win']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
               </div>

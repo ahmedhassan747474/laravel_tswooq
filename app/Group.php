@@ -12,7 +12,7 @@ class Group extends Model
     public  function products()
     {
     //   $language_id = request()->language_id ?? 1;
-      return $this->belongsToMany('App\Product','group_product','group_id','product_id','id','products_id')->where('is_show_web',1)->with(['stocks','images']);
+      return $this->belongsToMany('App\Product','group_product','group_id','product_id','id','products_id')->with(['stocks','images']);
                             
     }
 }

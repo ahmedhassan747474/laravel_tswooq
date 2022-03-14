@@ -54,10 +54,10 @@ return [
             'url' => env('APP_URL').'/uploadimage',
             'visibility' => 'public',
         ],
-
+        
         'like_card' => [
             'driver' => 'local',
-            'root' => public_path('images/media/like_card'),
+            'root' => public_path('images/media'),
             'url' => env('APP_URL').'/uploadimage',
             'visibility' => 'public',
         ],

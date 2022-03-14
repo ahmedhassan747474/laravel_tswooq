@@ -70,18 +70,41 @@
                 
 
           <!-- /.box-header -->
+              <br>
+                    
+                      
+        
           <div class="box-body">
 
             <div class="row">
-              <div class="col-xs-12"> 
+                <div class="col-xs-12"> 
 
-              <div class="box-tools pull-right" style="text-align: right;">
-                <h2 style="margin-top: 0;"><small>{{trans('labels.Total Sale Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['price']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
-                <h2 style="margin-top: 0;"><small>{{trans('labels.Total Buy Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price_buy']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
-                <h2 style="margin-top: 0;"><small>{{trans('labels.Total Win Price')}}:</small> @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price_win']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif </h2>
-              </div>
+                  <div class="col-sm-4">
 
+                      <span>{{trans('labels.Total Sale Price')}}</span>:-
+                       @if(count($result['reports']['orders'])>0)
+                          {{$total_sum}}
+                        
+                        @else
+                      0  {{$result['commonContent']['currency']->symbol_right}}
+                    @endif
+                    
+                  </div>
+                  <div class="col-sm-4">
+                      <span>{{trans('labels.Total Buy Price')}}</saan>:-
+                      @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$result['reports']['total_price_buy']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  </div>
+                  <div class="col-sm-4">
+                      <span>{{trans('labels.Total Win Price')}}:</span>
+                      @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{$total_sum - $result['reports']['total_price_buy']}} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  </div>
+                
+
+           
               </div>
+              <br>
+              <br>
+              <br>
             </div>
             <div class="row">
               <div class="col-xs-12">
@@ -90,7 +113,7 @@
                   <tr>
                       <th>{{ trans('labels.Date') }}</th>
                       <th>{{ trans('labels.No of Orders') }}</th>
-                      <th>{{ trans('labels.No of Products') }}</th>
+                      <!--<th>{{ trans('labels.No of Products') }}</th>-->
                       <th>{{ trans('labels.PriceBuy') }}</th>
                       <th>{{ trans('labels.OrderTotal') }}</th>
                       <th>{{ trans('labels.TotalWin') }}</th>
@@ -102,7 +125,6 @@
                     <tr>
                         <td>{{ $orderData->date_purchased }}</td>
                         <td>{{ $orderData->total_orders }}</td>
-                        <td>{{ $orderData->total_products }}</td>  
                         <td>{{ $orderData->total_price_buy }}</td>
                         <td>{{ $orderData->total_price }}</td>    
                         <td>{{ $orderData->total_price_win }}</td>    

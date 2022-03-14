@@ -17,6 +17,7 @@ use App\Models\Core\Languages;
 use App\Models\Core\Suppliers;
 use App\Models\Core\Categories;
 use App\Models\Core\User;
+use App\User as AppUser;
 use Auth;
 use Session;
 
@@ -52,7 +53,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -61,7 +62,10 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        
         curl_close($curl);
         $categories = json_decode($response);
 
@@ -92,7 +96,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -101,18 +105,25 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        curl_close($curl);
         $categories = json_decode($response);
 
         if (!empty($request->poscategory) and $request->poscategory != 'all' and empty($request->possubcategory)and $request->possubcategory == 'all') {
             $category_id = $request->poscategory;
         } elseif (!empty($request->possubcategory)and $request->possubcategory != 'all') {
             $category_id = $request->possubcategory;
+        }elseif (!empty($request->possubofsubcategory)and $request->possubofsubcategory != 'all') {
+                $category_id = $request->possubofsubcategory;
         } else {
             $category_id = $categories->data[0]->childs[0]->id;
         }
 
+        // if (!empty($request->possubofsubcategory)and $request->possubofsubcategory != 'all') {
+        //         $category_id = $request->possubofsubcategory;
+        // }
         // dd($request->all(), $category_id);
 
         $curl2 = curl_init();
@@ -129,7 +140,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
 				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
@@ -166,7 +177,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
             ),
@@ -175,8 +186,10 @@ class POSCardController extends Controller
             ),
         ));
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        do{             
+            $response = curl_exec($curl);         
+            
+        }while(!$response);        curl_close($curl);
         $categories = json_decode($response);
 
         if (!empty($request->poscategory) and $request->poscategory != 'all' and empty($request->possubcategory)and $request->possubcategory == 'all') {
@@ -203,7 +216,7 @@ class POSCardController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'deviceId' => '5b3e7f9bfb09c2a60d835794282f589d2fc4bfa89cc093c574ee76126dbc0b86',
                 'email' => 'Jaber2800@hotmail.com',
-                'password' => '24c15fa2d4b862880536374e53f1c4fe',
+                'password' => 'c0bf116b36be1ec7d90bf6a520c1c350',
                 'securityCode' => '9a328e9f300dfd45f54e48c12df75363',
                 'langId' => $language_id,
 				'categoryId' => $category_id ? $category_id : $categories->data[0]->childs[0]->id,
@@ -236,8 +249,32 @@ class POSCardController extends Controller
 
     public function addToCart(Request $request)
     {
-        // dd($request->all());
 
+
+        $subtotal=0;
+        if(Session::has('posCardCart')){
+            foreach (Session::get('posCardCart') as $key => $cartItem){
+                $subtotal += $cartItem['price']*$cartItem['quantity'];
+    
+            }
+            $subtotal +=$request->product_price*$request->quantity;
+            
+            $user=auth()->user()->parent_admin_id;
+         
+            if($user !=null){
+                $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
+                if($subtotal > $userlimit){
+                    return 'Please check your limit value';
+                    // return redirect()->back()->with('message','Please check your limit value');
+                }
+            }
+            else{
+               return 'Please check your limit value';
+
+            }
+        }
+        
+        
         $data = array();
         
         $tax = 0;
@@ -276,6 +313,22 @@ class POSCardController extends Controller
     //updated the quantity for a cart item
     public function updateQuantity(Request $request)
     {
+        $subtotal=0;
+        if(Session::has('posCardCart')){
+            foreach (Session::get('posCardCart') as $key => $cartItem){
+                $subtotal += $cartItem['price']*$cartItem['quantity'];
+    
+            }
+            $subtotal +=$request->product_price*$request->quantity;
+    
+            $userlimit=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first()->like_limit;
+            if($subtotal > $userlimit){
+                return 'Please check your limit value';
+                // return redirect()->back()->with('message','Please check your limit value');
+            }
+        }
+        
+        
         $cart = $request->session()->get('posCardCart', collect([]));
         $cart = $cart->map(function ($object, $key) use ($request) {
             if($key == $request->key){
@@ -319,6 +372,7 @@ class POSCardController extends Controller
     //order place
     public function order_store(Request $request)
     {
+        
         // dd($request->all());
         if(Session::has('posCardCart') && count(Session::get('posCardCart')) > 0){
             // $order = new Order;
@@ -330,6 +384,13 @@ class POSCardController extends Controller
             $city = '';
             $postal_code = '';
             $phone = '';
+
+            if($request->total_price > auth()->user()->like_limit){
+                return 0;
+            }
+            AppUser::find(auth()->user()->id)->update([
+                'like_limit'=> auth()->user()->like_limit-$request->total_price,
+            ]);
 
             if ($request->user_id == null) {
 
@@ -532,6 +593,16 @@ class POSCardController extends Controller
                     'order_id' => $orders_id,
                     // 'print_url' => route('invoiceprint')
                 );
+
+                $shop=DB::table('users')->where('id',auth()->user()->parent_admin_id)->first();
+                DB::table('users')->where('id',auth()->user()->parent_admin_id)->update([
+                    'like_limit'=> $shop->like_limit - $order_price
+                ]);
+                DB::table('balance_history')->insert([
+                    'shop_id'=>$shop->id,
+                    'user_id'=>auth()->user()->id,
+                    'balance'=>$order_price,
+                ]);
                 return $responseData;
             }
             else {

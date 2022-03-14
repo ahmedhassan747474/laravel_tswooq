@@ -1,19 +1,89 @@
-@extends('admin.layout')
+{{-- @extends('admin.layout') --}}
+@include('admin.common.meta')
+
 <style>
+
 .wrapper.wrapper2{
 	display: block;
+	display: flex;
+    justify-content: center;
 }
 .wrapper{
 	display: none;
 }
+
+* {
+    font-size: 10px;
+    font-family: 'Times New Roman';
+}
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+    border-top: 1px solid #f4f4f4;
+    padding: 5px !important;
+        font-weight: bolder;
+}
+
+td,
+th,
+tr,
+table {
+    border-top: 1px solid black;
+    border-collapse: collapse;
+}
+
+td.description,
+th.description {
+    width: 75px;
+    max-width: 75px;
+}
+
+td.quantity,
+th.quantity {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+td.price,
+th.price {
+    width: 40px;
+    max-width: 40px;
+    word-break: break-all;
+}
+
+.centered {
+    text-align: center;
+    align-content: center;
+}
+
+.ticket {
+    width: 79mm;
+    max-width: 79mm;
+}
+
+img {
+    max-width: inherit;
+    width: inherit;
+}
+
+@media print {    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+    }
+    .ticket{
+        height:auto;
+    }
+}
+
 </style>
-<body onload="window.print();">
+<body onload="self.print();" >
+  {{-- <body onload="self.print();" onafterprint="window.location.href = '/admin/orders/cutPaper';"> --}}
 <div class="wrapper wrapper2">
   <!-- Main content -->
-  <section class="invoice" style="margin: 15px;">
+  <section class="ticket" style="margin: 15px;">
       <!-- title row -->
       <div class="col-xs-12">
-      <div class="row">
+      <div class="row" style="position: relative;top: -25px;">
        @if(session()->has('message'))
       	<div class="alert alert-success alert-dismissible">
            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
@@ -28,56 +98,68 @@
                 {{ session()->get('error') }}
             </div>
         @endif
-        
-        
        </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
           <h2 class="page-header" style="padding-bottom: 25px">
-            <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }} 
-            <small class="pull-right">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased)) }}</small>
+            {{-- <i class="fa fa-globe"></i> {{ trans('labels.OrderID') }}# {{ $data['orders_data'][0]->orders_id }} --}}
+            <small class="pull-right">{{ trans('labels.OrderedDate') }}: {{ date('m/d/Y', strtotime($data['orders_data'][0]->date_purchased??'01-01-1970')) }}</small>
           </h2>
         </div>
         <!-- /.col -->
       </div>
       <!-- info row -->
-      <img src="{{ asset('/images/admin_logo/logo_print.jpeg') }}" height="100" width="150" class="float-right">
+      @php
+         $src=asset('/images/admin_logo/logo_print.jpeg');
+      @endphp
+      <img src="{{ $src }}" height="60" width="50" style="width: 120px;position: relative;margin-top: -60px;" class="float-right">
+      <h4 style="position: relative;left: 33px;top: 0px;">{{ $name??'' }}</h4>
       <div class="row invoice-info">
-        <div class="col-sm-4 invoice-col">
-          {{ trans('labels.CustomerInfo') }}:
-          <address>
+        <div class="col-md-12" style="direction: rtl">
+        	<h4 style="display: flex;justify-content: center;">فاتورة ضريبة مبسطة</h4>
+        </div>
+
+
+        <div class="col-sm-12 invoice-col" style="text-align: right">
+          @if (isset($user->shop_name))
+          {{ trans('labels.Shop Name') }}: <strong>{{ $name }}</strong>
+          </br>
+          @endif
+
+          @if (isset($user->tax_number))
+          {{ trans('labels.tax_number') }}: <strong>{{ $user->tax_number }}</strong>
+          </br>
+          @endif
+        </div>
+        <div class="col-sm-12 invoice-col" style="text-align: right">
+          @if (isset($data['orders_data'][0]->customers_name) && $data['orders_data'][0]->customers_name)
+          {{ trans('labels.CustomerName') }}: <strong>{{ $data['orders_data'][0]->customers_name }}</strong>
+          </br>
+          @endif
+
+          @if (isset($data['orders_data'][0]->customers_street_address) && $data['orders_data'][0]->customers_street_address)
+          {{ trans('labels.StreetAddress') }}: <strong>{{ $data['orders_data'][0]->customers_street_address }}</strong>
+          </br>
+          @endif
+
+          @if (isset($data['orders_data'][0]->customers_telephone) && $data['orders_data'][0]->customers_telephone)
+          {{ trans('labels.Telephone') }}: <strong>{{ $data['orders_data'][0]->customers_telephone }}</strong>
+          </br>
+          @endif
+          
+          {{-- @if (isset($data['orders_data'][0]->email) && $data['orders_data'][0]->email)
+          {{ trans('labels.Email') }}: <strong>{{ $data['orders_data'][0]->email }}</strong>
+          </br>
+          @endif --}}
+          {{-- <address>
+
             <strong>{{ $data['orders_data'][0]->customers_name }}</strong><br>
             {{ $data['orders_data'][0]->customers_street_address }} <br>
             {{ $data['orders_data'][0]->customers_city }}, {{ $data['orders_data'][0]->customers_state }} {{ $data['orders_data'][0]->customers_postcode }}, {{ $data['orders_data'][0]->customers_country }}<br>
             {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->customers_telephone }}<br>
             {{ trans('labels.Email') }}: {{ $data['orders_data'][0]->email }}
-          </address>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-          {{ trans('labels.ShippingInfo') }}
-          <address>
-            <strong>{{ $data['orders_data'][0]->delivery_name }}</strong><br>
-            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->delivery_phone }}<br>
-            {{ $data['orders_data'][0]->delivery_street_address }} <br>
-            {{ $data['orders_data'][0]->delivery_city }}, {{ $data['orders_data'][0]->delivery_state }} {{ $data['orders_data'][0]->delivery_postcode }}, {{ $data['orders_data'][0]->delivery_country }}<br>
-           <strong> {{ trans('labels.ShippingMethod') }}:</strong> {{ $data['orders_data'][0]->shipping_method }} <br>
-           <strong> {{ trans('labels.ShippingCost') }}:</strong> @if(!empty($data['orders_data'][0]->shipping_cost)) 
-           
-           @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-            @else --- @endif <br>
-          </address>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-         {{ trans('labels.BillingInfo') }} 
-          <address>
-            <strong>{{ $data['orders_data'][0]->billing_name }}</strong><br>
-            {{ trans('labels.Phone') }}: {{ $data['orders_data'][0]->billing_phone }}<br>
-            {{ $data['orders_data'][0]->billing_street_address }} <br>
-            {{ $data['orders_data'][0]->billing_city }}, {{ $data['orders_data'][0]->billing_state }} {{ $data['orders_data'][0]->billing_postcode }}, {{ $data['orders_data'][0]->billing_country }}<br>
-          </address>
+          </address> --}}
         </div>
         <!-- /.col -->
       </div>
@@ -89,151 +171,242 @@
           <table class="table table-striped">
             <thead>
             <tr>
-              <th>{{ trans('labels.Qty') }}</th>
-              <th>{{ trans('labels.ProductName') }}</th>
-              <th>{{ trans('labels.ProductModal') }}</th>
-              <th>{{ trans('labels.Options') }}</th>
-              <th>{{ trans('labels.Price') }}</th>
+              <th class="quantity">{{ trans('labels.Qty') }}</th>
+              <th class="description">{{ trans('labels.ProductName') }}</th>
+              {{-- <th class="description">{{ trans('labels.ProductAttributes') }}</th> --}}
+              <!--<th>{{ trans('labels.ProductModal') }}</th>-->
+              <!--<th>{{ trans('labels.Options') }}</th>-->
+              <th class="price">متاح الى</th>
+             
             </tr>
             </thead>
             <tbody>
+            <?php $total=0 ; $tax=0; ?>
+            @foreach($result['order_details']->serials??[] as $products)
             
-            @foreach($data['orders_data'][0]->data as $products)
-            	
+   
+            
             <tr>
-                <td>{{  $products->products_quantity }}</td>
-                <td  width="30%">
-                    {{  $products->products_name }}<br>
-                </td>
-                <td>
-                    {{  $products->products_model }}
-                </td>
-                <td>
-                @foreach($products->attribute as $attributes)
-                	<b>{{ trans('labels.Name') }}:</b> {{ $attributes->products_options }}<br>
-                    <b>{{ trans('labels.Value') }}:</b> {{ $attributes->products_options_values }}<br>
-                    <b>{{ trans('labels.Price') }}:</b> @if(!empty($result['commonContent']['currency']->symbol_left)) {{ $attributes->options_values_price }} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif<br>
-
-                @endforeach</td>
+                <td class="quantity">{{  $products->productId }}</td>
+                <td class="description">{{  $products->productName }}</td>
+                <td class="description">{{  $products->validTo }}</td>
+                {{-- <td class="price" > {{  $result['order_details']->orderFinalTotal }}</td> --}}
                 
-                <td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->final_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-             </tr>
-            @endforeach
+                
+                {{--</td class="price">--}}
+                {{-- <td class="description" >
+                  {{  $products->product_attribute }}
+                </td> --}}
+                
+                {{--<td>@if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $products->products_price * $products->product_quantity }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+                $total = $total + $products->products_price * $products->products_quantity; $tax += $products->products_tax--}}
+                
+                
+                {{-- $products->serialNumber --}}
+                
+            </tr>
             
+                     <thead>
+            <tr>
+              <th class="quantity">    {{ $data['orderNumber'] }}</th>
+              <th class="quantity">    {{ $data['serialNumber'] }}</th>
+              <th class="quantity">    {{ $data['serialCode'] }}</th>
+
+            </tr>
+            
+                   
+           
+             
+ 
+            </thead>
+          
+
+            
+            @endforeach
+
             </tbody>
           </table>
         </div>
         <!-- /.col -->
-        
+
       </div>
       <!-- /.row -->
 
       <div class="row">
         <!-- accepted payments column -->
-        <div class="col-xs-7">
-          <p class="lead" style="margin-bottom:10px">{{ trans('labels.PaymentMethods') }}:</p>
-          <p class="text-muted well well-sm no-shadow" style="text-transform:capitalize">
-           	{{ str_replace('_',' ', $data['orders_data'][0]->payment_method) }}
-          </p>
-          @if(!empty($data['orders_data'][0]->coupon_code))
-              <p class="lead" style="margin-bottom:10px">{{ trans('labels.Coupons') }}:</p>
-                <table class="text-muted well well-sm no-shadow stripe-border table table-striped" style="text-align: center; ">
-                	<tr>
-                        <th style="text-align: center; ">{{ trans('labels.Code') }}</th>
-                        <th style="text-align: center; ">{{ trans('labels.Amount') }}</th>
-                    </tr>
-                	@foreach( json_decode($data['orders_data'][0]->coupon_code) as $couponData)
-                    	<tr>
-                        	<td>{{ $couponData->code}}</td>
-                            <td>{{ $couponData->amount}} 
-                            	
-                                @if($couponData->discount_type=='percent_product')
-                                    ({{ trans('labels.Percent') }})
-                                @elseif($couponData->discount_type=='percent')
-                                    ({{ trans('labels.Percent') }})
-                                @elseif($couponData->discount_type=='fixed_cart')
-                                    ({{ trans('labels.Fixed') }})
-                                @elseif($couponData->discount_type=='fixed_product')
-                                    ({{ trans('labels.Fixed') }})
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-				</table>                
-          @endif
-          
-          </p>
-
-          @if($data['orders_data'][0]->payment_method == 'Bank Account')
-          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account') }}:</p>
-          <p class="text-muted well well-sm no-shadow" style="text-transform:capitalize">
-            {{$data['orders_data'][0]->bank_account_iban}}
-          </p>
-
-          <p class="lead" style="margin-bottom:10px">{{ trans('website.Bank Account Image') }}:</p>
-          <img src="{{asset('images/bank_account/')}}/{{$data['orders_data'][0]->bank_account_image}}" width="400px">
-          @endif  
-        </div>
+        
         <!-- /.col -->
-        <div class="col-xs-5">
+        <div class="col-xs-12">
           <!--<p class="lead"></p>-->
-
-          <div class="table-responsive ">
+          <div class="table-responsive " style="direction: rtl;text-align: right">
             <table class="table order-table">
+
               <tr>
-                <th style="width:50%">{{ trans('labels.Subtotal') }}:</th>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.PaymentMetods') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['subtotal'] }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  {{ str_replace('_',' ', $data['orders_data'][0]->payment_method??'') }}
+                </td>
+              </tr>
+
+              {{-- <tr>
+                <th>{{ trans('labels.Delivered Date') }}:</th>
+                <td>
+                  {{ str_replace('_',' ', $data['orders_data'][0]->delivery_date) }}
+                </td>
+              </tr> --}}
+
+              <tr>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Subtotal') }}:</th>
+                <td>
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $result['order_details']->orderFinalTotal }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
                   </td>
               </tr>
               <tr>
-                <th>{{ trans('labels.Tax') }}:</th>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Tax') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax??0 }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                  {{-- @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->total_tax }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif --}}
                   </td>
               </tr>
-              <tr>
-                <th>{{ trans('labels.ShippingCost') }}:</th>
+              {{--<tr>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.ShippingCost') }}:</th>
                 <td>
                   @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->shipping_cost }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}}@endif
                   </td>
-              </tr>
+              </tr>--}}
               @if(!empty($data['orders_data'][0]->coupon_code))
               <tr>
-                <th>{{ trans('labels.DicountCoupon') }}:</th>
-                <td>                  
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->coupon_amount }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.DicountCoupon') }}:</th>
+                <td>
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->coupon_amount??0 }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
               </tr>
               @endif
+              @if(!empty($data['orders_data'][0]->admin_discount))
               <tr>
-                <th>{{ trans('labels.Total') }}:</th>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Discount') }}:</th>
                 <td>
-                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->order_price }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
-                  </td>
+                  @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->admin_discount??0 }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif</td>
+              </tr>
+              @endif
+
+              {{--<tr>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Paied Price') }}:</th>
+                <td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->paied }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
+              </tr>--}}
+
+              {{--<tr>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Remaining Price') }}:</th>
+                <td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $data['orders_data'][0]->order_price - $data['orders_data'][0]->paied }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
+              </tr>--}}
+
+              <tr>
+                <th style="direction: rtl;text-align: right">{{ trans('labels.Total') }}:</th>
+                <td>
+                    @if(!empty($result['commonContent']['currency']->symbol_left)) {{$result['commonContent']['currency']->symbol_left}} @endif {{ $result['order_details']->orderFinalTotal??0 }} @if(!empty($result['commonContent']['currency']->symbol_right)) {{$result['commonContent']['currency']->symbol_right}} @endif
+                </td>
               </tr>
             </table>
+            <p style="font-weight: bolder;text-align: center;font-size: 15px;">السعر شامل الضريبة</p>
           </div>
-              
-        </div>     
-        <div class="col-xs-12">
-        	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Orderinformation') }}:</p>
-        	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
-            @if(trim($data['orders_data'][0]->order_information) != '[]' and !empty($data['orders_data'][0]->order_information))
-           		{{ $data['orders_data'][0]->order_information }}
-            @else
-           		---
-            @endif
-            </p>
-        </div>  
+        </div>
         
+        {{--@if($data['orders_data'][0]->comments)
+        <div class="col-xs-12">
+        	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Notes') }}:</p>
+        	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
+                {{$data['orders_data'][0]->comments}}
+            </p>
+        </div>
+        @endif--}}
+
+       
+       
+          @php
+          $__QR=null;
+                if(auth()->user()->role_id == 11){			
+                  $shop = App\Models\Core\User::find(auth()->user()->parent_admin_id);
+                }else{
+                  $shop = App\Models\Core\User::find(auth()->user()->id);
+                }
+                $tax_number=$shop->tax_number??'';
+                if(isset($shop->shop_name) && $shop->shop_name!=null){
+                    $shop_name=$shop->shop_name??$shop->first_name.' '.$shop->last_name;
+                }else if(isset($shop->first_name) && $shop->first_name!=null){
+                    $shop_name=$shop->first_name.' '.$shop->last_name;
+                }else {
+                  $shop_name='tswooq';
+                }
+              if(isset($tax_number) && $tax_number!='')
+              {
+                function __getLength($value) {
+                    return strlen($value);
+                }
+
+                function __toHex($value) {
+                    return pack("H*", sprintf("%02X", $value));
+                }
+
+                function __toString($__tag, $__value, $__length) {
+                    $value = (string) $__value;
+                    return __toHex($__tag) . __toHex($__length) . $value;
+                }
+
+                function __getTLV($dataToEncode) {
+                    $__TLVS = '';
+                    for ($i = 0; $i < count($dataToEncode); $i++) {
+                        $__tag = $dataToEncode[$i][0];
+                        $__value = $dataToEncode[$i][1];
+                        $__length = __getLength($__value);
+                        $__TLVS .= __toString($__tag, $__value, $__length);
+                    }
+
+                    return $__TLVS;
+                }
+
+                $dataToEncode = [
+                    [1, $shop_name],
+                    [2, $tax_number],
+                    [3, date('Y-m-d\TH:i:s\Z', strtotime($data['orders_data'][0]->date_purchased??'01-01-1970'))],
+                    [4, $data['orders_data'][0]->order_price??0],
+                    [5, $data['orders_data'][0]->total_tax??0]
+                ];
+
+                $__TLV = __getTLV($dataToEncode);
+                $__QR = base64_encode($__TLV);
+                }
+          @endphp
+
+          @if ($__QR)
+            <div class="col-xs-12 text-center" id="printThisBarcode" style="cursor:pointer;margin-top: -13px;" >
+              {{-- {!! QrCode::size(100)->generate(URL::to('admin/orders/invoiceprint/'.$data['orders_data'][0]->orders_id)); !!} --}}
+              {!! QrCode::size(100)->generate($__QR); !!}
+            </div>
+          @endif
+        
+
         <!-- /.col -->
       </div>
       <!-- /.row -->
+      
+      <div class="row">
+            <div class="col-md-12" style="direction: rtl">
+                <b>
+        	    <h4 style="display: flex;justify-content: center;font-weight: bolder;font-size: 27px;">
+        	        نتشرف بزيارتكم
+        	        </h4>
+        	        </b>
+            </div>
+        </div>
 
-     
+
     </section>
   <!-- /.content -->
 </div>
 <!-- ./wrapper -->
 </body>
 
+@include('admin.common.scripts')

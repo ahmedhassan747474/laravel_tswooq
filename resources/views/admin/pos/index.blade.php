@@ -126,14 +126,14 @@
                                                         <option value="" selected disabled>{{ trans('labels.walk') }}</option>
                                                         @foreach ($results['customers'] as $key => $customer)
                                                             {{-- @if ($customer->user) --}}
-                                                                <option value="{{ $customer->id }}" data-contact="{{ $customer->email }}">{{ $customer->first_name .' '. $customer->last_name}}</option>
+                                                                <option value="{{ $customer->id }}" name="customer_id" data-contact="{{ $customer->email }}">{{ $customer->first_name .' '. $customer->last_name}}</option>
                                                             {{-- @endif --}}
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#new-customer" data-toggle="modal">
-                                                    <i class="fa fa-truck"></i>
-                                                </button>
+                                                <!--<button type="button" class="btn btn-icon btn-soft-dark ml-3" data-target="#new-customer" data-toggle="modal">-->
+                                                <!--    <i class="fa fa-truck"></i>-->
+                                                <!--</button>-->
                                             </div>
                                         </form>
                                     </div>
@@ -310,6 +310,14 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="row" style="direction: rtl">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="comment">الملاحظات</label>
+                                            <textarea  class="form-control" id="comment" name="comment"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="pos-footer mar-btm">
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex">
@@ -468,7 +476,6 @@
                     <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
-                            <input type="hidden" name="customer_id" id="set_customer_id" value="{{ Session::get('customerData')->id ?? '' }}">
                             <div class="form-group">
                                 <div class=" row">
                                     <label class="col-sm-2 control-label" for="address">العنوان</label>

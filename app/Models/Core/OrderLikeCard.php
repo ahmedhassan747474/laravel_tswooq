@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AdminControllers\AlertController;
 class OrderLikeCard extends Model
 {
+      protected $fillable = array('order_like_card_id','customers_id','order_price','date_purchased','order_like');
+      protected $table='order_like_card';
+
     public function paginator(){
 
         $language_id = '1';
@@ -70,23 +73,25 @@ class OrderLikeCard extends Model
         $orders_id = $request->id; 
         $ordersData = array();       
         $subtotal  = 0;
-        DB::table('order_like_card')->where('order_like_card_id', '=', $orders_id)
+        $total_price = 0;
+        DB::table('order_like_card')->where('id', '=', $orders_id)
             ->where('customers_id', '!=', '')->update(['is_seen' => 1]);
 
         $order = DB::table('order_like_card')
-            ->where('order_like_card.order_like_card_id', '=', $orders_id)
+            ->where('order_like_card.id', '=', $orders_id)
             ->get();
+        
+            $orders_data = array();
         
         foreach ($order as $data) {
             $orders_id = $data->order_like_card_id;
 
             $orders_products = DB::table('order_like_card_product')
-                ->where('order_like_card_product.order_like_card_id', '=', $orders_id)
+                ->where('order_like_card_product.id', '=', $request->id)
                 ->get();
             $i = 0;
             $total_price = 0;
             $total_tax = 0;
-            $product = array();
             $subtotal = 0;
             // foreach ($orders_products as $orders_products_data) {
             //     $product_attribute = DB::table('orders_products_attributes')
@@ -118,7 +123,7 @@ class OrderLikeCard extends Model
             $data->data = $orders_products;
             $orders_data[] = $data;
         }
-
+        
         $ordersData['orders_data'] = $orders_data;
         $ordersData['total_price'] = $total_price;
         $ordersData['subtotal'] = $subtotal;
@@ -555,4 +560,6 @@ class OrderLikeCard extends Model
         $send = $notification->ordersNotification($deliveryboy_id, $orders_id);
 
     }
+ 
+
 }

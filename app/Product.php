@@ -285,7 +285,7 @@ class Product extends Model {
 
     public function getProductsDescriptionAttribute($value)
     {
-        $getName=  $this->descriptions[0]->products_name ?? '';
+        $getName=  strip_tags($this->descriptions[0]->products_description) ?? '';
 
         return $getName;
     }
@@ -311,6 +311,10 @@ class Product extends Model {
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+    
+    public function user_status_show() {
+        return $this->belongsTo(User::class,'admin_id')->where('status_show',1);
     }
 
     public function orderDetails() {

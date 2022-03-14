@@ -88,8 +88,13 @@
                                                         @else
                                                             <span class="label label-primary">
                                                         @endif
+                                                        
+                                                        @if($orderData->order_price==$orderData->paied)
+                                                         <span class="label label-success">complate
+                                                        @else
                                                         {{ $orderData->orders_status }}
                                                             </span>
+                                                           @endif
                                                     </td>
                                                     <td>
                                                         {{ $name }}

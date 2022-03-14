@@ -17,6 +17,12 @@
     font-family: 'Times New Roman';
 }
 
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+    border-top: 1px solid #f4f4f4;
+    padding: 5px !important;
+        font-weight: bolder;
+}
+
 td,
 th,
 tr,
@@ -302,15 +308,17 @@ img {
                 </td>
               </tr>
             </table>
-            <p>السعر شامل الضريبة</p>
+            <p style="font-weight: bolder;text-align: center;font-size: 15px;">السعر شامل الضريبة</p>
           </div>
         </div>
+        @if($data['orders_data'][0]->comments)
         <div class="col-xs-12">
         	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Notes') }}:</p>
         	<p class="text-muted well well-sm no-shadow" style="text-transform:capitalize; word-break:break-all;">
                 {{$data['orders_data'][0]->comments}}
             </p>
         </div>
+        @endif
 
         <div class="col-xs-12">
         	<p class="lead" style="margin-bottom:10px">{{ trans('labels.Orderinformation') }}:</p>
@@ -389,6 +397,16 @@ img {
         <!-- /.col -->
       </div>
       <!-- /.row -->
+      
+      <div class="row">
+            <div class="col-md-12" style="direction: rtl">
+                <b>
+        	    <h4 style="display: flex;justify-content: center;font-weight: bolder;font-size: 27px;">
+        	        نتشرف بزيارتكم
+        	        </h4>
+        	        </b>
+            </div>
+        </div>
 
 
     </section>

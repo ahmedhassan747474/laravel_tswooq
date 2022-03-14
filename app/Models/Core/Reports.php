@@ -450,10 +450,10 @@ class Reports extends Model
     public function shopsalesreport($request)
     {
         $report = DB::table('orders')
-                    ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
-                    ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
-                    ->selectRaw("date_purchased, count('orders.orders_id') as total_orders,
-                    count('orders_products.orders_id') as total_products, sum(order_price) as total_price, orders.orders_id");
+                    // ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+                    // ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
+                    ->selectRaw("date_purchased, count('orders.orders_id') as total_orders, sum(order_price) as total_price, orders.orders_id");
+                    // dd($report->get());
                     if (isset($request->dateRange)) {
                         $range = explode('-', $request->dateRange);
 
@@ -464,14 +464,16 @@ class Reports extends Model
                         $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
                         $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
                     }
-
                     if(isset($request->admin_id)) {
                         $admin_id = $request->admin_id;
-                        $report->where('products.admin_id', '=', $admin_id);
+                        $report->where('orders.admin_id', '=', $admin_id);
                     }
 
-        $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
-            and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)");
+// dd($report->get());
+
+        // $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
+        //     and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)");
+
 
         if ($request->page and $request->page == 'invioce') {
             $orders = $report->get();
@@ -480,6 +482,7 @@ class Reports extends Model
         }
         $total_price_buy = 0;
         $total_price_win = 0;
+        // dd($orders);
         foreach($orders as $order) {
             $price_buy = 0;
             $dateTime = date('Y-m-d', strtotime($order->date_purchased));
@@ -496,16 +499,17 @@ class Reports extends Model
 
                     $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
                     $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                    // dd($dateTo);
                     $getOrdersByDatePrimary->whereBetween('date_purchased', [$dateFrom, $dateTo]);
                 }
 
                 if(isset($request->admin_id)) {
                     $admin_id = $request->admin_id;
-                    $getOrdersByDatePrimary->where('products.admin_id', '=', $admin_id);
+                    $getOrdersByDatePrimary->where('orders.admin_id', '=', $admin_id);
                 }
+
                 // ->where(DB::raw("DATE(date_purchased) = '".$dateTime."'"))
             $getOrdersByDate = $getOrdersByDatePrimary->get();
-            // dd($getOrdersByDate);
             foreach($getOrdersByDate as $getOrderByDate) {
                 $orderProducts = DB::table('orders_products')
                     ->where('orders_id', '=', $getOrderByDate->orders_id)
@@ -527,7 +531,6 @@ class Reports extends Model
 
         $total_orders_price = DB::table('orders')
                     ->sum('order_price');
-
         $result = array('orders' => $orders, 'total_price' => $total_orders_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
         return $result;
     }
@@ -567,6 +570,7 @@ class Reports extends Model
         }
         $total_price_buy = 0;
         $total_price_win = 0;
+        $total_price=0;
         foreach($orders as $order) {
             $price_buy = 0;
             $dateTime = date('Y-m-d', strtotime($order->date_purchased));
@@ -611,12 +615,13 @@ class Reports extends Model
             $order->total_price_win = $order->total_price - $price_buy;
             $total_price_buy += $price_buy;
             $total_price_win += $order->total_price - $price_buy;
+            $total_price+=$order->total_price;
         }
 
-        $total_orders_price = DB::table('orders')
-                    ->sum('order_price');
+        // $total_orders_price = DB::table('orders')
+        //             ->sum('order_price');
 
-        $result = array('orders' => $orders, 'total_price' => $total_orders_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
+        $result = array('orders' => $orders, 'total_price' => $total_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
         return $result;
     }
 

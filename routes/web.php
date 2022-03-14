@@ -32,6 +32,7 @@ Route::get('/login', 'CustomersController@login');
 Route::post('/process-login', 'CustomersController@processLogin');
 Route::get('/logout', 'CustomersController@logout')->middleware('Customer');
 });
+Route::get('/','AdminControllers\AdminController@dashboard')->name('set_home')->middleware('auth:web');
 Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 	Route::get('general_error/{msg}', function($msg) {
 		 return view('errors.general_error',['msg' => $msg]);
@@ -43,7 +44,6 @@ Route::group(['namespace' => 'Web','middleware' => $middleware], function () {
 		// route for make payment request using post method
 		Route::post('dopayment', 'RazorpayController@dopayment')->name('dopayment');
 
-		Route::get('/','IndexController@index')->name('set_home');
 		Route::post('/change_language', 'WebSettingController@changeLanguage');
 		Route::post('/change_currency', 'WebSettingController@changeCurrency');
 		Route::post('/addToCart', 'CartController@addToCart');
