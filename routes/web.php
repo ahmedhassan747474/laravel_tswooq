@@ -46,7 +46,6 @@ Route::get('/','AdminControllers\AdminController@dashboard')->name('set_home')->
         
         return view('auth.success');
     }
-
     return view('auth.success');
 });
 

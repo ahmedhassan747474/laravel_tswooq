@@ -94,7 +94,8 @@ class CustomersController extends Controller
         ]);
 
         $customers_id = $this->Customers->insert($request);
-            return redirect('admin/customers/address/display/' . $customers_id)->with('update', 'Customer has been created successfully!');
+            // return redirect('admin/customers/address/display/' . $customers_id)->with('update', 'Customer has been created successfully!');
+            return redirect('admin/customers/display/');
 
         // if (count($existEmail)> 0 ) {
         //     $messages = Lang::get("labels.Email address already exist");
@@ -218,6 +219,7 @@ class CustomersController extends Controller
             'gender'   		 	=>   $request->gender,
             'first_name'		=>   $request->first_name,
             'last_name'		 	=>   $request->last_name,
+            'address'		 	=>   $request->address,
             'admin_id'          => $request->admin_id,
             'dob'	 			 	  =>	 $request->dob,
             'phone'	 	      =>	 $request->phone,
@@ -235,7 +237,8 @@ class CustomersController extends Controller
         }
 
         $this->Customers->updaterecord($customer_data,$user_id,$user_data);
-        return redirect('admin/customers/address/display/'.$user_id);
+        // return redirect('admin/customers/address/display/'.$user_id);
+        return redirect('admin/customers/display/');
         
     }
 

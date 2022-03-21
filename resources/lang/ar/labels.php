@@ -12,7 +12,7 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+	'EditCustomers'=>'تعديل البيانات',
 	'LikeCard Report'=>'تقارير مبيعات اللايك كارد',
 	'LikeCard Balance'=>'تقارير رصيد اللايك كارد',
 	'Current POS Stock'=>'مخزون نقاط البيع الحالى',
@@ -610,7 +610,7 @@ return [
 	'PasswordText' => 'رجاء إدخال كلمة السر.',
 	'StatusText' => 'الرجاء اختيار الحالة (الحالة النشطة قادرة فقط على تسجيل الدخول).',
 	'AddCustomer' => 'إضافة عميل',
-	'EditCustomers' => 'تعديل العملاء',
+	'EditCustomers' => 'تعديل البيانات',
 	'ListingCustomerAddresses' => 'قائمة بعناوين العميل',
 	'DeleteAddress' => 'حذف العنوان',
 	'DeleteAddressText' => 'هل أنت متأكد أنك تريد حذف هذا العنوان؟',
@@ -1404,7 +1404,7 @@ return [
 	'generateKey'=>'توليد مفتاح',
 	'applicationApi'=>'API التطبيق',
 	'updateapisettingmessage'=>'تم تحديث إعداد API بنجاح!',
-	'EditCustomers'=>'Edit Customers',
+	// 'EditCustomers'=>'Edit Customers',
 	'SelectStateText' => 'الرجاء تحديد حالة العميل.',
 	'SelectState' => 'اختر ولايه',
 	'changePassword' => 'هل تريد تغيير كلمة المرور؟',

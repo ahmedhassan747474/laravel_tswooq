@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -54,6 +55,25 @@ class Product extends Model {
         "updated_at",
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            if(!empty(auth()->user()) && auth()->user()->role_id==1){
+                
+            }else{
+                $builder->whereHas('admin', function($q){
+                return $q->where('is_seen',1)->where('role_id','!=',1);
+            });
+            }
+            
+        });
+    }
+    public function admin()
+    {
+        return $this->belongsTo(User::class,'admin_id','id');
+    }
     public function getTranslation($field = '', $lang = false) {
         $lang = $lang == false ? App::getLocale() : $lang;
         $product_translations = $this->hasMany(ProductTranslation::class)->where('lang', $lang)->first();
@@ -66,6 +86,8 @@ class Product extends Model {
 
     public function getRatingAttribute()
     {
+        // dd($this->admin);
+
         $reviews = DB::table('reviews')
                                     ->join('users', 'users.id', '=', 'reviews.customers_id')
                                     ->select('reviews.*', 'users.avatar as image')

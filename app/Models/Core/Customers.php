@@ -87,6 +87,7 @@ class Customers extends Model
             'role_id' => 2,
             'first_name' => $request->customers_firstname,
             'last_name' => $request->customers_lastname,
+            'address' => $request->address,
             'dob' => $request->customers_dob,
             'gender' => $request->customers_gender,
             'email' => $request->email,

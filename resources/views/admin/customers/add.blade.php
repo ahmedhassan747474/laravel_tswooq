@@ -79,6 +79,13 @@
                                                                            {{ trans('labels.TelephoneText') }}</span>
                                                                           </div>
                                                                         </div>
+                                                                        <div class="form-group">
+                                                                          <label for="name" class="col-sm-2 col-md-3 control-label">{{ trans('labels.Address') }}</label>
+                                                                          <div class="col-sm-10 col-md-4">
+                                                                            {!! Form::text('address',  '', array('class'=>'form-control address-validate', 'id'=>'address')) !!}
+                                                                            <span class="help-block" style="font-weight: normal;font-size: 11px;margin-bottom: 0;">{{ trans('labels.Address') }}</span>
+                                                                          </div>
+                                                                      </div>
                                                                         @if (auth()->user()->role_id == 1)
                                                                         {{-- <div class="col-xs-12 col-md-6"> --}}
                                                                             <div class="form-group">

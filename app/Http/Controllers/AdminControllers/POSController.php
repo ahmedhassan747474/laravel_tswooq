@@ -1084,7 +1084,7 @@ class POSController extends Controller
         
         $product = AppProduct::where('products_id', $request->product_id)->first();
         
-        if($product->stocks->sum('pos_qty') == 0) { return "المنتج غير متوفر حاليا"; }
+        // if($product->stocks->sum('pos_qty') == 0) { return "المنتج غير متوفر حاليا"; }
 
         $data = array();
         $data['id'] = $product->products_id;
@@ -1604,6 +1604,7 @@ class POSController extends Controller
                 if ($get_detail_customer) {
                     $customers_name         = $get_detail_customer->first_name . ' ' . $get_detail_customer->last_name;
                     $customers_telephone = $get_detail_customer -> phone;
+                    $delivery_street_address=$get_detail_customer->address;
                 }
             }else
             {
@@ -1612,7 +1613,7 @@ class POSController extends Controller
             }
 
             $orders_id = DB::table('orders')->insertGetId([
-                'customers_id' => $customers_id??$request->customer_id,
+                'customers_id' => $request->customer_id,
                 'customers_name' => $customers_name,
                 'customers_street_address' => $delivery_street_address,
                 'customers_suburb' => $delivery_suburb,

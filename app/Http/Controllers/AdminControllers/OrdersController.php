@@ -122,7 +122,9 @@ class OrdersController extends Controller
         $title = array('pageTitle' => Lang::get("labels.ViewOrder"));
         $language_id = 2;
         $orders_id = $request->id;
-
+        $orders_data=[];
+        $total_price=0;
+        $subtotal=0;
         $message = array();
         $errorMessage = array();
 
@@ -133,9 +135,10 @@ class OrdersController extends Controller
             ->LeftJoin('orders_status_history', 'orders_status_history.orders_id', '=', 'orders.orders_id')
             ->LeftJoin('orders_status', 'orders_status.orders_status_id', '=', 'orders_status_history.orders_status_id')
             ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
-            ->where('orders_status_description.language_id', '=', $language_id)->where('orders_status.role_id', '<=', 2)
+            // ->where('orders_status_description.language_id', '=', $language_id)
+            ->where('orders_status.role_id', '<=', 2)
             ->where('orders.orders_id', '=', $orders_id)->orderby('orders_status_history.date_added', 'DESC')->get();
-
+// dd($order);
         foreach ($order as $data) {
             $orders_id = $data->orders_id;
 

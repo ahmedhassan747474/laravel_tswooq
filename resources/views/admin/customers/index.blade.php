@@ -92,7 +92,8 @@
                                             </td>
 
                                             <td>
-                                                @if(!empty($listingCustomers->entry_street_address))
+                                                {{ $listingCustomers->address }}
+                                                {{-- @if(!empty($listingCustomers->entry_street_address))
                                                 {{ $listingCustomers->entry_street_address }},
                                                 @endif
                                                 @if(!empty($listingCustomers->entry_city))
@@ -106,7 +107,7 @@
                                                 @endif
                                                 @if(!empty($listingCustomers->countries_name))
                                                 {{ $listingCustomers->countries_name }}
-                                                @endif
+                                                @endif --}}
 
                                             </td>
                                             <td>
@@ -117,8 +118,8 @@
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url('admin/customers/edit') }}/{{$listingCustomers->id}}">{{ trans('labels.EditCustomers') }}</a></li>
-                                                            <li role="presentation" class="divider"></li>
-                                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url('admin/customers/address/display/'.$listingCustomers->id) }}">{{ trans('labels.EditAddress') }}</a></li>
+                                                            {{-- <li role="presentation" class="divider"></li> --}}
+                                                            {{-- <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url('admin/customers/address/display/'.$listingCustomers->id) }}">{{ trans('labels.EditAddress') }}</a></li> --}}
                                                             <li role="presentation" class="divider"></li>
                                                             <li role="presentation"><a data-toggle="tooltip" data-placement="bottom" title="{{ trans('labels.Delete') }}" id="deleteCustomerFrom"
                                                                   users_id="{{ $listingCustomers->id }}">{{ trans('labels.Delete') }}</a></li>

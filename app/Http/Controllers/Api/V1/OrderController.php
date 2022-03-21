@@ -1040,6 +1040,14 @@ class OrderController extends BaseController
                     $final_price = $c_final_price*$products->quantity_ordered;
                     $final_price = Orders::converttodefaultprice($final_price, $currency_code);
 
+                    $current_stock_in = DB::table('inventory')->where('products_id', $products->products_id)->Where('stock_type', '=', 'in')->sum('stock');
+                    $current_stock_out = DB::table('inventory')->where('products_id', $products->products_id)->Where('stock_type', '=', 'out')->sum('stock');
+                    $current_stock = $current_stock_in - $current_stock_out;
+
+                    if($products->quantity_ordered>$current_stock){
+                        $responseData = array('status' => 2, 'message' => "Sorry, ".$products->descriptions[0]->products_name." is out of stock");
+                        return response()->json($responseData);
+                    }
                     // dd($products->descriptions[0]->products_name);
                     $orders_products_id = DB::table('orders_products')->insertGetId(
                     [
@@ -1051,7 +1059,7 @@ class OrderController extends BaseController
                         'products_tax' 	     =>  	$products_tax,
                         'products_quantity' =>  	$products->quantity_ordered,
                     ]);
-
+                    
                     $inventory_ref_id = DB::table('inventory')->insertGetId([
                         'products_id'   		=>   $products->products_id,
                         'reference_code'  		=>   '',
