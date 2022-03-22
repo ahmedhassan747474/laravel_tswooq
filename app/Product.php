@@ -60,11 +60,12 @@ class Product extends Model {
         parent::boot();
 
         static::addGlobalScope('published', function (Builder $builder) {
-            if(!empty(auth()->user()) && auth()->user()->role_id==1){
+            if(!empty(auth()->user()) && (auth()->user()->role_id==1 || auth()->user()->role_id==11)){
                 
             }else{
+                
                 $builder->whereHas('admin', function($q){
-                return $q->where('is_seen',1)->where('role_id','!=',1);
+                return $q->where('is_seen',1)->orWhereIn('role_id',[1,11]);
             });
             }
             
@@ -203,6 +204,7 @@ class Product extends Model {
 
     public function getProductsImageAttribute($value)
     {
+
         // dd($value);
         $imagepath= ImageCategories::where('image_id',$value)->where(function($q){
             $q->where('image_type', '=', 'THUMBNAIL')
