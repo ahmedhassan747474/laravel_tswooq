@@ -37,4 +37,9 @@ class Category extends Model {
         return asset($imagepath);
     }
 
+
+   public function SubCatigory(){
+    return $this->where('parent_id',1);
+   }
+
 }

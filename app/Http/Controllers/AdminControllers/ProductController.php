@@ -122,7 +122,9 @@ class ProductController extends Controller
         $results['subCategories'] = $subCategories;
         $currentTime = array('currentTime' => time());
         $result['commonContent'] = $this->Setting->commonContent();
-        return view("admin.products.index", $title)->with('result', $result)->with('results', $results)->with('categories_id', $categories_id)->with('product', $product);
+        //   return   $results;
+        return view("admin.products.index", $title)->with('result', $result)->
+        with('results', $results)->with('categories_id', $categories_id)->with('product', $product);
 
     }
 

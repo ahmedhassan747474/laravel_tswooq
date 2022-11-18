@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-
 use Illuminate\Http\Request;
 
 /*
@@ -280,17 +279,19 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1','middleware'=>'cors'], f
 		Route::post('checkout','shopController@checkout')->middleware('user');
 	
 
-	//database
-    Route::get('backup', 'UserController@backup');
-    Route::get('drop', 'UserController@dropDB');
+	// //database
+    // Route::get('backup', 'UserController@backup');
+    // Route::get('drop', 'UserController@dropDB');
 
     //Auth
     Route::post('sign_in', 'UserController@login');
     Route::post('sign_up', 'UserController@registration');
     Route::post('forget_password', 'UserController@forgetPassword');
     Route::post('change_password', 'UserController@changePassword');
+	Route::post('sign_with_social_media', 'UserController@RegisterAndLoginSocailMedia');
     Route::post('sign_with_social', 'UserController@loginWithSocial');
     Route::post('active_phone_number', 'UserController@verifyPhoneNumber');
+    Route::post('delete_account', 'UserController@delete_account');
 
 	//vendors 
     Route::get('get_vendors', 'UserController@get_vendors');
@@ -302,8 +303,11 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1','middleware'=>'cors'], f
 	Route::post('/getallproducts', 'ProductController@getallproducts');
 	Route::get('/get_all_group_products', 'ProductController@get_all_group_products');
 	Route::get('/get_groups_by_vendor', 'ProductController@get_groups_by_vendor');
+	Route::get('/get_category_by_vendor', 'ProductController@get_category_by_vendor');
 	Route::get('/get_all_groups', 'ProductController@get_all_groups');
+	Route::get('/get_all_groups_new', 'ProductController@get_all_groups_new');
 	Route::post('/getproductsbycategory', 'ProductController@getproductsbycategory');
+	Route::post('/getproductsbycategoryAndVendore', 'ProductController@getproductsbycategoryAndVendore');
 	Route::post('/getfilters', 'ProductController@getfilters');
 	Route::post('/getfilterproducts', 'ProductController@getfilterproducts');
     Route::post('/getproductsbybrand', 'ProductController@getproductsbybrand');
@@ -343,6 +347,12 @@ Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1','middleware'=>'cors'], f
 		Route::post('/addtopos', 'OrderController@addtopos');
 		Route::post('/cancelorder', 'OrderController@updatestatus');
 		Route::post('/getorders', 'OrderController@getorders');
+
+		// Wallet User
+		Route::post('/get_information_wallet', 'WalletController@get_information_wallet');
+		Route::post('/add_to_wallet', 'WalletController@add_to_wallet');
+		Route::post('/pull_from_wallet', 'WalletController@pull_from_wallet');
+
 
     });
 });

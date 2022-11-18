@@ -43,6 +43,9 @@ class packgesController extends Controller
         if($packges){
             $packges->name = $request->name;
             $packges->price = $request->price;
+                        $packges->price_discont = $request->price_discont;
+            $packges->price12 = $request->price12;
+            $packges->price_discont_12 = $request->price_discont_12;
             $packges->discount = $request->discount;
             $packges->description = $request->description;
             $packges->type = $request->type;
@@ -67,6 +70,9 @@ class packgesController extends Controller
         if($packges){
             $packges->name = $request->name;
             $packges->price = $request->price;
+            $packges->price_discont = $request->price_discont;
+            $packges->price12 = $request->price12;
+            $packges->price_discont_12 = $request->price_discont_12;
             $packges->discount = $request->discount;
             $packges->description = $request->description;
             $packges->type = $request->type;
@@ -90,6 +96,8 @@ class packgesController extends Controller
         $result['message'] = $message;
         $result['commonContent'] = $this->Setting->commonContent();
         $packgesRequest = PackgeRequest::get();
+
+    //  return   $packgesRequests ;
         return view('admin.packge_requests.index',compact('packgesRequest','result'));
     }
 }

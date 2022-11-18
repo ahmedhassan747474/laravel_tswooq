@@ -32,6 +32,10 @@ Route::get('/login', 'CustomersController@login');
 Route::post('/process-login', 'CustomersController@processLogin');
 Route::get('/logout', 'CustomersController@logout')->middleware('Customer');
 });
+Route::get('/Privacy-Policy', function(){
+    return view('pages.policy');
+})->name('Privacy-Policy');
+
 Route::get('/','AdminControllers\AdminController@dashboard')->name('set_home')->middleware('auth:web');
 
 	Route::get('/test', 'Web\IndexController@test1');

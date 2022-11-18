@@ -49,7 +49,7 @@ class Product extends Model {
         "is_show_web",
         "is_show_app",
         "is_show_admin",
-        "admin_id",
+        // "admin_id",
         "product_parent_id",
         "created_at",
         "updated_at",
@@ -185,6 +185,11 @@ class Product extends Model {
     public function categories()
     {
         return $this->belongsToMany('App\Category','products_to_categories','products_id','categories_id','products_id','categories_id');
+    }
+
+   public function subCategories()
+    {
+        return $this->belongsToMany('App\Models\AppModels\Category','products_to_categories','products_id','categories_id','products_id','categories_id')->where('parent_id','!=', '0');
     }
 
     public function images()

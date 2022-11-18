@@ -5,6 +5,8 @@ namespace App\Models\Core;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Kyslik\ColumnSortable\Sortable;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class Reports extends Model
 {
@@ -229,143 +231,23 @@ class Reports extends Model
 
     public function salesreport($request)
     {
-
-        // if (isset($request->dateRange)) {
-        //     $range = explode('-', $request->dateRange);
-
-        //     $startdate = trim($range[0]);
-        //     $enddate = trim($range[1]);
-
-        //     $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
-        //     $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
-        //     // $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
-        // } else {
-        //     // $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
-        //     // $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
-
-        //     //start date
-        //     $dateFrom = DB::table('orders')->orderby('date_purchased', 'ASC')->first();
-        //     $dateTo = DB::table('orders')->orderby('date_purchased', 'DESC')->first();
-        // }
-
-        // $report = DB::table('orders');
-
-        // // if (isset($request->dateRange)) {
-        // //     $range = explode('-', $request->dateRange);
-
-        // //     $startdate = trim($range[0]);
-        // //     $enddate = trim($range[1]);
-
-        // //     $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
-        // //     $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
-        // //     $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
-        // // }
-
-        // $report->whereBetween('date_purchased', [$dateFrom->date_purchased, $dateTo->date_purchased])
-        //     ->select('orders.*')->where('customers_id', '!=', '')
-        //     ->orderby('orders.orders_id', 'ASC')->groupby('orders.orders_id');
-
-        // if ($request->page and $request->page == 'invioce') {
-        //     $orders = $report->get();
-        // } else {
-        //     $orders = $report->paginate(50);
-        // }
-
-        // //dd($orders);
-
-        // $total_orders_price = $report->sum('order_price');
-        // // dd($total_orders_price);
-        // $index = 0;
-        // $total_price = 0;
-
-        // foreach ($orders as $orders_data) {
-        //     $language_id = 1;
-        //     //orders total
-        //     $orders_products = DB::table('orders_products')->where('orders_id', '=', $orders_data->orders_id)->sum('final_price');
-
-        //     //products total
-
-        //     $orders[$index]->total_price = $orders_products;
-        //     $total_price += $orders_products;
-
-        //     $orders_status = DB::table('orders_status_history')
-        //         ->LeftJoin('orders_status', 'orders_status.orders_status_id', '=', 'orders_status_history.orders_status_id')
-        //         ->LeftJoin('orders_status_description', 'orders_status_description.orders_status_id', '=', 'orders_status.orders_status_id')
-        //         ->select('orders_status_description.orders_status_name', 'orders_status_description.orders_status_id')
-        //         ->where('orders_status_description.language_id', '=', $language_id)
-        //         ->where('orders_id', '=', $orders_data->orders_id)
-        //         ->where('orders_status.role_id', '<=', 2);
-        //     if (isset($request->orders_status_id)) {
-        //         $orders_status->where('orders_status_history.orders_status_id', $orders_status_id);
-        //     }
-
-        //     $orders_status_history = $orders_status->orderby('orders_status_history.date_added', 'DESC')->limit(1)->get();
-
-        //     $current_boy = DB::table('users')
-        //         ->leftjoin('deliveryboy_info', 'users.id', '=', 'deliveryboy_info.users_id')
-        //         ->leftjoin('orders_to_delivery_boy', 'orders_to_delivery_boy.deliveryboy_id', '=', 'users.id')
-        //     //->select('users.id', 'users.first_name', 'users.last_name', 'deliveryboy_info.availability_status')
-        //         ->where('orders_to_delivery_boy.orders_id', '=', $orders_data->orders_id)
-        //         ->where('users.role_id', 4)
-        //         ->where('is_current', 1)
-        //         ->first();
-
-        //     if ($current_boy) {
-        //         $orders[$index]->deliveryboy_name = $current_boy->first_name . ' ' . $current_boy->last_name;
-        //     } else {
-        //         $orders[$index]->deliveryboy_name = '';
-        //     }
-
-        //     $orders[$index]->orders_status_id = $orders_status_history[0]->orders_status_id;
-        //     $orders[$index]->orders_status = $orders_status_history[0]->orders_status_name;
-        //     $index++;
-
-        // }
-
-//         select date_purchased, count(orders.orders_id) as total_orders ,count(orders_products.products_id) as total_products from orders
-// left join orders_products on orders_products.orders_id = orders.orders_id
-// where date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
-// and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)
-
-
-
         $report = DB::table('orders')
                     ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
                     // ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
-                    ->selectRaw("date_purchased, count('orders.orders_id') as total_orders,
+                    ->selectRaw("payment_method,date_purchased, count('orders.orders_id') as total_orders,
                     count('orders_products.orders_id') as total_products, sum(order_price) as total_price, orders.orders_id");
                     if (isset($request->dateRange)) {
                         $range = explode('-', $request->dateRange);
-
                         $startdate = trim($range[0]);
                         $enddate = trim($range[1]);
-
                         $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
                         $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
                         $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
                     }
-
+               
         $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
             and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)");
-
-        // $orderTotal = DB::table('orders')
-        //     ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id');
-        //     // ->selectRaw("date_purchased, count('orders.orders_id') as total_orders,
-        //     // count('orders_products.orders_id') as total_products, sum(order_price) as total_price, orders.orders_id");
-        //     if (isset($request->dateRange)) {
-        //         $range = explode('-', $request->dateRange);
-
-        //         $startdate = trim($range[0]);
-        //         $enddate = trim($range[1]);
-
-        //         $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
-        //         $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
-        //         $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
-        //     }
-
-        //     $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
-        //     and (CURDATE() - INTERVAL 1 DAY)");
-
+                //  dd($report)  ;  
         if(auth()->user()->role_id != 1) {
             $report->where('orders.admin_id', '=', auth()->user()->id);
         } elseif(auth()->user()->role_id == 12) {
@@ -383,17 +265,10 @@ class Reports extends Model
         $total_price_buy = 0;
         $total_price_win = 0;
         $total_price=0;
+        // dd($orders)  ;
         foreach($orders as $order) {
             $price_buy = 0;
-            // dd($order);
-            // dd($order->date_purchased);
             $dateTime = date('Y-m-d', strtotime($order->date_purchased));
-            // dd($dateTime);
-            // $getOrdersByDate = DB::table('orders')
-            //     ->whereDate('date_purchased', '=', $dateTime)
-            //     // ->where(DB::raw("DATE(date_purchased) = '".$dateTime."'"))
-            //     ->get();
-            // dd($getOrdersByDate);
             $getOrdersByDatePrimary = DB::table('orders')
                 ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
                 ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
@@ -413,15 +288,13 @@ class Reports extends Model
                     $admin_id = $request->admin_id;
                     $getOrdersByDatePrimary->where('products.admin_id', '=', $admin_id);
                 }
-                // ->where(DB::raw("DATE(date_purchased) = '".$dateTime."'"))
+  
             $getOrdersByDate = $getOrdersByDatePrimary->get();
             foreach($getOrdersByDate as $getOrderByDate) {
                 // dd($getOrderByDate);
                 $orderProducts = DB::table('orders_products')
-                    ->where('orders_id', '=', $getOrderByDate->orders_id)
-                    // ->whereDate('date_purchased', $order->date_purchased)
+                    ->where('orders_id', '=', $getOrderByDate->orders_id)       
                     ->get();
-                // dd($orderProducts);
                 foreach($orderProducts as $orderProduct){
                     $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
                     if($product){
@@ -438,7 +311,213 @@ class Reports extends Model
         }
 
         // dd($orders);
+        // $total_orders_price = DB::table('orders')
+        //             ->sum('order_price');
 
+        $result = array('orders' => $orders, 'total_price' => $total_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
+        // dd($result);
+        return $result;
+    }
+    public function salesreportpos($request)
+    {
+        $report = DB::table('orders')
+                    ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+                    // ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
+                    ->selectRaw("payment_method,date_purchased, count('orders.orders_id') as total_orders,
+                    count('orders_products.orders_id') as total_products, sum(order_price) as total_price, orders.orders_id");
+          
+                  
+                    if (isset($request->dateRange)) {
+                        $range = explode('-', $request->dateRange);
+                        $startdate = trim($range[0]);
+                        $enddate = trim($range[1]);
+                        $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                        $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                        $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
+                    }
+               
+        $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
+            and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)");
+                     $report->get()->whereIn('payment_method', ['Cash', 'Visa'])  ;  
+    //    $report=    $report->where('payment_method', 'tap');
+                //   dd($report)  ;  
+        if(auth()->user()->role_id != 1) {
+            $report->where('orders.admin_id', '=', auth()->user()->id)->get()->whereIn('payment_method', ['Cash', 'Visa']);
+        } elseif(auth()->user()->role_id == 12) {
+            $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id)->get()->whereIn('payment_method', ['Cash', 'Visa']);
+        }
+        //  $report=    $report->where('payment_method', 'tap');
+
+        if ($request->page and $request->page == 'invioce') {
+            $orders = $report->get()->whereIn('payment_method', ['Cash', 'Visa']);
+            // $orderTotals = $orderTotal->get();
+        } else {
+            $orders = $report->get()->whereIn('payment_method', ['Cash', 'Visa']);
+            // $orderTotals = $orderTotal->paginate(50);
+                       $totalGroup = count($orders);
+    $perPage = 50;
+    $page = Paginator::resolveCurrentPage('page');
+
+    $orders = new LengthAwarePaginator($orders->forPage($page, $perPage), $totalGroup, $perPage, $page, [
+        'path' => Paginator::resolveCurrentPath(),
+        'pageName' => 'page',
+    ]);
+        }
+        // dd($orderTotals);
+        $total_price_buy = 0;
+        $total_price_win = 0;
+        $total_price=0;
+        //  dd($orders)  ;
+        foreach($orders as $order) {
+            $price_buy = 0;
+            $dateTime = date('Y-m-d', strtotime($order->date_purchased));
+            $getOrdersByDatePrimary = DB::table('orders')
+                ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+                ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
+                ->whereDate('date_purchased', '=', $dateTime);
+                if (isset($request->dateRange)) {
+                    $range = explode('-', $request->dateRange);
+
+                    $startdate = trim($range[0]);
+                    $enddate = trim($range[1]);
+
+                    $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                    $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                    $getOrdersByDatePrimary->whereBetween('date_purchased', [$dateFrom, $dateTo]);
+                }
+
+                if(isset($request->admin_id)) {
+                    $admin_id = $request->admin_id;
+                    $getOrdersByDatePrimary->where('products.admin_id', '=', $admin_id);
+                }
+  
+            $getOrdersByDate = $getOrdersByDatePrimary->get();
+            foreach($getOrdersByDate as $getOrderByDate) {
+                // dd($getOrderByDate);
+                $orderProducts = DB::table('orders_products')
+                    ->where('orders_id', '=', $getOrderByDate->orders_id)       
+                    ->get();
+                foreach($orderProducts as $orderProduct){
+                    $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
+                    if($product){
+                        $price_buy += $product->price_buy * $orderProduct->products_quantity;
+                    }
+                }
+            }
+
+            $order->total_price_buy = $price_buy;
+            $order->total_price_win = $order->total_price - $price_buy;
+            $total_price_buy += $price_buy;
+            $total_price_win += $order->total_price - $price_buy;
+            $total_price+=$order->total_price;
+        }
+
+        //  dd($orders);
+        // $total_orders_price = DB::table('orders')
+        //             ->sum('order_price');
+
+        $result = array('orders' => $orders, 'total_price' => $total_price, 'total_price_buy' => $total_price_buy, 'total_price_win' => $total_price_win);
+        // dd($result);
+        return $result;
+    }
+    
+    public function salesreportmobile($request)
+    {
+        $report = DB::table('orders')
+                    ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+                    // ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
+                    ->selectRaw("payment_method,date_purchased, count('orders.orders_id') as total_orders,
+                    count('orders_products.orders_id') as total_products, sum(order_price) as total_price, orders.orders_id");
+          
+                  
+                    if (isset($request->dateRange)) {
+                        $range = explode('-', $request->dateRange);
+                        $startdate = trim($range[0]);
+                        $enddate = trim($range[1]);
+                        $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                        $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                        $report->whereBetween('date_purchased', [$dateFrom, $dateTo]);
+                    }
+               
+        $report->whereRaw("date_purchased between (CURDATE() - INTERVAL (select count(orders_id) from orders) DAY)
+            and (CURDATE() - INTERVAL 1 DAY) group by DATE(date_purchased)");
+                     $report->get()->whereNotIn('payment_method', ['Cash', 'Visa'])  ;  
+    //    $report=    $report->where('payment_method', 'tap');
+                //   dd($report)  ;  
+        if(auth()->user()->role_id != 1) {
+            $report->where('orders.admin_id', '=', auth()->user()->id)->get()->whereNotIn('payment_method', ['Cash', 'Visa']);
+        } elseif(auth()->user()->role_id == 12) {
+            $report->where('orders.admin_id', '=', auth()->user()->parent_admin_id)->get()->whereNotIn('payment_method', ['Cash', 'Visa']);
+        }
+        //  $report=    $report->where('payment_method', 'tap');
+
+        if ($request->page and $request->page == 'invioce') {
+            $orders = $report->get()->whereNotIn('payment_method', ['Cash', 'Visa']);
+            // $orderTotals = $orderTotal->get();
+        } else {
+             $orders = $report->get()->whereNotIn('payment_method', ['Cash', 'Visa']);
+            // $orders = $report->whereNotIn('payment_method', ['Cash', 'Visa'])->paginate(50);
+            // $orders = $report->paginate(50);
+            // $orderTotals = $orderTotal->paginate(50);
+             $totalGroup = count($orders);
+    $perPage = 50;
+    $page = Paginator::resolveCurrentPage('page');
+
+    $orders = new LengthAwarePaginator($orders->forPage($page, $perPage), $totalGroup, $perPage, $page, [
+        'path' => Paginator::resolveCurrentPath(),
+        'pageName' => 'page',
+    ]);
+        }
+        // dd($orderTotals);
+        $total_price_buy = 0;
+        $total_price_win = 0;
+        $total_price=0;
+        //   dd($orders)  ;
+        foreach($orders as $order) {
+            $price_buy = 0;
+            $dateTime = date('Y-m-d', strtotime($order->date_purchased));
+            $getOrdersByDatePrimary = DB::table('orders')
+                ->leftjoin('orders_products', 'orders_products.orders_id', '=', 'orders.orders_id')
+                ->leftJoin('products', 'products.products_id', '=', 'orders_products.products_id')
+                ->whereDate('date_purchased', '=', $dateTime);
+                if (isset($request->dateRange)) {
+                    $range = explode('-', $request->dateRange);
+
+                    $startdate = trim($range[0]);
+                    $enddate = trim($range[1]);
+
+                    $dateFrom = date('Y-m-d ' . '00:00:00', strtotime($startdate));
+                    $dateTo = date('Y-m-d ' . '23:59:59', strtotime($enddate));
+                    $getOrdersByDatePrimary->whereBetween('date_purchased', [$dateFrom, $dateTo]);
+                }
+
+                if(isset($request->admin_id)) {
+                    $admin_id = $request->admin_id;
+                    $getOrdersByDatePrimary->where('products.admin_id', '=', $admin_id);
+                }
+  
+            $getOrdersByDate = $getOrdersByDatePrimary->get();
+            foreach($getOrdersByDate as $getOrderByDate) {
+                // dd($getOrderByDate);
+                $orderProducts = DB::table('orders_products')
+                    ->where('orders_id', '=', $getOrderByDate->orders_id)       
+                    ->get();
+                foreach($orderProducts as $orderProduct){
+                    $product = DB::table('products')->where('products_id', '=', $orderProduct->products_id)->first();
+                    if($product){
+                        $price_buy += $product->price_buy * $orderProduct->products_quantity;
+                    }
+                }
+            }
+
+            $order->total_price_buy = $price_buy;
+            $order->total_price_win = $order->total_price - $price_buy;
+            $total_price_buy += $price_buy;
+            $total_price_win += $order->total_price - $price_buy;
+            $total_price+=$order->total_price;
+        }
+
+        //  dd($orders);
         // $total_orders_price = DB::table('orders')
         //             ->sum('order_price');
 

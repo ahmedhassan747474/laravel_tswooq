@@ -28,6 +28,24 @@
                         </div>
                         <div class="col-xs-6">
                             <div class="form-group">
+                                <lable>Price قبل الخصم</lable>
+                                <input name="price_discont" type="number" class="form-control" required="required" value="{{$packges->price_discont}}">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <lable>Price 12</lable>
+                                <input name="price12" type="number" class="form-control" required="required" value="{{$packges->price12}}">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <lable>Price 12 قبل الخصم</lable>
+                                <input name="price_discont_12" type="number" class="form-control" required="required" value="{{$packges->price_discont_12}}">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
                                 <lable>{{trans('labels.Discount')}}</lable>
                                 <input name="discount" type="number" class="form-control" value="{{$packges->discount}}">
                             </div>

@@ -29,6 +29,8 @@ class Product extends Model
     {
         return $this->descriptions->products_description??'';
     }
+
+
     // public function getMainImageAttribute()
     // {
     //     // $image= DB::table('image_categories')->where('image_id',$this->products_image)
@@ -48,6 +50,11 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsToMany('App\Models\AppModels\Category','products_to_categories','products_id','categories_id','products_id','categories_id');
+    }
+
+    public function subCategories()
+    {
+        return $this->belongsToMany('App\Models\AppModels\Category','products_to_categories','products_id','categories_id','products_id','categories_id')->where('parent_id','!=', '0');
     }
     public function descriptions()
     {

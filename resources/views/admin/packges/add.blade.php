@@ -27,6 +27,24 @@
                                 <input name="price" type="number" class="form-control" required="required" value="">
                             </div>
                         </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <lable>{{trans('labels.packge_price')}} قبل الخصم </lable>
+                                <input name="price_discont" type="number" class="form-control" required="required" value="">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <lable>{{trans('labels.packge_price')}} 12 </lable>
+                                <input name="price12" type="number" class="form-control" required="required" value="">
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <lable>{{trans('labels.packge_price')}} 12 قبل الخصم </lable>
+                                <input name="price_discont_12" type="number" class="form-control" required="required" value="">
+                            </div>
+                        </div>
 
                         <div class="col-xs-6">
                             <div class="form-group">

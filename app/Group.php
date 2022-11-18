@@ -15,4 +15,6 @@ class Group extends Model
       return $this->belongsToMany('App\Product','group_product','group_id','product_id','id','products_id')->with(['stocks','images']);
                             
     }
+
+   
 }

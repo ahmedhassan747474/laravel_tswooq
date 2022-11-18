@@ -19,7 +19,7 @@ Use Image;
 use Str;
 use App;
 use App\Cart;
-use App\Http\Controllers\Web\AlertController;
+use App\Http\Controllers\App\AlertController;
 use App\Http\Resources\CartCollection;
 use App\Http\Resources\CartLikeCollection;
 use App\Http\Resources\OrderCollection;
@@ -299,19 +299,28 @@ class OrderController extends BaseController
 
                 $productItem = DB::table('cart_product')->where('cart_id', '=', $getCart->cart_id)
                                                         ->where('type', '=', 1)->get();
-
+            
                 foreach($productItem as $key=>$cart){
 
                     // dd($products_cart);
-                    $product = AppProduct::where('products_id',$cart->product_id)
-                                        ->with(['descriptions','images'])
-                                        ->whereHas('descriptions',function($q){
-                                            return $q->where('language_id', '=', 1);
-                                        })
-                                        ->where('products_status', '=', '1')->first();
+                    // $product = AppProduct::where('products_id',$cart->product_id)
+                    //                     ->with(['descriptions','images'])
+                    //                     // ->whereHas('descriptions',function($q){
+                    //                     //     return $q->where('language_id', '=', 1);
+                    //                     // })
+                    //                     ->where('products_status', '=', '1')->first();
 
+
+                    $product = AppProduct::where('products_id',$cart->product_id)
+                                        ->where('products_status', '=', '1')->with(['descriptions','images'])->first();
+
+                   
                     $results[$key]['product_data']=$product;
+
+
+                     
                 
+                     
                     $stocks = ProductStock::where('id',$cart->stock_id)->where('product_id',$product->products_id)->get();
                     if(isset($stocks) && !empty($stocks)){
                         
@@ -421,8 +430,7 @@ class OrderController extends BaseController
             $cc_expires            				=   $request->cc_expires;
             $last_modified            			=   date('Y-m-d H:i:s');
             $date_purchased            			=   date('Y-m-d H:i:s');
-            $order_price                        =   $request->totalPrice;
-            $currency_code                      =   $request->currency_code;
+            $order_price                        =   $request->totalPrice;     $currency_code                      =   'SAR';
             $order_price                        =   Orders::converttodefaultprice($request->totalPrice, $currency_code);
             $shipping_cost            			=   $request->shipping_cost;
             $shipping_cost                      =   Orders::converttodefaultprice($request->shipping_cost, $currency_code);
@@ -584,7 +592,19 @@ class OrderController extends BaseController
                         $payment_status = "failed";
                 }
 
-            }else if($payment_method == 'cash_on_delivery'){
+            } else if($payment_method == 'apple_pay' || $payment_method == 'google_pay' || $payment_method == 'apple_pay_or_google_pay_and_wallet'|| $payment_method == 'wallet') {
+                $order_information = array(
+                    'paid'=>'true',
+                    'balance_transaction'=>$order_price,
+                    'currency'=>"SAR",
+                    'amount'=>$order_price,
+                );
+                $payment_status = "success";
+                $paymentMethodName = $payment_method;
+            
+            }
+            
+            else if($payment_method == 'cash_on_delivery'){
 
                 $payments_setting = Orders::payments_setting_for_cod($request);
                 $paymentMethodName =  $payments_setting->name;
@@ -960,6 +980,7 @@ class OrderController extends BaseController
                             // 'transaction_id'    => $transaction_id,
                             'bank_account_image' => $bank_account_image,
                             'bank_account_iban' => $bank_account_iban
+                            
                         ]);
 
                     }
@@ -1015,6 +1036,7 @@ class OrderController extends BaseController
                         'billing_phone'	 =>		$billing_phone,
                         'delivery_latitude' => $delivery_latitude,
                         'delivery_longitude' => $delivery_longitude,
+                        'paied' => $request->paied??0,
                         // 'transaction_id'    => $transaction_id,
                         // 'bank_account_image' => $bank_account_image,
                         // 'bank_account_iban' => $bank_account_iban
@@ -1044,10 +1066,10 @@ class OrderController extends BaseController
                     $current_stock_out = DB::table('inventory')->where('products_id', $products->products_id)->Where('stock_type', '=', 'out')->sum('stock');
                     $current_stock = $current_stock_in - $current_stock_out;
 
-                    if($products->quantity_ordered>$current_stock){
-                        $responseData = array('status' => 2, 'message' => "Sorry, ".$products->descriptions[0]->products_name." is out of stock");
-                        return response()->json($responseData);
-                    }
+                    // if($products->quantity_ordered>$current_stock){
+                    //     $responseData = array('status' => 2, 'message' => "Sorry, ".$products->descriptions[0]->products_name." is out of stock");
+                    //     return response()->json($responseData);
+                    // }
                     // dd($products->descriptions[0]->products_name);
                     $orders_products_id = DB::table('orders_products')->insertGetId(
                     [

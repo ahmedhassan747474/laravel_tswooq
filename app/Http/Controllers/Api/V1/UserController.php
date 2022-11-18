@@ -26,6 +26,7 @@ use DB;
 use Exception;
 use Lang;
 use ZipArchive;
+use App\Models\AppModels\Wallet;
 // header('Access-Control-Allow-Origin: *');
 
 class UserController extends BaseController
@@ -99,6 +100,70 @@ class UserController extends BaseController
 
         # code...
     }
+
+     public function RegisterAndLoginSocailMedia(Request $request){
+
+        $validator  = Validator::make($request->all(), [
+            'user_name' => 'required|string|max:255',
+            
+        ]);
+
+       
+        
+        $checkUser = User::where("email",$request->get("email"))->orWhere($request->get('social_id_key'),'=',$request->get('social_id_value'))->first();
+
+        if($checkUser != null) {
+            $token = Auth::login($checkUser);
+
+            return $this->respond([
+                'message'       =>  trans('common.success_registeration'),
+                'data'          =>  $this->user_transformer->transform($checkUser),
+                'token'         =>  $token,
+                'status_code'   =>  200
+            ], 200);
+
+        } else {
+             if($validator->fails())
+                  {
+                    return $this->getErrorMessage($validator);
+                   }
+            $password = str_random(8);
+            $user = User::create([
+                'user_name' => $request->get('user_name'),
+                'first_name' => $request->get('user_name'),
+                'email' => $request->get('email'),
+                 $request->get('social_id_key')=>$request->get('social_id_value'),
+                'password' => Hash::make($password),
+            ]);
+            
+            $wallet = Wallet::create([
+                'user_id'=>$user->id
+            ]);
+        
+    
+            if($user)
+            {
+                // $sent_code = $this->otpCode($user, $type, $code);
+                $token = Auth::login($user);//auth()->login($user);
+                $user->avatar = '/public/images/users/'. $user->avatar == null ? 'default.png' : $user->avatar;
+    
+                return $this->respond([
+                    'message'       =>  trans('common.success_registeration'),
+                    'data'          =>  $this->user_transformer->transform($user),
+                    'token'         =>  $token,
+                    'status_code'   =>  200
+                ], 200);
+            }
+            else
+            {
+                return response()->json(['message' => trans('common.not_saved'), 'status_code' => 400], 400);
+            }
+        }
+
+        
+
+
+    }
     
     public function registration(Request $request)
     {
@@ -133,6 +198,10 @@ class UserController extends BaseController
 
         $user = User::create($request->all());
 
+        $wallet = Wallet::create([
+                'user_id'=>$user->id
+            ]);
+
         if($user)
         {
             // $sent_code = $this->otpCode($user, $type, $code);
@@ -164,8 +233,7 @@ class UserController extends BaseController
 
         $validator = Validator::make($request->all(), [
             'email'         => 'required|email|max:120|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            // 'phone_code'        => 'required',
-            // 'phone_number'      => 'required|regex:/[0-9]/u',
+ 
             'password'          => 'required',
             'token'             => 'nullable',
             // 'user_type'         => 'required|in:1,2'
@@ -187,22 +255,7 @@ class UserController extends BaseController
                 return response()->json(['message' => trans('common.suspend_account'), 'status_code' => 400], 400);
             }
 
-            // if($user_data->phone_verified == '0')
-            // {
-            //     $code = 4444;
 
-            //     $type = '1';
-
-            //     $sent_code = $this->otpCode($user_data, $type, $code);
-
-            //     return response()->json([
-            //         'message'       => trans('common.you_number_phone_is_not_verified'),
-            //         'is_verified'   => 0,
-            //         'type'          => 1,
-            //         'token'         => $token,
-            //         'status_code'   => 400
-            //     ], 400);
-            // }
 
             $user_data->token = $request->token;
             $user_data->save();
@@ -644,6 +697,20 @@ class UserController extends BaseController
             return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
         }
     }
+    public function delete_account()
+    {
+        $user = $this->getAuthenticatedUser();
+
+        if($user)
+        {
+            $user->delete;
+            return response()->json(['data' => 'done', 'status_code' => 200], 200);
+        }
+        else
+        {
+            return response()->json(['message' => trans('common.user_not_exist'), 'status_code' => 401], 401);
+        }
+    }
 
     public function logout()
     {
@@ -844,7 +911,7 @@ class UserController extends BaseController
 
     public function get_vendors()
     {
-        $vendors = CoreUser::where('role_id', '=', 11)->where('status_show',1)->select('id','shop_name as name','avatar')->get();
+        $vendors = CoreUser::where('role_id', '=', 11)->where('status_show',1)->select('id','shop_name as name','avatar', 'domain')->get();
         
         return response()->json(['data'=>$vendors]);
     }

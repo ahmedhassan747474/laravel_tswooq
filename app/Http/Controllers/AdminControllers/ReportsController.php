@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
 use Lang;
 
 use App\Models\Core\DeliveryBoys;
-
 //for requesting a value
 
 class ReportsController extends Controller
@@ -40,26 +39,7 @@ class ReportsController extends Controller
 
     public function barcode(Request $request)
     {
-        // This will output the barcode as HTML output to display in the browser
-        // $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-        // $barcode= $generator->getBarcode('BDR', $generator::TYPE_CODE_128);
-        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '"> ';
-        // echo '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode('081231723897', $generator::TYPE_CODE_128)) . '">';
-
-        // $barcodes = Product::when($request->search, function ($q) use ($request) {
-
-        //     return $q->where('name','LIKE', '%' . $request->search . '%')
-        //         ->orWhere('barcode', 'LIKE', '%' . $request->search . '%');
-        // })->when($request->category_id, function ($q) use ($request) {
-
-        //     return $q->where('category_id', $request->category_id);
-        // })->when($request->company_id, function ($q) use ($request) {
-
-        //     return $q->where('company_id', $request->company_id);
-        // })->get();
-
-        // $barcodes = $this->Products->getter();
-
+ 
         $title = array('pageTitle' => Lang::get("labels.StatsProductsLiked"));
 
         $barcodes = DB::table('products')
@@ -246,7 +226,47 @@ class ReportsController extends Controller
 
         $result['reports'] = $this->reports->salesreport($request);
         // dd( $result['reports']);
-        
+        // return $result['reports'];
+        $result['price'] = $this->reports->customersReportTotal($request);
+
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        return view("admin.reports.salesreport", $title)->with('result', $result);
+    }
+
+    public function salesreportmobile(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->salesreportmobile($request);
+        // dd( $result['reports']);
+        // return $result['reports'];
+        $result['price'] = $this->reports->customersReportTotal($request);
+
+        $result['customers'] = $this->Customers->getter();
+        $result['orderstatus'] = $this->reports->allorderstatuses();
+        $result['deliveryboys'] = $this->DeliveryBoys->getter();
+
+        $myVar = new SiteSettingController();
+        $result['setting'] = $myVar->getSetting();
+        $result['commonContent'] = $myVar->Setting->commonContent();
+
+        return view("admin.reports.salesreport", $title)->with('result', $result);
+    }
+
+    public function salesreportpos(Request $request)
+    {
+        $title = array('pageTitle' => Lang::get("labels.Sales Report"));
+
+        $result['reports'] = $this->reports->salesreportpos($request);
+        // dd( $result['reports']);
+        // return $result['reports'];
         $result['price'] = $this->reports->customersReportTotal($request);
 
         $result['customers'] = $this->Customers->getter();

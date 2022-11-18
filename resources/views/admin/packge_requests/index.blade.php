@@ -22,6 +22,12 @@
                             <th scope="col">{{trans('labels.packgeRequestUserPhone')}}</th>
                             <th scope="col">{{trans('labels.packgeRequestUserEmail')}}</th>
                             <th scope="col">{{trans('labels.month')}}</th>
+                 
+                            <th scope="col">{{trans('labels.commercialRegisterNumber')}}</th>
+                            <th scope="col">{{trans('labels.subdomain')}}</th>
+                            <th scope="col">{{trans('labels.bankAccount')}}</th>
+                            <th scope="col">{{trans('labels.taxNumber')}}</th>
+                            <th scope="col">{{trans('labels.address')}}</th>
                             {{-- <th scope="col">{{trans('labels.actions')}}</th> --}}
 
                             </tr>
@@ -31,13 +37,18 @@
                             @foreach($packgesRequest as $packgesRequest)
                                 <tr>
                                     <th scope="row">{{$packgesRequest->id}}</th>
-                                    <td>{{$packgesRequest->packge->name}}</td>
-                                    <td>{{$packgesRequest->packge->price * $packgesRequest->month -($packgesRequest->month == 12 ? $packgesRequest->discound : 0 )}}</td>
+                                    <td>{{$packgesRequest->name}}</td>
+                                    <td>{{$packgesRequest->price }}</td>
                                     <td>{{$packgesRequest->user->first_name. ' '. $packgesRequest->user->last_name}}</td>
                                     <td>{{$packgesRequest->user->phone}}</td>
                                     <td>{{$packgesRequest->user->email}}</td>
                                     <td>{{$packgesRequest->month}}</td>
-                                    {{-- <td>
+                                    <td>{{$packgesRequest->commercialRegisterNumber}}</td>
+                                    <td>{{$packgesRequest->subdomain}}</td>
+                                    <td>{{$packgesRequest->bankAccount}}</td>
+                                    <td>{{$packgesRequest->taxNumber}}</td>
+                                    <td>{{$packgesRequest->address}}</td>
+                                                     {{-- <td>
                                         <a href="#" class="btn btn-info">{{trans('labels.edit')}}</a>
                                         <a href="#" class="pid btn btn-danger">{{trans('labels.delete')}}</a>
                                     </td> --}}

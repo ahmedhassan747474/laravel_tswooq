@@ -568,6 +568,7 @@ class AdminController extends Controller
 				'end_date'	 		    =>   $request->end_date,
 				'role_id'	 				=>	 $request->adminType,
                 'parent_admin_id'			=>   $request->admin_id,
+                'like_limit'			=>   $request->like_limit,
                 'shop_name'					=>   $request->shop_name
 			);
 
@@ -576,9 +577,9 @@ class AdminController extends Controller
 			}
 
 			$customers_id = DB::table('users')->where('id', '=', $myid)->update($admin_data);
-			
-            $customers_id->like_limit=$request->like_limit;
-            $customers_id->save();
+			// return $request;
+            // $customers_id->like_limit=$request->like_limit;
+            // $customers_id->save();
        
         
 			$message = Lang::get("labels.Admin has been updated successfully");

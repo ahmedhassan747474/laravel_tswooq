@@ -646,6 +646,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
     Route::group(['prefix' => 'admin/orders', 'middleware' => 'auth', 'namespace' => 'AdminControllers'], function () {
         Route::get('/display', 'OrdersController@display')->middleware('view_order');
+        Route::get('/displayPos', 'OrdersController@displayPos')->middleware('view_order');
+        Route::get('/displayMobile', 'OrdersController@displayMobile')->middleware('view_order');
         Route::get('/vieworder/{id}', 'OrdersController@vieworder')->middleware('view_order');
         Route::post('/updateOrder', 'OrdersController@updateOrder')->middleware('edit_order');
         Route::post('/deleteOrder', 'OrdersController@deleteOrder')->middleware('edit_order');
@@ -702,6 +704,8 @@ Route::group(['middleware' => ['installer', 'back_language']], function () {
 
         
         Route::get('/salesreport', 'ReportsController@salesreport')->middleware('report');
+        Route::get('/salesreportmobile', 'ReportsController@salesreportmobile')->middleware('report');
+        Route::get('/salesreportpos', 'ReportsController@salesreportpos')->middleware('report');
 
         Route::get('/shopsalesreport', 'ReportsController@shopsalesreport')->middleware('view_shop');
         Route::get('/shopemployereport', 'ReportsController@shopemployereport')->middleware('view_shop');

@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminControllers\SiteSettingController;
 use App;
 use App\Group;
 use App\Http\Resources\GroupCollection;
+use App\Http\Resources\NewGroupCollection;
 use App\Http\Resources\ProductCollection;
 use App\Traits\ProductTrait;
 use Illuminate\Support\Facades\File;
@@ -245,7 +246,29 @@ class ProductController extends BaseController
         return new GroupCollection($groups);
         // return response()->json(['data'=>$groups]);
     }
-    public function get_all_groups(Request $request)
+    public function get_category_by_vendor(Request $request)
+    {
+        $groups =  DB::table('categories')->where('parent_id',$request->vendor_id)->get(); 
+        // return $groups;
+        return response()->json(['data'=>$groups]);
+    }
+    public function get_all_groups_new(Request $request)
+    { 
+
+        $ids=FacadesDB::table('users')->where('role_id',1)->pluck('id');
+        // dd($ids);
+        if($request->vendor_id){
+            $groups = Group::where('vendor_id',$request->vendor_id)->with('products.subCategories')->get();
+        }else{
+            $groups = Group::whereIn('vendor_id',$ids)->with('products.subCategories')->get();
+        }
+
+        
+        return new NewGroupCollection($groups);   
+    }
+
+
+      public function get_all_groups(Request $request)
     { 
 
         $ids=FacadesDB::table('users')->where('role_id',1)->pluck('id');
@@ -255,6 +278,8 @@ class ProductController extends BaseController
         }else{
             $groups = Group::whereIn('vendor_id',$ids)->with('products')->get();
         }
+
+        
         return new GroupCollection($groups);   
     }
     // likeproduct
@@ -366,6 +391,26 @@ class ProductController extends BaseController
     
             // $responseData = $this->productObject($request,$products);
             return new ProductCollection($products->paginate(10));
+    }
+    public function getproductsbycategoryAndVendore(Request $request)
+    {
+        $products = AppProduct::latest()
+            ->with(['stocks','images'])->has('user_status_show');
+
+            if($request->categories_id){
+                $products->whereHas('categories',function($query) use($request){
+                   return $query->where('products_to_categories.categories_id',$request->categories_id);
+                });
+            }
+            if($request->vendore_id){
+                $products->whereHas('categories',function($query) use($request){
+                   return $query->whereIn('products.admin_id',$request->vendore_id);
+                });
+            }
+    
+            // $responseData = $this->productObject($request,$products);
+            //  return  $products ;
+            return new ProductCollection($products->paginate(20));
     }
 
     public function getproductsbybrand(Request $request){

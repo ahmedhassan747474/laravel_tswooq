@@ -16,7 +16,7 @@ class UserTransformer extends Transformer
             'first_name'            => $data->first_name,
             'last_name'             => $data->last_name,
             'gender'                => $data->gender,
-            'default_address_id'    => $data->default_address_id,
+            'default_address_id'    => 0,
             'country_code'          => $data->country_code,
             'phone'                 => $data->phone,
             'email'                 => $data->email,

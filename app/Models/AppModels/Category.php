@@ -34,4 +34,9 @@ class Category extends Model
         return ($getCategories);
     }
 
+
+    public function scopeSubCatigory($query){
+    return $query->where('parent_id',1);
+}
+
 }

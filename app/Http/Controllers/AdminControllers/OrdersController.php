@@ -30,15 +30,62 @@ class OrdersController extends Controller
 
         $message = array();
         $errorMessage = array();
-
-        $ordersData['orders'] = $this->Order->paginator();
+ $ordersData['orders'] = $this->Order->paginator();
+    
         //dd($ordersData['orders']);
 
         $ordersData['message'] = $message;
         $ordersData['errorMessage'] = $errorMessage;
         $ordersData['currency'] = $this->myVarsetting->getSetting();
         $result['commonContent'] = $this->Setting->commonContent();
+        // return $ordersData;
+        // ->with('result', $result);
+        // return $result;
         return view("admin.Orders.index", $title)->with('listingOrders', $ordersData)->with('result', $result);
+    }
+    //add listingOrders
+    public function displayMobile()
+    {
+     
+        $title = array('pageTitle' => Lang::get("labels.ListingOrders"));
+
+        $message = array();
+        $errorMessage = array();
+
+         $ordersData['orders'] = $this->Order
+        ->whereNotIn('payment_method', ['Cash','Visa'] )->paginate(30);
+        //dd($ordersData['orders']);
+
+        $ordersData['message'] = $message;
+        $ordersData['errorMessage'] = $errorMessage;
+        $ordersData['currency'] = $this->myVarsetting->getSetting();
+        $result['commonContent'] = $this->Setting->commonContent();
+        // return $ordersData;
+        // ->with('result', $result);
+        // return $result;
+        return view("admin.Orders.indexMobile", $title)->with('listingOrders', $ordersData)->with('result', $result);
+    }
+    //add listingOrders
+    public function displayPos()
+    {
+     
+        $title = array('pageTitle' => Lang::get("labels.ListingOrders"));
+
+        $message = array();
+        $errorMessage = array();
+
+         $ordersData['orders'] = $this->Order->where('payment_method', '=','Visa' )
+        ->orwhere('payment_method', '=','Cash' )->paginate(30);
+        //dd($ordersData['orders']);
+
+        $ordersData['message'] = $message;
+        $ordersData['errorMessage'] = $errorMessage;
+        $ordersData['currency'] = $this->myVarsetting->getSetting();
+        $result['commonContent'] = $this->Setting->commonContent();
+        // return $ordersData;
+        // ->with('result', $result);
+        // return $result;
+        return view("admin.Orders.indexPos", $title)->with('listingOrders', $ordersData)->with('result', $result);
     }
 
     //view order detail
@@ -70,6 +117,7 @@ class OrdersController extends Controller
 
         //dd($ordersData['orders_data'][0]);
 
+        // return $ordersData;
         return view("admin.Orders.vieworder", $title)->with('data', $ordersData)->with('result', $result);
     }
 

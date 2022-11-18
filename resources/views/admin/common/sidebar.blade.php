@@ -55,6 +55,13 @@
         </li>
       
       
+      <li class="treeview {{ Request::is('admin/packges') ? 'active' : '' }} {{ Request::is('admin/packges/add') ? 'active' : '' }} {{ Request::is('admin/packges/edit/*') ? 'active' : '' }} ">
+          <a href="{{ URL::to('admin/packge/requests')}}">
+            <i class="fa fa-language" aria-hidden="true"></i> <span> {{ trans('labels.packge_orders') }} </span>
+          </a>
+        </li>
+      
+      
       <?php
         if($result['commonContent']['roles']!= null and $result['commonContent']['roles']->general_setting_view == 1){
       ?>
@@ -179,6 +186,12 @@
               <a href="{{ URL::to('admin/orders/display')}}" >
                 <i class="fa fa-circle-o" aria-hidden="true"></i> <span> {{ trans('labels.link_orders') }}</span>
               </a>
+              <a href="{{ URL::to('admin/orders/displayPos')}}" >
+                <i class="fa fa-circle-o" aria-hidden="true"></i> <span> {{ trans('labels.link_orders') }} pos</span>
+              </a>
+              <a href="{{ URL::to('admin/orders/displayMobile')}}" >
+                <i class="fa fa-circle-o" aria-hidden="true"></i> <span> {{ trans('labels.link_orders') }} web</span>
+              </a>
             </li>
             <li class="{{ Request::is('admin/orders_likecard/display') ? 'active' : '' }} {{ Request::is('admin/orders_likecard/vieworder/*') ? 'active' : '' }}">
               <a href="{{ URL::to('admin/orders_likecard/display')}}" >
@@ -219,6 +232,8 @@
 
             <li class="{{ Request::is('admin/couponreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/couponreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Coupon Report') }}</a></li>
             <li class="{{ Request::is('admin/salesreport') ? 'active' : '' }}"><a href="{{ URL::to('admin/salesreport')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }}</a></li>
+            <li class="{{ Request::is('admin/salesreportmobile') ? 'active' : '' }}"><a href="{{ URL::to('admin/salesreportmobile')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }} - Web</a></li>
+            <li class="{{ Request::is('admin/salesreportpos') ? 'active' : '' }}"><a href="{{ URL::to('admin/salesreportpos')}}"><i class="fa fa-circle-o"></i> {{ trans('labels.Sales Report') }} - Pos</a></li>
             @endif
 
 

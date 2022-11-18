@@ -58,9 +58,21 @@ class shopController extends BaseController
 
                 $req= new PackgeRequest();
                 $req->user_id = $user->id;
+                $req->name_user = $user->first_name;
+                $req->name = $package->name;
                 $req->packge_id = $request->package_id;
                 $req->price = $request->price;
                 $req->month = $request->month;
+                $req->commercialRegisterNumber = $request->commercialRegisterNumber;
+                $req->subdomain = $request->subdomain;
+                $req->bankAccount = $request->bankAccount;
+                $req->taxNumber = $request->taxNumber;
+                $req->address = $request->address;
+                    //commercialRegisterNumber
+                    //           subdomain
+                    //           bankAccount
+                    //           taxNumber
+                    //           address
                 $req->save();
                 $TapPay = new Payment(['secret_api_Key'=> 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ']);
 

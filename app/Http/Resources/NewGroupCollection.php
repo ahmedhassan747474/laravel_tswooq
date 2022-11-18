@@ -4,22 +4,27 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class GroupCollection extends ResourceCollection
+class NewGroupCollection extends ResourceCollection
 {
     public function toArray($request)
     {
         return [
             'data' => $this->collection->map(function($data) {
 
-            
+                $products = collect($this->products($data->products))->groupBy('categoriy.categories_slug');
+                $newProducts = [];
+                foreach($products as $name => $value ){
+                    array_push($newProducts,["category"=>$name,"products_category"=>$value]);
+                }
                 return [
                     "id" => $data->id,
                     "vendor_id" => $data->vendor_id,
                     "name_en" => $data->name_en,
                     "name_ar" => $data->name_ar,
                     "vendor_id" => $data->vendor_id,
-                    'products' => $this->products($data->products)
-                
+                    // 'products' => $data->products
+                    
+                    'products' => $newProducts
                     
                 ];
             })
@@ -46,7 +51,7 @@ class GroupCollection extends ResourceCollection
                 'products_description' => $product->products_description,
                 'images' => $product->images,
                 'attributes' => $product->products_attributes??[],
-    
+                'categoriy' => $product->subCategories[0]??[],
             ];
         }
         return $results;

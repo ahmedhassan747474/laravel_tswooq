@@ -153,6 +153,8 @@ class MediaController extends Controller
 
             //store DB
             $Path = 'images/media/' . $directory . '/' . $filename;
+           
+
             $Images = new Images();
             $imagedata = $Images->imagedata($filename, $Path, $width, $height);
 
