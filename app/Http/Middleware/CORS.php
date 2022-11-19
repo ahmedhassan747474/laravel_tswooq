@@ -35,7 +35,7 @@ class CORS
 
         
 
-        $response = $next($request);
+        $response = $next($request)->header('Access-Control-Allow-Origin', '*');
 
         foreach($headers as $key => $value)
 
