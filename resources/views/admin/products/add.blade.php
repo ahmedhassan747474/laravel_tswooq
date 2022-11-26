@@ -383,11 +383,6 @@
                                                                    placeholder="{{ trans('labels.POS_Quantity') }}"
                                                                    name="pos_quantity" class="form-control" required>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <input type="number" lang="en" min="0" value="0" step="1"
-                                                                   placeholder="{{ trans('labels.POS_Quantity') }}"
-                                                                   name="pos_quantity" class="form-control" required>
-                                                        </div>
                                                     </div>
                                                     <br>
                                                     <div class="sku_combination" id="sku_combination">
