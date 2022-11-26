@@ -531,6 +531,8 @@
                 ->where('value', 1)
                 ->first();
 
+
+            
             if ($result['commonContent']['roles'] != null and $result['commonContent']['roles']->application_setting_view == 1 and $route != null){
                 ?>
 
