@@ -534,34 +534,34 @@
             if ($result['commonContent']['roles'] != null and $result['commonContent']['roles']->application_setting_view == 1 and $route != null){
                 ?>
 
-            <li class="treeview {{ Request::is('admin/banners') ? 'active' : '' }} {{ Request::is('admin/addbanner') ? 'active' : '' }} {{ Request::is('admin/editbanner/*') ? 'active' : '' }} {{ Request::is('admin/pages') ? 'active' : '' }}  {{ Request::is('admin/addpage') ? 'active' : '' }}  {{ Request::is('admin/editpage/*') ? 'active' : '' }}  {{ Request::is('admin/appSettings') ? 'active' : '' }} {{ Request::is('admin/admobSettings') ? 'active' : '' }} {{ Request::is('admin/applabel') ? 'active' : '' }} {{ Request::is('admin/addappkey') ? 'active' : '' }} {{ Request::is('admin/applicationapi') ? 'active' : '' }}">
-                <a href="#">
-                    <i class="fa fa-gears" aria-hidden="true"></i>
-                    <span> {{ trans('labels.link_app_settings') }}</span> <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ Request::is('admin/banners') ? 'active' : '' }} {{ Request::is('admin/addbanner') ? 'active' : '' }} {{ Request::is('admin/editbanner/*') ? 'active' : '' }}">
-                        <a href="{{ URL::to('admin/banners')}}"><i
-                                    class="fa fa-circle-o"></i> {{ trans('labels.link_Banners') }}</a></li>
+            {{--            <li class="treeview {{ Request::is('admin/banners') ? 'active' : '' }} {{ Request::is('admin/addbanner') ? 'active' : '' }} {{ Request::is('admin/editbanner/*') ? 'active' : '' }} {{ Request::is('admin/pages') ? 'active' : '' }}  {{ Request::is('admin/addpage') ? 'active' : '' }}  {{ Request::is('admin/editpage/*') ? 'active' : '' }}  {{ Request::is('admin/appSettings') ? 'active' : '' }} {{ Request::is('admin/admobSettings') ? 'active' : '' }} {{ Request::is('admin/applabel') ? 'active' : '' }} {{ Request::is('admin/addappkey') ? 'active' : '' }} {{ Request::is('admin/applicationapi') ? 'active' : '' }}">--}}
+            <a href="#">
+                <i class="fa fa-gears" aria-hidden="true"></i>
+                <span> {{ trans('labels.link_app_settings') }}</span> <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li class="{{ Request::is('admin/banners') ? 'active' : '' }} {{ Request::is('admin/addbanner') ? 'active' : '' }} {{ Request::is('admin/editbanner/*') ? 'active' : '' }}">
+                    <a href="{{ URL::to('admin/banners')}}"><i
+                                class="fa fa-circle-o"></i> {{ trans('labels.link_Banners') }}</a></li>
 
-                    <li class="{{ Request::is('admin/pages') ? 'active' : '' }}  {{ Request::is('admin/addpage') ? 'active' : '' }}  {{ Request::is('admin/editpage/*') ? 'active' : '' }}">
-                        <a href="{{ URL::to('admin/pages')}}"><i
-                                    class="fa fa-circle-o"></i> {{ trans('labels.content_pages') }}</a></li>
+                <li class="{{ Request::is('admin/pages') ? 'active' : '' }}  {{ Request::is('admin/addpage') ? 'active' : '' }}  {{ Request::is('admin/editpage/*') ? 'active' : '' }}">
+                    <a href="{{ URL::to('admin/pages')}}"><i
+                                class="fa fa-circle-o"></i> {{ trans('labels.content_pages') }}</a></li>
 
-                    <li class="{{ Request::is('admin/admobSettings') ? 'active' : '' }}"><a
-                                href="{{ URL::to('admin/admobSettings')}}"><i
-                                    class="fa fa-circle-o"></i> {{ trans('labels.link_admob') }}</a></li>
+                <li class="{{ Request::is('admin/admobSettings') ? 'active' : '' }}"><a
+                            href="{{ URL::to('admin/admobSettings')}}"><i
+                                class="fa fa-circle-o"></i> {{ trans('labels.link_admob') }}</a></li>
 
-                    <li class="android-hide {{ Request::is('admin/applabel') ? 'active' : '' }} {{ Request::is('admin/addappkey') ? 'active' : '' }}">
-                        <a href="{{ URL::to('admin/applabel')}}"><i
-                                    class="fa fa-circle-o"></i> {{ trans('labels.labels') }}</a></li>
+                <li class="android-hide {{ Request::is('admin/applabel') ? 'active' : '' }} {{ Request::is('admin/addappkey') ? 'active' : '' }}">
+                    <a href="{{ URL::to('admin/applabel')}}"><i
+                                class="fa fa-circle-o"></i> {{ trans('labels.labels') }}</a></li>
 
-                    <li class="{{ Request::is('admin/applicationapi') ? 'active' : '' }}"><a
-                                href="{{ URL::to('admin/applicationapi')}}"><i
-                                    class="fa fa-circle-o"></i> {{ trans('labels.applicationApi') }}</a></li>
+                <li class="{{ Request::is('admin/applicationapi') ? 'active' : '' }}"><a
+                            href="{{ URL::to('admin/applicationapi')}}"><i
+                                class="fa fa-circle-o"></i> {{ trans('labels.applicationApi') }}</a></li>
 
 
-                </ul>
+            </ul>
             </li>
             <?php } if ($result['commonContent']['roles']->deliveryboy_view == 1){
                 ?>
