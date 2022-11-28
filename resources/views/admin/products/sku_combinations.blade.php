@@ -88,7 +88,7 @@
                                class="form-control" required>
                     </td>
                     <td>
-                        <input type="number" lang="en" name="Purchase_price{{ $str }}" min="0" step="1"
+                        <input type="number" lang="en" name="Purchase_price_{{ $str }}" min="0" step="1"
                                class="form-control" required>
                     </td>
 
