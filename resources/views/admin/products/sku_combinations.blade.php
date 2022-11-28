@@ -24,7 +24,7 @@
                 {{trans('labels.POS_Quantity')}}
             </td>
             <td class="text-center" data-breakpoints="lg">
-                {{trans('labels.POS_Quantity')}}
+                {{trans('labels.Purchase_price')}}
             </td>
             <td class="text-center" data-breakpoints="lg">
                 {{ trans('labels.Image') }}
@@ -88,7 +88,7 @@
                                class="form-control" required>
                     </td>
                     <td>
-                        <input type="number" lang="en" name="pos_qty_{{ $str }}" value="10" min="0" step="1"
+                        <input type="number" lang="en" name="Purchase_price{{ $str }}" min="0" step="1"
                                class="form-control" required>
                     </td>
 
