@@ -24,7 +24,7 @@
                 {{trans('labels.POS_Quantity')}}
             </td>
             <td class="text-center" data-breakpoints="lg">
-                {{trans('labels.Purchase_price')}}
+                {{trans('labels.Purchase Price')}}
             </td>
             <td class="text-center" data-breakpoints="lg">
                 {{ trans('labels.Image') }}
